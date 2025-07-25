@@ -1,0 +1,91 @@
+{
+  "input_actions": [
+    {
+      "name": "Move",
+      "type": "Vector2D",
+      "key_bindings": [
+        {
+          "key": "SDLK_w",
+          "positive": true,
+          "axis": 1
+        },
+        {
+          "key": "SDLK_s",
+          "positive": false,
+          "axis": 1
+        },
+        {
+          "key": "SDLK_d",
+          "positive": true,
+          "axis": 0
+        },
+        {
+          "key": "SDLK_a",
+          "positive": false,
+          "axis": 0
+        }
+      ]
+    },
+    {
+      "name": "VerticalMove",
+      "type": "Value",
+      "key_bindings": [
+        {
+          "key": "SDLK_SPACE",
+          "positive": true
+        },
+        {
+          "key": "SDLK_LSHIFT",
+          "positive": false
+        }
+      ]
+    },
+    {
+      "name": "MouseLookX",
+      "type": "MouseAxis",
+      "mouse_axis": "X"
+    },
+    {
+      "name": "MouseLookY",
+      "type": "MouseAxis",
+      "mouse_axis": "Y"
+    },
+    {
+      "name": "MouseRight",
+      "type": "MouseButton",
+      "mouse_button": "SDL_BUTTON_RIGHT"
+    },
+    {
+      "name": "MouseWheel",
+      "type": "MouseAxis",
+      "mouse_axis": "ScrollWheel"
+    },
+    {
+      "name": "SwitchToScene1",
+      "type": "Button",
+      "key_bindings": [
+        {
+          "key": "SDLK_1"
+        }
+      ]
+    },
+    {
+      "name": "SwitchToScene2",
+      "type": "Button",
+      "key_bindings": [
+        {
+          "key": "SDLK_2"
+        }
+      ]
+    },
+    {
+      "name": "SwitchToScene3",
+      "type": "Button",
+      "key_bindings": [
+        {
+          "key": "SDLK_3"
+        }
+      ]
+    }
+  ]
+}

@@ -36,6 +36,7 @@
 #include <signal.h>
 #include <exception>
 #include "Windows/RenderWindows.h"
+#include "core/InputConfigLoader.h"
 
 // ==== ImGui ====
 #include <imgui/imgui.h>
@@ -47,105 +48,102 @@
 volatile bool g_running = true;
 
 void signalHandler(int signal) {
-    std::cout << "\nSe�al de cierre recibida (" << signal << "). Cerrando de forma segura..." << std::endl;
+    std::cout << "\nSeal de cierre recibida (" << signal << "). Cerrando de forma segura..." << std::endl;
     g_running = false;
 }
 
 void setupInputSystem(Scene* activeScene) {
+    InputConfigLoader::loadInputConfigFromJSON();
+    
     auto& inputSystem = InputSystem::getInstance();
     
-    // Movimiento de la c�mara (WASD)
-    auto moveAction = inputSystem.registerAction("Move", InputType::Vector2D);
-    moveAction->addKeyBinding(SDLK_w, true, 1);  // Forward
-    moveAction->addKeyBinding(SDLK_s, false, 1); // Backward
-    moveAction->addKeyBinding(SDLK_d, true, 0);  // Right
-    moveAction->addKeyBinding(SDLK_a, false, 0); // Left
-    moveAction->bindVector2DCallback([activeScene](const glm::vec2& movement) {
-        if (Camera* camera = activeScene->getCamera()) {
-            const float speed = 1.0f;
-            if (movement.y != 0.0f) {
-                camera->moveForward(movement.y * speed * Time::getDeltaTime());
+    auto moveAction = inputSystem.getAction("Move");
+    if (moveAction) {
+        moveAction->bindVector2DCallback([activeScene](const glm::vec2& movement) {
+            if (Camera* camera = activeScene->getCamera()) {
+                const float speed = 1.0f;
+                if (movement.y != 0.0f) {
+                    camera->moveForward(movement.y * speed * Time::getDeltaTime());
+                }
+                if (movement.x != 0.0f) {
+                    camera->moveRight(movement.x * speed * Time::getDeltaTime());
+                }
             }
-            if (movement.x != 0.0f) {
-                camera->moveRight(movement.x * speed * Time::getDeltaTime());
+        });
+    }
+
+    auto verticalMoveAction = inputSystem.getAction("VerticalMove");
+    if (verticalMoveAction) {
+        verticalMoveAction->bindValueCallback([activeScene](float value) {
+            if (Camera* camera = activeScene->getCamera()) {
+                const float speed = 1.0f;
+                camera->moveUp(value * speed * Time::getDeltaTime());
             }
-        }
-    });
+        });
+    }
 
-    // Movimiento vertical de la c�mara (Space/Shift)
-    auto verticalMoveAction = inputSystem.registerAction("VerticalMove", InputType::Value);
-    verticalMoveAction->addKeyBinding(SDLK_SPACE, true);
-    verticalMoveAction->addKeyBinding(SDLK_LSHIFT, false);
-    verticalMoveAction->bindValueCallback([activeScene](float value) {
-        if (Camera* camera = activeScene->getCamera()) {
-            const float speed = 1.0f;
-            camera->moveUp(value * speed * Time::getDeltaTime());
-        }
-    });
+    auto mouseLookX = inputSystem.getAction("MouseLookX");
+    if (mouseLookX) {
+        mouseLookX->bindMouseAxisCallback([activeScene](float delta) {
+            if (Camera* camera = activeScene->getCamera()) {
+                const float sensitivity = 0.1f;
+                camera->rotate(delta * sensitivity, 0.0f);
+            }
+        });
+    }
 
-    // Mouse Look
-    auto mouseLookX = inputSystem.registerAction("MouseLookX", InputType::MouseAxis);
-    mouseLookX->addMouseAxisBinding(MouseAxisType::X);
-    mouseLookX->bindMouseAxisCallback([activeScene](float delta) {
-        if (Camera* camera = activeScene->getCamera()) {
-            const float sensitivity = 0.1f;
-            camera->rotate(delta * sensitivity, 0.0f);
-        }
-    });
+    auto mouseLookY = inputSystem.getAction("MouseLookY");
+    if (mouseLookY) {
+        mouseLookY->bindMouseAxisCallback([activeScene](float delta) {
+            if (Camera* camera = activeScene->getCamera()) {
+                const float sensitivity = 0.1f;
+                camera->rotate(0.0f, -delta * sensitivity);
+            }
+        });
+    }
 
-    auto mouseLookY = inputSystem.registerAction("MouseLookY", InputType::MouseAxis);
-    mouseLookY->addMouseAxisBinding(MouseAxisType::Y);
-    mouseLookY->bindMouseAxisCallback([activeScene](float delta) {
-        if (Camera* camera = activeScene->getCamera()) {
-            const float sensitivity = 0.1f;
-            camera->rotate(0.0f, -delta * sensitivity);
-        }
-    });
+    auto mouseWheel = inputSystem.getAction("MouseWheel");
+    if (mouseWheel) {
+        mouseWheel->bindMouseAxisCallback([activeScene](float delta) {
+            if (Camera* camera = activeScene->getCamera()) {
+                const float zoomSpeed = 1.0f;
+                camera->moveForward(delta * zoomSpeed * Time::getDeltaTime());
+            }
+        });
+    }
 
-    // Mouse Buttons
-    auto mouseRight = inputSystem.registerAction("MouseRight", InputType::MouseButton);
-    mouseRight->addMouseButtonBinding(SDL_BUTTON_RIGHT);
+    auto switchToScene1 = inputSystem.getAction("SwitchToScene1");
+    if (switchToScene1) {
+        switchToScene1->bindButtonCallback([](bool pressed) {
+            if (pressed) {
+                Selection::GameObjectSelect = nullptr;
+                auto& sceneManager = SceneManager::getInstance();
+                sceneManager.setActiveScene("TestScene");
+            }
+        });
+    }
 
-    // Mouse Wheel
-    auto mouseWheel = inputSystem.registerAction("MouseWheel", InputType::MouseAxis);
-    mouseWheel->addMouseAxisBinding(MouseAxisType::ScrollWheel);
-    mouseWheel->bindMouseAxisCallback([activeScene](float delta) {
-        if (Camera* camera = activeScene->getCamera()) {
-            const float zoomSpeed = 1.0f;
-            camera->moveForward(delta * zoomSpeed * Time::getDeltaTime());
-        }
-    });
+    auto switchToScene2 = inputSystem.getAction("SwitchToScene2");
+    if (switchToScene2) {
+        switchToScene2->bindButtonCallback([](bool pressed) {
+            if (pressed) {
+                Selection::GameObjectSelect = nullptr;
+                auto& sceneManager = SceneManager::getInstance();
+                sceneManager.setActiveScene("TexturedScene");
+            }
+        });
+    }
 
-    // Cambio de escenas
-    auto switchToScene1 = inputSystem.registerAction("SwitchToScene1", InputType::Button);
-    switchToScene1->addKeyBinding(SDLK_1);
-    switchToScene1->bindButtonCallback([](bool pressed) {
-        if (pressed) {
-            Selection::GameObjectSelect = nullptr;
-            auto& sceneManager = SceneManager::getInstance();
-            sceneManager.setActiveScene("TestScene");
-        }
-    });
-
-    auto switchToScene2 = inputSystem.registerAction("SwitchToScene2", InputType::Button);
-    switchToScene2->addKeyBinding(SDLK_2);
-    switchToScene2->bindButtonCallback([](bool pressed) {
-        if (pressed) {
-            Selection::GameObjectSelect = nullptr;
-            auto& sceneManager = SceneManager::getInstance();
-            sceneManager.setActiveScene("TexturedScene");
-        }
-    });
-
-    auto switchToScene3 = inputSystem.registerAction("SwitchToScene3", InputType::Button);
-    switchToScene3->addKeyBinding(SDLK_3);
-    switchToScene3->bindButtonCallback([](bool pressed) {
-        if (pressed) {
-            Selection::GameObjectSelect = nullptr;
-            auto& sceneManager = SceneManager::getInstance();
-            sceneManager.setActiveScene("ModelScene");
-        }
-    });
+    auto switchToScene3 = inputSystem.getAction("SwitchToScene3");
+    if (switchToScene3) {
+        switchToScene3->bindButtonCallback([](bool pressed) {
+            if (pressed) {
+                Selection::GameObjectSelect = nullptr;
+                auto& sceneManager = SceneManager::getInstance();
+                sceneManager.setActiveScene("ModelScene");
+            }
+        });
+    }
 }
 
 int main() {

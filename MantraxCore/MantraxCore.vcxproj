@@ -25,6 +25,7 @@
     <ClCompile Include="..\src\components\TestScene.cpp" />
     <ClCompile Include="..\src\components\TexturedScene.cpp" />
     <ClCompile Include="..\src\core\CoreWrapper.cpp" />
+    <ClCompile Include="..\src\core\InputConfigLoader.cpp" />
     <ClCompile Include="..\src\core\UIDGenerator.cpp" />
     <ClCompile Include="..\src\main\MantraxEngine.cpp" />
     <ClCompile Include="..\src\render\AssimpGeometry.cpp" />
@@ -57,6 +58,7 @@
     <ClInclude Include="..\src\components\TexturedScene.h" />
     <ClInclude Include="..\src\core\CoreExporter.h" />
     <ClInclude Include="..\src\core\CoreWrapper.h" />
+    <ClInclude Include="..\src\core\InputConfigLoader.h" />
     <ClInclude Include="..\src\core\Time.h" />
     <ClInclude Include="..\src\core\UIDGenerator.h" />
     <ClInclude Include="..\src\input\InputAction.h" />

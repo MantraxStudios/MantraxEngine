@@ -1,0 +1,359 @@
+#include "InputConfigLoader.h"
+#include <iostream>
+#include <fstream>
+
+SDL_Keycode InputConfigLoader::stringToKeycode(const std::string& keyString) {
+    // Teclas alfanuméricas
+    if (keyString == "SDLK_a") return SDLK_a;
+    if (keyString == "SDLK_b") return SDLK_b;
+    if (keyString == "SDLK_c") return SDLK_c;
+    if (keyString == "SDLK_d") return SDLK_d;
+    if (keyString == "SDLK_e") return SDLK_e;
+    if (keyString == "SDLK_f") return SDLK_f;
+    if (keyString == "SDLK_g") return SDLK_g;
+    if (keyString == "SDLK_h") return SDLK_h;
+    if (keyString == "SDLK_i") return SDLK_i;
+    if (keyString == "SDLK_j") return SDLK_j;
+    if (keyString == "SDLK_k") return SDLK_k;
+    if (keyString == "SDLK_l") return SDLK_l;
+    if (keyString == "SDLK_m") return SDLK_m;
+    if (keyString == "SDLK_n") return SDLK_n;
+    if (keyString == "SDLK_o") return SDLK_o;
+    if (keyString == "SDLK_p") return SDLK_p;
+    if (keyString == "SDLK_q") return SDLK_q;
+    if (keyString == "SDLK_r") return SDLK_r;
+    if (keyString == "SDLK_s") return SDLK_s;
+    if (keyString == "SDLK_t") return SDLK_t;
+    if (keyString == "SDLK_u") return SDLK_u;
+    if (keyString == "SDLK_v") return SDLK_v;
+    if (keyString == "SDLK_w") return SDLK_w;
+    if (keyString == "SDLK_x") return SDLK_x;
+    if (keyString == "SDLK_y") return SDLK_y;
+    if (keyString == "SDLK_z") return SDLK_z;
+    
+    // Números
+    if (keyString == "SDLK_0") return SDLK_0;
+    if (keyString == "SDLK_1") return SDLK_1;
+    if (keyString == "SDLK_2") return SDLK_2;
+    if (keyString == "SDLK_3") return SDLK_3;
+    if (keyString == "SDLK_4") return SDLK_4;
+    if (keyString == "SDLK_5") return SDLK_5;
+    if (keyString == "SDLK_6") return SDLK_6;
+    if (keyString == "SDLK_7") return SDLK_7;
+    if (keyString == "SDLK_8") return SDLK_8;
+    if (keyString == "SDLK_9") return SDLK_9;
+    
+    // Teclas de función
+    if (keyString == "SDLK_F1") return SDLK_F1;
+    if (keyString == "SDLK_F2") return SDLK_F2;
+    if (keyString == "SDLK_F3") return SDLK_F3;
+    if (keyString == "SDLK_F4") return SDLK_F4;
+    if (keyString == "SDLK_F5") return SDLK_F5;
+    if (keyString == "SDLK_F6") return SDLK_F6;
+    if (keyString == "SDLK_F7") return SDLK_F7;
+    if (keyString == "SDLK_F8") return SDLK_F8;
+    if (keyString == "SDLK_F9") return SDLK_F9;
+    if (keyString == "SDLK_F10") return SDLK_F10;
+    if (keyString == "SDLK_F11") return SDLK_F11;
+    if (keyString == "SDLK_F12") return SDLK_F12;
+    
+    // Teclas especiales
+    if (keyString == "SDLK_ESCAPE") return SDLK_ESCAPE;
+    if (keyString == "SDLK_TAB") return SDLK_TAB;
+    if (keyString == "SDLK_CAPSLOCK") return SDLK_CAPSLOCK;
+    if (keyString == "SDLK_LSHIFT") return SDLK_LSHIFT;
+    if (keyString == "SDLK_RSHIFT") return SDLK_RSHIFT;
+    if (keyString == "SDLK_LCTRL") return SDLK_LCTRL;
+    if (keyString == "SDLK_RCTRL") return SDLK_RCTRL;
+    if (keyString == "SDLK_LALT") return SDLK_LALT;
+    if (keyString == "SDLK_RALT") return SDLK_RALT;
+    if (keyString == "SDLK_LGUI") return SDLK_LGUI;
+    if (keyString == "SDLK_RGUI") return SDLK_RGUI;
+    if (keyString == "SDLK_ENTER") return SDLK_RETURN;
+    if (keyString == "SDLK_RETURN") return SDLK_RETURN;
+    if (keyString == "SDLK_BACKSPACE") return SDLK_BACKSPACE;
+    if (keyString == "SDLK_DELETE") return SDLK_DELETE;
+    if (keyString == "SDLK_INSERT") return SDLK_INSERT;
+    if (keyString == "SDLK_HOME") return SDLK_HOME;
+    if (keyString == "SDLK_END") return SDLK_END;
+    if (keyString == "SDLK_PAGEUP") return SDLK_PAGEUP;
+    if (keyString == "SDLK_PAGEDOWN") return SDLK_PAGEDOWN;
+    if (keyString == "SDLK_PRINTSCREEN") return SDLK_PRINTSCREEN;
+    if (keyString == "SDLK_SCROLLLOCK") return SDLK_SCROLLLOCK;
+    if (keyString == "SDLK_PAUSE") return SDLK_PAUSE;
+    
+    // Teclas de dirección
+    if (keyString == "SDLK_UP") return SDLK_UP;
+    if (keyString == "SDLK_DOWN") return SDLK_DOWN;
+    if (keyString == "SDLK_LEFT") return SDLK_LEFT;
+    if (keyString == "SDLK_RIGHT") return SDLK_RIGHT;
+    
+    // Teclas de puntuación
+    if (keyString == "SDLK_SPACE") return SDLK_SPACE;
+    if (keyString == "SDLK_PERIOD") return SDLK_PERIOD;
+    if (keyString == "SDLK_COMMA") return SDLK_COMMA;
+    if (keyString == "SDLK_SEMICOLON") return SDLK_SEMICOLON;
+    if (keyString == "SDLK_COLON") return SDLK_COLON;
+    if (keyString == "SDLK_QUOTE") return SDLK_QUOTE;
+    if (keyString == "SDLK_QUOTEDBL") return SDLK_QUOTEDBL;
+    if (keyString == "SDLK_MINUS") return SDLK_MINUS;
+    if (keyString == "SDLK_PLUS") return SDLK_PLUS;
+    if (keyString == "SDLK_EQUALS") return SDLK_EQUALS;
+    if (keyString == "SDLK_SLASH") return SDLK_SLASH;
+    if (keyString == "SDLK_BACKSLASH") return SDLK_BACKSLASH;
+    if (keyString == "SDLK_BACKQUOTE") return SDLK_BACKQUOTE;
+    if (keyString == "SDLK_LEFTBRACKET") return SDLK_LEFTBRACKET;
+    if (keyString == "SDLK_RIGHTBRACKET") return SDLK_RIGHTBRACKET;
+    if (keyString == "SDLK_LEFTPAREN") return SDLK_LEFTPAREN;
+    if (keyString == "SDLK_RIGHTPAREN") return SDLK_RIGHTPAREN;
+    if (keyString == "SDLK_EXCLAIM") return SDLK_EXCLAIM;
+    if (keyString == "SDLK_QUESTION") return SDLK_QUESTION;
+    if (keyString == "SDLK_AT") return SDLK_AT;
+    if (keyString == "SDLK_HASH") return SDLK_HASH;
+    if (keyString == "SDLK_DOLLAR") return SDLK_DOLLAR;
+    if (keyString == "SDLK_PERCENT") return SDLK_PERCENT;
+    if (keyString == "SDLK_CARET") return SDLK_CARET;
+    if (keyString == "SDLK_AMPERSAND") return SDLK_AMPERSAND;
+    if (keyString == "SDLK_ASTERISK") return SDLK_ASTERISK;
+    if (keyString == "SDLK_UNDERSCORE") return SDLK_UNDERSCORE;
+    if (keyString == "SDLK_LESS") return SDLK_LESS;
+    if (keyString == "SDLK_GREATER") return SDLK_GREATER;
+    
+    // Teclas numéricas del teclado numérico
+    if (keyString == "SDLK_KP_0") return SDLK_KP_0;
+    if (keyString == "SDLK_KP_1") return SDLK_KP_1;
+    if (keyString == "SDLK_KP_2") return SDLK_KP_2;
+    if (keyString == "SDLK_KP_3") return SDLK_KP_3;
+    if (keyString == "SDLK_KP_4") return SDLK_KP_4;
+    if (keyString == "SDLK_KP_5") return SDLK_KP_5;
+    if (keyString == "SDLK_KP_6") return SDLK_KP_6;
+    if (keyString == "SDLK_KP_7") return SDLK_KP_7;
+    if (keyString == "SDLK_KP_8") return SDLK_KP_8;
+    if (keyString == "SDLK_KP_9") return SDLK_KP_9;
+    if (keyString == "SDLK_KP_PLUS") return SDLK_KP_PLUS;
+    if (keyString == "SDLK_KP_MINUS") return SDLK_KP_MINUS;
+    if (keyString == "SDLK_KP_MULTIPLY") return SDLK_KP_MULTIPLY;
+    if (keyString == "SDLK_KP_DIVIDE") return SDLK_KP_DIVIDE;
+    if (keyString == "SDLK_KP_ENTER") return SDLK_KP_ENTER;
+    if (keyString == "SDLK_KP_PERIOD") return SDLK_KP_PERIOD;
+    if (keyString == "SDLK_KP_EQUALS") return SDLK_KP_EQUALS;
+    if (keyString == "SDLK_KP_COMMA") return SDLK_KP_COMMA;
+    if (keyString == "SDLK_KP_EQUALSAS400") return SDLK_KP_EQUALSAS400;
+    
+    // Teclas multimedia
+    if (keyString == "SDLK_AUDIOPLAY") return SDLK_AUDIOPLAY;
+    if (keyString == "SDLK_AUDIOSTOP") return SDLK_AUDIOSTOP;
+    if (keyString == "SDLK_AUDIOPREV") return SDLK_AUDIOPREV;
+    if (keyString == "SDLK_AUDIONEXT") return SDLK_AUDIONEXT;
+    if (keyString == "SDLK_AUDIOMUTE") return SDLK_AUDIOMUTE;
+    if (keyString == "SDLK_VOLUMEUP") return SDLK_VOLUMEUP;
+    if (keyString == "SDLK_VOLUMEDOWN") return SDLK_VOLUMEDOWN;
+    if (keyString == "SDLK_MUTE") return SDLK_MUTE;
+    if (keyString == "SDLK_MEDIASELECT") return SDLK_MEDIASELECT;
+    
+    // Teclas de navegación web (AC = Application Control)
+    if (keyString == "SDLK_AC_BACK") return SDLK_AC_BACK;
+    if (keyString == "SDLK_AC_FORWARD") return SDLK_AC_FORWARD;
+    if (keyString == "SDLK_AC_REFRESH") return SDLK_AC_REFRESH;
+    if (keyString == "SDLK_AC_STOP") return SDLK_AC_STOP;
+    if (keyString == "SDLK_AC_SEARCH") return SDLK_AC_SEARCH;
+    if (keyString == "SDLK_AC_BOOKMARKS") return SDLK_AC_BOOKMARKS;
+    if (keyString == "SDLK_AC_HOME") return SDLK_AC_HOME;
+    
+    // Teclas de aplicación
+    if (keyString == "SDLK_APPLICATION") return SDLK_APPLICATION;
+    if (keyString == "SDLK_POWER") return SDLK_POWER;
+    if (keyString == "SDLK_EXECUTE") return SDLK_EXECUTE;
+    if (keyString == "SDLK_HELP") return SDLK_HELP;
+    if (keyString == "SDLK_MENU") return SDLK_MENU;
+    if (keyString == "SDLK_SELECT") return SDLK_SELECT;
+    if (keyString == "SDLK_STOP") return SDLK_STOP;
+    if (keyString == "SDLK_AGAIN") return SDLK_AGAIN;
+    if (keyString == "SDLK_UNDO") return SDLK_UNDO;
+    if (keyString == "SDLK_CUT") return SDLK_CUT;
+    if (keyString == "SDLK_COPY") return SDLK_COPY;
+    if (keyString == "SDLK_PASTE") return SDLK_PASTE;
+    if (keyString == "SDLK_FIND") return SDLK_FIND;
+    if (keyString == "SDLK_WWW") return SDLK_WWW;
+    if (keyString == "SDLK_MAIL") return SDLK_MAIL;
+    if (keyString == "SDLK_CALCULATOR") return SDLK_CALCULATOR;
+    if (keyString == "SDLK_COMPUTER") return SDLK_COMPUTER;
+    
+    // Teclas de función extendidas
+    if (keyString == "SDLK_F13") return SDLK_F13;
+    if (keyString == "SDLK_F14") return SDLK_F14;
+    if (keyString == "SDLK_F15") return SDLK_F15;
+    if (keyString == "SDLK_F16") return SDLK_F16;
+    if (keyString == "SDLK_F17") return SDLK_F17;
+    if (keyString == "SDLK_F18") return SDLK_F18;
+    if (keyString == "SDLK_F19") return SDLK_F19;
+    if (keyString == "SDLK_F20") return SDLK_F20;
+    if (keyString == "SDLK_F21") return SDLK_F21;
+    if (keyString == "SDLK_F22") return SDLK_F22;
+    if (keyString == "SDLK_F23") return SDLK_F23;
+    if (keyString == "SDLK_F24") return SDLK_F24;
+    
+    // Teclas adicionales del sistema
+    if (keyString == "SDLK_MODE") return SDLK_MODE;
+    if (keyString == "SDLK_BRIGHTNESSDOWN") return SDLK_BRIGHTNESSDOWN;
+    if (keyString == "SDLK_BRIGHTNESSUP") return SDLK_BRIGHTNESSUP;
+    if (keyString == "SDLK_DISPLAYSWITCH") return SDLK_DISPLAYSWITCH;
+    if (keyString == "SDLK_KBDILLUMTOGGLE") return SDLK_KBDILLUMTOGGLE;
+    if (keyString == "SDLK_KBDILLUMDOWN") return SDLK_KBDILLUMDOWN;
+    if (keyString == "SDLK_KBDILLUMUP") return SDLK_KBDILLUMUP;
+    if (keyString == "SDLK_EJECT") return SDLK_EJECT;
+    if (keyString == "SDLK_SLEEP") return SDLK_SLEEP;
+    
+    // Teclas de estado
+    if (keyString == "SDLK_NUMLOCKCLEAR") return SDLK_NUMLOCKCLEAR;
+    if (keyString == "SDLK_CLEAR") return SDLK_CLEAR;
+    if (keyString == "SDLK_KP_CLEAR") return SDLK_KP_CLEAR;
+    if (keyString == "SDLK_KP_CLEARENTRY") return SDLK_KP_CLEARENTRY;
+    if (keyString == "SDLK_KP_BINARY") return SDLK_KP_BINARY;
+    if (keyString == "SDLK_KP_OCTAL") return SDLK_KP_OCTAL;
+    if (keyString == "SDLK_KP_DECIMAL") return SDLK_KP_DECIMAL;
+    if (keyString == "SDLK_KP_HEXADECIMAL") return SDLK_KP_HEXADECIMAL;
+    
+    // Teclas de idioma (no disponibles en esta versión de SDL)
+    // SDLK_LANG1 a SDLK_LANG9 no están disponibles
+    
+    // Teclas de sistema
+    if (keyString == "SDLK_SYSREQ") return SDLK_SYSREQ;
+    if (keyString == "SDLK_CANCEL") return SDLK_CANCEL;
+    if (keyString == "SDLK_PRIOR") return SDLK_PRIOR;
+    if (keyString == "SDLK_RETURN2") return SDLK_RETURN2;
+    if (keyString == "SDLK_SEPARATOR") return SDLK_SEPARATOR;
+    if (keyString == "SDLK_OUT") return SDLK_OUT;
+    if (keyString == "SDLK_OPER") return SDLK_OPER;
+    if (keyString == "SDLK_CLEARAGAIN") return SDLK_CLEARAGAIN;
+    if (keyString == "SDLK_CRSEL") return SDLK_CRSEL;
+    if (keyString == "SDLK_EXSEL") return SDLK_EXSEL;
+    
+    // Teclas de calculadora
+    if (keyString == "SDLK_KP_00") return SDLK_KP_00;
+    if (keyString == "SDLK_KP_000") return SDLK_KP_000;
+    if (keyString == "SDLK_THOUSANDSSEPARATOR") return SDLK_THOUSANDSSEPARATOR;
+    if (keyString == "SDLK_DECIMALSEPARATOR") return SDLK_DECIMALSEPARATOR;
+    if (keyString == "SDLK_CURRENCYUNIT") return SDLK_CURRENCYUNIT;
+    if (keyString == "SDLK_CURRENCYSUBUNIT") return SDLK_CURRENCYSUBUNIT;
+    if (keyString == "SDLK_KP_LEFTPAREN") return SDLK_KP_LEFTPAREN;
+    if (keyString == "SDLK_KP_RIGHTPAREN") return SDLK_KP_RIGHTPAREN;
+    if (keyString == "SDLK_KP_LEFTBRACE") return SDLK_KP_LEFTBRACE;
+    if (keyString == "SDLK_KP_RIGHTBRACE") return SDLK_KP_RIGHTBRACE;
+    if (keyString == "SDLK_KP_TAB") return SDLK_KP_TAB;
+    if (keyString == "SDLK_KP_BACKSPACE") return SDLK_KP_BACKSPACE;
+    if (keyString == "SDLK_KP_A") return SDLK_KP_A;
+    if (keyString == "SDLK_KP_B") return SDLK_KP_B;
+    if (keyString == "SDLK_KP_C") return SDLK_KP_C;
+    if (keyString == "SDLK_KP_D") return SDLK_KP_D;
+    if (keyString == "SDLK_KP_E") return SDLK_KP_E;
+    if (keyString == "SDLK_KP_F") return SDLK_KP_F;
+    if (keyString == "SDLK_KP_XOR") return SDLK_KP_XOR;
+    if (keyString == "SDLK_KP_POWER") return SDLK_KP_POWER;
+    if (keyString == "SDLK_KP_PERCENT") return SDLK_KP_PERCENT;
+    if (keyString == "SDLK_KP_LESS") return SDLK_KP_LESS;
+    if (keyString == "SDLK_KP_GREATER") return SDLK_KP_GREATER;
+    if (keyString == "SDLK_KP_AMPERSAND") return SDLK_KP_AMPERSAND;
+    if (keyString == "SDLK_KP_DBLAMPERSAND") return SDLK_KP_DBLAMPERSAND;
+    if (keyString == "SDLK_KP_VERTICALBAR") return SDLK_KP_VERTICALBAR;
+    if (keyString == "SDLK_KP_DBLVERTICALBAR") return SDLK_KP_DBLVERTICALBAR;
+    if (keyString == "SDLK_KP_COLON") return SDLK_KP_COLON;
+    if (keyString == "SDLK_KP_HASH") return SDLK_KP_HASH;
+    if (keyString == "SDLK_KP_SPACE") return SDLK_KP_SPACE;
+    if (keyString == "SDLK_KP_AT") return SDLK_KP_AT;
+    if (keyString == "SDLK_KP_EXCLAM") return SDLK_KP_EXCLAM;
+    if (keyString == "SDLK_KP_MEMSTORE") return SDLK_KP_MEMSTORE;
+    if (keyString == "SDLK_KP_MEMRECALL") return SDLK_KP_MEMRECALL;
+    if (keyString == "SDLK_KP_MEMCLEAR") return SDLK_KP_MEMCLEAR;
+    if (keyString == "SDLK_KP_MEMADD") return SDLK_KP_MEMADD;
+    if (keyString == "SDLK_KP_MEMSUBTRACT") return SDLK_KP_MEMSUBTRACT;
+    if (keyString == "SDLK_KP_MEMMULTIPLY") return SDLK_KP_MEMMULTIPLY;
+    if (keyString == "SDLK_KP_MEMDIVIDE") return SDLK_KP_MEMDIVIDE;
+    if (keyString == "SDLK_KP_PLUSMINUS") return SDLK_KP_PLUSMINUS;
+    if (keyString == "SDLK_KP_CLEAR") return SDLK_KP_CLEAR;
+    if (keyString == "SDLK_KP_CLEARENTRY") return SDLK_KP_CLEARENTRY;
+    if (keyString == "SDLK_KP_BINARY") return SDLK_KP_BINARY;
+    if (keyString == "SDLK_KP_OCTAL") return SDLK_KP_OCTAL;
+    if (keyString == "SDLK_KP_DECIMAL") return SDLK_KP_DECIMAL;
+    if (keyString == "SDLK_KP_HEXADECIMAL") return SDLK_KP_HEXADECIMAL;
+    
+    std::cerr << "Unknown key: " << keyString << std::endl;
+    return SDLK_UNKNOWN;
+}
+
+MouseAxisType InputConfigLoader::stringToMouseAxis(const std::string& axisString) {
+    if (axisString == "X") return MouseAxisType::X;
+    if (axisString == "Y") return MouseAxisType::Y;
+    if (axisString == "ScrollWheel") return MouseAxisType::ScrollWheel;
+    
+    std::cerr << "Unknown mouse axis: " << axisString << std::endl;
+    return MouseAxisType::X;
+}
+
+Uint8 InputConfigLoader::stringToMouseButton(const std::string& buttonString) {
+    if (buttonString == "SDL_BUTTON_LEFT") return SDL_BUTTON_LEFT;
+    if (buttonString == "SDL_BUTTON_RIGHT") return SDL_BUTTON_RIGHT;
+    if (buttonString == "SDL_BUTTON_MIDDLE") return SDL_BUTTON_MIDDLE;
+    
+    std::cerr << "Unknown mouse button: " << buttonString << std::endl;
+    return SDL_BUTTON_LEFT;
+}
+
+InputType InputConfigLoader::stringToInputType(const std::string& typeString) {
+    if (typeString == "Vector2D") return InputType::Vector2D;
+    if (typeString == "Value") return InputType::Value;
+    if (typeString == "MouseAxis") return InputType::MouseAxis;
+    if (typeString == "MouseButton") return InputType::MouseButton;
+    if (typeString == "Button") return InputType::Button;
+    
+    std::cerr << "Unknown input type: " << typeString << std::endl;
+    return InputType::Button;
+}
+
+void InputConfigLoader::loadInputConfigFromJSON(const std::string& configPath) {
+    auto& inputSystem = InputSystem::getInstance();
+    
+    std::ifstream file(configPath);
+    if (!file.is_open()) {
+        std::cerr << "Failed to open input config file: " << configPath << std::endl;
+        return;
+    }
+    
+    try {
+        nlohmann::json config;
+        file >> config;
+        
+        for (const auto& actionConfig : config["input_actions"]) {
+            std::string name = actionConfig["name"];
+            std::string typeStr = actionConfig["type"];
+            
+            InputType type = stringToInputType(typeStr);
+            auto action = inputSystem.registerAction(name, type);
+            
+            if (actionConfig.contains("key_bindings")) {
+                for (const auto& binding : actionConfig["key_bindings"]) {
+                    SDL_Keycode key = stringToKeycode(binding["key"]);
+                    bool positive = binding.value("positive", true);
+                    int axis = binding.value("axis", 0);
+                    
+                    action->addKeyBinding(key, positive, axis);
+                }
+            }
+            
+            if (actionConfig.contains("mouse_axis")) {
+                MouseAxisType axis = stringToMouseAxis(actionConfig["mouse_axis"]);
+                action->addMouseAxisBinding(axis);
+            }
+            
+            if (actionConfig.contains("mouse_button")) {
+                Uint8 button = stringToMouseButton(actionConfig["mouse_button"]);
+                action->addMouseButtonBinding(button);
+            }
+        }
+        
+        std::cout << "Input configuration loaded from JSON: " << configPath << std::endl;
+        
+    } catch (const std::exception& e) {
+        std::cerr << "Error parsing input config JSON: " << e.what() << std::endl;
+    }
+} 
