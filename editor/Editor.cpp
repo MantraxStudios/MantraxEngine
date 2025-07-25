@@ -34,6 +34,7 @@
 #include <map>
 #include <signal.h>
 #include <exception>
+#include "Windows/RenderWindows.h"
 
 // ==== ImGui ====
 #include <imgui/imgui.h>
@@ -147,7 +148,12 @@ int main() {
     signal(SIGINT, signalHandler);
     signal(SIGTERM, signalHandler);
     
-    RenderConfig config(1200, 800, 65.0f);
+    // Initialize RenderConfig singleton
+    RenderConfig::initialize(1200, 800, 65.0f);
+    RenderConfig& config = RenderConfig::getInstance();
+    config.setAntialiasing(16);
+
+    RenderWindows* _WindowsRender = new RenderWindows();
     if (!config.initContext()) return -1;
 
     SDL_Window* window = config.getWindow();
@@ -317,220 +323,15 @@ int main() {
         
         // ==== ImGui Frame Begin ====
         ImGuiLoader::MakeFrame();
-        
-        // Viewport Window
-        ImGui::Begin("Viewport");
-        
-        Camera* camera = activeScene->getCamera();
-        if (camera) {
-            Framebuffer* cameraFramebuffer = camera->getFramebuffer();
-            bool framebufferEnabled = camera->isFramebufferEnabled();
-            
-            ImGui::Text("Framebuffer Status: %s", framebufferEnabled ? "ENABLED" : "DISABLED");
-            
-            if (cameraFramebuffer && framebufferEnabled) {
-                // Get the size of the viewport window content region
-                ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
-                
-                ImGui::Text("FB Size: %dx%d | Texture ID: %u", 
-                           cameraFramebuffer->getWidth(), 
-                           cameraFramebuffer->getHeight(),
-                           cameraFramebuffer->getColorTexture());
-                
-                // Resize camera framebuffer if needed
-                if (viewportPanelSize.x > 0 && viewportPanelSize.y > 0) {
-                    int newWidth = (int)viewportPanelSize.x;
-                    int newHeight = (int)viewportPanelSize.y;
-                    
-                    if (newWidth != cameraFramebuffer->getWidth() || newHeight != cameraFramebuffer->getHeight()) {
-                        camera->setFramebufferSize(newWidth, newHeight);
-                        cameraFramebuffer = camera->getFramebuffer(); // Refresh pointer after resize
-                    }
-                    
-                    if (cameraFramebuffer && cameraFramebuffer->getColorTexture() > 0) {
-                        // Display the camera framebuffer texture in ImGui
-                        ImGui::Image((void*)(intptr_t)cameraFramebuffer->getColorTexture(), 
-                                    ImVec2((float)cameraFramebuffer->getWidth(), (float)cameraFramebuffer->getHeight()),
-                                    ImVec2(0, 1), ImVec2(1, 0)); // Flip Y coordinate
-                    } else {
-                        ImGui::Text("Invalid framebuffer texture");
-                    }
-                }
-            } else if (!framebufferEnabled) {
-                ImGui::Text("Enable framebuffer to see viewport");
-            } else {
-                ImGui::Text("Framebuffer not available");
-            }
-        } else {
-            ImGui::Text("No camera available");
-        }
-        
-        ImGui::End();
 
-        // Object Counter Window
-        ImGui::Begin("Scene Info");
-        ImGui::Text("Objects: %zu", SceneManager::getInstance().getActiveScene()->getGameObjects().size());
-        ImGui::Text("Visible: %d/%d", pipeline.getVisibleObjectsCount(), pipeline.getTotalObjectsCount());
-        ImGui::Text("Scene: %s", activeScene->getName().c_str());
-        ImGui::Text("FPS: %.1f", Time::getFPS());
-        
-        ImGui::Separator();
-        ImGui::Text("UI System:");
-        ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "ImGui-based UI (always works)");
-        ImGui::Text("SDL Canvas disabled (caused flickering)");
-        
-        // ImGui-based UI Demo (always works)
-        ImGui::Separator();
-        ImGui::Text("ImGui UI Demo (Always Available):");
-        
-        static int buttonClickCount = 0;
-        static bool showExtraControls = false;
-        static float sliderValue = 0.5f;
-        static bool checkboxValue = false;
-        
-        if (ImGui::Button("Click Counter")) {
-            buttonClickCount++;
-        }
-        ImGui::SameLine();
-        ImGui::Text("Clicks: %d", buttonClickCount);
-        
-        if (ImGui::Button("Toggle Controls")) {
-            showExtraControls = !showExtraControls;
-        }
-        
-        if (showExtraControls) {
-            ImGui::Checkbox("Test Checkbox", &checkboxValue);
-            ImGui::SliderFloat("Test Slider", &sliderValue, 0.0f, 1.0f);
-            
-            if (checkboxValue) {
-                ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "Checkbox is ON! Slider: %.2f", sliderValue);
-            }
-        }
-        
-        ImGui::Separator();
-        ImGui::Text("RenderPipeline Resources:");
-        ImGui::Text("Models Cached: %zu", pipeline.getModelCacheSize());
-        if (ImGui::Button("List Resources")) {
-            pipeline.listLoadedModels();
-        }
-        ImGui::SameLine();
-        if (ImGui::Button("Clear Model Cache")) {
-            pipeline.clearModelCache();
-        }
-        
-        ImGui::Separator();
-        ImGui::Text("Camera Framebuffer:");
-        if (activeScene->getCamera()->isFramebufferEnabled()) {
-            Framebuffer* fb = activeScene->getCamera()->getFramebuffer();
-            if (fb) {
-                ImGui::Text("Size: %dx%d", fb->getWidth(), fb->getHeight());
-                ImGui::Text("Texture ID: %u", fb->getColorTexture());
-            }
-            
-            // Button to disable framebuffer
-            if (ImGui::Button("Disable Framebuffer")) {
-                activeScene->getCamera()->enableFramebuffer(false);
-            }
-        } else {
-            ImGui::Text("Framebuffer disabled");
-            // Button to enable framebuffer
-            if (ImGui::Button("Enable Framebuffer")) {
-                activeScene->getCamera()->enableFramebuffer(true);
-                activeScene->getCamera()->setFramebufferSize(800, 600);
-            }
-        }
-        ImGui::End();
+        //ImGui::Begin("Scene Info");
+        //ImGui::Text("Objects: %zu", SceneManager::getInstance().getActiveScene()->getGameObjects().size());
+        //ImGui::Text("Visible: %d/%d", pipeline.getVisibleObjectsCount(), pipeline.getTotalObjectsCount());
+        //ImGui::Text("Scene: %s", activeScene->getName().c_str());
+        //ImGui::Text("FPS: %.1f", Time::getFPS());
+        //ImGui::End();
 
-        // UI Overlay in Viewport (simulates Canvas UI)
-        if (showUIDemo) {
-            ImGui::Begin("Viewport UI Overlay");
-            
-            ImGui::SetWindowPos(ImVec2(60, 110), ImGuiCond_FirstUseEver);
-            ImGui::SetWindowSize(ImVec2(200, 150), ImGuiCond_FirstUseEver);
-            
-            ImGui::Text("🎮 UI Overlay Demo");
-            ImGui::Separator();
-            
-            static int overlayClicks = 0;
-            if (ImGui::Button("🔘 Canvas Button")) {
-                overlayClicks++;
-            }
-            ImGui::Text("Clicks: %d", overlayClicks);
-            
-            static float progress = 0.0f;
-            progress += 0.01f;
-            if (progress > 1.0f) progress = 0.0f;
-            ImGui::ProgressBar(progress, ImVec2(0.0f, 0.0f));
-            
-            static bool toggleState = false;
-            ImGui::Checkbox("🔲 Toggle Option", &toggleState);
-            
-            if (toggleState) {
-                ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "✓ Option Active!");
-            }
-            
-            ImGui::End();
-        }
-
-        // Standalone UI Demo Window (controlled by 'U' key)
-        if (showUIDemo) {
-            ImGui::Begin("UI System Demo", &showUIDemo);
-            
-            ImGui::Text("This UI works in all contexts:");
-            ImGui::BulletText("With framebuffer ON or OFF");
-            ImGui::BulletText("In any scene (Test, Textured, Model)");
-            ImGui::BulletText("Uses ImGui directly (no SDL/OpenGL conflicts)");
-            
-            ImGui::Separator();
-            
-            static int demoClickCount = 0;
-            static char textBuffer[256] = "Edit this text!";
-            static float colorValue[3] = {1.0f, 0.0f, 0.0f};
-            static bool enableEffect = true;
-            
-            ImGui::Text("Interactive Controls:");
-            
-            if (ImGui::Button("Demo Button")) {
-                demoClickCount++;
-            }
-            ImGui::SameLine();
-            ImGui::Text("Pressed %d times", demoClickCount);
-            
-            ImGui::InputText("Text Input", textBuffer, sizeof(textBuffer));
-            
-            ImGui::ColorEdit3("Color Picker", colorValue);
-            
-            ImGui::Checkbox("Enable Effect", &enableEffect);
-            
-            if (enableEffect) {
-                ImGui::TextColored(ImVec4(colorValue[0], colorValue[1], colorValue[2], 1.0f), 
-                                  "Effect Text: %s", textBuffer);
-            }
-            
-            ImGui::Separator();
-            ImGui::Text("System Status:");
-            ImGui::Text("UI Demo Window: %s", showUIDemo ? "ON" : "OFF");
-            ImGui::Text("Framebuffer: %s", (activeScene->getCamera() && activeScene->getCamera()->isFramebufferEnabled()) ? "ON" : "OFF");
-            ImGui::Text("Render Mode: %s", (activeScene->getCamera() && activeScene->getCamera()->isFramebufferEnabled()) ? "To Framebuffer" : "Direct to Screen");
-            
-            ImGui::Separator();
-            ImGui::Text("This UI works perfectly in viewport!");
-            if (activeScene->getCamera() && activeScene->getCamera()->isFramebufferEnabled()) {
-                ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "✓ UI visible in ImGui viewport");
-                ImGui::Text("The UI is rendered as part of ImGui,");
-                ImGui::Text("which works both in framebuffer and screen modes.");
-            } else {
-                ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "○ UI visible on main screen");
-                ImGui::Text("UI renders directly to the main window.");
-            }
-            
-            ImGui::Separator();
-            ImGui::TextColored(ImVec4(0.8f, 1.0f, 0.8f, 1.0f), "✓ No more flickering!");
-            ImGui::TextColored(ImVec4(0.8f, 1.0f, 0.8f, 1.0f), "✓ Works with framebuffer ON/OFF");
-            ImGui::TextColored(ImVec4(0.8f, 1.0f, 0.8f, 1.0f), "✓ Perfect ImGui integration");
-            
-            ImGui::End();
-        }
+        _WindowsRender->RenderUI();
 
         ImGuiLoader::SendToRender();
         SDL_GL_SwapWindow(window);
@@ -544,5 +345,9 @@ int main() {
     }
 
     ImGuiLoader::CleanEUI();
+    
+    // Clean up RenderConfig singleton
+    RenderConfig::destroy();
+    
     return 0;
 }

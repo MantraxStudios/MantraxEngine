@@ -136,6 +136,9 @@
   <ItemGroup>
     <ClCompile Include="editor\Editor.cpp" />
     <ClCompile Include="editor\EUI\ImGuiLoader.cpp" />
+    <ClCompile Include="editor\Windows\Hierarchy.cpp" />
+    <ClCompile Include="editor\Windows\RenderWindows.cpp" />
+    <ClCompile Include="editor\Windows\SceneView.cpp" />
     <ClCompile Include="vendors\includes\imgui\imgui.cpp" />
     <ClCompile Include="vendors\includes\imgui\imgui_demo.cpp" />
     <ClCompile Include="vendors\includes\imgui\imgui_draw.cpp" />
@@ -151,6 +154,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="editor\EUI\ImGuiLoader.h" />
+    <ClInclude Include="editor\EUI\ImGuiThemes.h" />
+    <ClInclude Include="editor\Windows\Hierarchy.h" />
+    <ClInclude Include="editor\Windows\RenderWindows.h" />
+    <ClInclude Include="editor\Windows\SceneView.h" />
+    <ClInclude Include="editor\Windows\WindowBehaviour.h" />
     <ClInclude Include="vendors\includes\imgui\imconfig.h" />
     <ClInclude Include="vendors\includes\imgui\imgui.h" />
     <ClInclude Include="vendors\includes\imgui\imgui_impl_opengl3.h" />

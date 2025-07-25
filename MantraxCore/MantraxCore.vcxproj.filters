@@ -114,6 +114,9 @@
     <ClCompile Include="..\src\ui\UIManager.cpp">
       <Filter>03_UI</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\core\UIDGenerator.cpp">
+      <Filter>01_Natives\Timer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\core\CoreExporter.h">
@@ -209,6 +212,9 @@
     </ClInclude>
     <ClInclude Include="..\src\ui\UIManager.h">
       <Filter>03_UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\UIDGenerator.h">
+      <Filter>01_Natives\Timer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

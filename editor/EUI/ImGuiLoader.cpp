@@ -1,4 +1,5 @@
 #include "ImGuiLoader.h"
+#include "ImGuiThemes.h" 
 
 void ImGuiLoader::StartContext (SDL_Window* _Window, SDL_GLContext _Context) {
     IMGUI_CHECKVERSION();
@@ -8,7 +9,7 @@ void ImGuiLoader::StartContext (SDL_Window* _Window, SDL_GLContext _Context) {
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
-    ImGui::StyleColorsDark();
+    ImGuiThemes::setProfessionalTheme();
     
     ImGui_ImplSDL2_InitForOpenGL(_Window, _Context);
     ImGui_ImplOpenGL3_Init("#version 130");

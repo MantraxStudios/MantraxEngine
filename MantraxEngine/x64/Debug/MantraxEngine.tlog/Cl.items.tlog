@@ -1,5 +1,8 @@
 C:\Users\tupap\source\repos\MantraxEngine\editor\Editor.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxEngine\x64\Debug\Editor.obj
 C:\Users\tupap\source\repos\MantraxEngine\editor\EUI\ImGuiLoader.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxEngine\x64\Debug\ImGuiLoader.obj
+C:\Users\tupap\source\repos\MantraxEngine\editor\Windows\Hierarchy.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxEngine\x64\Debug\Hierarchy.obj
+C:\Users\tupap\source\repos\MantraxEngine\editor\Windows\RenderWindows.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxEngine\x64\Debug\RenderWindows.obj
+C:\Users\tupap\source\repos\MantraxEngine\editor\Windows\SceneView.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxEngine\x64\Debug\SceneView.obj
 C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\imgui\imgui.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxEngine\x64\Debug\imgui.obj
 C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\imgui\imgui_demo.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxEngine\x64\Debug\imgui_demo.obj
 C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\imgui\imgui_draw.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxEngine\x64\Debug\imgui_draw.obj

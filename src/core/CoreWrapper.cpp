@@ -18,8 +18,9 @@ CoreWrapper::~CoreWrapper() {
 }
 
 bool CoreWrapper::Initialize(int width, int height, float fov) {
-    // Initialize render config
-    m_config = std::make_unique<RenderConfig>(width, height, fov);
+    // Initialize render config singleton
+    RenderConfig::initialize(width, height, fov);
+    m_config = &RenderConfig::getInstance();
     if (!m_config->initContext()) return false;
 
     // Initialize shaders
@@ -220,5 +221,6 @@ void CoreWrapper::Update() {
 void CoreWrapper::Shutdown() {
     m_pipeline.reset();
     m_shaders.reset();
-    m_config.reset();
+    // m_config is now a raw pointer to singleton, no need to reset
+    m_config = nullptr;
 }

@@ -32,7 +32,7 @@ extern "C" {
         
         bool m_running;
         bool m_mouseCaptured;
-        std::unique_ptr<RenderConfig> m_config;
+        RenderConfig* m_config;
         std::unique_ptr<DefaultShaders> m_shaders;
         std::unique_ptr<RenderPipeline> m_pipeline;
         Scene* m_activeScene;

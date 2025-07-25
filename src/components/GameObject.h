@@ -11,6 +11,7 @@
 #include "../render/Frustum.h"
 #include "Component.h"
 #include "../core/CoreExporter.h"
+#include "../core/UIDGenerator.h"
 
 // Forward declaration
 class AssimpGeometry;
@@ -83,9 +84,9 @@ public:
         return nullptr;
     }
 
-private:
     std::string Name = "New Object";
     std::string Tag = "Default";
+    std::string ObjectID = std::to_string(UIDGenerator::Generate());
     NativeGeometry *geometry;
     std::shared_ptr<NativeGeometry> sharedGeometry; // Para mantener referencia de modelos cargados
     std::shared_ptr<Material> material;
@@ -101,6 +102,7 @@ private:
     mutable BoundingSphere cachedWorldBoundingSphere;
     mutable bool worldBoundingSphereDirty;
     
+private:
     void updateModelMatrix();
 
     std::vector<std::unique_ptr<Component>> components;

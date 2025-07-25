@@ -31,6 +31,15 @@
     <ClCompile Include="editor\EUI\ImGuiLoader.cpp">
       <Filter>01_Main\EUI</Filter>
     </ClCompile>
+    <ClCompile Include="editor\Windows\Hierarchy.cpp">
+      <Filter>01_Main\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\Windows\RenderWindows.cpp">
+      <Filter>01_Main\Windows\Behaviour</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\Windows\SceneView.cpp">
+      <Filter>01_Main\Windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Vendors">
@@ -44,6 +53,12 @@
     </Filter>
     <Filter Include="01_Main\EUI">
       <UniqueIdentifier>{2243fc2d-e04f-4f4c-a55a-6739780b9c60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01_Main\Windows">
+      <UniqueIdentifier>{eaec4594-12c3-4652-bf81-b3f08f8cb8fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01_Main\Windows\Behaviour">
+      <UniqueIdentifier>{ff20efec-90cb-4303-a6c2-b27a31b117cd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -76,6 +91,21 @@
     </ClInclude>
     <ClInclude Include="editor\EUI\ImGuiLoader.h">
       <Filter>01_Main\EUI</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\EUI\ImGuiThemes.h">
+      <Filter>01_Main\EUI</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\Windows\WindowBehaviour.h">
+      <Filter>01_Main\Windows\Behaviour</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\Windows\Hierarchy.h">
+      <Filter>01_Main\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\Windows\RenderWindows.h">
+      <Filter>01_Main\Windows\Behaviour</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\Windows\SceneView.h">
+      <Filter>01_Main\Windows</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
