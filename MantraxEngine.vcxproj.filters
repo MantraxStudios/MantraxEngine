@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="vendors\includes\imgui\imgui.cpp">
+      <Filter>Vendors\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="vendors\includes\imgui\imgui_demo.cpp">
+      <Filter>Vendors\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="vendors\includes\imgui\imgui_draw.cpp">
+      <Filter>Vendors\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="vendors\includes\imgui\imgui_impl_opengl3.cpp">
+      <Filter>Vendors\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="vendors\includes\imgui\imgui_impl_sdl2.cpp">
+      <Filter>Vendors\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="vendors\includes\imgui\imgui_tables.cpp">
+      <Filter>Vendors\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="vendors\includes\imgui\imgui_widgets.cpp">
+      <Filter>Vendors\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\Editor.cpp">
+      <Filter>01_Main</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\EUI\ImGuiLoader.cpp">
+      <Filter>01_Main\EUI</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Vendors">
+      <UniqueIdentifier>{6943e906-75bf-4aab-8e03-0e0b9e5ae302}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Vendors\Imgui">
+      <UniqueIdentifier>{b3cf7c9f-5486-4a17-be1f-32ba292e43df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01_Main">
+      <UniqueIdentifier>{9c2a8ff2-9ff7-401d-bcc9-c0eabdcd29dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01_Main\EUI">
+      <UniqueIdentifier>{2243fc2d-e04f-4f4c-a55a-6739780b9c60}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="vendors\includes\imgui\imconfig.h">
+      <Filter>Vendors\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="vendors\includes\imgui\imgui.h">
+      <Filter>Vendors\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="vendors\includes\imgui\imgui_impl_opengl3.h">
+      <Filter>Vendors\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="vendors\includes\imgui\imgui_impl_opengl3_loader.h">
+      <Filter>Vendors\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="vendors\includes\imgui\imgui_impl_sdl2.h">
+      <Filter>Vendors\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="vendors\includes\imgui\imgui_internal.h">
+      <Filter>Vendors\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="vendors\includes\imgui\imstb_rectpack.h">
+      <Filter>Vendors\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="vendors\includes\imgui\imstb_textedit.h">
+      <Filter>Vendors\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="vendors\includes\imgui\imstb_truetype.h">
+      <Filter>Vendors\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\EUI\ImGuiLoader.h">
+      <Filter>01_Main\EUI</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

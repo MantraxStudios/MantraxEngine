@@ -1,0 +1,217 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="00_Mains">
+      <UniqueIdentifier>{49638994-898c-467c-ab29-e7e21d963e09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01_Natives">
+      <UniqueIdentifier>{20fb26e5-28bb-4ce8-8fb4-a2db6b707a26}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01_Natives\Shaders">
+      <UniqueIdentifier>{7b9b0fff-aeb3-497c-a984-0dc58f944e51}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01_Natives\Geometry">
+      <UniqueIdentifier>{4257843c-f869-446f-9c5d-1af9de82d5ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01_Natives\Render">
+      <UniqueIdentifier>{ce5f9762-13cb-4bda-8ad2-5ee3e2c7acef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01_Natives\Components">
+      <UniqueIdentifier>{17f38960-1fbc-4125-b34d-9c71bb2d81b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01_Natives\Timer">
+      <UniqueIdentifier>{f5af6c17-b584-44fd-b9c4-6db1b73a7a97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02_Scene">
+      <UniqueIdentifier>{a43b6697-45aa-42a3-961d-9894f8181717}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02_Scene\Scenes">
+      <UniqueIdentifier>{cf01aa01-af0c-4395-80aa-10b80c247e8b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03_UI">
+      <UniqueIdentifier>{b5af6c17-b584-44fd-b9c4-6db1b73a7a99}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03_UI\Elements">
+      <UniqueIdentifier>{c6af6c17-b584-44fd-b9c4-6db1b73a7a01}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\main\MantraxEngine.cpp">
+      <Filter>00_Mains</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\render\DefaultShaders.cpp">
+      <Filter>01_Natives\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\render\AssimpGeometry.cpp">
+      <Filter>01_Natives\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\render\Camera.cpp">
+      <Filter>01_Natives\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\render\Frustum.cpp">
+      <Filter>01_Natives\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\render\RenderConfig.cpp">
+      <Filter>01_Natives\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\render\RenderPipeline.cpp">
+      <Filter>01_Natives\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\render\Light.cpp">
+      <Filter>01_Natives\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\render\Material.cpp">
+      <Filter>01_Natives\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\render\ModelLoader.cpp">
+      <Filter>01_Natives\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\render\NativeGeometry.cpp">
+      <Filter>01_Natives\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\render\Texture.cpp">
+      <Filter>01_Natives\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\render\Framebuffer.cpp">
+      <Filter>01_Natives\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\components\GameObject.cpp">
+      <Filter>01_Natives\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\components\ModelScene.cpp">
+      <Filter>02_Scene\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\components\SceneManager.cpp">
+      <Filter>02_Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\components\TexturedScene.cpp">
+      <Filter>02_Scene\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\components\TestScene.cpp">
+      <Filter>02_Scene\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\CoreWrapper.cpp">
+      <Filter>00_Mains</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ui\UIElement.cpp">
+      <Filter>03_UI\Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ui\Button.cpp">
+      <Filter>03_UI\Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ui\Text.cpp">
+      <Filter>03_UI\Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ui\Image.cpp">
+      <Filter>03_UI\Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ui\Canvas.cpp">
+      <Filter>03_UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ui\UIDemo.cpp">
+      <Filter>03_UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ui\UIManager.cpp">
+      <Filter>03_UI</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\core\CoreExporter.h">
+      <Filter>00_Mains</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\render\DefaultShaders.h">
+      <Filter>01_Natives\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\render\AssimpGeometry.h">
+      <Filter>01_Natives\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\render\NativeGeometry.h">
+      <Filter>01_Natives\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\render\ModelLoader.h">
+      <Filter>01_Natives\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\render\Camera.h">
+      <Filter>01_Natives\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\render\Frustum.h">
+      <Filter>01_Natives\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\render\RenderConfig.h">
+      <Filter>01_Natives\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\render\RenderPipeline.h">
+      <Filter>01_Natives\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\render\Light.h">
+      <Filter>01_Natives\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\render\Material.h">
+      <Filter>01_Natives\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\render\Texture.h">
+      <Filter>01_Natives\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\render\Framebuffer.h">
+      <Filter>01_Natives\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\components\Component.h">
+      <Filter>01_Natives\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\components\GameObject.h">
+      <Filter>01_Natives\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\components\ModelScene.h">
+      <Filter>02_Scene\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\input\InputSystem.h">
+      <Filter>01_Natives\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\input\InputAction.h">
+      <Filter>01_Natives\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\Time.h">
+      <Filter>01_Natives\Timer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\components\SceneManager.h">
+      <Filter>02_Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\components\Scene.h">
+      <Filter>02_Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\components\TexturedScene.h">
+      <Filter>02_Scene\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\components\TestScene.h">
+      <Filter>02_Scene\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\vendors\includes\stb_image.h" />
+    <ClInclude Include="..\src\core\CoreWrapper.h">
+      <Filter>00_Mains</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ui\UIElement.h">
+      <Filter>03_UI\Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ui\Button.h">
+      <Filter>03_UI\Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ui\Text.h">
+      <Filter>03_UI\Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ui\Image.h">
+      <Filter>03_UI\Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ui\Canvas.h">
+      <Filter>03_UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ui\UIDemo.h">
+      <Filter>03_UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ui\UIManager.h">
+      <Filter>03_UI</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+</Project>
