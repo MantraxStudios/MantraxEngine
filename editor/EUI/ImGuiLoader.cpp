@@ -6,6 +6,7 @@ void ImGuiLoader::StartContext (SDL_Window* _Window, SDL_GLContext _Context) {
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
     ImGui::StyleColorsDark();
     
@@ -21,6 +22,8 @@ void ImGuiLoader::MakeFrame() {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplSDL2_NewFrame();
     ImGui::NewFrame();
+
+    ImGui::DockSpaceOverViewport();
 }
 
 void ImGuiLoader::SendToRender() {
