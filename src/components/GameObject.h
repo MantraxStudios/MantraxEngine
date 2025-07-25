@@ -36,7 +36,8 @@ public:
     GameObject(GameObject&&) noexcept = default;
     GameObject& operator=(GameObject&&) noexcept = default;
 
-    // Transform
+    // ===== TRANSFORM SYSTEM =====
+    // Local Transform (relative to parent)
     void setLocalPosition(const glm::vec3 &pos);
     void setLocalScale(const glm::vec3 &scl);
     void setLocalRotationEuler(const glm::vec3 &eulerDeg);
@@ -47,7 +48,46 @@ public:
     glm::quat getLocalRotationQuat() const;
     glm::vec3 getLocalRotationEuler() const;
 
-    glm::mat4 getModelMatrix();
+    // World Transform (absolute in world space)
+    void setWorldPosition(const glm::vec3 &pos);
+    void setWorldScale(const glm::vec3 &scl);
+    void setWorldRotationEuler(const glm::vec3 &eulerDeg);
+    void setWorldRotationQuat(const glm::quat &quat);
+
+    glm::vec3 getWorldPosition() const;
+    glm::vec3 getWorldScale() const;
+    glm::quat getWorldRotationQuat() const;
+    glm::vec3 getWorldRotationEuler() const;
+
+    // Matrix operations
+    glm::mat4 getLocalModelMatrix();
+    glm::mat4 getWorldModelMatrix();
+    glm::mat4 getWorldToLocalMatrix() const;
+
+    // ===== HIERARCHY SYSTEM =====
+    // Parent operations
+    void setParent(GameObject* newParent);
+    GameObject* getParent() const { return parent; }
+    bool hasParent() const { return parent != nullptr; }
+    
+    // Child operations
+    void addChild(GameObject* child);
+    void removeChild(GameObject* child);
+    const std::vector<GameObject*>& getChildren() const { return children; }
+    int getChildCount() const { return static_cast<int>(children.size()); }
+    GameObject* getChild(int index) const;
+    
+    // Hierarchy traversal
+    GameObject* findChild(const std::string& name) const;
+    GameObject* findChildRecursive(const std::string& name) const;
+    std::vector<GameObject*> getAllChildren() const;
+    
+    // Hierarchy validation
+    bool isChildOf(const GameObject* potentialParent) const;
+    bool isParentOf(const GameObject* potentialChild) const;
+    bool isInHierarchy(const GameObject* root) const;
+
+    // ===== EXISTING FUNCTIONALITY =====
     NativeGeometry *getGeometry() const;
     
     // Material
@@ -90,11 +130,19 @@ public:
     NativeGeometry *geometry;
     std::shared_ptr<NativeGeometry> sharedGeometry; // Para mantener referencia de modelos cargados
     std::shared_ptr<Material> material;
+    
+    // Transform data
     glm::vec3 localPosition;
     glm::vec3 localScale;
     glm::quat localRotation;
-    glm::mat4 modelMatrix;
-    bool dirtyTransform;
+    glm::mat4 localModelMatrix;
+    glm::mat4 worldModelMatrix;
+    bool dirtyLocalTransform;
+    bool dirtyWorldTransform;
+    
+    // Hierarchy data
+    GameObject* parent;
+    std::vector<GameObject*> children;
     
     // Bounding volumes (OPTIMIZADO)
     BoundingBox localBoundingBox;
@@ -103,7 +151,12 @@ public:
     mutable bool worldBoundingSphereDirty;
     
 private:
-    void updateModelMatrix();
+    void updateLocalModelMatrix();
+    void updateWorldModelMatrix();
+    void updateChildrenTransforms();
+    void removeFromParent();
+    void addToParent(GameObject* newParent);
+    void invalidateWorldTransform();
 
     std::vector<std::unique_ptr<Component>> components;
 };

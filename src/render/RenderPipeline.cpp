@@ -238,7 +238,7 @@ void RenderPipeline::renderInstanced() {
             modelMatrices.reserve(objects.size());
             
             for (GameObject* obj : objects) {
-                modelMatrices.push_back(obj->getModelMatrix());
+                modelMatrices.push_back(obj->getWorldModelMatrix());
             }
             
             geometry->updateInstanceBuffer(modelMatrices);
@@ -246,7 +246,7 @@ void RenderPipeline::renderInstanced() {
         } else {
             // Renderizar individualmente si solo hay un objeto
             GameObject* obj = objects[0];
-            glm::mat4 model = obj->getModelMatrix();
+            glm::mat4 model = obj->getWorldModelMatrix();
             
             std::vector<glm::mat4> singleInstance = { model };
             geometry->updateInstanceBuffer(singleInstance);
@@ -309,7 +309,7 @@ void RenderPipeline::configureDefaultMaterial() {
 void RenderPipeline::renderNonInstanced() {
     // Método de respaldo para renderizado no instanciado (mantenido por compatibilidad)
     for (GameObject* obj : sceneObjects) {
-        glm::mat4 model = obj->getModelMatrix();
+        glm::mat4 model = obj->getWorldModelMatrix();
         glUniformMatrix4fv(glGetUniformLocation(shaders->getProgram(), "model"), 1, GL_FALSE, glm::value_ptr(model));
         obj->getGeometry()->draw();
     }

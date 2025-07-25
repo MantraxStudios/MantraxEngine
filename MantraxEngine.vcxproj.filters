@@ -40,6 +40,21 @@
     <ClCompile Include="editor\Windows\SceneView.cpp">
       <Filter>01_Main\Windows</Filter>
     </ClCompile>
+    <ClCompile Include="editor\Windows\Inspector.cpp">
+      <Filter>01_Main\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\Windows\Selection.cpp">
+      <Filter>01_Main\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\Windows\Gizmos.cpp">
+      <Filter>01_Main\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="vendors\includes\imgui\ImGuizmo.cpp">
+      <Filter>Vendors\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\EUI\EditorInfo.cpp">
+      <Filter>01_Main\EUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Vendors">
@@ -59,6 +74,9 @@
     </Filter>
     <Filter Include="01_Main\Windows\Behaviour">
       <UniqueIdentifier>{ff20efec-90cb-4303-a6c2-b27a31b117cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01_Main\Editor">
+      <UniqueIdentifier>{118c0b58-2ace-4f94-9020-e0fceee3719e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -106,6 +124,21 @@
     </ClInclude>
     <ClInclude Include="editor\Windows\SceneView.h">
       <Filter>01_Main\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\Windows\Inspector.h">
+      <Filter>01_Main\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\Windows\Selection.h">
+      <Filter>01_Main\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\Windows\Gizmos.h">
+      <Filter>01_Main\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="vendors\includes\imgui\ImGuizmo.h">
+      <Filter>Vendors\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\EUI\EditorInfo.h">
+      <Filter>01_Main\EUI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

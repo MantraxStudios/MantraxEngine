@@ -1,4 +1,5 @@
 #define SDL_MAIN_HANDLED
+#define GLM_ENABLE_EXPERIMENTAL
 
 #include "EUI/ImGuiLoader.h"
 #include <SDL.h>
@@ -40,6 +41,7 @@
 #include <imgui/imgui.h>
 #include <imgui/imgui_impl_sdl2.h>
 #include <imgui/imgui_impl_opengl3.h>
+#include "Windows/Selection.h"
 
 // Variable global para manejo seguro del cierre
 volatile bool g_running = true;
@@ -119,6 +121,7 @@ void setupInputSystem(Scene* activeScene) {
     switchToScene1->addKeyBinding(SDLK_1);
     switchToScene1->bindButtonCallback([](bool pressed) {
         if (pressed) {
+            Selection::GameObjectSelect = nullptr;
             auto& sceneManager = SceneManager::getInstance();
             sceneManager.setActiveScene("TestScene");
         }
@@ -128,6 +131,7 @@ void setupInputSystem(Scene* activeScene) {
     switchToScene2->addKeyBinding(SDLK_2);
     switchToScene2->bindButtonCallback([](bool pressed) {
         if (pressed) {
+            Selection::GameObjectSelect = nullptr;
             auto& sceneManager = SceneManager::getInstance();
             sceneManager.setActiveScene("TexturedScene");
         }
@@ -137,6 +141,7 @@ void setupInputSystem(Scene* activeScene) {
     switchToScene3->addKeyBinding(SDLK_3);
     switchToScene3->bindButtonCallback([](bool pressed) {
         if (pressed) {
+            Selection::GameObjectSelect = nullptr;
             auto& sceneManager = SceneManager::getInstance();
             sceneManager.setActiveScene("ModelScene");
         }
