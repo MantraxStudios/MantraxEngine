@@ -205,12 +205,12 @@ void setupInputSystem(Scene* activeScene) {
 
 ## Ventajas
 
-- ✅ Separación clara entre core y editor
-- ✅ Configuración sin recompilar
-- ✅ Fácil personalización
-- ✅ Reutilizable en diferentes proyectos
-- ✅ Callbacks específicos por aplicación
-- ✅ Manejo de errores robusto
+- [ ] Separación clara entre core y editor
+- [ ] Configuración sin recompilar
+- [ ] Fácil personalización
+- [ ] Reutilizable en diferentes proyectos
+- [ ] Callbacks específicos por aplicación
+- [ ] Manejo de errores robusto
 
 ## Flujo de Trabajo
 

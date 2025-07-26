@@ -13,4 +13,5 @@ class SceneView : public WindowBehaviour
 public:
 	glm::vec2 WorldPoint;
 	void OnRenderGUI() override;
+	static bool mouseCaptured;
 };

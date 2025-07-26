@@ -56,7 +56,7 @@ bool CoreWrapper::Initialize(int width, int height, float fov) {
 
     // Print controls
     std::cout << "\n=== CONTROLES ===" << std::endl;
-    std::cout << "WASD: Mover cámara | Espacio/Shift: Subir/Bajar" << std::endl;
+    std::cout << "WASD: Mover camara | Espacio/Shift: Subir/Bajar" << std::endl;
     std::cout << "Mouse: Mirar | Click Derecho: Capturar Mouse" << std::endl;
     std::cout << "1: Escena de Test | 2: Escena con Texturas" << std::endl;
     std::cout << "Escape: Liberar Mouse" << std::endl;

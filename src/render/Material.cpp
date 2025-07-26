@@ -213,7 +213,7 @@ void Material::applyAutoConfiguration(const std::string& materialType) {
         setTiling(glm::vec2(2.0f, 2.0f));
         setNormalStrength(3.5f);
         setEmissive(glm::vec3(0.0f));
-        std::cout << "✓ Auto-configurado como Diamond Plate: " << name << std::endl;
+        std::cout << "[OK] Auto-configurado como Diamond Plate: " << name << std::endl;
         
     } else if (materialType == "Metal") {
         // Configuración para metal genérico
@@ -223,7 +223,7 @@ void Material::applyAutoConfiguration(const std::string& materialType) {
         setTiling(glm::vec2(1.0f, 1.0f));
         setNormalStrength(1.5f);
         setEmissive(glm::vec3(0.0f));
-        std::cout << "✓ Auto-configurado como Metal: " << name << std::endl;
+        std::cout << "[OK] Auto-configurado como Metal: " << name << std::endl;
         
     } else if (materialType == "Fabric") {
         // Configuración para telas
@@ -233,7 +233,7 @@ void Material::applyAutoConfiguration(const std::string& materialType) {
         setTiling(glm::vec2(1.0f, 1.0f));
         setNormalStrength(1.0f);
         setEmissive(glm::vec3(0.0f));
-        std::cout << "✓ Auto-configurado como Fabric: " << name << std::endl;
+        std::cout << "[OK] Auto-configurado como Fabric: " << name << std::endl;
         
     } else if (materialType == "Wood") {
         // Configuración para madera
@@ -243,7 +243,7 @@ void Material::applyAutoConfiguration(const std::string& materialType) {
         setTiling(glm::vec2(1.0f, 1.0f));
         setNormalStrength(1.2f);
         setEmissive(glm::vec3(0.0f));
-        std::cout << "✓ Auto-configurado como Wood: " << name << std::endl;
+        std::cout << "[OK] Auto-configurado como Wood: " << name << std::endl;
         
     } else if (materialType == "Stone") {
         // Configuración para piedra/concreto
@@ -253,7 +253,7 @@ void Material::applyAutoConfiguration(const std::string& materialType) {
         setTiling(glm::vec2(1.0f, 1.0f));
         setNormalStrength(2.0f);
         setEmissive(glm::vec3(0.0f));
-        std::cout << "✓ Auto-configurado como Stone: " << name << std::endl;
+        std::cout << "[OK] Auto-configurado como Stone: " << name << std::endl;
         
     } else if (materialType == "Plastic") {
         // Configuración para plástico
@@ -263,7 +263,7 @@ void Material::applyAutoConfiguration(const std::string& materialType) {
         setTiling(glm::vec2(1.0f, 1.0f));
         setNormalStrength(0.5f);
         setEmissive(glm::vec3(0.0f));
-        std::cout << "✓ Auto-configurado como Plastic: " << name << std::endl;
+        std::cout << "[OK] Auto-configurado como Plastic: " << name << std::endl;
         
     } else if (materialType == "FullPBR") {
         // Material PBR completo - configuración balanceada
@@ -273,7 +273,7 @@ void Material::applyAutoConfiguration(const std::string& materialType) {
         setTiling(glm::vec2(1.0f, 1.0f));
         setNormalStrength(2.0f);
         setEmissive(glm::vec3(0.0f));
-        std::cout << "✓ Auto-configurado como Full PBR: " << name << std::endl;
+        std::cout << "[OK] Auto-configurado como Full PBR: " << name << std::endl;
         
     } else if (materialType == "Rough") {
         // Material rugoso
@@ -283,7 +283,7 @@ void Material::applyAutoConfiguration(const std::string& materialType) {
         setTiling(glm::vec2(1.0f, 1.0f));
         setNormalStrength(2.0f);
         setEmissive(glm::vec3(0.0f));
-        std::cout << "✓ Auto-configurado como Rough: " << name << std::endl;
+        std::cout << "[OK] Auto-configurado como Rough: " << name << std::endl;
         
     } else { // Basic
         // Configuración básica por defecto
@@ -293,7 +293,7 @@ void Material::applyAutoConfiguration(const std::string& materialType) {
         setTiling(glm::vec2(1.0f, 1.0f));
         setNormalStrength(1.0f);
         setEmissive(glm::vec3(0.0f));
-        std::cout << "✓ Auto-configurado como Basic: " << name << std::endl;
+        std::cout << "[OK] Auto-configurado como Basic: " << name << std::endl;
     }
 }
 

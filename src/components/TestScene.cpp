@@ -34,7 +34,7 @@ void TestScene::initialize() {
         return;
     }
 
-    // Crear objetos básicos sin geometría (objetos vacíos)
+    // Crear objetos basicos sin geometria (objetos vacios)
     auto* redCube = new GameObject();
     redCube->Name = "RedCube";
     redCube->setLocalPosition({ -2.0f, 0.0f, 0.0f });
@@ -53,23 +53,23 @@ void TestScene::initialize() {
     greenCube->setMaterial(greenMaterial);
     addGameObject(greenCube);
 
-    // Ejemplo de GameObject vacío (sin geometría) - no se renderiza
+    // Ejemplo de GameObject vacio (sin geometria) - no se renderiza
     auto* emptyObject = new GameObject();
     emptyObject->Name = "EmptyObject";
     emptyObject->setLocalPosition({ 0.0f, 3.0f, 0.0f });
     emptyObject->setLocalScale({ 2.0f, 2.0f, 2.0f });
     addGameObject(emptyObject);
     
-    // Ejemplo de GameObject que recibe geometría después de la creación
+    // Ejemplo de GameObject que recibe geometria despues de la creacion
     auto* delayedGeometryObject = new GameObject();
     delayedGeometryObject->Name = "DelayedGeometryObject";
     delayedGeometryObject->setLocalPosition({ 4.0f, 0.0f, 0.0f });
-    // Nota: Sin geometría por defecto, se puede cargar un modelo después
+    // Nota: Sin geometria por defecto, se puede cargar un modelo despues
     delayedGeometryObject->setMaterial(redMaterial);
     addGameObject(delayedGeometryObject);
 
-    // Ejemplo de GameObject con carga automática de modelo desde path
-    // Nota: Este objeto intentará cargar "models/cube.obj" pero si no existe, quedará vacío
+    // Ejemplo de GameObject con carga automatica de modelo desde path
+    // Nota: Este objeto intentara cargar "models/cube.obj" pero si no existe, quedara vacio
     auto* autoLoadObject = new GameObject("models/cube.obj");
     autoLoadObject->Name = "AutoLoadObject";
     autoLoadObject->setLocalPosition({ 6.0f, 0.0f, 0.0f });

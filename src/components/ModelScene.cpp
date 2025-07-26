@@ -9,7 +9,7 @@
 #include <cstdlib>
 
 void ModelScene::initialize() {
-    std::cout << "🚀 ModelScene::initialize() called - Creating massive scene with 5000+ objects" << std::endl;
+    std::cout << "[START] ModelScene::initialize() called - Creating massive scene with 5000+ objects" << std::endl;
     
     // Create camera
     auto newCamera = std::make_unique<Camera>(45.0f, 1200.0f / 800.0f, 0.1f, 1000.0f);
@@ -51,9 +51,9 @@ void ModelScene::initialize() {
             // Solo agregar si se cargó correctamente
             if (carModel->hasGeometry()) {
                 addGameObject(carModel);
-                std::cout << "✅ Car model loaded and added to scene" << std::endl;
+                std::cout << "[OK] Car model loaded and added to scene" << std::endl;
             } else {
-                std::cout << "⚠️ Car model failed to load, not adding to scene" << std::endl;
+                std::cout << "[WARNING] Car model failed to load, not adding to scene" << std::endl;
                 delete carModel; // Limpiar memoria si no se cargó
             }
     
@@ -140,10 +140,10 @@ void ModelScene::initialize() {
             }
         }
         
-        std::cout << "✅ Created exactly " << objectCount << " objects in " << gridSize << "x" << gridSize << " grid" << std::endl;
-        std::cout << "📊 Total GameObjects: " << getGameObjects().size() << std::endl;
-        std::cout << "🎯 Grid area: " << (gridSize * spacing) << "x" << (gridSize * spacing) << " units" << std::endl;
-        std::cout << "⚡ Performance test ready - use frustum culling!" << std::endl;
+        std::cout << "[OK] Created exactly " << objectCount << " objects in " << gridSize << "x" << gridSize << " grid" << std::endl;
+        std::cout << "[INFO] Total GameObjects: " << getGameObjects().size() << std::endl;
+        std::cout << "[INFO] Grid area: " << (gridSize * spacing) << "x" << (gridSize * spacing) << " units" << std::endl;
+        std::cout << "[INFO] Performance test ready - use frustum culling!" << std::endl;
     } else {
         std::cerr << "Failed to load any 3D model from the attempted paths" << std::endl;
         std::cerr << "Falling back to basic cube scene..." << std::endl;
@@ -207,33 +207,20 @@ void ModelScene::initialize() {
             }
         }
         
-        std::cout << "✅ Created exactly " << objectCount << " fallback cubes" << std::endl;
-        std::cout << "📊 Total GameObjects: " << getGameObjects().size() << std::endl;
-        std::cout << "🎯 Fallback grid area: " << (gridSize * spacing) << "x" << (gridSize * spacing) << " units" << std::endl;
-        std::cout << "⚡ Performance test ready with fallback geometry!" << std::endl;
+        std::cout << "[OK] Created exactly " << objectCount << " fallback cubes" << std::endl;
+        std::cout << "[INFO] Total GameObjects: " << getGameObjects().size() << std::endl;
+        std::cout << "[INFO] Fallback grid area: " << (gridSize * spacing) << "x" << (gridSize * spacing) << " units" << std::endl;
+        std::cout << "[INFO] Performance test ready with fallback geometry!" << std::endl;
     }
 
     // Add lighting
     auto directionalLight = std::make_shared<Light>(LightType::Directional);
-    directionalLight->setDirection(glm::vec3(-0.2f, -1.0f, -0.3f));
+    directionalLight->setDirection(glm::vec3(-15.0f, -1.0f, -15.0f));
     directionalLight->setColor(glm::vec3(1.0f, 1.0f, 1.0f));
-    directionalLight->setIntensity(1.0f);
+    directionalLight->setIntensity(2.0f);
     addLight(directionalLight);
-
-    // Add point lights for better illumination
-    auto pointLight1 = std::make_shared<Light>(LightType::Point);
-    pointLight1->setPosition(glm::vec3(5.0f, 5.0f, 5.0f));
-    pointLight1->setColor(glm::vec3(1.0f, 0.8f, 0.6f));
-    pointLight1->setIntensity(2.0f);
-    addLight(pointLight1);
-
-    auto pointLight2 = std::make_shared<Light>(LightType::Point);
-    pointLight2->setPosition(glm::vec3(-5.0f, 5.0f, -5.0f));
-    pointLight2->setColor(glm::vec3(0.6f, 0.8f, 1.0f));
-    pointLight2->setIntensity(2.0f);
-    addLight(pointLight2);
     
-    std::cout << "✅ ModelScene initialization complete - Total objects: " << getGameObjects().size() << std::endl;
+    std::cout << "[OK] ModelScene initialization complete - Total objects: " << getGameObjects().size() << std::endl;
 }
 
 void ModelScene::update(float deltaTime) {
@@ -263,7 +250,7 @@ void ModelScene::update(float deltaTime) {
     static float lastPrintTime = 0.0f;
     if (time - lastPrintTime > 5.0f) { // Print every 5 seconds
         lastPrintTime = time;
-        std::cout << "📊 Performance: Managing " << gameObjects.size() << " objects" << std::endl;
+        std::cout << "[INFO] Performance: Managing " << gameObjects.size() << " objects" << std::endl;
     }
 } 
 

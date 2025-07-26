@@ -6,13 +6,13 @@ El sistema UI Canvas de MantraxEngine proporciona una interfaz sencilla para cre
 
 ## Características
 
-### ✨ Elementos UI Soportados
+### Elementos UI Soportados
 
 - **Button**: Botones interactivos con eventos hover, press y click
 - **Text**: Renderizado de texto con alineación y colores personalizables
 - **Image**: Carga y visualización de imágenes BMP con diferentes modos de escalado
 
-### 🎨 Funcionalidades
+### Funcionalidades
 
 - **Sistema de Canvas**: Gestión centralizada de todos los elementos UI
 - **Manejo de Eventos**: Eventos de mouse y teclado integrados con SDL
@@ -246,4 +246,4 @@ src/ui/
 
 Los archivos están configurados en el proyecto Visual Studio bajo el filtro **03_UI**.
 
-¡El sistema UI Canvas está listo para usar! 🎉
+¡El sistema UI Canvas está listo para usar!

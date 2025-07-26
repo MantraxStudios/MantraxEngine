@@ -58,15 +58,15 @@ El RenderPipeline mantiene su propia lista de objetos para renderizar. Cuando ag
 
 **Sin `pipeline->AddGameObject()`:**
 
-- ✅ Objeto existe en la escena
-- ❌ Objeto NO se renderiza
-- ❌ Objeto NO es visible
+- [ ] Objeto existe en la escena
+- [x] Objeto NO se renderiza
+- [x] Objeto NO es visible
 
 **Con `pipeline->AddGameObject()`:**
 
-- ✅ Objeto existe en la escena
-- ✅ Objeto se renderiza
-- ✅ Objeto es visible
+- [ ] Objeto existe en la escena
+- [ ] Objeto se renderiza
+- [ ] Objeto es visible
 
 ## Herramientas de Depuración
 
@@ -184,7 +184,7 @@ void CreateRuntimeObject() {
         activeScene->addGameObject(obj);
         pipeline->AddGameObject(obj);
 
-        std::cout << "✅ Created: " << obj->Name << std::endl;
+        std::cout << "Created: " << obj->Name << std::endl;
     }
 }
 ```

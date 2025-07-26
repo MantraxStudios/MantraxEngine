@@ -22,6 +22,7 @@
 #include "input/InputSystem.h"
 #include "core/Time.h"
 #include "ui/UIManager.h"
+#include "EUI/EditorInfo.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
@@ -287,7 +288,7 @@ int main() {
 
 
             // Handle mouse capture toggle
-            if (event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_RIGHT) {
+            if (event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_RIGHT && EditorInfo::IsHoveringScene) {
                 auto mouseRight = InputSystem::getInstance().getAction("MouseRight");
                 if (mouseRight) {
                     mouseCaptured = !mouseCaptured;

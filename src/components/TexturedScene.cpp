@@ -28,7 +28,7 @@ void TexturedScene::initialize() {
         return;
     }
 
-    // Create a grid of textured cubes (sin geometría por defecto)
+    // Create a grid of textured cubes (sin geometria por defecto)
     const int gridSize = 3;
     const float spacing = 3.0f;
     const float startPos = -((gridSize - 1) * spacing) / 2.0f;

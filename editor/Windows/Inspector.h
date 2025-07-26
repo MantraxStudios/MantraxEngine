@@ -1,9 +1,14 @@
 #pragma once
 #include "WindowBehaviour.h"
-#include <imgui/imgui.h>
+#include "components/GameObject.h"
+#include "render/Light.h"
+#include <memory>
 
-class Inspector : public WindowBehaviour
-{
+class Inspector : public WindowBehaviour {
 public:
-	void OnRenderGUI() override;
+    void OnRenderGUI() override;
+
+private:
+    void RenderGameObjectInspector(GameObject* go);
+    void RenderLightInspector(std::shared_ptr<Light> light);
 };
