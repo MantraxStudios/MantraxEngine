@@ -96,174 +96,226 @@ void Inspector::RenderGameObjectInspector(GameObject* go) {
 
     // Audio Source Component
     if (auto audioSource = go->getComponent<AudioSource>()) {
+        bool removeComponent = false;
         if (ImGui::TreeNode("[Audio Source]")) {
-            // Path del sonido
-            static char soundPath[256] = "";
-            if (ImGui::InputText("Sound Path", soundPath, sizeof(soundPath))) {
-                if (strlen(soundPath) > 0) {
-                    audioSource->setSound(soundPath, audioSource->is3DEnabled());
-                }
+            // Botón de opciones alineado a la derecha pero dentro de la ventana
+            float windowWidth = ImGui::GetContentRegionAvail().x;
+            ImGui::SameLine(windowWidth - 35);
+            if (ImGui::Button(" ... ##AudioSource", ImVec2(30, 0))) {
+                ImGui::OpenPopup("AudioSourceOptions");
             }
 
-            // Control de volumen
-            float volume = audioSource->getVolume();
-            if (ImGui::SliderFloat("Volume", &volume, 0.0f, 1.0f)) {
-                audioSource->setVolume(volume);
+            // Popup de opciones
+            if (ImGui::BeginPopup("AudioSourceOptions")) {
+                if (ImGui::MenuItem("Remove Component")) {
+                    removeComponent = true;
+                }
+                if (ImGui::MenuItem("Reset")) {
+                    // TODO: Implementar reset de valores
+                }
+                if (ImGui::MenuItem("Copy Settings")) {
+                    // TODO: Implementar copia de configuración
+                }
+                ImGui::EndPopup();
             }
 
-            // Toggle 3D
-            bool is3D = audioSource->is3DEnabled();
-            if (ImGui::Checkbox("3D Sound", &is3D)) {
-                audioSource->set3DAttributes(is3D);
+            if (!removeComponent) {
+                // Path del sonido
+                static char soundPath[256] = "";
+                if (ImGui::InputText("Sound Path", soundPath, sizeof(soundPath))) {
+                    if (strlen(soundPath) > 0) {
+                        audioSource->setSound(soundPath, audioSource->is3DEnabled());
+                    }
+                }
+
+                // Control de volumen
+                float volume = audioSource->getVolume();
+                if (ImGui::SliderFloat("Volume", &volume, 0.0f, 1.0f)) {
+                    audioSource->setVolume(volume);
+                }
+
+                // Toggle 3D
+                bool is3D = audioSource->is3DEnabled();
+                if (ImGui::Checkbox("3D Sound", &is3D)) {
+                    audioSource->set3DAttributes(is3D);
+                }
+
+                // Controles 3D
+                if (is3D) {
+                    ImGui::Separator();
+                    ImGui::Text("3D Settings");
+
+                    float minDist = audioSource->getMinDistance();
+                    if (ImGui::DragFloat("Min Distance", &minDist, 0.1f, 0.1f, audioSource->getMaxDistance())) {
+                        audioSource->setMinDistance(minDist);
+                    }
+                    if (ImGui::IsItemHovered()) {
+                        ImGui::SetTooltip("Distancia mínima antes de que el sonido comience a atenuarse");
+                    }
+
+                    float maxDist = audioSource->getMaxDistance();
+                    if (ImGui::DragFloat("Max Distance", &maxDist, 1.0f, minDist + 0.1f, 10000.0f)) {
+                        audioSource->setMaxDistance(maxDist);
+                    }
+                    if (ImGui::IsItemHovered()) {
+                        ImGui::SetTooltip("Distancia máxima a la que se puede escuchar el sonido");
+                    }
+                }
+
+                // Controles de reproducción
+                if (ImGui::Button(audioSource->isPlaying() ? "Stop" : "Play")) {
+                    if (audioSource->isPlaying()) {
+                        audioSource->stop();
+                    } else {
+                        audioSource->play();
+                    }
+                }
+                ImGui::SameLine();
+                if (ImGui::Button(audioSource->isPaused() ? "Resume" : "Pause")) {
+                    if (audioSource->isPaused()) {
+                        audioSource->resume();
+                    } else {
+                        audioSource->pause();
+                    }
+                }
             }
-
-            // Controles 3D
-            if (is3D) {
-                ImGui::Separator();
-                ImGui::Text("3D Settings");
-
-                float minDist = audioSource->getMinDistance();
-                if (ImGui::DragFloat("Min Distance", &minDist, 0.1f, 0.1f, audioSource->getMaxDistance())) {
-                    audioSource->setMinDistance(minDist);
-                }
-                if (ImGui::IsItemHovered()) {
-                    ImGui::SetTooltip("Distancia mínima antes de que el sonido comience a atenuarse");
-                }
-
-                float maxDist = audioSource->getMaxDistance();
-                if (ImGui::DragFloat("Max Distance", &maxDist, 1.0f, minDist + 0.1f, 10000.0f)) {
-                    audioSource->setMaxDistance(maxDist);
-                }
-                if (ImGui::IsItemHovered()) {
-                    ImGui::SetTooltip("Distancia máxima a la que se puede escuchar el sonido");
-                }
-            }
-
-            // Controles de reproducción
-            if (ImGui::Button(audioSource->isPlaying() ? "Stop" : "Play")) {
-                if (audioSource->isPlaying()) {
-                    audioSource->stop();
-                } else {
-                    audioSource->play();
-                }
-            }
-            ImGui::SameLine();
-            if (ImGui::Button(audioSource->isPaused() ? "Resume" : "Pause")) {
-                if (audioSource->isPaused()) {
-                    audioSource->resume();
-                } else {
-                    audioSource->pause();
-                }
-            }
-
             ImGui::TreePop();
+        }
+        if (removeComponent) {
+            go->removeComponent<AudioSource>();
         }
     }
 
     // Light Component
     if (auto lightComp = go->getComponent<LightComponent>()) {
+        bool removeComponent = false;
         if (ImGui::TreeNode("[Light]")) {
-            // Tipo de luz (solo mostrar, no editable)
-            const char* lightType = 
-                lightComp->getType() == LightType::Directional ? "Directional Light" :
-                lightComp->getType() == LightType::Point ? "Point Light" : "Spot Light";
-            ImGui::TextColored(ImVec4(1.0f, 0.8f, 0.0f, 1.0f), "%s", lightType);
-            ImGui::Separator();
-
-            // Enabled/Disabled
-            bool enabled = lightComp->isEnabled();
-            if (ImGui::Checkbox("Enabled", &enabled)) {
-                lightComp->setEnabled(enabled);
+            // Botón de opciones alineado a la derecha pero dentro de la ventana
+            float windowWidth = ImGui::GetContentRegionAvail().x;
+            ImGui::SameLine(windowWidth - 35);
+            if (ImGui::Button(" ... ##Light", ImVec2(30, 0))) {
+                ImGui::OpenPopup("LightOptions");
             }
 
-            // Color
-            glm::vec3 color = lightComp->getColor();
-            if (ImGui::ColorEdit3("Color", glm::value_ptr(color))) {
-                lightComp->setColor(color);
-            }
-
-            // Intensidad
-            float intensity = lightComp->getIntensity();
-            if (ImGui::DragFloat("Intensity", &intensity, 0.1f, 0.0f, 10.0f)) {
-                lightComp->setIntensity(intensity);
-            }
-
-            // Propiedades específicas según el tipo de luz
-            switch (lightComp->getType()) {
-                case LightType::Point: {
-                    // Atenuación
-                    glm::vec3 attenuation = lightComp->getAttenuation();
-                    bool attChanged = false;
-                    attChanged |= ImGui::DragFloat("Constant", &attenuation.x, 0.01f, 0.0f, 2.0f);
-                    attChanged |= ImGui::DragFloat("Linear", &attenuation.y, 0.01f, 0.0f, 2.0f);
-                    attChanged |= ImGui::DragFloat("Quadratic", &attenuation.z, 0.01f, 0.0f, 2.0f);
-                    
-                    if (attChanged) {
-                        lightComp->setAttenuation(attenuation.x, attenuation.y, attenuation.z);
-                    }
-
-                    // Rango
-                    float minDist = lightComp->getMinDistance();
-                    float maxDist = lightComp->getMaxDistance();
-                    bool rangeChanged = false;
-
-                    ImGui::Separator();
-                    ImGui::Text("Range Settings");
-                    
-                    rangeChanged |= ImGui::DragFloat("Min Distance", &minDist, 0.1f, 0.1f, maxDist - 0.1f);
-                    if (ImGui::IsItemHovered()) {
-                        ImGui::SetTooltip("Minimum distance where the light starts to affect objects");
-                    }
-
-                    rangeChanged |= ImGui::DragFloat("Max Distance", &maxDist, 0.1f, minDist + 0.1f, 1000.0f);
-                    if (ImGui::IsItemHovered()) {
-                        ImGui::SetTooltip("Maximum distance where the light's effect becomes zero");
-                    }
-
-                    if (rangeChanged) {
-                        lightComp->setRange(minDist, maxDist);
-                    }
-                    break;
+            // Popup de opciones
+            if (ImGui::BeginPopup("LightOptions")) {
+                if (ImGui::MenuItem("Remove Component")) {
+                    removeComponent = true;
                 }
-                case LightType::Spot: {
-                    // Ángulos del cono
-                    float cutOffDegrees = glm::degrees(lightComp->getCutOffAngle());
-                    float outerCutOffDegrees = glm::degrees(lightComp->getOuterCutOffAngle());
-                    bool anglesChanged = false;
-
-                    ImGui::Separator();
-                    ImGui::Text("Cone Settings");
-
-                    anglesChanged |= ImGui::DragFloat("Inner Angle", &cutOffDegrees, 0.5f, 0.0f, 89.0f);
-                    if (ImGui::IsItemHovered()) {
-                        ImGui::SetTooltip("Inner angle of the spotlight cone in degrees");
-                    }
-
-                    anglesChanged |= ImGui::DragFloat("Outer Angle", &outerCutOffDegrees, 0.5f, cutOffDegrees + 0.1f, 90.0f);
-                    if (ImGui::IsItemHovered()) {
-                        ImGui::SetTooltip("Outer angle of the spotlight cone in degrees");
-                    }
-
-                    if (anglesChanged) {
-                        lightComp->setCutOffAngle(cutOffDegrees);
-                        lightComp->setOuterCutOffAngle(outerCutOffDegrees);
-                    }
-
-                    ImGui::Separator();
-                    ImGui::Text("Range Settings");
-
-                    float spotRange = lightComp->getSpotRange();
-                    if (ImGui::DragFloat("Max Range", &spotRange, 0.5f, 0.1f, 1000.0f)) {
-                        lightComp->setSpotRange(spotRange);
-                    }
-                    if (ImGui::IsItemHovered()) {
-                        ImGui::SetTooltip("Maximum distance where the spotlight's effect becomes zero");
-                    }
-                    break;
+                if (ImGui::MenuItem("Reset")) {
+                    // TODO: Implementar reset de valores
                 }
+                if (ImGui::MenuItem("Copy Settings")) {
+                    // TODO: Implementar copia de configuración
+                }
+                ImGui::EndPopup();
             }
 
+            if (!removeComponent) {
+                // Tipo de luz (solo mostrar, no editable)
+                const char* lightType = 
+                    lightComp->getType() == LightType::Directional ? "Directional Light" :
+                    lightComp->getType() == LightType::Point ? "Point Light" : "Spot Light";
+                ImGui::TextColored(ImVec4(1.0f, 0.8f, 0.0f, 1.0f), "%s", lightType);
+                ImGui::Separator();
+
+                // Enabled/Disabled
+                bool enabled = lightComp->isEnabled();
+                if (ImGui::Checkbox("Enabled", &enabled)) {
+                    lightComp->setEnabled(enabled);
+                }
+
+                // Color
+                glm::vec3 color = lightComp->getColor();
+                if (ImGui::ColorEdit3("Color", glm::value_ptr(color))) {
+                    lightComp->setColor(color);
+                }
+
+                // Intensidad
+                float intensity = lightComp->getIntensity();
+                if (ImGui::DragFloat("Intensity", &intensity, 0.1f, 0.0f, 10.0f)) {
+                    lightComp->setIntensity(intensity);
+                }
+
+                // Propiedades específicas según el tipo de luz
+                switch (lightComp->getType()) {
+                    case LightType::Point: {
+                        // Atenuación
+                        glm::vec3 attenuation = lightComp->getAttenuation();
+                        bool attChanged = false;
+                        attChanged |= ImGui::DragFloat("Constant", &attenuation.x, 0.01f, 0.0f, 2.0f);
+                        attChanged |= ImGui::DragFloat("Linear", &attenuation.y, 0.01f, 0.0f, 2.0f);
+                        attChanged |= ImGui::DragFloat("Quadratic", &attenuation.z, 0.01f, 0.0f, 2.0f);
+                        
+                        if (attChanged) {
+                            lightComp->setAttenuation(attenuation.x, attenuation.y, attenuation.z);
+                        }
+
+                        // Rango
+                        float minDist = lightComp->getMinDistance();
+                        float maxDist = lightComp->getMaxDistance();
+                        bool rangeChanged = false;
+
+                        ImGui::Separator();
+                        ImGui::Text("Range Settings");
+                        
+                        rangeChanged |= ImGui::DragFloat("Min Distance", &minDist, 0.1f, 0.1f, maxDist - 0.1f);
+                        if (ImGui::IsItemHovered()) {
+                            ImGui::SetTooltip("Minimum distance where the light starts to affect objects");
+                        }
+
+                        rangeChanged |= ImGui::DragFloat("Max Distance", &maxDist, 0.1f, minDist + 0.1f, 1000.0f);
+                        if (ImGui::IsItemHovered()) {
+                            ImGui::SetTooltip("Maximum distance where the light's effect becomes zero");
+                        }
+
+                        if (rangeChanged) {
+                            lightComp->setRange(minDist, maxDist);
+                        }
+                        break;
+                    }
+                    case LightType::Spot: {
+                        // Ángulos del cono
+                        float cutOffDegrees = glm::degrees(lightComp->getCutOffAngle());
+                        float outerCutOffDegrees = glm::degrees(lightComp->getOuterCutOffAngle());
+                        bool anglesChanged = false;
+
+                        ImGui::Separator();
+                        ImGui::Text("Cone Settings");
+
+                        anglesChanged |= ImGui::DragFloat("Inner Angle", &cutOffDegrees, 0.5f, 0.0f, 89.0f);
+                        if (ImGui::IsItemHovered()) {
+                            ImGui::SetTooltip("Inner angle of the spotlight cone in degrees");
+                        }
+
+                        anglesChanged |= ImGui::DragFloat("Outer Angle", &outerCutOffDegrees, 0.5f, cutOffDegrees + 0.1f, 90.0f);
+                        if (ImGui::IsItemHovered()) {
+                            ImGui::SetTooltip("Outer angle of the spotlight cone in degrees");
+                        }
+
+                        if (anglesChanged) {
+                            lightComp->setCutOffAngle(cutOffDegrees);
+                            lightComp->setOuterCutOffAngle(outerCutOffDegrees);
+                        }
+
+                        ImGui::Separator();
+                        ImGui::Text("Range Settings");
+
+                        float spotRange = lightComp->getSpotRange();
+                        if (ImGui::DragFloat("Max Range", &spotRange, 0.5f, 0.1f, 1000.0f)) {
+                            lightComp->setSpotRange(spotRange);
+                        }
+                        if (ImGui::IsItemHovered()) {
+                            ImGui::SetTooltip("Maximum distance where the spotlight's effect becomes zero");
+                        }
+                        break;
+                    }
+                }
+            }
             ImGui::TreePop();
+        }
+        if (removeComponent) {
+            go->removeComponent<LightComponent>();
         }
     }
 
