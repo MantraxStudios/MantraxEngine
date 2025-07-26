@@ -6,10 +6,8 @@
 #include "GameObject.h"
 #include "../render/Camera.h"
 #include "../render/Light.h"
+#include "../render/RenderPipeline.h"
 #include "../core/CoreExporter.h"
-
-// Forward declaration to avoid circular dependency
-class RenderPipeline;
 
 // Forward declaration to avoid circular dependency
 class RenderPipeline;
@@ -29,6 +27,11 @@ public:
             delete obj;
         }
         gameObjects.clear();
+        
+        // Clear lights from RenderPipeline first
+        if (renderPipeline) {
+            renderPipeline->clearLights();
+        }
         
         // Clear lights
         lights.clear();
@@ -56,6 +59,21 @@ public:
     void addLight(std::shared_ptr<Light> light) {
         if (light) {
             lights.push_back(light);
+            // Sincronizar con RenderPipeline
+            if (renderPipeline) {
+                renderPipeline->AddLight(light);
+            }
+        }
+    }
+
+    void removeLight(std::shared_ptr<Light> light) {
+        if (light) {
+            // Remover del RenderPipeline primero
+            if (renderPipeline) {
+                renderPipeline->RemoveLight(light);
+            }
+            // Remover de la lista de luces
+            lights.erase(std::remove(lights.begin(), lights.end(), light), lights.end());
         }
     }
 

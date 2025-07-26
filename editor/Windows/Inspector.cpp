@@ -134,6 +134,29 @@ void Inspector::RenderLightInspector(std::shared_ptr<Light> light) {
             if (attChanged) {
                 light->setAttenuation(attenuation.x, attenuation.y, attenuation.z);
             }
+
+            // Rango de la luz
+            float minDist = light->getMinDistance();
+            float maxDist = light->getMaxDistance();
+            bool rangeChanged = false;
+
+            ImGui::Separator();
+            ImGui::Text("Range Settings");
+            
+            rangeChanged |= ImGui::DragFloat("Min Distance", &minDist, 0.1f, 0.1f, maxDist - 0.1f);
+            if (ImGui::IsItemHovered()) {
+                ImGui::SetTooltip("Minimum distance where the light starts to affect objects");
+            }
+
+            rangeChanged |= ImGui::DragFloat("Max Distance", &maxDist, 0.1f, minDist + 0.1f, 1000.0f);
+            if (ImGui::IsItemHovered()) {
+                ImGui::SetTooltip("Maximum distance where the light's effect becomes zero");
+            }
+
+            if (rangeChanged) {
+                light->setRange(minDist, maxDist);
+            }
+
             break;
         }
         case LightType::Spot: {
@@ -147,15 +170,40 @@ void Inspector::RenderLightInspector(std::shared_ptr<Light> light) {
                 light->setDirection(glm::normalize(direction));
             }
 
-            float cutOff = light->getCutOffAngle();
-            if (ImGui::DragFloat("Cut Off Angle", &cutOff, 1.0f, 0.0f, 90.0f)) {
-                light->setCutOffAngle(cutOff);
+            // Convertir ángulos a grados para la UI
+            float cutOffDegrees = glm::degrees(light->getCutOffAngle());
+            float outerCutOffDegrees = glm::degrees(light->getOuterCutOffAngle());
+            bool anglesChanged = false;
+
+            ImGui::Separator();
+            ImGui::Text("Cone Settings");
+
+            anglesChanged |= ImGui::DragFloat("Inner Angle", &cutOffDegrees, 0.5f, 0.0f, 89.0f);
+            if (ImGui::IsItemHovered()) {
+                ImGui::SetTooltip("Inner angle of the spotlight cone in degrees");
             }
 
-            float outerCutOff = light->getOuterCutOffAngle();
-            if (ImGui::DragFloat("Outer Cut Off", &outerCutOff, 1.0f, cutOff, 90.0f)) {
-                light->setOuterCutOffAngle(outerCutOff);
+            anglesChanged |= ImGui::DragFloat("Outer Angle", &outerCutOffDegrees, 0.5f, cutOffDegrees + 0.1f, 90.0f);
+            if (ImGui::IsItemHovered()) {
+                ImGui::SetTooltip("Outer angle of the spotlight cone in degrees");
             }
+
+            if (anglesChanged) {
+                light->setCutOffAngle(cutOffDegrees);
+                light->setOuterCutOffAngle(outerCutOffDegrees);
+            }
+
+            ImGui::Separator();
+            ImGui::Text("Range Settings");
+
+            float spotRange = light->getSpotRange();
+            if (ImGui::DragFloat("Max Range", &spotRange, 0.5f, 0.1f, 1000.0f)) {
+                light->setSpotRange(spotRange);
+            }
+            if (ImGui::IsItemHovered()) {
+                ImGui::SetTooltip("Maximum distance where the spotlight's effect becomes zero");
+            }
+
             break;
         }
     }

@@ -21,11 +21,13 @@ public:
     void setDirection(const glm::vec3& direction);
 
     // Propiedades específicas para Spot Light
-    void setCutOffAngle(float angle);
-    void setOuterCutOffAngle(float angle);
+    void setCutOffAngle(float angle);      // En grados
+    void setOuterCutOffAngle(float angle); // En grados
+    void setSpotRange(float maxDistance);  // Rango máximo del spotlight
 
     // Propiedades específicas para Point Light
     void setAttenuation(float constant, float linear, float quadratic);
+    void setRange(float minDistance, float maxDistance);
 
     // Getters
     LightType getType() const { return type; }
@@ -35,7 +37,10 @@ public:
     glm::vec3 getDirection() const { return direction; }
     float getCutOffAngle() const { return cutOffAngle; }
     float getOuterCutOffAngle() const { return outerCutOffAngle; }
+    float getSpotRange() const { return spotRange; }
     glm::vec3 getAttenuation() const { return attenuation; }
+    float getMinDistance() const { return minDistance; }
+    float getMaxDistance() const { return maxDistance; }
 
     // Métodos de utilidad
     bool isEnabled() const { return enabled; }
@@ -49,11 +54,14 @@ protected:
     glm::vec3 direction;
     
     // Spot light properties
-    float cutOffAngle;
-    float outerCutOffAngle;
+    float cutOffAngle;       // En radianes internamente
+    float outerCutOffAngle;  // En radianes internamente
+    float spotRange;         // Rango máximo del spotlight
     
     // Point light properties
     glm::vec3 attenuation; // constant, linear, quadratic
+    float minDistance;     // Distancia mínima para atenuación
+    float maxDistance;     // Distancia máxima para atenuación
     
     bool enabled;
 }; 

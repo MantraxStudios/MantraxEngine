@@ -29,6 +29,10 @@ void RenderPipeline::AddLight(std::shared_ptr<Light> light) {
     lights.push_back(light);
 }
 
+void RenderPipeline::RemoveLight(std::shared_ptr<Light> light) {
+    lights.erase(std::remove(lights.begin(), lights.end(), light), lights.end());
+}
+
 void RenderPipeline::clearGameObjects() {
     sceneObjects.clear();
     totalObjectsCount = 0;
@@ -170,6 +174,8 @@ void RenderPipeline::configureLighting() {
         glUniform3fv(glGetUniformLocation(program, ("uPointLightColors[" + std::to_string(i) + "]").c_str()), 1, glm::value_ptr(light->getColor()));
         glUniform1f(glGetUniformLocation(program, ("uPointLightIntensities[" + std::to_string(i) + "]").c_str()), light->getIntensity());
         glUniform3fv(glGetUniformLocation(program, ("uPointLightAttenuations[" + std::to_string(i) + "]").c_str()), 1, glm::value_ptr(light->getAttenuation()));
+        glUniform1f(glGetUniformLocation(program, ("uPointLightMinDistances[" + std::to_string(i) + "]").c_str()), light->getMinDistance());
+        glUniform1f(glGetUniformLocation(program, ("uPointLightMaxDistances[" + std::to_string(i) + "]").c_str()), light->getMaxDistance());
     }
     
     // Configurar luces spot
@@ -180,8 +186,19 @@ void RenderPipeline::configureLighting() {
         glUniform3fv(glGetUniformLocation(program, ("uSpotLightDirections[" + std::to_string(i) + "]").c_str()), 1, glm::value_ptr(light->getDirection()));
         glUniform3fv(glGetUniformLocation(program, ("uSpotLightColors[" + std::to_string(i) + "]").c_str()), 1, glm::value_ptr(light->getColor()));
         glUniform1f(glGetUniformLocation(program, ("uSpotLightIntensities[" + std::to_string(i) + "]").c_str()), light->getIntensity());
-        glUniform1f(glGetUniformLocation(program, ("uSpotLightCutOffs[" + std::to_string(i) + "]").c_str()), light->getCutOffAngle());
-        glUniform1f(glGetUniformLocation(program, ("uSpotLightOuterCutOffs[" + std::to_string(i) + "]").c_str()), light->getOuterCutOffAngle());
+        
+        // Los ángulos ya vienen en radianes desde la clase Light
+        float cutOff = light->getCutOffAngle();
+        float outerCutOff = light->getOuterCutOffAngle();
+        
+        // Asegurarnos de que outer sea siempre mayor que inner
+        if (outerCutOff < cutOff) {
+            outerCutOff = cutOff + 0.1f;
+        }
+        
+        glUniform1f(glGetUniformLocation(program, ("uSpotLightCutOffs[" + std::to_string(i) + "]").c_str()), cutOff);
+        glUniform1f(glGetUniformLocation(program, ("uSpotLightOuterCutOffs[" + std::to_string(i) + "]").c_str()), outerCutOff);
+        glUniform1f(glGetUniformLocation(program, ("uSpotLightRanges[" + std::to_string(i) + "]").c_str()), light->getSpotRange());
     }
 }
 

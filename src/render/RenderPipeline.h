@@ -27,6 +27,7 @@ public:
 
     void AddGameObject(GameObject* object);
     void AddLight(std::shared_ptr<Light> light);
+    void RemoveLight(std::shared_ptr<Light> light);
     void renderFrame();
     void renderToFramebuffer(Framebuffer* framebuffer);
     void renderToScreen(); // Force render to main screen, ignoring camera framebuffer

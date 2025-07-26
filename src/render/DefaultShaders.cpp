@@ -105,6 +105,8 @@ uniform vec3 uPointLightPositions[4];
 uniform vec3 uPointLightColors[4];
 uniform float uPointLightIntensities[4];
 uniform vec3 uPointLightAttenuations[4];
+uniform float uPointLightMinDistances[4];
+uniform float uPointLightMaxDistances[4];
 
 // Spot Lights (máximo 2)
 uniform int uNumSpotLights;
@@ -114,6 +116,7 @@ uniform vec3 uSpotLightColors[2];
 uniform float uSpotLightIntensities[2];
 uniform float uSpotLightCutOffs[2];
 uniform float uSpotLightOuterCutOffs[2];
+uniform float uSpotLightRanges[2];
 
 // Constants
 const float PI = 3.14159265359;
@@ -266,7 +269,10 @@ void main() {
         vec3 lightContrib;
         
         if (uUsePBR) {
-            lightContrib = CalculatePBRLighting(albedo, metallic, roughness, N, V, L, uDirLightColor * uDirLightIntensity);
+            // Ajustar intensidad basada en el ángulo de incidencia
+            float NdotL = max(dot(N, L), 0.0);
+            vec3 adjustedColor = uDirLightColor * uDirLightIntensity * NdotL;
+            lightContrib = CalculatePBRLighting(albedo, metallic, roughness, N, V, L, adjustedColor);
         } else {
             lightContrib = CalculateBlinnPhongLighting(albedo, shininess, N, V, L, uDirLightColor * uDirLightIntensity);
         }
@@ -278,9 +284,29 @@ void main() {
     for (int i = 0; i < uNumPointLights; i++) {
         vec3 L = normalize(uPointLightPositions[i] - FragPos);
         float distance = length(uPointLightPositions[i] - FragPos);
-        float attenuation = 1.0 / (uPointLightAttenuations[i].x + 
-                                   uPointLightAttenuations[i].y * distance + 
-                                   uPointLightAttenuations[i].z * distance * distance);
+        
+        // Early exit si está fuera del rango
+        if (distance > uPointLightMaxDistances[i]) continue;
+        
+        // Atenuación física más realista con rango configurable
+        float constant = uPointLightAttenuations[i].x;
+        float linear = uPointLightAttenuations[i].y;
+        float quadratic = uPointLightAttenuations[i].z;
+        
+        // Calcular atenuación base
+        float attenuation = 1.0 / (constant + linear * distance + quadratic * distance * distance);
+        
+        // Aplicar rango mínimo y máximo
+        float rangeAttenuation = 1.0;
+        if (distance < uPointLightMinDistances[i]) {
+            // Suavizar transición cerca de la luz
+            rangeAttenuation = smoothstep(0.0, uPointLightMinDistances[i], distance);
+        } else if (distance > uPointLightMaxDistances[i] * 0.75) {
+            // Suavizar transición en el borde máximo
+            rangeAttenuation = smoothstep(uPointLightMaxDistances[i], uPointLightMaxDistances[i] * 0.75, distance);
+        }
+        
+        attenuation *= rangeAttenuation;
         
         vec3 lightColor = uPointLightColors[i] * uPointLightIntensities[i] * attenuation;
         vec3 lightContrib;
@@ -296,12 +322,38 @@ void main() {
     
     // Spot Lights
     for (int i = 0; i < uNumSpotLights; i++) {
-        vec3 L = normalize(uSpotLightPositions[i] - FragPos);
-        float theta = dot(L, normalize(-uSpotLightDirections[i]));
-        float epsilon = uSpotLightCutOffs[i] - uSpotLightOuterCutOffs[i];
-        float intensity = clamp((theta - uSpotLightOuterCutOffs[i]) / epsilon, 0.0, 1.0);
+        vec3 lightDir = uSpotLightPositions[i] - FragPos;
+        float distance = length(lightDir);
         
-        vec3 lightColor = uSpotLightColors[i] * uSpotLightIntensities[i] * intensity;
+        // Early exit si está fuera del rango
+        if (distance > uSpotLightRanges[i]) continue;
+        
+        vec3 L = normalize(lightDir);
+        
+        // Calcular atenuación por distancia con rango máximo
+        float distanceRatio = distance / uSpotLightRanges[i];
+        float attenuation = 1.0 / (1.0 + 0.09 * distance + 0.032 * distance * distance);
+        attenuation *= 1.0 - smoothstep(0.75, 1.0, distanceRatio);
+        
+        // Calcular ángulo entre dirección de la luz y dirección al fragmento
+        float theta = dot(L, normalize(-uSpotLightDirections[i]));
+        float epsilon = cos(uSpotLightCutOffs[i]) - cos(uSpotLightOuterCutOffs[i]);
+        float spotIntensity = clamp((theta - cos(uSpotLightOuterCutOffs[i])) / epsilon, 0.0, 1.0);
+        
+        // Suavizar los bordes del cono de luz
+        spotIntensity = smoothstep(0.0, 1.0, spotIntensity);
+        
+        // Agregar atenuación radial desde el centro del cono
+        float radialFalloff = 1.0 - length(cross(L, normalize(-uSpotLightDirections[i])));
+        radialFalloff = smoothstep(0.0, 0.5, radialFalloff);
+        
+        // Combinar atenuaciones
+        float finalIntensity = spotIntensity * attenuation * radialFalloff * uSpotLightIntensities[i];
+        
+        // Early exit si la luz no afecta a este fragmento
+        if (finalIntensity <= 0.001) continue;
+        
+        vec3 lightColor = uSpotLightColors[i] * finalIntensity;
         vec3 lightContrib;
         
         if (uUsePBR) {
@@ -313,17 +365,22 @@ void main() {
         Lo += lightContrib;
     }
     
-    // Ambient lighting
-    vec3 ambient = uAmbientLight * albedo * ao;
+    // Ambient lighting (mejorado para PBR)
+    vec3 ambient;
+    if (uUsePBR) {
+        // Ambient basado en metallic/roughness para PBR
+        vec3 ambientFactor = mix(vec3(0.03), albedo, metallic);
+        ambient = uAmbientLight * albedo * ao * (1.0 - metallic * 0.5);
+    } else {
+        ambient = uAmbientLight * albedo * ao;
+    }
     
     // Final color
     vec3 color = ambient + Lo + emissive;
     
-    // Clamp para prevenir valores extremos
-    color = clamp(color, 0.0, 10.0);
-    
-    // HDR tonemapping mejorado (Reinhard)
-    color = color / (color + vec3(1.0));
+    // Exposure tone mapping
+    float exposure = 1.0;
+    color = vec3(1.0) - exp(-color * exposure);
     
     // Gamma correction
     color = pow(color, vec3(1.0/2.2)); 
