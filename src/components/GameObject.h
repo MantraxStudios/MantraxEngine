@@ -6,6 +6,8 @@
 #include <memory>
 #include <vector>
 #include <string>
+#include <unordered_map>
+#include <typeindex>
 
 #include "../render/Material.h"
 #include "../render/Frustum.h"
@@ -122,37 +124,57 @@ public:
     void setBoundingRadius(float radius);
     void calculateBoundingVolumes(); // Calcula bounding volumes de la geometría
 
-    // Update method
-    virtual void update(float deltaTime) {
-        // Actualizar todos los componentes
-        for (auto& comp : components) {
-            comp->update();
-        }
-    }
-
-    template <typename T, typename... Args>
-    T *addComponent(Args &&...args)
-    {
+    // Sistema de componentes
+    template<typename T, typename... Args>
+    T* addComponent(Args&&... args) {
         static_assert(std::is_base_of<Component, T>::value, "T must inherit from Component");
+        
         auto comp = std::make_unique<T>(std::forward<Args>(args)...);
         comp->setOwner(this);
-        T *rawPtr = comp.get();
+        T* rawPtr = comp.get();
         components.push_back(std::move(comp));
         return rawPtr;
     }
 
-    template <typename T>
-    T *getComponent()
-    {
-        for (auto &comp : components)
-        {
-            if (T *casted = dynamic_cast<T *>(comp.get()))
-            {
+    template<typename T>
+    T* getComponent() {
+        for (auto& comp : components) {
+            if (T* casted = dynamic_cast<T*>(comp.get())) {
                 return casted;
             }
         }
         return nullptr;
     }
+
+    template <typename T>
+    bool removeComponent() {
+        static_assert(std::is_base_of<Component, T>::value, "T must inherit from Component");
+        auto it = std::find_if(components.begin(), components.end(),
+            [](const std::unique_ptr<Component>& comp) {
+                return dynamic_cast<T*>(comp.get()) != nullptr;
+            });
+        
+        if (it != components.end()) {
+            components.erase(it);
+            return true;
+        }
+        return false;
+    }
+
+    // Obtener todos los componentes
+    std::vector<Component*> getAllComponents() const {
+        std::vector<Component*> result;
+        result.reserve(components.size());
+        for (const auto& comp : components) {
+            if (comp) {
+                result.push_back(comp.get());
+            }
+        }
+        return result;
+    }
+
+    // Update method
+    void update(float deltaTime);
 
     std::string Name = "New Object";
     std::string Tag = "Default";

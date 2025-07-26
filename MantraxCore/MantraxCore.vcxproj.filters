@@ -139,6 +139,9 @@
     <ClCompile Include="..\src\core\AudioManager.cpp">
       <Filter>01_Natives\Audio</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\components\LightComponent.cpp">
+      <Filter>01_Natives\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\core\CoreExporter.h">
@@ -271,6 +274,9 @@
     </ClInclude>
     <ClInclude Include="..\vendors\includes\fmod\fmod_output.h">
       <Filter>Vendors\FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\components\LightComponent.h">
+      <Filter>01_Natives\Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

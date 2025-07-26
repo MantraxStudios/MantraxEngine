@@ -71,6 +71,7 @@ Scene* SceneManager::getScene(const std::string& sceneName) {
 void SceneManager::update(float deltaTime) {
     if (activeScene) {
         activeScene->update(deltaTime);
+        activeScene->updateNative(deltaTime);
     }
 }
 

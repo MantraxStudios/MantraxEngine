@@ -1,5 +1,4 @@
 #pragma once
-
 #include <string>
 #include <memory>
 #include <vector>
@@ -18,7 +17,8 @@ public:
     virtual ~Scene() = default;
 
     virtual void initialize() {}
-    virtual void update(float deltaTime);
+    virtual void update(float deltaTime) {}
+    void updateNative(float deltaTime);
     virtual void cleanup() {
         // Delete all game objects
         for (auto* obj : gameObjects) {
@@ -44,7 +44,7 @@ public:
     const std::string& getName() const { return name; }
     bool isInitialized() const { return initialized; }
     void setInitialized(bool value) { initialized = value; }
-    
+
     void addGameObject(GameObject* object);
     
     // Agregar objeto sin sincronización automática (para casos especiales)
@@ -54,30 +54,13 @@ public:
     void setRenderPipeline(RenderPipeline* pipeline) { renderPipeline = pipeline; }
     RenderPipeline* getRenderPipeline() const { return renderPipeline; }
 
-    void addLight(std::shared_ptr<Light> light) {
-        if (light) {
-            lights.push_back(light);
-            // Sincronizar con RenderPipeline
-            if (renderPipeline) {
-                renderPipeline->AddLight(light);
-            }
-        }
-    }
+    void addLight(std::shared_ptr<Light> light);
 
-    void removeLight(std::shared_ptr<Light> light) {
-        if (light) {
-            // Remover del RenderPipeline primero
-            if (renderPipeline) {
-                renderPipeline->RemoveLight(light);
-            }
-            // Remover de la lista de luces
-            lights.erase(std::remove(lights.begin(), lights.end(), light), lights.end());
-        }
-    }
+    void removeLight(std::shared_ptr<Light> light);
 
     const std::vector<GameObject*>& getGameObjects() const { return gameObjects; }
     const std::vector<std::shared_ptr<Light>>& getLights() const { return lights; }
-    
+
     Camera* getCamera() { return camera.get(); }
     void setCamera(std::unique_ptr<Camera> newCamera) { camera = std::move(newCamera); }
 

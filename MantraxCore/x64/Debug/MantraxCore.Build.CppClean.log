@@ -1,6 +1,5 @@
 c:\users\tupap\source\repos\mantraxengine\mantraxcore\x64\debug\vc143.pdb
 c:\users\tupap\source\repos\mantraxengine\mantraxcore\x64\debug\vc143.idb
-c:\users\tupap\source\repos\mantraxengine\mantraxcore\x64\debug\material.obj
 c:\users\tupap\source\repos\mantraxengine\mantraxcore\x64\debug\light.obj
 c:\users\tupap\source\repos\mantraxengine\mantraxcore\x64\debug\frustum.obj
 c:\users\tupap\source\repos\mantraxengine\mantraxcore\x64\debug\framebuffer.obj
@@ -18,6 +17,7 @@ c:\users\tupap\source\repos\mantraxengine\mantraxcore\x64\debug\testscene.obj
 c:\users\tupap\source\repos\mantraxengine\mantraxcore\x64\debug\scene.obj
 c:\users\tupap\source\repos\mantraxengine\mantraxcore\x64\debug\scenemanager.obj
 c:\users\tupap\source\repos\mantraxengine\mantraxcore\x64\debug\modelscene.obj
+c:\users\tupap\source\repos\mantraxengine\mantraxcore\x64\debug\lightcomponent.obj
 c:\users\tupap\source\repos\mantraxengine\mantraxcore\x64\debug\gameobject.obj
 c:\users\tupap\source\repos\mantraxengine\mantraxcore\x64\debug\audiosource.obj
 c:\users\tupap\source\repos\mantraxengine\mantraxcore\x64\debug\uimanager.obj
@@ -32,6 +32,7 @@ c:\users\tupap\source\repos\mantraxengine\mantraxcore\x64\debug\renderpipeline.o
 c:\users\tupap\source\repos\mantraxengine\mantraxcore\x64\debug\renderconfig.obj
 c:\users\tupap\source\repos\mantraxengine\mantraxcore\x64\debug\modelloader.obj
 c:\users\tupap\source\repos\mantraxengine\mantraxcore\x64\debug\materialmanager.obj
+c:\users\tupap\source\repos\mantraxengine\mantraxcore\x64\debug\material.obj
 c:\users\tupap\source\repos\mantraxengine\x64\debug\mantraxcore.dll
 c:\users\tupap\source\repos\mantraxengine\x64\debug\mantraxcore.pdb
 c:\users\tupap\source\repos\mantraxengine\x64\debug\mantraxcore.lib

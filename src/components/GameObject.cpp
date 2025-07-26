@@ -344,6 +344,20 @@ void GameObject::updateWorldModelMatrix() const {
     dirtyWorldTransform = false;
 }
 
+void GameObject::update(float deltaTime) {
+    // Actualizar todos los componentes
+    for (auto& comp : components) {
+        if (comp) {
+            comp->update();
+        }
+    }
+
+    // Actualizar la transformación si es necesario
+    if (shouldUpdateTransform && dirtyWorldTransform) {
+        invalidateWorldTransform();
+    }
+}
+
 AssimpGeometry *GameObject::getGeometry() const {
     return geometry;
 }
