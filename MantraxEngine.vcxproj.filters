@@ -34,9 +34,6 @@
     <ClCompile Include="editor\Windows\Hierarchy.cpp">
       <Filter>01_Main\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="editor\Windows\RenderWindows.cpp">
-      <Filter>01_Main\Windows\Behaviour</Filter>
-    </ClCompile>
     <ClCompile Include="editor\Windows\SceneView.cpp">
       <Filter>01_Main\Windows</Filter>
     </ClCompile>

@@ -13,5 +13,9 @@ class SceneView : public WindowBehaviour
 public:
 	glm::vec2 WorldPoint;
 	void OnRenderGUI() override;
+	const std::string& getName() const override {
+		static const std::string name = "Scene View";
+		return name;
+	}
 	static bool mouseCaptured;
 };

@@ -158,7 +158,6 @@ int main() {
     RenderConfig& config = RenderConfig::getInstance();
     config.setAntialiasing(0);
 
-    RenderWindows* _WindowsRender = new RenderWindows();
     if (!config.initContext()) return -1;
 
     SDL_Window* window = config.getWindow();
@@ -300,25 +299,39 @@ int main() {
 
             // Handle mouse capture toggle
             if (event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_RIGHT && EditorInfo::IsHoveringScene) {
-                auto mouseRight = InputSystem::getInstance().getAction("MouseRight");
-                if (mouseRight) {
-                    mouseCaptured = !mouseCaptured;
-                    SDL_SetRelativeMouseMode(mouseCaptured ? SDL_TRUE : SDL_FALSE);
-                }
+                mouseCaptured = true;
+                SDL_SetRelativeMouseMode(SDL_TRUE);
+                // Obtener el centro de la ventana
+                int windowWidth, windowHeight;
+                SDL_GetWindowSize(window, &windowWidth, &windowHeight);
+                SDL_WarpMouseInWindow(window, windowWidth / 2, windowHeight / 2);
+            }
+            else if (event.type == SDL_MOUSEBUTTONUP && event.button.button == SDL_BUTTON_RIGHT) {
+                mouseCaptured = false;
+                SDL_SetRelativeMouseMode(SDL_FALSE);
+                SDL_ShowCursor(SDL_ENABLE);
             }
 
             // Handle escape to release mouse
-            if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE) {
+            if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE && mouseCaptured) {
                 mouseCaptured = false;
                 SDL_SetRelativeMouseMode(SDL_FALSE);
+                SDL_ShowCursor(SDL_ENABLE);
             }
 
             // Process input through InputSystem only when mouse is captured
-            if (mouseCaptured || 
-                (event.type != SDL_MOUSEMOTION && 
-                 event.type != SDL_MOUSEWHEEL && 
-                 event.type != SDL_MOUSEBUTTONDOWN && 
-                 event.type != SDL_MOUSEBUTTONUP)) {
+            if (mouseCaptured) {
+                // Mantener el mouse en el centro después de cada movimiento
+                if (event.type == SDL_MOUSEMOTION) {
+                    int windowWidth, windowHeight;
+                    SDL_GetWindowSize(window, &windowWidth, &windowHeight);
+                    SDL_WarpMouseInWindow(window, windowWidth / 2, windowHeight / 2);
+                }
+                InputSystem::getInstance().processInput(event);
+            } else if (event.type != SDL_MOUSEMOTION && 
+                      event.type != SDL_MOUSEWHEEL && 
+                      event.type != SDL_MOUSEBUTTONDOWN && 
+                      event.type != SDL_MOUSEBUTTONUP) {
                 InputSystem::getInstance().processInput(event);
             }
         }
@@ -414,7 +427,7 @@ int main() {
         //ImGui::Text("FPS: %.1f", Time::getFPS());
         //ImGui::End();
 
-        _WindowsRender->RenderUI();
+        RenderWindows::getInstance().RenderUI();
 
         ImGuiLoader::SendToRender();
         SDL_GL_SwapWindow(window);

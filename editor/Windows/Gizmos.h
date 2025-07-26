@@ -15,4 +15,8 @@ class Gizmos : public WindowBehaviour
 {
 public:
     void OnRenderGUI() override;
+    const std::string& getName() const override {
+        static const std::string name = "Gizmos";
+        return name;
+    }
 };

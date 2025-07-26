@@ -5,6 +5,7 @@
 #include "render/RenderPipeline.h"
 #include "../EUI/EditorInfo.h"
 #include "Selection.h"
+#include "RenderWindows.h"
 #include <iostream>
 
 
@@ -207,11 +208,62 @@ void MainBar::OnRenderGUI() {
 		// Current antialiasing status
 		ImGui::Text("Current: %dx MSAA", config.getAntialiasing());
 		if (config.isAntialiasingEnabled()) {
-			ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "✓ Enabled");
+			ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "Enabled");
 		} else {
-			ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "✗ Disabled");
+			ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "Disabled");
 		}
 		
+		ImGui::EndMenu();
+	}
+
+	if (ImGui::BeginMenu("Windows")) {
+		auto& windowManager = RenderWindows::getInstance();
+
+		// Hierarchy
+		if (auto* hierarchyWindow = windowManager.GetWindow<Hierarchy>()) {
+			if (ImGui::MenuItem("Hierarchy", nullptr, &hierarchyWindow->isOpen)) {
+				// El estado se actualiza automáticamente por ImGui
+			}
+		}
+
+		// Scene View
+		if (auto* sceneViewWindow = windowManager.GetWindow<SceneView>()) {
+			if (ImGui::MenuItem("Scene View", nullptr, &sceneViewWindow->isOpen)) {
+				// El estado se actualiza automáticamente por ImGui
+			}
+		}
+
+		// Inspector
+		if (auto* inspectorWindow = windowManager.GetWindow<Inspector>()) {
+			if (ImGui::MenuItem("Inspector", nullptr, &inspectorWindow->isOpen)) {
+				// El estado se actualiza automáticamente por ImGui
+			}
+		}
+
+		// Gizmos
+		if (auto* gizmosWindow = windowManager.GetWindow<Gizmos>()) {
+			if (ImGui::MenuItem("Gizmos", nullptr, &gizmosWindow->isOpen)) {
+				// El estado se actualiza automáticamente por ImGui
+			}
+		}
+
+		ImGui::Separator();
+
+		// Layout options
+		if (ImGui::MenuItem("Reset Layout")) {
+			if (auto* hierarchy = windowManager.GetWindow<Hierarchy>()) hierarchy->isOpen = true;
+			if (auto* sceneView = windowManager.GetWindow<SceneView>()) sceneView->isOpen = true;
+			if (auto* inspector = windowManager.GetWindow<Inspector>()) inspector->isOpen = true;
+			if (auto* gizmos = windowManager.GetWindow<Gizmos>()) gizmos->isOpen = true;
+		}
+
+		if (ImGui::MenuItem("Minimize All")) {
+			if (auto* hierarchy = windowManager.GetWindow<Hierarchy>()) hierarchy->isOpen = false;
+			if (auto* sceneView = windowManager.GetWindow<SceneView>()) sceneView->isOpen = false;
+			if (auto* inspector = windowManager.GetWindow<Inspector>()) inspector->isOpen = false;
+			if (auto* gizmos = windowManager.GetWindow<Gizmos>()) gizmos->isOpen = false;
+		}
+
 		ImGui::EndMenu();
 	}
 	

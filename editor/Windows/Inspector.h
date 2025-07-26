@@ -9,6 +9,10 @@ class Inspector : public WindowBehaviour {
 public:
     Inspector() = default;
     void OnRenderGUI() override;
+    const std::string& getName() const override {
+        static const std::string name = "Inspector";
+        return name;
+    }
 
 private:
     void RenderGameObjectInspector(GameObject* gameObject);
