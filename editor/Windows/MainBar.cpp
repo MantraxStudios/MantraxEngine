@@ -132,5 +132,88 @@ void MainBar::OnRenderGUI() {
 		ImGui::EndMenu();
 	}
 	
+	if (ImGui::BeginMenu("Rendering")) {
+		auto& sceneManager = SceneManager::getInstance();
+		Scene* activeScene = sceneManager.getActiveScene();
+		RenderPipeline* pipeline = activeScene->getRenderPipeline();
+		
+		if (pipeline) {
+			bool usePBR = pipeline->getUsePBR();
+			if (ImGui::MenuItem("Toggle PBR/Phong", nullptr, &usePBR)) {
+				pipeline->setUsePBR(usePBR);
+				std::cout << "🎨 Switched to " << (usePBR ? "PBR" : "Blinn-Phong") << " lighting" << std::endl;
+			}
+			
+			bool lowAmbient = pipeline->getLowAmbient();
+			if (ImGui::MenuItem("Toggle Low Ambient", nullptr, &lowAmbient)) {
+				pipeline->setLowAmbient(lowAmbient);
+				std::cout << "💡 " << (lowAmbient ? "Enabled" : "Disabled") << " low ambient lighting" << std::endl;
+			}
+			
+			ImGui::Separator();
+			
+			static float ambientIntensity = pipeline->getAmbientIntensity();
+			if (ImGui::SliderFloat("Ambient Intensity", &ambientIntensity, 0.0f, 2.0f, "%.2f")) {
+				pipeline->setAmbientIntensity(ambientIntensity);
+			}
+			
+			bool frustumCulling = pipeline->getFrustumCulling();
+			if (ImGui::MenuItem("Toggle Frustum Culling", nullptr, &frustumCulling)) {
+				pipeline->setFrustumCulling(frustumCulling);
+				std::cout << "👁️ " << (frustumCulling ? "Enabled" : "Disabled") << " frustum culling" << std::endl;
+			}
+		}
+		
+		ImGui::Separator();
+		
+		// Antialiasing controls
+		RenderConfig& config = RenderConfig::getInstance();
+		static int currentAntialiasing = config.getAntialiasing();
+		
+		ImGui::Text("Antialiasing Settings:");
+		
+		if (ImGui::RadioButton("Disabled (0x)", currentAntialiasing == 0)) {
+			currentAntialiasing = 0;
+			config.setAntialiasing(0);
+			std::cout << "🔧 Antialiasing disabled" << std::endl;
+		}
+		
+		if (ImGui::RadioButton("2x MSAA", currentAntialiasing == 2)) {
+			currentAntialiasing = 2;
+			config.setAntialiasing(2);
+			std::cout << "🔧 Antialiasing set to 2x MSAA" << std::endl;
+		}
+		
+		if (ImGui::RadioButton("4x MSAA", currentAntialiasing == 4)) {
+			currentAntialiasing = 4;
+			config.setAntialiasing(4);
+			std::cout << "🔧 Antialiasing set to 4x MSAA" << std::endl;
+		}
+		
+		if (ImGui::RadioButton("8x MSAA", currentAntialiasing == 8)) {
+			currentAntialiasing = 8;
+			config.setAntialiasing(8);
+			std::cout << "🔧 Antialiasing set to 8x MSAA" << std::endl;
+		}
+		
+		if (ImGui::RadioButton("16x MSAA", currentAntialiasing == 16)) {
+			currentAntialiasing = 16;
+			config.setAntialiasing(16);
+			std::cout << "🔧 Antialiasing set to 16x MSAA" << std::endl;
+		}
+		
+		ImGui::Separator();
+		
+		// Current antialiasing status
+		ImGui::Text("Current: %dx MSAA", config.getAntialiasing());
+		if (config.isAntialiasingEnabled()) {
+			ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "✓ Enabled");
+		} else {
+			ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "✗ Disabled");
+		}
+		
+		ImGui::EndMenu();
+	}
+	
 	ImGui::EndMainMenuBar();
 }

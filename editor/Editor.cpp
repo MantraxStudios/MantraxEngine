@@ -154,7 +154,7 @@ int main() {
     // Initialize RenderConfig singleton
     RenderConfig::initialize(1200, 800, 65.0f);
     RenderConfig& config = RenderConfig::getInstance();
-    config.setAntialiasing(16);
+    config.setAntialiasing(0);
 
     RenderWindows* _WindowsRender = new RenderWindows();
     if (!config.initContext()) return -1;
@@ -283,6 +283,8 @@ int main() {
                 std::cout << "Startup banner triggered" << std::endl;
                 continue;
             }
+
+
 
             // Handle mouse capture toggle
             if (event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_RIGHT) {
