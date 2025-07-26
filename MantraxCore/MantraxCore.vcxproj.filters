@@ -34,6 +34,15 @@
     <Filter Include="03_UI\Elements">
       <UniqueIdentifier>{c6af6c17-b584-44fd-b9c4-6db1b73a7a01}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Vendors">
+      <UniqueIdentifier>{8e2a6f4c-63b1-4f93-8a1d-dca8fe3190f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01_Natives\Audio">
+      <UniqueIdentifier>{639c705d-cd02-40fc-bdcb-92f22b6440b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Vendors\FMOD">
+      <UniqueIdentifier>{63e941ad-dec7-4fc8-b446-de2980d719b8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\main\MantraxEngine.cpp">
@@ -66,7 +75,6 @@
     <ClCompile Include="..\src\render\ModelLoader.cpp">
       <Filter>01_Natives\Geometry</Filter>
     </ClCompile>
-
     <ClCompile Include="..\src\render\Texture.cpp">
       <Filter>01_Natives\Render</Filter>
     </ClCompile>
@@ -125,6 +133,12 @@
       <Filter>01_Natives\Components</Filter>
     </ClCompile>
     <ClCompile Include="..\src\render\MaterialManager.cpp" />
+    <ClCompile Include="..\src\components\AudioSource.cpp">
+      <Filter>01_Natives\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\AudioManager.cpp">
+      <Filter>01_Natives\Audio</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\core\CoreExporter.h">
@@ -136,7 +150,6 @@
     <ClInclude Include="..\src\render\AssimpGeometry.h">
       <Filter>01_Natives\Geometry</Filter>
     </ClInclude>
-
     <ClInclude Include="..\src\render\ModelLoader.h">
       <Filter>01_Natives\Geometry</Filter>
     </ClInclude>
@@ -229,8 +242,47 @@
       <Filter>01_Natives\Components</Filter>
     </ClInclude>
     <ClInclude Include="..\src\render\MaterialManager.h" />
+    <ClInclude Include="..\src\components\AudioSource.h">
+      <Filter>01_Natives\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\AudioManager.h">
+      <Filter>01_Natives\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\vendors\includes\fmod\fmod.h">
+      <Filter>Vendors\FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="..\vendors\includes\fmod\fmod.hpp">
+      <Filter>Vendors\FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="..\vendors\includes\fmod\fmod_codec.h">
+      <Filter>Vendors\FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="..\vendors\includes\fmod\fmod_common.h">
+      <Filter>Vendors\FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="..\vendors\includes\fmod\fmod_dsp.h">
+      <Filter>Vendors\FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="..\vendors\includes\fmod\fmod_dsp_effects.h">
+      <Filter>Vendors\FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="..\vendors\includes\fmod\fmod_errors.h">
+      <Filter>Vendors\FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="..\vendors\includes\fmod\fmod_output.h">
+      <Filter>Vendors\FMOD</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="..\vendors\includes\fmod\fmod.cs">
+      <Filter>Vendors\FMOD</Filter>
+    </None>
+    <None Include="..\vendors\includes\fmod\fmod_dsp.cs">
+      <Filter>Vendors\FMOD</Filter>
+    </None>
+    <None Include="..\vendors\includes\fmod\fmod_errors.cs">
+      <Filter>Vendors\FMOD</Filter>
+    </None>
   </ItemGroup>
 </Project>

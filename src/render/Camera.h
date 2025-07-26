@@ -1,10 +1,12 @@
 #pragma once
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/quaternion.hpp>
+#include <glm/gtx/transform.hpp>
+#include <glm/gtx/vector_angle.hpp>
 #include "Frustum.h"
 #include "Framebuffer.h"
 #include "../core/CoreExporter.h"
-
 
 enum class MANTRAXCORE_API ProjectionType {
     Perspective,
@@ -62,10 +64,23 @@ public:
     void setFramebufferSize(int width, int height);
     Framebuffer* getFramebuffer() const { return framebuffer; }
 
+    void update(float deltaTime);
+
+    // Audio-related getters (uppercase for distinction)
+    glm::vec3 GetVelocity() const { return m_velocity; }
+    glm::vec3 GetForward() const;
+    glm::vec3 GetRight() const;
+    glm::vec3 GetUp() const;
+
 private:
     glm::vec3 position;
     glm::vec3 target;
     glm::vec3 up;
+    glm::vec3 m_forward{0.0f, 0.0f, -1.0f};
+    glm::vec3 m_right{1.0f, 0.0f, 0.0f};
+    glm::vec3 m_up{0.0f, 1.0f, 0.0f};
+    glm::vec3 m_lastPosition{0.0f};
+    glm::vec3 m_velocity{0.0f};
 
     float fov;
     float aspectRatio;

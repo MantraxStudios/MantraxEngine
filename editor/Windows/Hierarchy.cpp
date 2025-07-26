@@ -250,12 +250,5 @@ void Hierarchy::OnRenderGUI() {
 		}
 		ImGui::TreePop();
 	}
-
-	if (ImGui::TreeNode("Audio Service")) {
-		ImGui::Text("Archivo 1");
-		ImGui::Text("Archivo 2");
-		ImGui::TreePop();
-	}
-
 	ImGui::End();
 }

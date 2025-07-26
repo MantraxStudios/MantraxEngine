@@ -14,13 +14,11 @@ class RenderPipeline;
 
 class MANTRAXCORE_API Scene {
 public:
-    Scene(const std::string& name) : name(name), initialized(false) {}
-    virtual ~Scene() {
-        cleanup();
-    }
+    Scene(const std::string& name = "New Scene");
+    virtual ~Scene() = default;
 
-    virtual void initialize() = 0;
-    virtual void update(float deltaTime) = 0;
+    virtual void initialize() {}
+    virtual void update(float deltaTime);
     virtual void cleanup() {
         // Delete all game objects
         for (auto* obj : gameObjects) {

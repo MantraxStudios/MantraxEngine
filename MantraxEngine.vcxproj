@@ -100,7 +100,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;BX_CONFIG_DEBUG=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;BX_CONFIG_DEBUG=0;GLM_ENABLE_EXPERIMENTAL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)src/;$(SolutionDir)vendors/includes</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -142,7 +142,6 @@
     <ClCompile Include="editor\Windows\Inspector.cpp" />
     <ClCompile Include="editor\Windows\Selection.cpp" />
     <ClCompile Include="editor\Windows\MainBar.cpp" />
-
     <ClCompile Include="editor\Windows\RenderWindows.cpp" />
     <ClCompile Include="editor\Windows\SceneView.cpp" />
     <ClCompile Include="vendors\includes\imgui\imgui.cpp" />
@@ -167,7 +166,6 @@
     <ClInclude Include="editor\Windows\Hierarchy.h" />
     <ClInclude Include="editor\Windows\Inspector.h" />
     <ClInclude Include="editor\Windows\MainBar.h" />
-
     <ClInclude Include="editor\Windows\RenderWindows.h" />
     <ClInclude Include="editor\Windows\SceneView.h" />
     <ClInclude Include="editor\Windows\Selection.h" />

@@ -8,6 +8,7 @@
 #include "render/RenderConfig.h"
 #include "render/DefaultShaders.h"
 #include "render/Camera.h"
+#include "core/AudioManager.h"
 
 #include "render/Material.h"
 #include "render/Texture.h"
@@ -165,6 +166,13 @@ int main() {
 
     ImGuiLoader::StartContext(window, gl_context);
 
+    // Inicializar FMOD
+    auto& audioManager = AudioManager::getInstance();
+    if (!audioManager.initialize()) {
+        std::cerr << "Failed to initialize FMOD" << std::endl;
+        return -1;
+    }
+
     // UI Manager disabled due to SDL_Renderer conflicts
     // Will use ImGui-based UI instead
     std::cout << "Using ImGui-based UI system (SDL_Renderer disabled)" << std::endl;
@@ -261,6 +269,9 @@ int main() {
 
     while (g_running) {
         Time::update();
+
+        // Actualizar FMOD
+        audioManager.update();
 
         while (SDL_PollEvent(&event)) {
             ImGuiLoader::ImGuiEventPoll(&event);
@@ -416,9 +427,9 @@ int main() {
         config.setWindowTitle(title.str());
     }
 
+    // Cleanup
+    audioManager.destroy();
     ImGuiLoader::CleanEUI();
-    
-    // Clean up RenderConfig singleton
     RenderConfig::destroy();
     
     return 0;

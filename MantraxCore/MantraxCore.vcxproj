@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\components\AudioSource.cpp" />
     <ClCompile Include="..\src\components\GameObject.cpp" />
     <ClCompile Include="..\src\components\ModelScene.cpp" />
     <ClCompile Include="..\src\components\SceneManager.cpp" />
@@ -26,6 +27,7 @@
     <ClCompile Include="..\src\components\TestScene.cpp" />
     <ClCompile Include="..\src\components\TexturedScene.cpp" />
     <ClCompile Include="..\src\components\EventSystem.cpp" />
+    <ClCompile Include="..\src\core\AudioManager.cpp" />
     <ClCompile Include="..\src\core\CoreWrapper.cpp" />
     <ClCompile Include="..\src\core\InputConfigLoader.cpp" />
     <ClCompile Include="..\src\core\UIDGenerator.cpp" />
@@ -39,7 +41,6 @@
     <ClCompile Include="..\src\render\Material.cpp" />
     <ClCompile Include="..\src\render\MaterialManager.cpp" />
     <ClCompile Include="..\src\render\ModelLoader.cpp" />
-
     <ClCompile Include="..\src\render\RenderConfig.cpp" />
     <ClCompile Include="..\src\render\RenderPipeline.cpp" />
     <ClCompile Include="..\src\render\Texture.cpp" />
@@ -52,6 +53,7 @@
     <ClCompile Include="..\src\ui\UIManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\components\AudioSource.h" />
     <ClInclude Include="..\src\components\Component.h" />
     <ClInclude Include="..\src\components\GameObject.h" />
     <ClInclude Include="..\src\components\ModelScene.h" />
@@ -60,6 +62,7 @@
     <ClInclude Include="..\src\components\TestScene.h" />
     <ClInclude Include="..\src\components\TexturedScene.h" />
     <ClInclude Include="..\src\components\EventSystem.h" />
+    <ClInclude Include="..\src\core\AudioManager.h" />
     <ClInclude Include="..\src\core\CoreExporter.h" />
     <ClInclude Include="..\src\core\CoreWrapper.h" />
     <ClInclude Include="..\src\core\InputConfigLoader.h" />
@@ -76,7 +79,6 @@
     <ClInclude Include="..\src\render\Material.h" />
     <ClInclude Include="..\src\render\MaterialManager.h" />
     <ClInclude Include="..\src\render\ModelLoader.h" />
-
     <ClInclude Include="..\src\render\RenderConfig.h" />
     <ClInclude Include="..\src\render\RenderPipeline.h" />
     <ClInclude Include="..\src\render\Texture.h" />
@@ -87,9 +89,20 @@
     <ClInclude Include="..\src\ui\Canvas.h" />
     <ClInclude Include="..\src\ui\UIDemo.h" />
     <ClInclude Include="..\src\ui\UIManager.h" />
+    <ClInclude Include="..\vendors\includes\fmod\fmod.h" />
+    <ClInclude Include="..\vendors\includes\fmod\fmod.hpp" />
+    <ClInclude Include="..\vendors\includes\fmod\fmod_codec.h" />
+    <ClInclude Include="..\vendors\includes\fmod\fmod_common.h" />
+    <ClInclude Include="..\vendors\includes\fmod\fmod_dsp.h" />
+    <ClInclude Include="..\vendors\includes\fmod\fmod_dsp_effects.h" />
+    <ClInclude Include="..\vendors\includes\fmod\fmod_errors.h" />
+    <ClInclude Include="..\vendors\includes\fmod\fmod_output.h" />
     <ClInclude Include="..\vendors\includes\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\vendors\includes\fmod\fmod.cs" />
+    <None Include="..\vendors\includes\fmod\fmod_dsp.cs" />
+    <None Include="..\vendors\includes\fmod\fmod_errors.cs" />
     <None Include="packages.config" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -180,7 +193,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;MANTRAXCORE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;MANTRAXCORE_EXPORTS;_WINDOWS;_USRDLL;GLM_ENABLE_EXPERIMENTAL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -192,7 +205,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalLibraryDirectories>$(SolutionDir)vendors/libs</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glew32.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glew32.lib;assimp-vc143-mt.lib;fmod_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

@@ -9,9 +9,10 @@
 
 #include "../render/Material.h"
 #include "../render/Frustum.h"
-#include "Component.h"
 #include "../core/CoreExporter.h"
 #include "../core/UIDGenerator.h"
+#include "../render/AssimpGeometry.h"
+#include "Component.h"
 
 // Forward declaration
 class AssimpGeometry;
@@ -25,8 +26,6 @@ public:
     // Constructor con path de modelo (carga automática)
     GameObject(const std::string& modelPath);
     GameObject(const std::string& modelPath, std::shared_ptr<Material> material);
-    
-
     
     // Constructor for AssimpGeometry specifically
     GameObject(std::shared_ptr<AssimpGeometry> geometry);
@@ -107,6 +106,12 @@ public:
     // Material
     void setMaterial(std::shared_ptr<Material> material);
     std::shared_ptr<Material> getMaterial() const;
+
+    // Render control methods
+    void setRenderEnabled(bool enable) { shouldRender = enable; }
+    bool isRenderEnabled() const { return shouldRender; }
+    void setTransformUpdateEnabled(bool enable) { shouldUpdateTransform = enable; }
+    bool isTransformUpdateEnabled() const { return shouldUpdateTransform; }
     
     // Bounding volumes para frustum culling (OPTIMIZADO)
     BoundingSphere getWorldBoundingSphere() const;
@@ -116,7 +121,15 @@ public:
     glm::vec3 getWorldBoundingBoxMax() const;
     void setBoundingRadius(float radius);
     void calculateBoundingVolumes(); // Calcula bounding volumes de la geometría
-    
+
+    // Update method
+    virtual void update(float deltaTime) {
+        // Actualizar todos los componentes
+        for (auto& comp : components) {
+            comp->update();
+        }
+    }
+
     template <typename T, typename... Args>
     T *addComponent(Args &&...args)
     {
@@ -167,7 +180,7 @@ public:
     float localBoundingRadius;
     mutable BoundingSphere cachedWorldBoundingSphere;
     mutable bool worldBoundingSphereDirty;
-    
+
 private:
     void updateLocalModelMatrix() const;
     void updateWorldModelMatrix() const;
@@ -177,4 +190,6 @@ private:
     void invalidateWorldTransform();
 
     std::vector<std::unique_ptr<Component>> components;
+    bool shouldRender{true};
+    bool shouldUpdateTransform{true};
 };

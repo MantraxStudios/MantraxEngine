@@ -9,7 +9,7 @@ public:
     virtual void start() {}
     virtual void update() {}
 
-    void setOwner(GameObject* owner) { this->owner = owner; }
+    virtual void setOwner(GameObject* owner) { this->owner = owner; }
     GameObject* getOwner() const { return owner; }
 
 protected:

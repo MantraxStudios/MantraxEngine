@@ -37,8 +37,6 @@ GameObject::GameObject(const std::string& modelPath, std::shared_ptr<Material> m
     loadModelFromPath(); // Intentar cargar el modelo automáticamente
 }
 
-
-
 GameObject::GameObject(std::shared_ptr<AssimpGeometry> geometry)
     : geometry(geometry.get()), sharedGeometry(geometry), material(nullptr), 
       localPosition(0.0f), localScale(1.0f), localRotation(1.0f, 0.0f, 0.0f, 0.0f), 
@@ -322,6 +320,8 @@ void GameObject::updateChildrenTransforms() {
 }
 
 void GameObject::updateLocalModelMatrix() const {
+    if (!shouldUpdateTransform) return;
+
     localModelMatrix = glm::translate(glm::mat4(1.0f), localPosition) *
                       glm::toMat4(localRotation) *
                       glm::scale(glm::mat4(1.0f), localScale);
@@ -329,6 +329,8 @@ void GameObject::updateLocalModelMatrix() const {
 }
 
 void GameObject::updateWorldModelMatrix() const {
+    if (!shouldUpdateTransform) return;
+
     if (dirtyLocalTransform) {
         updateLocalModelMatrix();
     }
@@ -369,7 +371,7 @@ bool GameObject::loadModelFromPath(const std::string& path) {
         std::cerr << "GameObject::loadModelFromPath: Empty path provided for object '" << Name << "'" << std::endl;
         return false;
     }
-    
+
     std::cout << "Loading model for GameObject '" << Name << "' from path: " << path << std::endl;
     
     // Usar el ModelLoader singleton para cargar el modelo
@@ -413,7 +415,7 @@ void GameObject::calculateBoundingVolumes() {
         localBoundingBox = BoundingBox(-halfSize, halfSize);
         localBoundingRadius = glm::length(halfSize);
     }
-    
+
     worldBoundingSphereDirty = true;
 }
 

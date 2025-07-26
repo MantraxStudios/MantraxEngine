@@ -17,6 +17,7 @@
 #include "../components/TexturedScene.h"
 #include "../input/InputSystem.h"
 #include "../core/Time.h"
+#include "../core/AudioManager.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
@@ -154,6 +155,13 @@ int main() {
     // Setup input system
     setupInputSystem(activeScene);
 
+    // Inicializar FMOD
+    auto& audioManager = AudioManager::getInstance();
+    if (!audioManager.initialize()) {
+        std::cerr << "Failed to initialize FMOD" << std::endl;
+        return -1;
+    }
+
     std::cout << "\n=== CONTROLES ===" << std::endl;
     std::cout << "WASD: Mover camara | Espacio/Shift: Subir/Bajar" << std::endl;
     std::cout << "Mouse: Mirar | Click Derecho: Capturar Mouse" << std::endl;
@@ -231,9 +239,13 @@ int main() {
         title << " | Objects: " << pipeline.getVisibleObjectsCount() << "/" << pipeline.getTotalObjectsCount();
         title << " | Scene: " << activeScene->getName();
         config.setWindowTitle(title.str());
+
+        // Actualizar FMOD
+        audioManager.update();
     }
 
     // Cleanup
+    audioManager.destroy();
     RenderConfig::destroy();
     return 0;
 }

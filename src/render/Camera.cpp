@@ -114,25 +114,44 @@ void Camera::setRotation(float newYaw, float newPitch) {
     updateVectors();
 }
 
-glm::vec3 Camera::getForward() const {
-    glm::vec3 direction;
-    direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-    direction.y = sin(glm::radians(pitch));
-    direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-    return glm::normalize(direction);
-}
+void Camera::update(float deltaTime) {
+    // Protección contra deltaTime muy pequeño o cero
+    const float MIN_DELTA_TIME = 0.001f; // 1ms
+    if (deltaTime < MIN_DELTA_TIME) {
+        deltaTime = MIN_DELTA_TIME;
+    }
 
-glm::vec3 Camera::getRight() const {
-    return glm::normalize(glm::cross(getForward(), glm::vec3(0.0f, 1.0f, 0.0f)));
-}
+    // Calcular velocidad con suavizado
+    const float VELOCITY_SMOOTHING = 0.3f; // Ajusta este valor entre 0 y 1
+    glm::vec3 currentVelocity = (position - m_lastPosition) / deltaTime;
+    m_velocity = glm::mix(m_velocity, currentVelocity, VELOCITY_SMOOTHING);
+    
+    // Limitar la magnitud de la velocidad para evitar valores extremos
+    const float MAX_VELOCITY = 1000.0f; // Ajusta según las unidades de tu mundo
+    float velocityLength = glm::length(m_velocity);
+    if (velocityLength > MAX_VELOCITY) {
+        m_velocity = (m_velocity / velocityLength) * MAX_VELOCITY;
+    }
 
-glm::vec3 Camera::getUp() const {
-    return glm::normalize(glm::cross(getRight(), getForward()));
+    m_lastPosition = position;
+    
+    updateProjectionTransition(deltaTime);
+    updateVectors();
 }
 
 void Camera::updateVectors() {
-    // Vectors are calculated on-demand in getForward(), getRight(), getUp()
-    // This method is called when rotation changes
+    // Calcular la dirección forward basada en los ángulos de rotación
+    m_forward.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+    m_forward.y = sin(glm::radians(pitch));
+    m_forward.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+    m_forward = glm::normalize(m_forward);
+
+    // Recalcular el vector right usando el up world como referencia
+    const glm::vec3 worldUp(0.0f, 1.0f, 0.0f);
+    m_right = glm::normalize(glm::cross(m_forward, worldUp));
+
+    // Recalcular el vector up para asegurar ortogonalidad
+    m_up = glm::normalize(glm::cross(m_right, m_forward));
 }
 
 glm::mat4 Camera::getViewProjectionMatrix() const {
@@ -190,4 +209,28 @@ void Camera::setFramebufferSize(int width, int height) {
     if (framebuffer && framebufferEnabled) {
         framebuffer->resize(width, height);
     }
+}
+
+glm::vec3 Camera::getForward() const {
+    return m_forward;
+}
+
+glm::vec3 Camera::getRight() const {
+    return m_right;
+}
+
+glm::vec3 Camera::getUp() const {
+    return m_up;
+}
+
+glm::vec3 Camera::GetForward() const {
+    return m_forward;
+}
+
+glm::vec3 Camera::GetRight() const {
+    return m_right;
+}
+
+glm::vec3 Camera::GetUp() const {
+    return m_up;
 }

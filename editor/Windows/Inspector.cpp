@@ -26,59 +26,221 @@ void Inspector::OnRenderGUI() {
 }
 
 void Inspector::RenderGameObjectInspector(GameObject* go) {
-    // --- ID ---
-    ImGui::Text("ID: %s", go->ObjectID.c_str());
+    if (!go) return;
 
-    // --- Name ---
+    // Nombre del objeto
     char nameBuffer[128] = {};
     strncpy_s(nameBuffer, sizeof(nameBuffer), go->Name.c_str(), _TRUNCATE);
     if (ImGui::InputText("Name", nameBuffer, sizeof(nameBuffer))) {
         go->Name = std::string(nameBuffer);
     }
 
-    // --- Tag ---
-    char tagBuffer[64] = {};
-    strncpy_s(tagBuffer, sizeof(tagBuffer), go->Tag.c_str(), _TRUNCATE);
-    if (ImGui::InputText("Tag", tagBuffer, sizeof(tagBuffer))) {
-        go->Tag = std::string(tagBuffer);
+    ImGui::Separator();
+    ImGui::Text("Rendering Options");
+
+    // Control de renderizado
+    bool shouldRender = go->isRenderEnabled();
+    if (ImGui::Checkbox("Enable Rendering", &shouldRender)) {
+        go->setRenderEnabled(shouldRender);
+    }
+    if (ImGui::IsItemHovered()) {
+        ImGui::SetTooltip("Toggle mesh rendering for this object");
+    }
+
+    // Control de actualización del transform
+    bool shouldUpdateTransform = go->isTransformUpdateEnabled();
+    if (ImGui::Checkbox("Enable Transform Updates", &shouldUpdateTransform)) {
+        go->setTransformUpdateEnabled(shouldUpdateTransform);
+    }
+    if (ImGui::IsItemHovered()) {
+        ImGui::SetTooltip("Toggle automatic transform matrix updates");
     }
 
     ImGui::Separator();
     ImGui::Text("Transform");
 
-    // Posición
-    glm::vec3 pos = go->getLocalPosition();
-    if (ImGui::DragFloat3("Position", glm::value_ptr(pos), 0.1f)) {
-        go->setLocalPosition(pos);
-    }
+    // Solo mostrar controles de transform si está habilitada la actualización
+    if (shouldUpdateTransform) {
+        glm::vec3 pos = go->getLocalPosition();
+        if (ImGui::DragFloat3("Position", glm::value_ptr(pos), 0.1f)) {
+            go->setLocalPosition(pos);
+        }
 
-    // Rotación
-    glm::vec3 rotEuler = go->getLocalRotationEuler();
-    if (ImGui::DragFloat3("Rotation", glm::value_ptr(rotEuler), 0.5f)) {
-        go->setLocalRotationEuler(rotEuler);
-    }
+        glm::vec3 rotEuler = go->getLocalRotationEuler();
+        if (ImGui::DragFloat3("Rotation", glm::value_ptr(rotEuler), 0.5f)) {
+            go->setLocalRotationEuler(rotEuler);
+        }
 
-    // Escala
-    glm::vec3 scl = go->getLocalScale();
-    if (ImGui::DragFloat3("Scale", glm::value_ptr(scl), 0.1f)) {
-        go->setLocalScale(scl);
-    }
-
-    // Información de bounding box
-    ImGui::Separator();
-    ImGui::Text("Bounding Box:");
-    BoundingBox worldBox = go->getWorldBoundingBox();
-    ImGui::Text("Min: %.2f, %.2f, %.2f", worldBox.min.x, worldBox.min.y, worldBox.min.z);
-    ImGui::Text("Max: %.2f, %.2f, %.2f", worldBox.max.x, worldBox.max.y, worldBox.max.z);
-    
-    // Información de geometría
-    ImGui::Separator();
-    ImGui::Text("Geometry:");
-    if (go->hasGeometry()) {
-        ImGui::Text("Has Geometry: Yes");
+        glm::vec3 scl = go->getLocalScale();
+        if (ImGui::DragFloat3("Scale", glm::value_ptr(scl), 0.1f)) {
+            go->setLocalScale(scl);
+        }
     } else {
-        ImGui::Text("Has Geometry: No");
+        ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "Transform updates disabled");
     }
+
+    // Componentes
+    ImGui::Separator();
+    ImGui::Text("Components");
+
+    // Mostrar componentes existentes
+    if (go->hasGeometry()) {
+        ImGui::TextColored(ImVec4(0.2f, 0.8f, 0.2f, 1.0f), "[Mesh]");
+    }
+
+    auto material = go->getMaterial();
+    if (material) {
+        ImGui::TextColored(ImVec4(0.2f, 0.8f, 0.2f, 1.0f), "[Material]");
+    }
+
+    // Audio Source Component
+    if (auto audioSource = go->getComponent<AudioSource>()) {
+        if (ImGui::TreeNode("[Audio Source]")) {
+            // Path del sonido
+            static char soundPath[256] = "";
+            if (ImGui::InputText("Sound Path", soundPath, sizeof(soundPath))) {
+                if (strlen(soundPath) > 0) {
+                    audioSource->setSound(soundPath, audioSource->is3DEnabled());
+                }
+            }
+
+            // Control de volumen
+            float volume = audioSource->getVolume();
+            if (ImGui::SliderFloat("Volume", &volume, 0.0f, 1.0f)) {
+                audioSource->setVolume(volume);
+            }
+
+            // Toggle 3D
+            bool is3D = audioSource->is3DEnabled();
+            if (ImGui::Checkbox("3D Sound", &is3D)) {
+                audioSource->set3DAttributes(is3D);
+            }
+
+            // Controles 3D
+            if (is3D) {
+                ImGui::Separator();
+                ImGui::Text("3D Settings");
+
+                float minDist = audioSource->getMinDistance();
+                if (ImGui::DragFloat("Min Distance", &minDist, 0.1f, 0.1f, audioSource->getMaxDistance())) {
+                    audioSource->setMinDistance(minDist);
+                }
+                if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("Distancia mínima antes de que el sonido comience a atenuarse");
+                }
+
+                float maxDist = audioSource->getMaxDistance();
+                if (ImGui::DragFloat("Max Distance", &maxDist, 1.0f, minDist + 0.1f, 10000.0f)) {
+                    audioSource->setMaxDistance(maxDist);
+                }
+                if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("Distancia máxima a la que se puede escuchar el sonido");
+                }
+            }
+
+            // Controles de reproducción
+            if (ImGui::Button(audioSource->isPlaying() ? "Stop" : "Play")) {
+                if (audioSource->isPlaying()) {
+                    audioSource->stop();
+                } else {
+                    audioSource->play();
+                }
+            }
+            ImGui::SameLine();
+            if (ImGui::Button(audioSource->isPaused() ? "Resume" : "Pause")) {
+                if (audioSource->isPaused()) {
+                    audioSource->resume();
+                } else {
+                    audioSource->pause();
+                }
+            }
+
+            ImGui::TreePop();
+        }
+    }
+
+    // Botón de agregar componente con menú desplegable
+    if (ImGui::Button("Add Component", ImVec2(-1, 0))) {
+        ImGui::OpenPopup("ComponentMenu");
+    }
+
+    // Estilo para el menú de componentes
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(8, 8));
+    if (ImGui::BeginPopup("ComponentMenu")) {
+        ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "AUDIO");
+        ImGui::Separator();
+        
+        if (!go->getComponent<AudioSource>()) {
+            if (ImGui::MenuItem("[Audio Source]", "Adds 3D audio capability")) {
+                go->addComponent<AudioSource>();
+                ImGui::CloseCurrentPopup();
+            }
+            if (ImGui::IsItemHovered()) {
+                ImGui::SetTooltip("Add audio playback capabilities to this object");
+            }
+        }
+
+        ImGui::Separator();
+        ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "RENDERING");
+        ImGui::Separator();
+
+        if (!go->hasGeometry()) {
+            if (ImGui::MenuItem("[Mesh]", "Adds 3D geometry")) {
+                // TODO: Implementar sistema de carga de geometría
+            }
+            if (ImGui::IsItemHovered()) {
+                ImGui::SetTooltip("Add 3D geometry to this object");
+            }
+        }
+
+        if (!go->getMaterial()) {
+            if (ImGui::MenuItem("[Material]", "Adds material properties")) {
+                // TODO: Implementar sistema de materiales
+            }
+            if (ImGui::IsItemHovered()) {
+                ImGui::SetTooltip("Add material properties for rendering");
+            }
+        }
+
+        ImGui::Separator();
+        ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "PHYSICS");
+        ImGui::Separator();
+
+        if (ImGui::MenuItem("[Collider]", "Adds collision detection")) {
+            // TODO: Implementar sistema de colisiones
+        }
+        if (ImGui::IsItemHovered()) {
+            ImGui::SetTooltip("Add collision detection to this object");
+        }
+
+        if (ImGui::MenuItem("[Rigidbody]", "Adds physics simulation")) {
+            // TODO: Implementar sistema de física
+        }
+        if (ImGui::IsItemHovered()) {
+            ImGui::SetTooltip("Add physics simulation to this object");
+        }
+
+        ImGui::Separator();
+        ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "EFFECTS");
+        ImGui::Separator();
+
+        if (ImGui::MenuItem("[Particle System]", "Adds particle effects")) {
+            // TODO: Implementar sistema de partículas
+        }
+        if (ImGui::IsItemHovered()) {
+            ImGui::SetTooltip("Add particle effects to this object");
+        }
+
+        if (ImGui::MenuItem("[Light]", "Adds lighting effects")) {
+            // TODO: Implementar sistema de luces como componente
+        }
+        if (ImGui::IsItemHovered()) {
+            ImGui::SetTooltip("Add lighting capabilities to this object");
+        }
+
+        ImGui::EndPopup();
+    }
+    ImGui::PopStyleVar();
 }
 
 void Inspector::RenderLightInspector(std::shared_ptr<Light> light) {
