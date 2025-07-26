@@ -16,7 +16,7 @@ class Light;
 class Frustum;
 class Framebuffer;
 class AssimpGeometry;
-class NativeGeometry;
+
 class GameObject;
 
 
@@ -57,7 +57,7 @@ public:
     // Resource Management
     std::shared_ptr<AssimpGeometry> loadModel(const std::string& path);
     std::shared_ptr<AssimpGeometry> getModel(const std::string& path);
-    std::shared_ptr<NativeGeometry> createNativeGeometry();
+    
     std::shared_ptr<Material> createMaterial(const glm::vec3& albedo, const std::string& name);
     std::shared_ptr<Material> createMaterial(const glm::vec3& albedo);
     std::shared_ptr<Material> createMaterial();
@@ -88,7 +88,7 @@ private:
     
     // Resource caches
     std::unordered_map<std::string, std::shared_ptr<AssimpGeometry>> modelCache;
-    std::vector<std::shared_ptr<NativeGeometry>> nativeGeometryPool;
+    
     std::vector<std::shared_ptr<Material>> materialPool;
     
     void renderInstanced();
@@ -101,7 +101,7 @@ private:
     // Estructura para agrupar objetos por material y geometría
     struct MaterialGeometryKey {
         std::shared_ptr<Material> material;
-        NativeGeometry* geometry;
+        		AssimpGeometry* geometry;
         
         bool operator<(const MaterialGeometryKey& other) const {
             if (material != other.material) {

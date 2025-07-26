@@ -5,7 +5,7 @@
 //#include "../render/RenderConfig.h"
 //#include "../render/DefaultShaders.h"
 //#include "../render/Camera.h"
-//#include "../render/NativeGeometry.h"
+
 //#include "../render/Material.h"
 //#include "../render/Texture.h"
 //#include "../render/Light.h"

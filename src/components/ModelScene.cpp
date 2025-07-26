@@ -1,6 +1,6 @@
 #include "ModelScene.h"
 #include "../render/AssimpGeometry.h"
-#include "../render/NativeGeometry.h"
+
 #include "../render/Material.h"
 #include "../render/RenderPipeline.h"
 #include <glm/glm.hpp>
@@ -61,10 +61,10 @@ void ModelScene::initialize() {
         std::cout << "Model loaded successfully!" << std::endl;
         
         // Get materials by name from RenderPipeline
-        auto redMaterial = renderPipeline->getMaterial("red_material");
-        auto blueMaterial = renderPipeline->getMaterial("blue_material");
-        auto greenMaterial = renderPipeline->getMaterial("green_material");
-        auto goldMaterial = renderPipeline->getMaterial("gold_material");
+        auto redMaterial = renderPipeline->getMaterial("diamond_plate_material");
+        auto blueMaterial = renderPipeline->getMaterial("diamond_plate_material");
+        auto greenMaterial = renderPipeline->getMaterial("diamond_plate_material");
+        auto goldMaterial = renderPipeline->getMaterial("diamond_plate_material");
         
         // Verify materials were loaded
         if (!redMaterial || !blueMaterial || !greenMaterial || !goldMaterial) {
@@ -151,7 +151,7 @@ void ModelScene::initialize() {
         // Fallback: Create 5000 basic cubes if model loading fails
         std::cout << "Creating 5000 fallback cubes for performance testing..." << std::endl;
         
-        auto fallbackGeometry = renderPipeline->createNativeGeometry();
+        
         auto basicMaterial = renderPipeline->getMaterial("basic_material");
         auto redMaterial = renderPipeline->getMaterial("red_material");
         auto blueMaterial = renderPipeline->getMaterial("blue_material");
@@ -171,7 +171,7 @@ void ModelScene::initialize() {
         int objectCount = 0;
         for (int i = 0; i < gridSize && objectCount < 5000; i++) {
             for (int j = 0; j < gridSize && objectCount < 5000; j++) {
-                auto* cube = new GameObject(fallbackGeometry);
+                auto* cube = new GameObject();
                 
                 // Position in grid with some random variation
                 float randomX = (static_cast<float>(rand()) / RAND_MAX - 0.5f) * 0.5f;

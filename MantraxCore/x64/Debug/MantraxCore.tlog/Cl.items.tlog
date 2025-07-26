@@ -18,7 +18,6 @@ C:\Users\tupap\source\repos\MantraxEngine\src\render\Light.cpp;C:\Users\tupap\so
 C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\Material.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\render\MaterialManager.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\MaterialManager.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\render\ModelLoader.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\ModelLoader.obj
-C:\Users\tupap\source\repos\MantraxEngine\src\render\NativeGeometry.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\NativeGeometry.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\render\RenderConfig.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\RenderConfig.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\render\RenderPipeline.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\RenderPipeline.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\render\Texture.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\Texture.obj

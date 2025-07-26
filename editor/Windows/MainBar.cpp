@@ -32,7 +32,7 @@ void MainBar::OnRenderGUI() {
 			
 			if (pipeline) {
 				// Crear el objeto
-				GameObject* NewObject = new GameObject(pipeline->createNativeGeometry());
+				GameObject* NewObject = new GameObject();
 				NewObject->Name = "New Object";
 				NewObject->setLocalPosition({ 0.0f, 0.0f, 0.0f });
 				NewObject->setMaterial(pipeline->getMaterial("red_material"));
@@ -84,7 +84,7 @@ void MainBar::OnRenderGUI() {
 					delete NewObject;
 					
 					// Crear objeto con geometría por defecto
-					NewObject = new GameObject(pipeline->createNativeGeometry());
+					NewObject = new GameObject();
 					NewObject->Name = "Fallback Object";
 					NewObject->setLocalPosition({ -2.0f, 0.0f, 0.0f });
 					NewObject->setMaterial(pipeline->getMaterial("green_material"));

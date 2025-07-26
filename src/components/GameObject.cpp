@@ -37,23 +37,9 @@ GameObject::GameObject(const std::string& modelPath, std::shared_ptr<Material> m
     loadModelFromPath(); // Intentar cargar el modelo automáticamente
 }
 
-GameObject::GameObject(NativeGeometry *geometry)
-    : geometry(geometry), sharedGeometry(nullptr), material(nullptr), 
-      localPosition(0.0f), localScale(1.0f), localRotation(1.0f, 0.0f, 0.0f, 0.0f), 
-      dirtyLocalTransform(true), dirtyWorldTransform(true), parent(nullptr),
-      localBoundingRadius(0.5f), worldBoundingSphereDirty(true), ModelPath("") {
-    calculateBoundingVolumes();
-}
 
-GameObject::GameObject(NativeGeometry *geometry, std::shared_ptr<Material> mat)
-    : geometry(geometry), sharedGeometry(nullptr), material(mat), 
-      localPosition(0.0f), localScale(1.0f), localRotation(1.0f, 0.0f, 0.0f, 0.0f), 
-      dirtyLocalTransform(true), dirtyWorldTransform(true), parent(nullptr),
-      localBoundingRadius(0.5f), worldBoundingSphereDirty(true), ModelPath("") {
-    calculateBoundingVolumes();
-}
 
-GameObject::GameObject(std::shared_ptr<NativeGeometry> geometry)
+GameObject::GameObject(std::shared_ptr<AssimpGeometry> geometry)
     : geometry(geometry.get()), sharedGeometry(geometry), material(nullptr), 
       localPosition(0.0f), localScale(1.0f), localRotation(1.0f, 0.0f, 0.0f, 0.0f), 
       dirtyLocalTransform(true), dirtyWorldTransform(true), parent(nullptr),
@@ -61,24 +47,8 @@ GameObject::GameObject(std::shared_ptr<NativeGeometry> geometry)
     calculateBoundingVolumes();
 }
 
-GameObject::GameObject(std::shared_ptr<NativeGeometry> geometry, std::shared_ptr<Material> mat)
-    : geometry(geometry.get()), sharedGeometry(geometry), material(mat), 
-      localPosition(0.0f), localScale(1.0f), localRotation(1.0f, 0.0f, 0.0f, 0.0f), 
-      dirtyLocalTransform(true), dirtyWorldTransform(true), parent(nullptr),
-      localBoundingRadius(0.5f), worldBoundingSphereDirty(true), ModelPath("") {
-    calculateBoundingVolumes();
-}
-
-GameObject::GameObject(std::shared_ptr<AssimpGeometry> geometry)
-    : geometry(geometry.get()), sharedGeometry(std::static_pointer_cast<NativeGeometry>(geometry)), material(nullptr), 
-      localPosition(0.0f), localScale(1.0f), localRotation(1.0f, 0.0f, 0.0f, 0.0f), 
-      dirtyLocalTransform(true), dirtyWorldTransform(true), parent(nullptr),
-      localBoundingRadius(0.5f), worldBoundingSphereDirty(true), ModelPath("") {
-    calculateBoundingVolumes();
-}
-
 GameObject::GameObject(std::shared_ptr<AssimpGeometry> geometry, std::shared_ptr<Material> mat)
-    : geometry(geometry.get()), sharedGeometry(std::static_pointer_cast<NativeGeometry>(geometry)), material(mat), 
+    : geometry(geometry.get()), sharedGeometry(geometry), material(mat), 
       localPosition(0.0f), localScale(1.0f), localRotation(1.0f, 0.0f, 0.0f, 0.0f), 
       dirtyLocalTransform(true), dirtyWorldTransform(true), parent(nullptr),
       localBoundingRadius(0.5f), worldBoundingSphereDirty(true), ModelPath("") {
@@ -372,25 +342,13 @@ void GameObject::updateWorldModelMatrix() const {
     dirtyWorldTransform = false;
 }
 
-NativeGeometry *GameObject::getGeometry() const {
+AssimpGeometry *GameObject::getGeometry() const {
     return geometry;
-}
-
-void GameObject::setGeometry(NativeGeometry* geom) {
-    geometry = geom;
-    sharedGeometry = nullptr;
-    calculateBoundingVolumes();
-}
-
-void GameObject::setGeometry(std::shared_ptr<NativeGeometry> geom) {
-    geometry = geom.get();
-    sharedGeometry = geom;
-    calculateBoundingVolumes();
 }
 
 void GameObject::setGeometry(std::shared_ptr<AssimpGeometry> geom) {
     geometry = geom.get();
-    sharedGeometry = std::static_pointer_cast<NativeGeometry>(geom);
+    sharedGeometry = geom;
     calculateBoundingVolumes();
 }
 

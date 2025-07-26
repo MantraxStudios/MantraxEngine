@@ -1,5 +1,5 @@
 #include "TexturedScene.h"
-#include "../render/NativeGeometry.h"
+
 #include "../render/Material.h"
 #include "../render/RenderPipeline.h"
 #include <glm/glm.hpp>
@@ -28,17 +28,14 @@ void TexturedScene::initialize() {
         return;
     }
 
-    // Create geometry using RenderPipeline
-    cubeGeometry = renderPipeline->createNativeGeometry();
-
-    // Create a grid of textured cubes
+    // Create a grid of textured cubes (sin geometría por defecto)
     const int gridSize = 3;
     const float spacing = 3.0f;
     const float startPos = -((gridSize - 1) * spacing) / 2.0f;
 
     for (int x = 0; x < gridSize; x++) {
         for (int z = 0; z < gridSize; z++) {
-            auto* cube = new GameObject(cubeGeometry);
+            auto* cube = new GameObject();
             float xPos = startPos + x * spacing;
             float zPos = startPos + z * spacing;
             cube->setLocalPosition({ xPos, 0.0f, zPos });

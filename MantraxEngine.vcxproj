@@ -142,6 +142,7 @@
     <ClCompile Include="editor\Windows\Inspector.cpp" />
     <ClCompile Include="editor\Windows\Selection.cpp" />
     <ClCompile Include="editor\Windows\MainBar.cpp" />
+
     <ClCompile Include="editor\Windows\RenderWindows.cpp" />
     <ClCompile Include="editor\Windows\SceneView.cpp" />
     <ClCompile Include="vendors\includes\imgui\imgui.cpp" />
@@ -166,6 +167,7 @@
     <ClInclude Include="editor\Windows\Hierarchy.h" />
     <ClInclude Include="editor\Windows\Inspector.h" />
     <ClInclude Include="editor\Windows\MainBar.h" />
+
     <ClInclude Include="editor\Windows\RenderWindows.h" />
     <ClInclude Include="editor\Windows\SceneView.h" />
     <ClInclude Include="editor\Windows\Selection.h" />

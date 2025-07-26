@@ -1,5 +1,5 @@
 #include "TestScene.h"
-#include "../render/NativeGeometry.h"
+
 #include "../render/Material.h"
 #include "../render/RenderPipeline.h"
 #include <glm/glm.hpp>
@@ -34,23 +34,20 @@ void TestScene::initialize() {
         return;
     }
 
-    // Create geometry using RenderPipeline
-    cubeGeometry = renderPipeline->createNativeGeometry();
-
-    // Crear objetos básicos con geometría existente
-    auto* redCube = new GameObject(cubeGeometry);
+    // Crear objetos básicos sin geometría (objetos vacíos)
+    auto* redCube = new GameObject();
     redCube->Name = "RedCube";
     redCube->setLocalPosition({ -2.0f, 0.0f, 0.0f });
     redCube->setMaterial(redMaterial);
     addGameObject(redCube);
 
-    auto* blueCube = new GameObject(cubeGeometry);
+    auto* blueCube = new GameObject();
     blueCube->Name = "BlueCube";
     blueCube->setLocalPosition({ 0.0f, 0.0f, 0.0f });
     blueCube->setMaterial(blueMaterial);
     addGameObject(blueCube);
 
-    auto* greenCube = new GameObject(cubeGeometry);
+    auto* greenCube = new GameObject();
     greenCube->Name = "GreenCube";
     greenCube->setLocalPosition({ 2.0f, 0.0f, 0.0f });
     greenCube->setMaterial(greenMaterial);
@@ -67,7 +64,7 @@ void TestScene::initialize() {
     auto* delayedGeometryObject = new GameObject();
     delayedGeometryObject->Name = "DelayedGeometryObject";
     delayedGeometryObject->setLocalPosition({ 4.0f, 0.0f, 0.0f });
-    delayedGeometryObject->setGeometry(cubeGeometry);
+    // Nota: Sin geometría por defecto, se puede cargar un modelo después
     delayedGeometryObject->setMaterial(redMaterial);
     addGameObject(delayedGeometryObject);
 

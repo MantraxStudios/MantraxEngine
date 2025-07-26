@@ -37,7 +37,7 @@ void main() {
         tangent = normalize(normalMatrix * aTangent);
         bitangent = normalize(normalMatrix * aBitangent);
     } else {
-        // Calcular normales del cubo basadas en la posición local (para NativeGeometry)
+        // Calcular normales del cubo basadas en la posición local
         normal = normalize(normalMatrix * normalize(aPos));
         tangent = normalize(normalMatrix * vec3(1.0, 0.0, 0.0));
         bitangent = normalize(normalMatrix * vec3(0.0, 1.0, 0.0));

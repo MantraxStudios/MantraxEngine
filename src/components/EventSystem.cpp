@@ -139,7 +139,7 @@ bool EventSystem::MouseCast2D(glm::vec2 mouseCoords, CastData *data, Camera *cam
         glm::vec3 localRayOrigin = glm::vec3(inverseModel * glm::vec4(rayOrigin, 1.0f));
         glm::vec3 localRayDirection = glm::normalize(glm::vec3(inverseModel * glm::vec4(rayDirection, 0.0f)));
 
-        NativeGeometry* geometry = objD->getGeometry();
+        		AssimpGeometry* geometry = objD->getGeometry();
         
         // Usar bounding box para detección rápida primero
         glm::vec3 boxMin = geometry->getBoundingBoxMin();
@@ -164,7 +164,7 @@ bool EventSystem::MouseCast2D(glm::vec2 mouseCoords, CastData *data, Camera *cam
             }
             else
             {
-                // Para NativeGeometry simple, usar el centro del bounding box
+                		// Para geometría simple, usar el centro del bounding box
                 glm::vec3 boxCenter = (boxMin + boxMax) * 0.5f;
                 float distance = glm::length(boxCenter - localRayOrigin);
                 

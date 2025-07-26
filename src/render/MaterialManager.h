@@ -28,6 +28,12 @@ public:
     
     // Get material count
     size_t getMaterialCount() const;
+    
+    // Get all materials
+    const std::unordered_map<std::string, std::shared_ptr<Material>>& getAllMaterials() const;
+    
+    // Add material
+    void addMaterial(const std::string& key, std::shared_ptr<Material> material);
 
 private:
     MaterialManager() = default;

@@ -1,10 +1,12 @@
 #pragma once
-#include "NativeGeometry.h"
+
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <string>
 #include <vector>
+#include <GL/glew.h>
+#include <glm/glm.hpp>
 
 struct Vertex {
     glm::vec3 position;
@@ -14,18 +16,19 @@ struct Vertex {
     glm::vec3 bitangent;
 };
 
-class MANTRAXCORE_API AssimpGeometry : public NativeGeometry {
+class AssimpGeometry {
 public:
     AssimpGeometry(const std::string& path);
-    virtual ~AssimpGeometry();
+    ~AssimpGeometry();
 
-    void draw() const override;
-    void drawInstanced(const std::vector<glm::mat4>& modelMatrices) const override;
+    void draw() const;
+    void drawInstanced(const std::vector<glm::mat4>& modelMatrices) const;
+    void updateInstanceBuffer(const std::vector<glm::mat4>& modelMatrices);
     
     // Para modelos 3D cargados
-    bool usesModelNormals() const override { return true; }
-    glm::vec3 getBoundingBoxMin() const override { return boundingBoxMin; }
-    glm::vec3 getBoundingBoxMax() const override { return boundingBoxMax; }
+    bool usesModelNormals() const { return true; }
+    glm::vec3 getBoundingBoxMin() const { return boundingBoxMin; }
+    glm::vec3 getBoundingBoxMax() const { return boundingBoxMax; }
     
     // Info del modelo
     bool isLoaded() const { return loaded; }
@@ -37,7 +40,12 @@ private:
     std::string modelPath;
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
+    
+    // OpenGL buffers
+    GLuint vao; // Vertex Array Object
+    GLuint vbo; // Vertex Buffer Object
     GLuint EBO; // Element Buffer Object para índices
+    GLuint instanceVBO; // Instance Buffer Object
     bool loaded;
     
     // Bounding box del modelo

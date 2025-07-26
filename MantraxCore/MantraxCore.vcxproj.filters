@@ -66,9 +66,7 @@
     <ClCompile Include="..\src\render\ModelLoader.cpp">
       <Filter>01_Natives\Geometry</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\render\NativeGeometry.cpp">
-      <Filter>01_Natives\Render</Filter>
-    </ClCompile>
+
     <ClCompile Include="..\src\render\Texture.cpp">
       <Filter>01_Natives\Render</Filter>
     </ClCompile>
@@ -138,9 +136,7 @@
     <ClInclude Include="..\src\render\AssimpGeometry.h">
       <Filter>01_Natives\Geometry</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\render\NativeGeometry.h">
-      <Filter>01_Natives\Geometry</Filter>
-    </ClInclude>
+
     <ClInclude Include="..\src\render\ModelLoader.h">
       <Filter>01_Natives\Geometry</Filter>
     </ClInclude>

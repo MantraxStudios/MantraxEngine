@@ -39,7 +39,7 @@
     <ClCompile Include="..\src\render\Material.cpp" />
     <ClCompile Include="..\src\render\MaterialManager.cpp" />
     <ClCompile Include="..\src\render\ModelLoader.cpp" />
-    <ClCompile Include="..\src\render\NativeGeometry.cpp" />
+
     <ClCompile Include="..\src\render\RenderConfig.cpp" />
     <ClCompile Include="..\src\render\RenderPipeline.cpp" />
     <ClCompile Include="..\src\render\Texture.cpp" />
@@ -76,7 +76,7 @@
     <ClInclude Include="..\src\render\Material.h" />
     <ClInclude Include="..\src\render\MaterialManager.h" />
     <ClInclude Include="..\src\render\ModelLoader.h" />
-    <ClInclude Include="..\src\render\NativeGeometry.h" />
+
     <ClInclude Include="..\src\render\RenderConfig.h" />
     <ClInclude Include="..\src\render\RenderPipeline.h" />
     <ClInclude Include="..\src\render\Texture.h" />
@@ -203,13 +203,17 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;MANTRAXCORE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)vendors/includes</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(SolutionDir)vendors/libs</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glew32.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

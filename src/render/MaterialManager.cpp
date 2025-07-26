@@ -142,4 +142,13 @@ void MaterialManager::clearMaterials() {
 
 size_t MaterialManager::getMaterialCount() const {
     return materials.size();
+}
+
+const std::unordered_map<std::string, std::shared_ptr<Material>>& MaterialManager::getAllMaterials() const {
+    return materials;
+}
+
+void MaterialManager::addMaterial(const std::string& key, std::shared_ptr<Material> material) {
+    materials[key] = material;
+    std::cout << "Added material: " << key << " -> " << material->getName() << std::endl;
 } 

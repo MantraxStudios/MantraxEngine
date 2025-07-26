@@ -6,7 +6,7 @@
 #include <memory>
 #include <vector>
 #include <string>
-#include "../render/NativeGeometry.h"
+
 #include "../render/Material.h"
 #include "../render/Frustum.h"
 #include "Component.h"
@@ -26,10 +26,7 @@ public:
     GameObject(const std::string& modelPath);
     GameObject(const std::string& modelPath, std::shared_ptr<Material> material);
     
-    GameObject(NativeGeometry* geometry);
-    GameObject(NativeGeometry* geometry, std::shared_ptr<Material> material);
-    GameObject(std::shared_ptr<NativeGeometry> geometry);
-    GameObject(std::shared_ptr<NativeGeometry> geometry, std::shared_ptr<Material> material);
+
     
     // Constructor for AssimpGeometry specifically
     GameObject(std::shared_ptr<AssimpGeometry> geometry);
@@ -95,11 +92,9 @@ public:
     bool isInHierarchy(const GameObject* root) const;
 
     // ===== EXISTING FUNCTIONALITY =====
-    NativeGeometry *getGeometry() const;
+    AssimpGeometry *getGeometry() const;
     
     // Métodos para asignar geometría después de la creación
-    void setGeometry(NativeGeometry* geometry);
-    void setGeometry(std::shared_ptr<NativeGeometry> geometry);
     void setGeometry(std::shared_ptr<AssimpGeometry> geometry);
     bool hasGeometry() const { return geometry != nullptr; }
     
@@ -150,8 +145,8 @@ public:
     std::string Tag = "Default";
     std::string ObjectID = std::to_string(UIDGenerator::Generate());
     std::string ModelPath = ""; // Path del modelo a cargar automáticamente
-    NativeGeometry *geometry;
-    std::shared_ptr<NativeGeometry> sharedGeometry; // Para mantener referencia de modelos cargados
+    AssimpGeometry *geometry;
+    std::shared_ptr<AssimpGeometry> sharedGeometry; // Para mantener referencia de modelos cargados
     std::shared_ptr<Material> material;
     
     // Transform data

@@ -5,7 +5,7 @@
 #include "../core/CoreExporter.h"
 
 // Forward declarations
-class NativeGeometry;
+
 class Material;
 
 class MANTRAXCORE_API TexturedScene : public Scene {
@@ -16,5 +16,5 @@ public:
     void update(float deltaTime) override;
 
 private:
-    std::shared_ptr<NativeGeometry> cubeGeometry;
+    
 }; 

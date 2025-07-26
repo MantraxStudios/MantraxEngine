@@ -4,7 +4,7 @@
 #include <unordered_map>
 #include <string>
 
-class MANTRAXCORE_API ModelLoader {
+class ModelLoader {
 public:
     static ModelLoader& getInstance();
     

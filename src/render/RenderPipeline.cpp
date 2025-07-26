@@ -7,7 +7,7 @@
 #include "Frustum.h"
 #include "Framebuffer.h"
 #include "AssimpGeometry.h"
-#include "NativeGeometry.h"
+
 #include "../components/GameObject.h"
 #include <GL/glew.h>
 #include <glm/gtc/type_ptr.hpp>
@@ -231,7 +231,7 @@ void RenderPipeline::renderInstanced() {
             configureDefaultMaterial();
         }
         
-        NativeGeometry* geometry = key.geometry;
+        		AssimpGeometry* geometry = key.geometry;
         
         // Configurar si usa normales de modelo
         GLuint program = shaders->getProgram();
@@ -425,12 +425,7 @@ std::shared_ptr<AssimpGeometry> RenderPipeline::getModel(const std::string& path
     return nullptr;
 }
 
-std::shared_ptr<NativeGeometry> RenderPipeline::createNativeGeometry() {
-    auto geometry = std::make_shared<NativeGeometry>();
-    nativeGeometryPool.push_back(geometry);
-    std::cout << "NativeGeometry created by RenderPipeline (Total: " << nativeGeometryPool.size() << ")" << std::endl;
-    return geometry;
-}
+
 
 std::shared_ptr<Material> RenderPipeline::createMaterial(const glm::vec3& albedo, const std::string& name) {
     auto material = std::make_shared<Material>(name);
@@ -462,7 +457,7 @@ void RenderPipeline::listLoadedModels() const {
                   << " (Vertices: " << model->getVertexCount() 
                   << ", Indices: " << model->getIndexCount() << ")" << std::endl;
     }
-    std::cout << "Native Geometries: " << nativeGeometryPool.size() << std::endl;
+    
     std::cout << "Materials: " << materialPool.size() << std::endl;
 }
 

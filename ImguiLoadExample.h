@@ -6,7 +6,7 @@
 #include "render/RenderConfig.h"
 #include "render/DefaultShaders.h"
 #include "render/Camera.h"
-#include "render/NativeGeometry.h"
+
 #include "render/Material.h"
 #include "render/Texture.h"
 #include "render/Light.h"
@@ -36,14 +36,14 @@
 volatile bool g_running = true;
 
 void signalHandler(int signal) {
-    std::cout << "\nSeñal de cierre recibida (" << signal << "). Cerrando de forma segura..." << std::endl;
+    std::cout << "\nSeï¿½al de cierre recibida (" << signal << "). Cerrando de forma segura..." << std::endl;
     g_running = false;
 }
 
 void setupInputSystem(Scene* activeScene) {
     auto& inputSystem = InputSystem::getInstance();
 
-    // Movimiento de la cámara (WASD)
+    // Movimiento de la cï¿½mara (WASD)
     auto moveAction = inputSystem.registerAction("Move", InputType::Vector2D);
     moveAction->addKeyBinding(SDLK_w, true, 1);  // Forward
     moveAction->addKeyBinding(SDLK_s, false, 1); // Backward
@@ -61,7 +61,7 @@ void setupInputSystem(Scene* activeScene) {
         }
         });
 
-    // Movimiento vertical de la cámara (Space/Shift)
+    // Movimiento vertical de la cï¿½mara (Space/Shift)
     auto verticalMoveAction = inputSystem.registerAction("VerticalMove", InputType::Value);
     verticalMoveAction->addKeyBinding(SDLK_SPACE, true);
     verticalMoveAction->addKeyBinding(SDLK_LSHIFT, false);
@@ -126,7 +126,7 @@ void setupInputSystem(Scene* activeScene) {
 }
 
 int main() {
-    // Registrar manejador de señales para cierre seguro
+    // Registrar manejador de seï¿½ales para cierre seguro
     signal(SIGINT, signalHandler);
     signal(SIGTERM, signalHandler);
 
@@ -136,7 +136,7 @@ int main() {
     SDL_Window* window = config.getWindow();
     SDL_GLContext gl_context = SDL_GL_GetCurrentContext();
 
-    // ==== Inicialización de ImGui ====
+    // ==== Inicializaciï¿½n de ImGui ====
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -172,7 +172,7 @@ int main() {
     setupInputSystem(activeScene);
 
     std::cout << "\n=== CONTROLES ===" << std::endl;
-    std::cout << "WASD: Mover cámara | Espacio/Shift: Subir/Bajar" << std::endl;
+    std::cout << "WASD: Mover cï¿½mara | Espacio/Shift: Subir/Bajar" << std::endl;
     std::cout << "Mouse: Mirar | Click Derecho: Capturar Mouse" << std::endl;
     std::cout << "1: Escena de Test | 2: Escena con Texturas" << std::endl;
     std::cout << "Escape: Liberar Mouse" << std::endl;
@@ -282,7 +282,7 @@ int main() {
             ImGui::Spacing();
             ImGui::Text("Controles");
             ImGui::Separator();
-            ImGui::Text("Mouse capturado: %s", mouseCaptured ? "Sí" : "No");
+            ImGui::Text("Mouse capturado: %s", mouseCaptured ? "Sï¿½" : "No");
             if (ImGui::Button("Liberar Mouse")) {
                 mouseCaptured = false;
                 SDL_SetRelativeMouseMode(SDL_FALSE);
@@ -291,7 +291,7 @@ int main() {
             ImGui::Spacing();
             ImGui::Text("Ventanas");
             ImGui::Separator();
-            ImGui::Checkbox("Mostrar información de cámara", &showCameraInfo);
+            ImGui::Checkbox("Mostrar informaciï¿½n de cï¿½mara", &showCameraInfo);
             ImGui::Checkbox("Mostrar ventana demo ImGui", &showDemoWindow);
 
             ImGui::Spacing();
@@ -306,14 +306,14 @@ int main() {
             ImGui::End();
         }
 
-        // Ventana de información de cámara
+        // Ventana de informaciï¿½n de cï¿½mara
         if (showCameraInfo && activeScene->getCamera()) {
-            ImGui::Begin("Información de Cámara", &showCameraInfo);
+            ImGui::Begin("Informaciï¿½n de Cï¿½mara", &showCameraInfo);
 
             Camera* camera = activeScene->getCamera();
             glm::vec3 pos = camera->getPosition();
 
-            ImGui::Text("Posición");
+            ImGui::Text("Posiciï¿½n");
             ImGui::Text("X: %.2f, Y: %.2f, Z: %.2f", pos.x, pos.y, pos.z);
 
             ImGui::End();

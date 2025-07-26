@@ -261,4 +261,23 @@ void AssimpGeometry::drawInstanced(const std::vector<glm::mat4>& modelMatrices) 
     glBindVertexArray(vao);
     glDrawElementsInstanced(GL_TRIANGLES, static_cast<GLsizei>(indices.size()), 
                            GL_UNSIGNED_INT, 0, static_cast<GLsizei>(modelMatrices.size()));
-} 
+}
+
+void AssimpGeometry::updateInstanceBuffer(const std::vector<glm::mat4>& modelMatrices) {
+    if (!loaded || vao == 0 || instanceVBO == 0) {
+        std::cerr << "WARNING: Attempting to update instance buffer of invalid AssimpGeometry (loaded: " << loaded 
+                  << ", vao: " << vao << ", instanceVBO: " << instanceVBO << ")" << std::endl;
+        return;
+    }
+
+    // Bind VAO to ensure we're updating the correct buffer
+    glBindVertexArray(vao);
+    
+    // Update instance buffer with new matrices
+    glBindBuffer(GL_ARRAY_BUFFER, instanceVBO);
+    glBufferData(GL_ARRAY_BUFFER, modelMatrices.size() * sizeof(glm::mat4), 
+                 modelMatrices.data(), GL_DYNAMIC_DRAW);
+    
+    // Unbind VAO
+    glBindVertexArray(0);
+}
