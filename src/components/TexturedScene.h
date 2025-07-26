@@ -16,6 +16,5 @@ public:
     void update(float deltaTime) override;
 
 private:
-    std::shared_ptr<Material> createPBRMaterial();
     std::shared_ptr<NativeGeometry> cubeGeometry;
 }; 

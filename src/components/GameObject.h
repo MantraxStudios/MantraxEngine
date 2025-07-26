@@ -19,6 +19,13 @@ class AssimpGeometry;
 class MANTRAXCORE_API GameObject
 {
 public:
+    // Constructor por defecto para objetos vacíos
+    GameObject();
+    
+    // Constructor con path de modelo (carga automática)
+    GameObject(const std::string& modelPath);
+    GameObject(const std::string& modelPath, std::shared_ptr<Material> material);
+    
     GameObject(NativeGeometry* geometry);
     GameObject(NativeGeometry* geometry, std::shared_ptr<Material> material);
     GameObject(std::shared_ptr<NativeGeometry> geometry);
@@ -60,8 +67,8 @@ public:
     glm::vec3 getWorldRotationEuler() const;
 
     // Matrix operations
-    glm::mat4 getLocalModelMatrix();
-    glm::mat4 getWorldModelMatrix();
+    glm::mat4 getLocalModelMatrix() const;
+    glm::mat4 getWorldModelMatrix() const;
     glm::mat4 getWorldToLocalMatrix() const;
 
     // ===== HIERARCHY SYSTEM =====
@@ -90,6 +97,18 @@ public:
     // ===== EXISTING FUNCTIONALITY =====
     NativeGeometry *getGeometry() const;
     
+    // Métodos para asignar geometría después de la creación
+    void setGeometry(NativeGeometry* geometry);
+    void setGeometry(std::shared_ptr<NativeGeometry> geometry);
+    void setGeometry(std::shared_ptr<AssimpGeometry> geometry);
+    bool hasGeometry() const { return geometry != nullptr; }
+    
+    // Métodos para carga automática de modelos
+    void setModelPath(const std::string& path);
+    bool loadModelFromPath();
+    bool loadModelFromPath(const std::string& path);
+    const std::string& getModelPath() const { return ModelPath; }
+    
     // Material
     void setMaterial(std::shared_ptr<Material> material);
     std::shared_ptr<Material> getMaterial() const;
@@ -97,6 +116,9 @@ public:
     // Bounding volumes para frustum culling (OPTIMIZADO)
     BoundingSphere getWorldBoundingSphere() const;
     BoundingBox getLocalBoundingBox() const;
+    BoundingBox getWorldBoundingBox() const;
+    glm::vec3 getWorldBoundingBoxMin() const;
+    glm::vec3 getWorldBoundingBoxMax() const;
     void setBoundingRadius(float radius);
     void calculateBoundingVolumes(); // Calcula bounding volumes de la geometría
     
@@ -127,6 +149,7 @@ public:
     std::string Name = "New Object";
     std::string Tag = "Default";
     std::string ObjectID = std::to_string(UIDGenerator::Generate());
+    std::string ModelPath = ""; // Path del modelo a cargar automáticamente
     NativeGeometry *geometry;
     std::shared_ptr<NativeGeometry> sharedGeometry; // Para mantener referencia de modelos cargados
     std::shared_ptr<Material> material;
@@ -135,10 +158,10 @@ public:
     glm::vec3 localPosition;
     glm::vec3 localScale;
     glm::quat localRotation;
-    glm::mat4 localModelMatrix;
-    glm::mat4 worldModelMatrix;
-    bool dirtyLocalTransform;
-    bool dirtyWorldTransform;
+    mutable glm::mat4 localModelMatrix;
+    mutable glm::mat4 worldModelMatrix;
+    mutable bool dirtyLocalTransform;
+    mutable bool dirtyWorldTransform;
     
     // Hierarchy data
     GameObject* parent;
@@ -151,8 +174,8 @@ public:
     mutable bool worldBoundingSphereDirty;
     
 private:
-    void updateLocalModelMatrix();
-    void updateWorldModelMatrix();
+    void updateLocalModelMatrix() const;
+    void updateWorldModelMatrix() const;
     void updateChildrenTransforms();
     void removeFromParent();
     void addToParent(GameObject* newParent);

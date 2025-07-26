@@ -194,6 +194,14 @@ int main() {
     // Initialize RenderPipeline with temporary camera
     RenderPipeline pipeline(tempCamera.get(), &shaders);
     
+    // Load materials from configuration file
+    if (!pipeline.loadMaterialsFromConfig("config/materials_config.json")) {
+        std::cerr << "Warning: Failed to load materials configuration" << std::endl;
+    } else {
+        std::cout << "Materials loaded successfully from configuration" << std::endl;
+        pipeline.listMaterials();
+    }
+    
     // Setup resource management for scenes
     sceneManager.setRenderPipeline(&pipeline);
     
@@ -222,6 +230,7 @@ int main() {
     std::cout << "Mouse: Mirar | Click Derecho: Capturar Mouse" << std::endl;
     std::cout << "1: Escena de Test | 2: Escena con Texturas | 3: ⚡ ESCENA MASIVA (5000 objetos)" << std::endl;
     std::cout << "U: Toggle UI Demo Window (ImGui-based)" << std::endl;
+    std::cout << "B: Mostrar Banner de Inicio" << std::endl;
     std::cout << "UI: Ventana 'UI System Demo' - Funciona en viewport y pantalla" << std::endl;
     std::cout << "Escape: Liberar Mouse" << std::endl;
     std::cout << "⚠️  ADVERTENCIA: Escena 3 = Prueba de estrés con 5000 objetos" << std::endl;
@@ -237,6 +246,11 @@ int main() {
 
     // UI Demo control variable
     bool showUIDemo = true;
+
+    // Banner de inicio
+    bool showStartupBanner = true;
+    float bannerStartTime = 0.0f;
+    const float bannerDuration = 3.0f; // Duración del banner en segundos
 
     // Initialize Time system
     Time::init();
@@ -259,6 +273,14 @@ int main() {
             if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_u) {
                 showUIDemo = !showUIDemo;
                 std::cout << "UI Demo toggled - Visible: " << (showUIDemo ? "YES" : "NO") << std::endl;
+                continue;
+            }
+
+            // Show startup banner with 'B' key
+            if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_b) {
+                showStartupBanner = true;
+                bannerStartTime = 0.0f; // Reset timer
+                std::cout << "Startup banner triggered" << std::endl;
                 continue;
             }
 
@@ -326,6 +348,50 @@ int main() {
         
         // ==== ImGui Frame Begin ====
         ImGuiLoader::MakeFrame();
+
+        // Banner de inicio
+        if (showStartupBanner) {
+            // Inicializar tiempo de inicio si es la primera vez
+            if (bannerStartTime == 0.0f) {
+                bannerStartTime = Time::getTime();
+            }
+            
+            // Calcular tiempo transcurrido
+            float elapsedTime = Time::getTime() - bannerStartTime;
+            
+            // Si ha pasado el tiempo, ocultar el banner
+            if (elapsedTime >= bannerDuration) {
+                showStartupBanner = false;
+            } else {
+                // Configurar estilo para el banner
+                ImGui::SetNextWindowBgAlpha(0.9f);
+                ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x * 0.5f, ImGui::GetIO().DisplaySize.y * 0.3f), ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+                ImGui::SetNextWindowSize(ImVec2(400, 200), ImGuiCond_Always);
+                
+                ImGui::Begin("MantraxEngine Banner", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar);
+                
+                // Centrar el texto
+                ImGui::SetCursorPosY(ImGui::GetWindowHeight() * 0.3f);
+                
+                // Título principal
+                ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[0]); // Usar la fuente más grande disponible
+                ImGui::SetCursorPosX((ImGui::GetWindowWidth() - ImGui::CalcTextSize("MANTRAX ENGINE").x) * 0.5f);
+                ImGui::TextColored(ImVec4(0.2f, 0.6f, 1.0f, 1.0f), "MANTRAX ENGINE");
+                ImGui::PopFont();
+                
+                // Subtítulo
+                ImGui::SetCursorPosY(ImGui::GetWindowHeight() * 0.6f);
+                ImGui::SetCursorPosX((ImGui::GetWindowWidth() - ImGui::CalcTextSize("Game Engine & Editor").x) * 0.5f);
+                ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.8f, 1.0f), "Game Engine & Editor");
+                
+                // Barra de progreso
+                ImGui::SetCursorPosY(ImGui::GetWindowHeight() * 0.8f);
+                ImGui::SetCursorPosX(50);
+                ImGui::ProgressBar(elapsedTime / bannerDuration, ImVec2(300, 20), "");
+                
+                ImGui::End();
+            }
+        }
 
         //ImGui::Begin("Scene Info");
         //ImGui::Text("Objects: %zu", SceneManager::getInstance().getActiveScene()->getGameObjects().size());

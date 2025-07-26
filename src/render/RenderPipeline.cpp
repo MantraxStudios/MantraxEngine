@@ -2,6 +2,7 @@
 #include "Camera.h"
 #include "DefaultShaders.h"
 #include "Material.h"
+#include "MaterialManager.h"
 #include "Light.h"
 #include "Frustum.h"
 #include "Framebuffer.h"
@@ -199,6 +200,11 @@ void RenderPipeline::renderInstanced() {
     std::map<MaterialGeometryKey, std::vector<GameObject*>> materialGeometryGroups;
     
     for (GameObject* obj : sceneObjects) {
+        // Skip objects without geometry
+        if (!obj->hasGeometry()) {
+            continue;
+        }
+        
         // Realizar frustum culling
         if (isObjectVisible(obj, cameraFrustum)) {
             visibleObjectsCount++;
@@ -309,6 +315,11 @@ void RenderPipeline::configureDefaultMaterial() {
 void RenderPipeline::renderNonInstanced() {
     // Método de respaldo para renderizado no instanciado (mantenido por compatibilidad)
     for (GameObject* obj : sceneObjects) {
+        // Skip objects without geometry
+        if (!obj->hasGeometry()) {
+            continue;
+        }
+        
         glm::mat4 model = obj->getWorldModelMatrix();
         glUniformMatrix4fv(glGetUniformLocation(shaders->getProgram(), "model"), 1, GL_FALSE, glm::value_ptr(model));
         obj->getGeometry()->draw();
@@ -457,4 +468,22 @@ void RenderPipeline::listLoadedModels() const {
 
 size_t RenderPipeline::getModelCacheSize() const {
     return modelCache.size();
+}
+
+// Material Management Implementation
+
+bool RenderPipeline::loadMaterialsFromConfig(const std::string& configPath) {
+    return MaterialManager::getInstance().loadMaterialsFromConfig(configPath);
+}
+
+std::shared_ptr<Material> RenderPipeline::getMaterial(const std::string& materialName) {
+    return MaterialManager::getInstance().getMaterial(materialName);
+}
+
+bool RenderPipeline::hasMaterial(const std::string& materialName) const {
+    return MaterialManager::getInstance().hasMaterial(materialName);
+}
+
+void RenderPipeline::listMaterials() const {
+    MaterialManager::getInstance().listMaterials();
 }

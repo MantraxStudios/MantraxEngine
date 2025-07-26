@@ -25,6 +25,13 @@ public:
         return (it != actions.end()) ? it->second : nullptr;
     }
 
+    // Limpiar todas las acciones
+    void clearActions() {
+        actions.clear();
+        keyStates.clear();
+        mouseButtonStates.clear();
+    }
+
     // Procesar eventos de SDL
     void processInput(const SDL_Event& event) {
         for (const auto& [name, action] : actions) {

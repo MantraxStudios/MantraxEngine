@@ -12,6 +12,7 @@ public:
     ~Material();
 
     // Propiedades del material
+    void setName(const std::string& materialName);
     void setAlbedo(const glm::vec3& color);
     void setMetallic(float value);
     void setRoughness(float value);

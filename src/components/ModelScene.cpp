@@ -9,6 +9,8 @@
 #include <cstdlib>
 
 void ModelScene::initialize() {
+    std::cout << "🚀 ModelScene::initialize() called - Creating massive scene with 5000+ objects" << std::endl;
+    
     // Create camera
     auto newCamera = std::make_unique<Camera>(45.0f, 1200.0f / 800.0f, 0.1f, 1000.0f);
     newCamera->setPosition({ 0.0f, 5.0f, 10.0f });
@@ -38,17 +40,37 @@ void ModelScene::initialize() {
             }
         }
     }
+
+            // Crear modelo de carro usando el nuevo sistema de carga automática
+            auto* carModel = new GameObject("x64/Debug/oldcar.fbx");
+            carModel->Name = "OldCar";
+            carModel->setLocalPosition({ 0.0f, 5.0f, 0.0f });
+            carModel->setLocalScale({ 0.01f, 0.01f, 0.01f });
+            carModel->setLocalRotationEuler({45.0f, 15.0f, 30.0f});
+            
+            // Solo agregar si se cargó correctamente
+            if (carModel->hasGeometry()) {
+                addGameObject(carModel);
+                std::cout << "✅ Car model loaded and added to scene" << std::endl;
+            } else {
+                std::cout << "⚠️ Car model failed to load, not adding to scene" << std::endl;
+                delete carModel; // Limpiar memoria si no se cargó
+            }
     
     if (modelGeometry && modelGeometry->isLoaded()) {
         std::cout << "Model loaded successfully!" << std::endl;
         
-        // Create materials using RenderPipeline
-        auto redMaterial = renderPipeline->createMaterial(glm::vec3(0.9f, 0.2f, 0.2f), "Red Material");
-        auto blueMaterial = renderPipeline->createMaterial(glm::vec3(0.2f, 0.3f, 0.9f), "Blue Material");
-        auto greenMaterial = renderPipeline->createMaterial(glm::vec3(0.2f, 0.9f, 0.2f), "Green Material");
-        auto goldMaterial = renderPipeline->createMaterial(glm::vec3(1.0f, 0.8f, 0.2f), "Gold Material");
-        goldMaterial->setMetallic(0.9f);
-        goldMaterial->setRoughness(0.1f);
+        // Get materials by name from RenderPipeline
+        auto redMaterial = renderPipeline->getMaterial("red_material");
+        auto blueMaterial = renderPipeline->getMaterial("blue_material");
+        auto greenMaterial = renderPipeline->getMaterial("green_material");
+        auto goldMaterial = renderPipeline->getMaterial("gold_material");
+        
+        // Verify materials were loaded
+        if (!redMaterial || !blueMaterial || !greenMaterial || !goldMaterial) {
+            std::cerr << "ERROR: Failed to load required materials in ModelScene" << std::endl;
+            return;
+        }
 
         // Create multiple instances of the same model with different materials and positions
         auto* redModel = new GameObject(modelGeometry);
@@ -75,7 +97,7 @@ void ModelScene::initialize() {
         // Create 5000 instances for massive stress testing
         std::cout << "Creating 5000 objects for performance testing..." << std::endl;
         
-        const int gridSize = 71; // 71x71 = 5041, close to 5000
+        const int gridSize = 100; // 71x71 = 5041, close to 5000
         const float spacing = 2.0f;
         const float gridOffset = (gridSize - 1) * spacing * 0.5f;
         
@@ -130,10 +152,16 @@ void ModelScene::initialize() {
         std::cout << "Creating 5000 fallback cubes for performance testing..." << std::endl;
         
         auto fallbackGeometry = renderPipeline->createNativeGeometry();
-        auto basicMaterial = renderPipeline->createMaterial(glm::vec3(0.7f, 0.7f, 0.7f), "Basic Material");
-        auto redMaterial = renderPipeline->createMaterial(glm::vec3(0.9f, 0.2f, 0.2f), "Red Material");
-        auto blueMaterial = renderPipeline->createMaterial(glm::vec3(0.2f, 0.3f, 0.9f), "Blue Material");
-        auto greenMaterial = renderPipeline->createMaterial(glm::vec3(0.2f, 0.9f, 0.2f), "Green Material");
+        auto basicMaterial = renderPipeline->getMaterial("basic_material");
+        auto redMaterial = renderPipeline->getMaterial("red_material");
+        auto blueMaterial = renderPipeline->getMaterial("blue_material");
+        auto greenMaterial = renderPipeline->getMaterial("green_material");
+        
+        // Verify fallback materials were loaded
+        if (!basicMaterial || !redMaterial || !blueMaterial || !greenMaterial) {
+            std::cerr << "ERROR: Failed to load fallback materials in ModelScene" << std::endl;
+            return;
+        }
         
         // Create 5000 cubes in the same grid pattern
         const int gridSize = 71;
@@ -204,6 +232,8 @@ void ModelScene::initialize() {
     pointLight2->setColor(glm::vec3(0.6f, 0.8f, 1.0f));
     pointLight2->setIntensity(2.0f);
     addLight(pointLight2);
+    
+    std::cout << "✅ ModelScene initialization complete - Total objects: " << getGameObjects().size() << std::endl;
 }
 
 void ModelScene::update(float deltaTime) {

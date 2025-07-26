@@ -55,6 +55,9 @@
     <ClCompile Include="editor\EUI\EditorInfo.cpp">
       <Filter>01_Main\EUI</Filter>
     </ClCompile>
+    <ClCompile Include="editor\Windows\MainBar.cpp">
+      <Filter>01_Main\Windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Vendors">
@@ -139,6 +142,9 @@
     </ClInclude>
     <ClInclude Include="editor\EUI\EditorInfo.h">
       <Filter>01_Main\EUI</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\Windows\MainBar.h">
+      <Filter>01_Main\Windows</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

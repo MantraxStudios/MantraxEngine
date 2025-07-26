@@ -19,8 +19,14 @@ void TexturedScene::initialize() {
         return;
     }
 
-    // Create PBR material using RenderPipeline
-    auto pbrMaterial = createPBRMaterial();
+    // Get PBR material by name from RenderPipeline
+    auto pbrMaterial = renderPipeline->getMaterial("diamond_plate_material");
+    
+    // Verify material was loaded
+    if (!pbrMaterial) {
+        std::cerr << "ERROR: Failed to load diamond_plate_material in TexturedScene" << std::endl;
+        return;
+    }
 
     // Create geometry using RenderPipeline
     cubeGeometry = renderPipeline->createNativeGeometry();
@@ -65,14 +71,4 @@ void TexturedScene::initialize() {
 
 void TexturedScene::update(float deltaTime) {
     // Add any scene-specific update logic here
-}
-
-std::shared_ptr<Material> TexturedScene::createPBRMaterial() {
-    auto material = renderPipeline->createMaterial(glm::vec3(1.0f), "Diamond Plate Material");
-    material->setAlbedoTexture("x64/Debug/textures/DiamondPlate008C_1K-PNG_Color.png");
-    material->setNormalTexture("x64/Debug/textures/DiamondPlate008C_1K-PNG_NormalGL.png");
-    material->setMetallicTexture("x64/Debug/textures/DiamondPlate008C_1K-PNG_Metalness.png");
-    material->setRoughnessTexture("x64/Debug/textures/DiamondPlate008C_1K-PNG_Roughness.png");
-    material->setMetallic(1.0f);
-    return material;
 } 

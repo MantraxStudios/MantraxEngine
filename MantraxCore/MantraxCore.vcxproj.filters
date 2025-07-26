@@ -84,6 +84,9 @@
     <ClCompile Include="..\src\components\SceneManager.cpp">
       <Filter>02_Scene</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\components\Scene.cpp">
+      <Filter>02_Scene</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\components\TexturedScene.cpp">
       <Filter>02_Scene\Scenes</Filter>
     </ClCompile>
@@ -120,6 +123,10 @@
     <ClCompile Include="..\src\core\InputConfigLoader.cpp">
       <Filter>01_Natives\Components</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\components\EventSystem.cpp">
+      <Filter>01_Natives\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\render\MaterialManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\core\CoreExporter.h">
@@ -191,6 +198,9 @@
     <ClInclude Include="..\src\components\TestScene.h">
       <Filter>02_Scene\Scenes</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\components\EventSystem.h">
+      <Filter>01_Natives\Components</Filter>
+    </ClInclude>
     <ClInclude Include="..\vendors\includes\stb_image.h" />
     <ClInclude Include="..\src\core\CoreWrapper.h">
       <Filter>00_Mains</Filter>
@@ -222,6 +232,7 @@
     <ClInclude Include="..\src\core\InputConfigLoader.h">
       <Filter>01_Natives\Components</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\render\MaterialManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -11,9 +11,12 @@
 // Forward declaration to avoid circular dependency
 class RenderPipeline;
 
+// Forward declaration to avoid circular dependency
+class RenderPipeline;
+
 class MANTRAXCORE_API Scene {
 public:
-    Scene(const std::string& name) : name(name) {}
+    Scene(const std::string& name) : name(name), initialized(false) {}
     virtual ~Scene() {
         cleanup();
     }
@@ -32,15 +35,19 @@ public:
         
         // Clear camera
         camera.reset();
+        
+        // Reset initialization flag
+        initialized = false;
     }
 
     const std::string& getName() const { return name; }
+    bool isInitialized() const { return initialized; }
+    void setInitialized(bool value) { initialized = value; }
     
-    void addGameObject(GameObject* object) {
-        if (object) {
-            gameObjects.push_back(object);
-        }
-    }
+    void addGameObject(GameObject* object);
+    
+    // Agregar objeto sin sincronización automática (para casos especiales)
+    void addGameObjectNoSync(GameObject* object);
     
     // RenderPipeline access
     void setRenderPipeline(RenderPipeline* pipeline) { renderPipeline = pipeline; }
@@ -64,4 +71,5 @@ protected:
     std::vector<std::shared_ptr<Light>> lights;
     std::unique_ptr<Camera> camera;
     RenderPipeline* renderPipeline = nullptr;
+    bool initialized;
 }; 

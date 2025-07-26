@@ -4,9 +4,10 @@ C:\Users\tupap\source\repos\MantraxEngine\editor\EUI\ImGuiLoader.cpp;C:\Users\tu
 C:\Users\tupap\source\repos\MantraxEngine\editor\Windows\Gizmos.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxEngine\x64\Debug\Gizmos.obj
 C:\Users\tupap\source\repos\MantraxEngine\editor\Windows\Hierarchy.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxEngine\x64\Debug\Hierarchy.obj
 C:\Users\tupap\source\repos\MantraxEngine\editor\Windows\Inspector.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxEngine\x64\Debug\Inspector.obj
+C:\Users\tupap\source\repos\MantraxEngine\editor\Windows\Selection.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxEngine\x64\Debug\Selection.obj
+C:\Users\tupap\source\repos\MantraxEngine\editor\Windows\MainBar.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxEngine\x64\Debug\MainBar.obj
 C:\Users\tupap\source\repos\MantraxEngine\editor\Windows\RenderWindows.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxEngine\x64\Debug\RenderWindows.obj
 C:\Users\tupap\source\repos\MantraxEngine\editor\Windows\SceneView.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxEngine\x64\Debug\SceneView.obj
-C:\Users\tupap\source\repos\MantraxEngine\editor\Windows\Selection.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxEngine\x64\Debug\Selection.obj
 C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\imgui\imgui.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxEngine\x64\Debug\imgui.obj
 C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\imgui\ImGuizmo.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxEngine\x64\Debug\ImGuizmo.obj
 C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\imgui\imgui_demo.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxEngine\x64\Debug\imgui_demo.obj

@@ -1,8 +1,10 @@
 C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\GameObject.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\components\ModelScene.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\ModelScene.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\components\SceneManager.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\SceneManager.obj
+C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\Scene.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\components\TestScene.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\TestScene.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\components\TexturedScene.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\TexturedScene.obj
+C:\Users\tupap\source\repos\MantraxEngine\src\components\EventSystem.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\EventSystem.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\core\CoreWrapper.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\CoreWrapper.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\core\InputConfigLoader.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\InputConfigLoader.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\core\UIDGenerator.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\UIDGenerator.obj
@@ -14,6 +16,7 @@ C:\Users\tupap\source\repos\MantraxEngine\src\render\Framebuffer.cpp;C:\Users\tu
 C:\Users\tupap\source\repos\MantraxEngine\src\render\Frustum.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\Frustum.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\render\Light.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\Light.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\Material.obj
+C:\Users\tupap\source\repos\MantraxEngine\src\render\MaterialManager.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\MaterialManager.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\render\ModelLoader.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\ModelLoader.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\render\NativeGeometry.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\NativeGeometry.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\render\RenderConfig.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\RenderConfig.obj

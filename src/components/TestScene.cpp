@@ -23,29 +23,61 @@ void TestScene::initialize() {
         return;
     }
 
-    // Create materials using RenderPipeline
-    auto redMaterial = renderPipeline->createMaterial(glm::vec3(0.9f, 0.2f, 0.2f), "Red Material");
-    auto blueMaterial = renderPipeline->createMaterial(glm::vec3(0.2f, 0.3f, 0.9f), "Blue Material");
-    auto greenMaterial = renderPipeline->createMaterial(glm::vec3(0.2f, 0.9f, 0.2f), "Green Material");
+    // Get materials by name from RenderPipeline
+    auto redMaterial = renderPipeline->getMaterial("red_material");
+    auto blueMaterial = renderPipeline->getMaterial("blue_material");
+    auto greenMaterial = renderPipeline->getMaterial("green_material");
+    
+    // Verify materials were loaded
+    if (!redMaterial || !blueMaterial || !greenMaterial) {
+        std::cerr << "ERROR: Failed to load required materials in TestScene" << std::endl;
+        return;
+    }
 
     // Create geometry using RenderPipeline
     cubeGeometry = renderPipeline->createNativeGeometry();
 
-    // Create some cubes with different materials
+    // Crear objetos básicos con geometría existente
     auto* redCube = new GameObject(cubeGeometry);
+    redCube->Name = "RedCube";
     redCube->setLocalPosition({ -2.0f, 0.0f, 0.0f });
     redCube->setMaterial(redMaterial);
     addGameObject(redCube);
 
     auto* blueCube = new GameObject(cubeGeometry);
+    blueCube->Name = "BlueCube";
     blueCube->setLocalPosition({ 0.0f, 0.0f, 0.0f });
     blueCube->setMaterial(blueMaterial);
     addGameObject(blueCube);
 
     auto* greenCube = new GameObject(cubeGeometry);
+    greenCube->Name = "GreenCube";
     greenCube->setLocalPosition({ 2.0f, 0.0f, 0.0f });
     greenCube->setMaterial(greenMaterial);
     addGameObject(greenCube);
+
+    // Ejemplo de GameObject vacío (sin geometría) - no se renderiza
+    auto* emptyObject = new GameObject();
+    emptyObject->Name = "EmptyObject";
+    emptyObject->setLocalPosition({ 0.0f, 3.0f, 0.0f });
+    emptyObject->setLocalScale({ 2.0f, 2.0f, 2.0f });
+    addGameObject(emptyObject);
+    
+    // Ejemplo de GameObject que recibe geometría después de la creación
+    auto* delayedGeometryObject = new GameObject();
+    delayedGeometryObject->Name = "DelayedGeometryObject";
+    delayedGeometryObject->setLocalPosition({ 4.0f, 0.0f, 0.0f });
+    delayedGeometryObject->setGeometry(cubeGeometry);
+    delayedGeometryObject->setMaterial(redMaterial);
+    addGameObject(delayedGeometryObject);
+
+    // Ejemplo de GameObject con carga automática de modelo desde path
+    // Nota: Este objeto intentará cargar "models/cube.obj" pero si no existe, quedará vacío
+    auto* autoLoadObject = new GameObject("models/cube.obj");
+    autoLoadObject->Name = "AutoLoadObject";
+    autoLoadObject->setLocalPosition({ 6.0f, 0.0f, 0.0f });
+    autoLoadObject->setMaterial(blueMaterial);
+    addGameObject(autoLoadObject);
 
     // Add a directional light
     auto directionalLight = std::make_shared<Light>(LightType::Directional);

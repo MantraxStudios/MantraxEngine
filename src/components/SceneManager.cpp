@@ -44,7 +44,7 @@ void SceneManager::setActiveScene(const std::string& sceneName) {
             activeScene->cleanup();
         }
         
-        // Set and initialize the new scene
+        // Set the new scene
         activeScene = it->second.get();
         
         // Ensure new scene has RenderPipeline access
@@ -52,7 +52,11 @@ void SceneManager::setActiveScene(const std::string& sceneName) {
             activeScene->setRenderPipeline(renderPipeline);
         }
         
-        activeScene->initialize();
+        // Only initialize if not already initialized
+        if (!activeScene->isInitialized()) {
+            activeScene->initialize();
+            activeScene->setInitialized(true);
+        }
     }
 }
 
@@ -94,13 +98,19 @@ void SceneManager::initializeAllScenes() {
     
     std::cout << "Found " << scenes.size() << " scenes to initialize" << std::endl;
     
-    // Set RenderPipeline for all scenes and initialize them
+    // Set RenderPipeline for all scenes but only initialize the active one
     for (auto& pair : scenes) {
-        std::cout << "Initializing scene: " << pair.first << std::endl;
+        std::cout << "Setting RenderPipeline for scene: " << pair.first << std::endl;
         pair.second->setRenderPipeline(renderPipeline);
-        pair.second->initialize();
-        std::cout << "Scene " << pair.first << " initialized. Has camera: " << (pair.second->getCamera() ? "YES" : "NO") << std::endl;
+        
+        // Only initialize the active scene
+        if (pair.second.get() == activeScene) {
+            std::cout << "Initializing active scene: " << pair.first << std::endl;
+            pair.second->initialize();
+            pair.second->setInitialized(true);
+            std::cout << "Active scene " << pair.first << " initialized. Has camera: " << (pair.second->getCamera() ? "YES" : "NO") << std::endl;
+        }
     }
     
-    std::cout << "All scenes initialized with RenderPipeline" << std::endl;
+    std::cout << "RenderPipeline set for all scenes, active scene initialized" << std::endl;
 } 

@@ -21,7 +21,6 @@ void Inspector::OnRenderGUI() {
         strncpy_s(nameBuffer, sizeof(nameBuffer), go->Name.c_str(), _TRUNCATE);
         if (ImGui::InputText("Name", nameBuffer, sizeof(nameBuffer)))
         {
-
             go->Name = std::string(nameBuffer);
         }
 
@@ -36,14 +35,14 @@ void Inspector::OnRenderGUI() {
         ImGui::Separator();
         ImGui::Text("Transform");
 
-        // Posici髇
+        // Posici贸n
         glm::vec3 pos = go->getLocalPosition();
         if (ImGui::DragFloat3("Position", glm::value_ptr(pos), 0.1f))
         {
             go->setLocalPosition(pos);
         }
 
-        // Rotaci髇
+        // Rotaci贸n
         glm::vec3 rotEuler = go->getLocalRotationEuler();
         if (ImGui::DragFloat3("Rotation", glm::value_ptr(rotEuler), 0.5f))
         {
@@ -55,6 +54,22 @@ void Inspector::OnRenderGUI() {
         if (ImGui::DragFloat3("Scale", glm::value_ptr(scl), 0.1f))
         {
             go->setLocalScale(scl);
+        }
+
+        // Informaci贸n de bounding box
+        ImGui::Separator();
+        ImGui::Text("Bounding Box:");
+        BoundingBox worldBox = go->getWorldBoundingBox();
+        ImGui::Text("Min: %.2f, %.2f, %.2f", worldBox.min.x, worldBox.min.y, worldBox.min.z);
+        ImGui::Text("Max: %.2f, %.2f, %.2f", worldBox.max.x, worldBox.max.y, worldBox.max.z);
+        
+        // Informaci贸n de geometr铆a
+        ImGui::Separator();
+        ImGui::Text("Geometry:");
+        if (go->hasGeometry()) {
+            ImGui::Text("Has Geometry: Yes");
+        } else {
+            ImGui::Text("Has Geometry: No");
         }
     }
     else

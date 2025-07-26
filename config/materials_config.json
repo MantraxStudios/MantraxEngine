@@ -1,0 +1,64 @@
+{
+  "materials": {
+    "red_material": {
+      "name": "Red Material",
+      "albedo": [1.0, 1.0, 1.0],
+      "metallic": 0.0,
+      "roughness": 1.5,
+      "emissive": [0.0, 0.0, 0.0],
+      "tiling": [1.0, 1.0],
+      "normal_strength": 1.0
+    },
+    "blue_material": {
+      "name": "Blue Material",
+      "albedo": [0.2, 0.3, 0.9],
+      "metallic": 0.0,
+      "roughness": 0.5,
+      "emissive": [0.0, 0.0, 0.0],
+      "tiling": [1.0, 1.0],
+      "normal_strength": 1.0
+    },
+    "green_material": {
+      "name": "Green Material",
+      "albedo": [0.2, 0.9, 0.2],
+      "metallic": 0.0,
+      "roughness": 0.5,
+      "emissive": [0.0, 0.0, 0.0],
+      "tiling": [1.0, 1.0],
+      "normal_strength": 1.0
+    },
+    "gold_material": {
+      "name": "Gold Material",
+      "albedo": [1.0, 0.8, 0.2],
+      "metallic": 0.9,
+      "roughness": 0.1,
+      "emissive": [0.0, 0.0, 0.0],
+      "tiling": [1.0, 1.0],
+      "normal_strength": 1.0
+    },
+    "basic_material": {
+      "name": "Basic Material",
+      "albedo": [0.7, 0.7, 0.7],
+      "metallic": 0.0,
+      "roughness": 0.5,
+      "emissive": [0.0, 0.0, 0.0],
+      "tiling": [1.0, 1.0],
+      "normal_strength": 1.0
+    },
+    "diamond_plate_material": {
+      "name": "Diamond Plate Material",
+      "albedo": [1.0, 1.0, 1.0],
+      "metallic": 1.0,
+      "roughness": 0.3,
+      "emissive": [0.0, 0.0, 0.0],
+      "tiling": [1.0, 1.0],
+      "normal_strength": 0.0,
+      "textures": {
+        "albedo": "x64/Debug/textures/DiamondPlate008C_1K-PNG_Color.png",
+        "normal": "x64/Debug/textures/DiamondPlate008C_1K-PNG_NormalGL.png",
+        "metallic": "x64/Debug/textures/DiamondPlate008C_1K-PNG_Metalness.png",
+        "roughness": "x64/Debug/textures/DiamondPlate008C_1K-PNG_Roughness.png"
+      }
+    }
+  }
+}

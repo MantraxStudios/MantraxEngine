@@ -1,16 +1,47 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include "GameObject.h"
 #include "../render/AssimpGeometry.h"
+#include "../render/ModelLoader.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
 #include <algorithm>
+#include <iostream>
+#include <limits>
+
+// Constructor por defecto para objetos vacíos
+GameObject::GameObject()
+    : geometry(nullptr), sharedGeometry(nullptr), material(nullptr), 
+      localPosition(0.0f), localScale(1.0f), localRotation(1.0f, 0.0f, 0.0f, 0.0f), 
+      dirtyLocalTransform(true), dirtyWorldTransform(true), parent(nullptr),
+      localBoundingRadius(0.5f), worldBoundingSphereDirty(true), ModelPath("") {
+    calculateBoundingVolumes();
+}
+
+// Constructor con path de modelo (carga automática)
+GameObject::GameObject(const std::string& modelPath)
+    : geometry(nullptr), sharedGeometry(nullptr), material(nullptr), 
+      localPosition(0.0f), localScale(1.0f), localRotation(1.0f, 0.0f, 0.0f, 0.0f), 
+      dirtyLocalTransform(true), dirtyWorldTransform(true), parent(nullptr),
+      localBoundingRadius(0.5f), worldBoundingSphereDirty(true), ModelPath(modelPath) {
+    calculateBoundingVolumes();
+    loadModelFromPath(); // Intentar cargar el modelo automáticamente
+}
+
+GameObject::GameObject(const std::string& modelPath, std::shared_ptr<Material> mat)
+    : geometry(nullptr), sharedGeometry(nullptr), material(mat), 
+      localPosition(0.0f), localScale(1.0f), localRotation(1.0f, 0.0f, 0.0f, 0.0f), 
+      dirtyLocalTransform(true), dirtyWorldTransform(true), parent(nullptr),
+      localBoundingRadius(0.5f), worldBoundingSphereDirty(true), ModelPath(modelPath) {
+    calculateBoundingVolumes();
+    loadModelFromPath(); // Intentar cargar el modelo automáticamente
+}
 
 GameObject::GameObject(NativeGeometry *geometry)
     : geometry(geometry), sharedGeometry(nullptr), material(nullptr), 
       localPosition(0.0f), localScale(1.0f), localRotation(1.0f, 0.0f, 0.0f, 0.0f), 
       dirtyLocalTransform(true), dirtyWorldTransform(true), parent(nullptr),
-      localBoundingRadius(0.5f), worldBoundingSphereDirty(true) {
+      localBoundingRadius(0.5f), worldBoundingSphereDirty(true), ModelPath("") {
     calculateBoundingVolumes();
 }
 
@@ -18,7 +49,7 @@ GameObject::GameObject(NativeGeometry *geometry, std::shared_ptr<Material> mat)
     : geometry(geometry), sharedGeometry(nullptr), material(mat), 
       localPosition(0.0f), localScale(1.0f), localRotation(1.0f, 0.0f, 0.0f, 0.0f), 
       dirtyLocalTransform(true), dirtyWorldTransform(true), parent(nullptr),
-      localBoundingRadius(0.5f), worldBoundingSphereDirty(true) {
+      localBoundingRadius(0.5f), worldBoundingSphereDirty(true), ModelPath("") {
     calculateBoundingVolumes();
 }
 
@@ -26,7 +57,7 @@ GameObject::GameObject(std::shared_ptr<NativeGeometry> geometry)
     : geometry(geometry.get()), sharedGeometry(geometry), material(nullptr), 
       localPosition(0.0f), localScale(1.0f), localRotation(1.0f, 0.0f, 0.0f, 0.0f), 
       dirtyLocalTransform(true), dirtyWorldTransform(true), parent(nullptr),
-      localBoundingRadius(0.5f), worldBoundingSphereDirty(true) {
+      localBoundingRadius(0.5f), worldBoundingSphereDirty(true), ModelPath("") {
     calculateBoundingVolumes();
 }
 
@@ -34,7 +65,7 @@ GameObject::GameObject(std::shared_ptr<NativeGeometry> geometry, std::shared_ptr
     : geometry(geometry.get()), sharedGeometry(geometry), material(mat), 
       localPosition(0.0f), localScale(1.0f), localRotation(1.0f, 0.0f, 0.0f, 0.0f), 
       dirtyLocalTransform(true), dirtyWorldTransform(true), parent(nullptr),
-      localBoundingRadius(0.5f), worldBoundingSphereDirty(true) {
+      localBoundingRadius(0.5f), worldBoundingSphereDirty(true), ModelPath("") {
     calculateBoundingVolumes();
 }
 
@@ -42,7 +73,7 @@ GameObject::GameObject(std::shared_ptr<AssimpGeometry> geometry)
     : geometry(geometry.get()), sharedGeometry(std::static_pointer_cast<NativeGeometry>(geometry)), material(nullptr), 
       localPosition(0.0f), localScale(1.0f), localRotation(1.0f, 0.0f, 0.0f, 0.0f), 
       dirtyLocalTransform(true), dirtyWorldTransform(true), parent(nullptr),
-      localBoundingRadius(0.5f), worldBoundingSphereDirty(true) {
+      localBoundingRadius(0.5f), worldBoundingSphereDirty(true), ModelPath("") {
     calculateBoundingVolumes();
 }
 
@@ -50,7 +81,7 @@ GameObject::GameObject(std::shared_ptr<AssimpGeometry> geometry, std::shared_ptr
     : geometry(geometry.get()), sharedGeometry(std::static_pointer_cast<NativeGeometry>(geometry)), material(mat), 
       localPosition(0.0f), localScale(1.0f), localRotation(1.0f, 0.0f, 0.0f, 0.0f), 
       dirtyLocalTransform(true), dirtyWorldTransform(true), parent(nullptr),
-      localBoundingRadius(0.5f), worldBoundingSphereDirty(true) {
+      localBoundingRadius(0.5f), worldBoundingSphereDirty(true), ModelPath("") {
     calculateBoundingVolumes();
 }
 
@@ -184,14 +215,14 @@ glm::vec3 GameObject::getWorldRotationEuler() const {
     return glm::degrees(glm::eulerAngles(getWorldRotationQuat()));
 }
 
-glm::mat4 GameObject::getLocalModelMatrix() {
+glm::mat4 GameObject::getLocalModelMatrix() const {
     if (dirtyLocalTransform) {
         updateLocalModelMatrix();
     }
     return localModelMatrix;
 }
 
-glm::mat4 GameObject::getWorldModelMatrix() {
+glm::mat4 GameObject::getWorldModelMatrix() const {
     if (dirtyWorldTransform) {
         updateWorldModelMatrix();
     }
@@ -320,14 +351,14 @@ void GameObject::updateChildrenTransforms() {
     }
 }
 
-void GameObject::updateLocalModelMatrix() {
+void GameObject::updateLocalModelMatrix() const {
     localModelMatrix = glm::translate(glm::mat4(1.0f), localPosition) *
                       glm::toMat4(localRotation) *
                       glm::scale(glm::mat4(1.0f), localScale);
     dirtyLocalTransform = false;
 }
 
-void GameObject::updateWorldModelMatrix() {
+void GameObject::updateWorldModelMatrix() const {
     if (dirtyLocalTransform) {
         updateLocalModelMatrix();
     }
@@ -345,6 +376,60 @@ NativeGeometry *GameObject::getGeometry() const {
     return geometry;
 }
 
+void GameObject::setGeometry(NativeGeometry* geom) {
+    geometry = geom;
+    sharedGeometry = nullptr;
+    calculateBoundingVolumes();
+}
+
+void GameObject::setGeometry(std::shared_ptr<NativeGeometry> geom) {
+    geometry = geom.get();
+    sharedGeometry = geom;
+    calculateBoundingVolumes();
+}
+
+void GameObject::setGeometry(std::shared_ptr<AssimpGeometry> geom) {
+    geometry = geom.get();
+    sharedGeometry = std::static_pointer_cast<NativeGeometry>(geom);
+    calculateBoundingVolumes();
+}
+
+void GameObject::setModelPath(const std::string& path) {
+    ModelPath = path;
+}
+
+bool GameObject::loadModelFromPath() {
+    if (ModelPath.empty()) {
+        std::cerr << "GameObject::loadModelFromPath: No model path set for object '" << Name << "'" << std::endl;
+        return false;
+    }
+    return loadModelFromPath(ModelPath);
+}
+
+bool GameObject::loadModelFromPath(const std::string& path) {
+    if (path.empty()) {
+        std::cerr << "GameObject::loadModelFromPath: Empty path provided for object '" << Name << "'" << std::endl;
+        return false;
+    }
+    
+    std::cout << "Loading model for GameObject '" << Name << "' from path: " << path << std::endl;
+    
+    // Usar el ModelLoader singleton para cargar el modelo
+    auto& modelLoader = ModelLoader::getInstance();
+    auto loadedModel = modelLoader.loadModel(path);
+    
+    if (loadedModel) {
+        // Asignar la geometría cargada
+        setGeometry(loadedModel);
+        ModelPath = path; // Actualizar el path guardado
+        std::cout << "Successfully loaded model for GameObject '" << Name << "'" << std::endl;
+        return true;
+    } else {
+        std::cerr << "Failed to load model for GameObject '" << Name << "' from path: " << path << std::endl;
+        return false;
+    }
+}
+
 void GameObject::setMaterial(std::shared_ptr<Material> mat) {
     material = mat;
 }
@@ -354,10 +439,22 @@ std::shared_ptr<Material> GameObject::getMaterial() const {
 }
 
 void GameObject::calculateBoundingVolumes() {
-    glm::vec3 halfSize = glm::vec3(0.5f);
-    localBoundingBox = BoundingBox(-halfSize, halfSize);
-    
-    localBoundingRadius = glm::length(halfSize);
+    if (geometry) {
+        // Si hay geometría, usar sus bounding volumes
+        glm::vec3 min = geometry->getBoundingBoxMin();
+        glm::vec3 max = geometry->getBoundingBoxMax();
+        localBoundingBox = BoundingBox(min, max);
+        
+        // Calcular radio basado en el bounding box
+        glm::vec3 center = (min + max) * 0.5f;
+        glm::vec3 halfSize = (max - min) * 0.5f;
+        localBoundingRadius = glm::length(halfSize);
+    } else {
+        // Si no hay geometría, usar valores por defecto para un objeto vacío
+        glm::vec3 halfSize = glm::vec3(0.1f); // Tamaño más pequeño para objetos vacíos
+        localBoundingBox = BoundingBox(-halfSize, halfSize);
+        localBoundingRadius = glm::length(halfSize);
+    }
     
     worldBoundingSphereDirty = true;
 }
@@ -383,4 +480,46 @@ BoundingSphere GameObject::getWorldBoundingSphere() const {
 void GameObject::setBoundingRadius(float radius) {
     localBoundingRadius = radius;
     worldBoundingSphereDirty = true;
+}
+
+BoundingBox GameObject::getWorldBoundingBox() const {
+    // Transformar el bounding box local al espacio de mundo
+    glm::mat4 worldMatrix = getWorldModelMatrix();
+    
+    // Obtener los 8 vértices del bounding box local
+    glm::vec3 min = localBoundingBox.min;
+    glm::vec3 max = localBoundingBox.max;
+    
+    std::vector<glm::vec3> localVertices = {
+        glm::vec3(min.x, min.y, min.z),
+        glm::vec3(max.x, min.y, min.z),
+        glm::vec3(min.x, max.y, min.z),
+        glm::vec3(max.x, max.y, min.z),
+        glm::vec3(min.x, min.y, max.z),
+        glm::vec3(max.x, min.y, max.z),
+        glm::vec3(min.x, max.y, max.z),
+        glm::vec3(max.x, max.y, max.z)
+    };
+    
+    // Transformar todos los vértices al espacio de mundo
+    glm::vec3 worldMin = glm::vec3(std::numeric_limits<float>::max());
+    glm::vec3 worldMax = glm::vec3(-std::numeric_limits<float>::max());
+    
+    for (const auto& vertex : localVertices) {
+        glm::vec4 worldVertex = worldMatrix * glm::vec4(vertex, 1.0f);
+        glm::vec3 worldPos = glm::vec3(worldVertex);
+        
+        worldMin = glm::min(worldMin, worldPos);
+        worldMax = glm::max(worldMax, worldPos);
+    }
+    
+    return BoundingBox(worldMin, worldMax);
+}
+
+glm::vec3 GameObject::getWorldBoundingBoxMin() const {
+    return getWorldBoundingBox().min;
+}
+
+glm::vec3 GameObject::getWorldBoundingBoxMax() const {
+    return getWorldBoundingBox().max;
 }

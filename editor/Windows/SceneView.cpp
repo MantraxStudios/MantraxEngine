@@ -5,9 +5,7 @@
 #include "../EUI/EditorInfo.h"
 #include "Selection.h"
 #include <imgui/ImGuizmo.h>
-#include <glm/gtc/type_ptr.hpp>
-#include <glm/gtx/quaternion.hpp>
-#include <glm/gtx/matrix_decompose.hpp>
+#include "components/EventSystem.h"
 
 using namespace ImGuizmo;
 static MODE currentGizmoMode = LOCAL;
@@ -36,6 +34,31 @@ void SceneView::OnRenderGUI() {
 
                 EditorInfo::RenderPositionX = imagePos.x;
                 EditorInfo::RenderPositionY = imagePos.y;
+
+                if (ImGui::IsWindowHovered())
+                {
+                    if (ImGui::IsMouseClicked(0))
+                    {
+                        CastData* data = new CastData();
+                        EventSystem::ViewportRenderPosition = glm::vec2(imagePos.x, imagePos.y);
+                        WorldPoint = EventSystem::screen_to_viewport(camera);
+
+                        if (EventSystem::MouseCast2D(WorldPoint, data, camera) && !ImGuizmo::IsOver())
+                        {
+                            if (Selection::GameObjectSelect != data->object)
+                            {
+                                Selection::GameObjectSelect = data->object;
+                            }
+                        }
+                        else
+                        {
+                            if (!ImGuizmo::IsOver())
+                            {
+                                Selection::GameObjectSelect = nullptr;
+                            }
+                        }
+                    }
+                }
 
                 ImGuiIO& io = ImGui::GetIO();
                 bool hovered = ImGui::IsItemHovered();

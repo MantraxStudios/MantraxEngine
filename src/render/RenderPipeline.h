@@ -61,6 +61,13 @@ public:
     std::shared_ptr<Material> createMaterial(const glm::vec3& albedo, const std::string& name);
     std::shared_ptr<Material> createMaterial(const glm::vec3& albedo);
     std::shared_ptr<Material> createMaterial();
+    
+    // Material management
+    bool loadMaterialsFromConfig(const std::string& configPath);
+    std::shared_ptr<Material> getMaterial(const std::string& materialName);
+    bool hasMaterial(const std::string& materialName) const;
+    void listMaterials() const;
+    
     void clearModelCache();
     void listLoadedModels() const;
     size_t getModelCacheSize() const;

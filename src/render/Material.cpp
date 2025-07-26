@@ -19,6 +19,10 @@ Material::Material(const std::string& materialName)
 Material::~Material() {
 }
 
+void Material::setName(const std::string& materialName) {
+    name = materialName;
+}
+
 void Material::setAlbedo(const glm::vec3& color) {
     albedo = color;
 }

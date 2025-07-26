@@ -40,6 +40,15 @@ bool CoreWrapper::Initialize(int width, int height, float fov) {
 
     // Initialize render pipeline
     m_pipeline = std::make_unique<RenderPipeline>(m_activeScene->getCamera(), m_shaders.get());
+    
+    // Load materials from configuration file
+    if (!m_pipeline->loadMaterialsFromConfig("config/materials_config.json")) {
+        std::cerr << "Warning: Failed to load materials configuration" << std::endl;
+    } else {
+        std::cout << "Materials loaded successfully from configuration" << std::endl;
+        m_pipeline->listMaterials();
+    }
+    
     sceneManager.setupRenderPipeline(*m_pipeline);
 
     // Setup input system
@@ -61,6 +70,9 @@ bool CoreWrapper::Initialize(int width, int height, float fov) {
 
 void CoreWrapper::SetupInputSystem(Scene* activeScene) {
     auto& inputSystem = InputSystem::getInstance();
+    
+    // Limpiar acciones existentes para evitar duplicados
+    inputSystem.clearActions();
     
     // Movimiento de la cámara (WASD)
     auto moveAction = inputSystem.registerAction("Move", InputType::Vector2D);

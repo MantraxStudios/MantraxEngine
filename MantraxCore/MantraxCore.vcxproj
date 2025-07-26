@@ -22,8 +22,10 @@
     <ClCompile Include="..\src\components\GameObject.cpp" />
     <ClCompile Include="..\src\components\ModelScene.cpp" />
     <ClCompile Include="..\src\components\SceneManager.cpp" />
+    <ClCompile Include="..\src\components\Scene.cpp" />
     <ClCompile Include="..\src\components\TestScene.cpp" />
     <ClCompile Include="..\src\components\TexturedScene.cpp" />
+    <ClCompile Include="..\src\components\EventSystem.cpp" />
     <ClCompile Include="..\src\core\CoreWrapper.cpp" />
     <ClCompile Include="..\src\core\InputConfigLoader.cpp" />
     <ClCompile Include="..\src\core\UIDGenerator.cpp" />
@@ -35,6 +37,7 @@
     <ClCompile Include="..\src\render\Frustum.cpp" />
     <ClCompile Include="..\src\render\Light.cpp" />
     <ClCompile Include="..\src\render\Material.cpp" />
+    <ClCompile Include="..\src\render\MaterialManager.cpp" />
     <ClCompile Include="..\src\render\ModelLoader.cpp" />
     <ClCompile Include="..\src\render\NativeGeometry.cpp" />
     <ClCompile Include="..\src\render\RenderConfig.cpp" />
@@ -56,6 +59,7 @@
     <ClInclude Include="..\src\components\SceneManager.h" />
     <ClInclude Include="..\src\components\TestScene.h" />
     <ClInclude Include="..\src\components\TexturedScene.h" />
+    <ClInclude Include="..\src\components\EventSystem.h" />
     <ClInclude Include="..\src\core\CoreExporter.h" />
     <ClInclude Include="..\src\core\CoreWrapper.h" />
     <ClInclude Include="..\src\core\InputConfigLoader.h" />
@@ -70,6 +74,7 @@
     <ClInclude Include="..\src\render\Frustum.h" />
     <ClInclude Include="..\src\render\Light.h" />
     <ClInclude Include="..\src\render\Material.h" />
+    <ClInclude Include="..\src\render\MaterialManager.h" />
     <ClInclude Include="..\src\render\ModelLoader.h" />
     <ClInclude Include="..\src\render\NativeGeometry.h" />
     <ClInclude Include="..\src\render\RenderConfig.h" />
