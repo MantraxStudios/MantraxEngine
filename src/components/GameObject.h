@@ -142,6 +142,12 @@ public:
         comp->setOwner(this);
         T* rawPtr = comp.get();
         components.push_back(std::move(comp));
+        
+        // Ejecutar start() automáticamente cuando se añade el componente
+        if (rawPtr && rawPtr->isActive()) {
+            rawPtr->start();
+        }
+        
         return rawPtr;
     }
 

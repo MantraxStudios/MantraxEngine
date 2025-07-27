@@ -1,10 +1,9 @@
 #pragma once
 
 #include "Component.h"
-#include <Jolt/Jolt.h>
-#include <Jolt/Physics/Body/Body.h>
 #include <glm/glm.hpp>
 #include "../core/CoreExporter.h"
+#include <MantraxPhysics/MBody.h>
 
 enum class BodyType {
     Static,
@@ -55,12 +54,16 @@ public:
     void enable() override;
     void disable() override;
 
+    // MantraxPhysics specific
+    MBody* getMBody() const { return mBody; }
+
 private:
     void createBody();
     void updateTransform();
+    void syncTransformToMBody();
+    void syncTransformFromMBody();
 
-    JPH::Body* body;
-    JPH::BodyID bodyId;
+    MBody* mBody;
     BodyType bodyType;
     float mass;
     float linearDamping;

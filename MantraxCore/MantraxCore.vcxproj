@@ -55,6 +55,8 @@
     <ClCompile Include="..\src\ui\Canvas.cpp" />
     <ClCompile Include="..\src\ui\UIDemo.cpp" />
     <ClCompile Include="..\src\ui\UIManager.cpp" />
+    <ClCompile Include="..\vendors\includes\MantraxPhysics\MBody.cpp" />
+    <ClCompile Include="..\vendors\includes\MantraxPhysics\MWorld.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\components\AudioSource.h" />
@@ -105,6 +107,9 @@
     <ClInclude Include="..\vendors\includes\fmod\fmod_dsp_effects.h" />
     <ClInclude Include="..\vendors\includes\fmod\fmod_errors.h" />
     <ClInclude Include="..\vendors\includes\fmod\fmod_output.h" />
+    <ClInclude Include="..\vendors\includes\MantraxPhysics\libs\MMaths.hpp" />
+    <ClInclude Include="..\vendors\includes\MantraxPhysics\MBody.h" />
+    <ClInclude Include="..\vendors\includes\MantraxPhysics\MWorld.h" />
     <ClInclude Include="..\vendors\includes\stb_image.h" />
   </ItemGroup>
   <ItemGroup>

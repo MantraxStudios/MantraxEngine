@@ -2,6 +2,7 @@
 #include "components/SceneManager.h"
 #include "components/GameObject.h"
 #include "components/LightComponent.h"
+#include "components/RigidBody.h"
 #include "render/RenderConfig.h"
 #include "Selection.h"
 #include <glm/gtc/type_ptr.hpp>
@@ -328,6 +329,237 @@ void Inspector::RenderGameObjectInspector(GameObject* go) {
         }
     }
 
+    // RigidBody Component
+    if (auto rigidBody = go->getComponent<RigidBody>()) {
+        bool removeComponent = false;
+        bool treeNodeOpen = ImGui::TreeNode("[RigidBody]");
+        
+        if (treeNodeOpen) {
+            // Botón de opciones alineado a la derecha pero dentro de la ventana
+            float windowWidth = ImGui::GetContentRegionAvail().x;
+            ImGui::SameLine(windowWidth - 35);
+            if (ImGui::Button(" ... ##RigidBody", ImVec2(30, 0))) {
+                ImGui::OpenPopup("RigidBodyOptions");
+            }
+
+            // Popup de opciones
+            if (ImGui::BeginPopup("RigidBodyOptions")) {
+                if (ImGui::MenuItem("Remove Component")) {
+                    removeComponent = true;
+                }
+                if (ImGui::MenuItem("Reset")) {
+                    // TODO: Implementar reset de valores
+                }
+                if (ImGui::MenuItem("Copy Settings")) {
+                    // TODO: Implementar copia de configuración
+                }
+                ImGui::EndPopup();
+            }
+
+            if (!removeComponent && rigidBody != nullptr) {
+                // Enabled/Disabled
+                bool enabled = rigidBody->isActive();
+                if (ImGui::Checkbox("Enabled", &enabled)) {
+                    if (enabled) {
+                        rigidBody->enable();
+                    } else {
+                        rigidBody->disable();
+                    }
+                }
+
+                ImGui::Separator();
+                ImGui::Text("Body Properties");
+
+                // Body Type
+                BodyType currentType = rigidBody->getBodyType();
+                const char* bodyTypes[] = { "Static", "Dynamic", "Kinematic" };
+                int currentItem = static_cast<int>(currentType);
+                if (ImGui::Combo("Body Type", &currentItem, bodyTypes, 3)) {
+                    rigidBody->setBodyType(static_cast<BodyType>(currentItem));
+                }
+                if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("Static: Immovable, Dynamic: Affected by physics, Kinematic: Movable but not affected by forces");
+                }
+
+                // Mass
+                float mass = rigidBody->getMass();
+                if (ImGui::DragFloat("Mass", &mass, 0.1f, 0.1f, 1000.0f)) {
+                    rigidBody->setMass(mass);
+                }
+                if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("Mass of the object (affects physics behavior)");
+                }
+
+                // Gravity Factor
+                float gravityFactor = rigidBody->getGravityFactor();
+                if (ImGui::DragFloat("Gravity Factor", &gravityFactor, 0.1f, 0.0f, 10.0f)) {
+                    rigidBody->setGravityFactor(gravityFactor);
+                }
+                if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("Multiplier for gravity effect (0 = no gravity, 1 = normal gravity)");
+                }
+
+                ImGui::Separator();
+                ImGui::Text("Physics Properties");
+
+                // Linear Velocity
+                glm::vec3 linearVel = rigidBody->getLinearVelocity();
+                if (ImGui::DragFloat3("Linear Velocity", glm::value_ptr(linearVel), 0.1f)) {
+                    rigidBody->setLinearVelocity(linearVel);
+                }
+                if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("Current linear velocity of the object");
+                }
+
+                // Angular Velocity
+                glm::vec3 angularVel = rigidBody->getAngularVelocity();
+                if (ImGui::DragFloat3("Angular Velocity", glm::value_ptr(angularVel), 0.1f)) {
+                    rigidBody->setAngularVelocity(angularVel);
+                }
+                if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("Current angular velocity of the object");
+                }
+
+                // Linear Damping
+                float linearDamping = rigidBody->getLinearDamping();
+                if (ImGui::DragFloat("Linear Damping", &linearDamping, 0.01f, 0.0f, 1.0f)) {
+                    rigidBody->setLinearDamping(linearDamping);
+                }
+                if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("Damping factor for linear velocity (0 = no damping, 1 = full damping)");
+                }
+
+                // Angular Damping
+                float angularDamping = rigidBody->getAngularDamping();
+                if (ImGui::DragFloat("Angular Damping", &angularDamping, 0.01f, 0.0f, 1.0f)) {
+                    rigidBody->setAngularDamping(angularDamping);
+                }
+                if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("Damping factor for angular velocity (0 = no damping, 1 = full damping)");
+                }
+
+                ImGui::Separator();
+                ImGui::Text("Material Properties");
+
+                // Friction
+                float friction = rigidBody->getFriction();
+                if (ImGui::DragFloat("Friction", &friction, 0.01f, 0.0f, 2.0f)) {
+                    rigidBody->setFriction(friction);
+                }
+                if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("Friction coefficient for contact with other objects");
+                }
+
+                // Restitution
+                float restitution = rigidBody->getRestitution();
+                if (ImGui::DragFloat("Restitution", &restitution, 0.01f, 0.0f, 1.0f)) {
+                    rigidBody->setRestitution(restitution);
+                }
+                if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("Bounciness factor (0 = no bounce, 1 = perfect bounce)");
+                }
+
+                ImGui::Separator();
+                ImGui::Text("Physics State");
+
+                // Is Awake
+                bool isAwake = rigidBody->isAwake();
+                ImGui::Text("Is Awake: %s", isAwake ? "Yes" : "No");
+                
+                if (ImGui::Button("Wake Up")) {
+                    rigidBody->wakeUp();
+                }
+                ImGui::SameLine();
+                static glm::vec3 forceVector(0.0f, 0.0f, 0.0f);
+                static bool showForceDialog = false;
+                
+                if (ImGui::Button("Add Force")) {
+                    showForceDialog = true;
+                }
+                if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("Apply a force to the object");
+                }
+
+                // Force application dialog
+                if (showForceDialog) {
+                    ImGui::OpenPopup("Add Force");
+                }
+                
+                if (ImGui::BeginPopupModal("Add Force", &showForceDialog, ImGuiWindowFlags_AlwaysAutoResize)) {
+                    ImGui::Text("Apply Force to Object");
+                    ImGui::Separator();
+                    
+                    if (ImGui::DragFloat3("Force Vector", glm::value_ptr(forceVector), 0.1f)) {
+                        // Force vector is updated in real-time
+                    }
+                    
+                    ImGui::Separator();
+                    
+                    if (ImGui::Button("Apply Force", ImVec2(120, 0))) {
+                        rigidBody->addForce(forceVector);
+                        forceVector = glm::vec3(0.0f, 0.0f, 0.0f);
+                        showForceDialog = false;
+                        ImGui::CloseCurrentPopup();
+                    }
+                    ImGui::SameLine();
+                    if (ImGui::Button("Cancel", ImVec2(120, 0))) {
+                        forceVector = glm::vec3(0.0f, 0.0f, 0.0f);
+                        showForceDialog = false;
+                        ImGui::CloseCurrentPopup();
+                    }
+                    
+                    ImGui::EndPopup();
+                }
+
+                // Torque application
+                static glm::vec3 torqueVector(0.0f, 0.0f, 0.0f);
+                static bool showTorqueDialog = false;
+                
+                if (ImGui::Button("Add Torque")) {
+                    showTorqueDialog = true;
+                }
+                if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("Apply a torque to the object");
+                }
+
+                // Torque application dialog
+                if (showTorqueDialog) {
+                    ImGui::OpenPopup("Add Torque");
+                }
+                
+                if (ImGui::BeginPopupModal("Add Torque", &showTorqueDialog, ImGuiWindowFlags_AlwaysAutoResize)) {
+                    ImGui::Text("Apply Torque to Object");
+                    ImGui::Separator();
+                    
+                    if (ImGui::DragFloat3("Torque Vector", glm::value_ptr(torqueVector), 0.1f)) {
+                        // Torque vector is updated in real-time
+                    }
+                    
+                    ImGui::Separator();
+                    
+                    if (ImGui::Button("Apply Torque", ImVec2(120, 0))) {
+                        rigidBody->addTorque(torqueVector);
+                        torqueVector = glm::vec3(0.0f, 0.0f, 0.0f);
+                        showTorqueDialog = false;
+                        ImGui::CloseCurrentPopup();
+                    }
+                    ImGui::SameLine();
+                    if (ImGui::Button("Cancel", ImVec2(120, 0))) {
+                        torqueVector = glm::vec3(0.0f, 0.0f, 0.0f);
+                        showTorqueDialog = false;
+                        ImGui::CloseCurrentPopup();
+                    }
+                    
+                    ImGui::EndPopup();
+                }
+            }
+            ImGui::TreePop();
+        }
+        if (removeComponent) {
+            go->removeComponent<RigidBody>();
+        }
+    }
+
     // Botón de agregar componente con menú desplegable
     if (ImGui::Button("Add Component", ImVec2(-1, 0))) {
         ImGui::OpenPopup("ComponentMenu");
@@ -382,11 +614,14 @@ void Inspector::RenderGameObjectInspector(GameObject* go) {
             ImGui::SetTooltip("Add collision detection to this object");
         }
 
-        if (ImGui::MenuItem("[Rigidbody]", "Adds physics simulation")) {
-            // TODO: Implementar sistema de física
-        }
-        if (ImGui::IsItemHovered()) {
-            ImGui::SetTooltip("Add physics simulation to this object");
+        if (!go->getComponent<RigidBody>()) {
+            if (ImGui::MenuItem("[Rigidbody]", "Adds physics simulation")) {
+                go->addComponent<RigidBody>(go);
+                ImGui::CloseCurrentPopup();
+            }
+            if (ImGui::IsItemHovered()) {
+                ImGui::SetTooltip("Add physics simulation to this object");
+            }
         }
 
         ImGui::Separator();

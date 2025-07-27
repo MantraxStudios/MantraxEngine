@@ -46,6 +46,9 @@
     <Filter Include="01_Natives\Physics">
       <UniqueIdentifier>{e09beec6-a1ca-46dd-b6fd-6670a71a4fc2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Vendors\MPhysics">
+      <UniqueIdentifier>{e33f40e8-66cb-4978-8263-fa85c0041b01}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\main\MantraxEngine.cpp">
@@ -135,7 +138,6 @@
     <ClCompile Include="..\src\components\EventSystem.cpp">
       <Filter>01_Natives\Components</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\render\MaterialManager.cpp" />
     <ClCompile Include="..\src\components\AudioSource.cpp">
       <Filter>01_Natives\Audio</Filter>
     </ClCompile>
@@ -153,6 +155,15 @@
     </ClCompile>
     <ClCompile Include="..\src\components\RigidBody.cpp">
       <Filter>01_Natives\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\render\MaterialManager.cpp">
+      <Filter>01_Natives\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\vendors\includes\MantraxPhysics\MWorld.cpp">
+      <Filter>Vendors\MPhysics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\vendors\includes\MantraxPhysics\MBody.cpp">
+      <Filter>Vendors\MPhysics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -256,7 +267,6 @@
     <ClInclude Include="..\src\core\InputConfigLoader.h">
       <Filter>01_Natives\Components</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\render\MaterialManager.h" />
     <ClInclude Include="..\src\components\AudioSource.h">
       <Filter>01_Natives\Audio</Filter>
     </ClInclude>
@@ -298,6 +308,18 @@
     </ClInclude>
     <ClInclude Include="..\src\components\RigidBody.h">
       <Filter>01_Natives\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\render\MaterialManager.h">
+      <Filter>01_Natives\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\vendors\includes\MantraxPhysics\libs\MMaths.hpp">
+      <Filter>Vendors\MPhysics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\vendors\includes\MantraxPhysics\MWorld.h">
+      <Filter>Vendors\MPhysics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\vendors\includes\MantraxPhysics\MBody.h">
+      <Filter>Vendors\MPhysics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
