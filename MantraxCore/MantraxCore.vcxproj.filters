@@ -159,12 +159,6 @@
     <ClCompile Include="..\src\render\MaterialManager.cpp">
       <Filter>01_Natives\Render</Filter>
     </ClCompile>
-    <ClCompile Include="..\vendors\includes\MantraxPhysics\MWorld.cpp">
-      <Filter>Vendors\MPhysics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\vendors\includes\MantraxPhysics\MBody.cpp">
-      <Filter>Vendors\MPhysics</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\core\CoreExporter.h">
@@ -311,18 +305,6 @@
     </ClInclude>
     <ClInclude Include="..\src\render\MaterialManager.h">
       <Filter>01_Natives\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="..\vendors\includes\MantraxPhysics\libs\MMaths.hpp">
-      <Filter>Vendors\MPhysics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\vendors\includes\MantraxPhysics\MWorld.h">
-      <Filter>Vendors\MPhysics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\vendors\includes\MantraxPhysics\MBody.h">
-      <Filter>Vendors\MPhysics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\vendors\includes\MantraxPhysics\MCollision.h">
-      <Filter>Vendors\MPhysics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

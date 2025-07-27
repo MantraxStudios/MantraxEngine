@@ -1,6 +1,7 @@
 #include "SceneManager.h"
 #include <stdexcept>
 #include <iostream>
+#include "../components/PhysicalObject.h"
 
 SceneManager::SceneManager() : activeScene(nullptr), physicsInitialized(false) {
 }
@@ -110,6 +111,17 @@ void SceneManager::update(float deltaTime) {
     if (activeScene) {
         activeScene->update(deltaTime);
         activeScene->updateNative(deltaTime);
+        
+        // Initialize any PhysicalObjects that haven't been initialized yet
+        if (physicsInitialized) {
+            for (auto* obj : activeScene->getGameObjects()) {
+                if (auto physicalObject = obj->getComponent<PhysicalObject>()) {
+                    if (!physicalObject->isInitialized()) {
+                        physicalObject->initializePhysics();
+                    }
+                }
+            }
+        }
     }
 }
 

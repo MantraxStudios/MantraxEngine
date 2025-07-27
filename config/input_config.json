@@ -86,6 +86,15 @@
           "key": "SDLK_3"
         }
       ]
+    },
+    {
+      "name": "SwitchToScene4",
+      "type": "Button",
+      "key_bindings": [
+        {
+          "key": "SDLK_4"
+        }
+      ]
     }
   ]
 }

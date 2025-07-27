@@ -1,18 +1,30 @@
 #include "PhysicalObject.h"
 #include "GameObject.h"
 #include "../core/PhysicsManager.h"
-#include <glm/gtc/quaternion.hpp>
+#include <iostream>
 
-PhysicalObject::PhysicalObject(GameObject* owner) : Component() {
-    setOwner(owner);
-    mBody = nullptr;
+PhysicalObject::PhysicalObject(GameObject* obj) : Component() {
+    setOwner(obj);
+    rigidActor = nullptr;
+    dynamicActor = nullptr;
+    staticActor = nullptr;
+    shape = nullptr;
+    material = nullptr;
     bodyType = BodyType::Dynamic;
+    shapeType = ShapeType::Box;
     mass = 1.0f;
-    linearDamping = 0.0f;
-    angularDamping = 0.0f;
     friction = 0.5f;
-    restitution = 0.0f;
+    restitution = 0.1f;
+    damping = 0.0f;
     gravityFactor = 1.0f;
+    boxHalfExtents = glm::vec3(0.5f, 0.5f, 0.5f);
+    sphereRadius = 0.5f;
+    capsuleRadius = 0.5f;
+    capsuleHalfHeight = 0.5f;
+    initialized = false;
+    
+    // Don't auto-start - wait for explicit initialization
+    // start() will be called later when PhysicsManager is ready
 }
 
 PhysicalObject::~PhysicalObject() {
@@ -20,214 +32,270 @@ PhysicalObject::~PhysicalObject() {
 }
 
 void PhysicalObject::start() {
-    createBody();
-    syncTransformToMBody();
+    // Don't auto-initialize physics - wait for explicit call
+    // initializePhysics() should be called manually when ready
 }
 
-void PhysicalObject::destroy() {
-    if (mBody) {
-        // Remove from physics world
-        auto& physicsWorld = PhysicsManager::getInstance();
-        if (physicsWorld.getWorld()) {
-            physicsWorld.getWorld()->RemoveBody(mBody);
-        }
-        mBody = nullptr;
+void PhysicalObject::initializePhysics() {
+    if (initialized) return;
+    
+    // Check if PhysicsManager is initialized
+    auto& physicsManager = PhysicsManager::getInstance();
+    if (!physicsManager.getPhysics()) {
+        std::cerr << "PhysicalObject::initializePhysics() - PhysicsManager not initialized yet!" << std::endl;
+        return;
+    }
+    
+    createBody();
+    createShape();
+    
+    if (rigidActor && shape) {
+        rigidActor->attachShape(*shape);
+        physicsManager.addActor(*rigidActor);
+        initialized = true;
+        std::cout << "PhysicalObject initialized successfully!" << std::endl;
+    } else {
+        std::cerr << "PhysicalObject::initializePhysics() - Failed to create body or shape!" << std::endl;
     }
 }
 
 void PhysicalObject::update() {
-    if (mBody && isEnabled) {
-        syncTransformFromMBody();
+    auto& physicsManager = PhysicsManager::getInstance();
+    if (rigidActor && isActive() && physicsManager.getPhysics()) {
+        syncTransformFromPhysX();
     }
+}
+
+void PhysicalObject::destroy() {
+    auto& physicsManager = PhysicsManager::getInstance();
+    
+    if (rigidActor && physicsManager.getPhysics()) {
+        physicsManager.removeActor(*rigidActor);
+        rigidActor->release();
+        rigidActor = nullptr;
+        dynamicActor = nullptr;
+        staticActor = nullptr;
+    }
+    
+    if (shape) {
+        shape->release();
+        shape = nullptr;
+    }
+    
+    initialized = false;
 }
 
 void PhysicalObject::createBody() {
-    if (!mBody) {
-        auto& physicsWorld = PhysicsManager::getInstance();
-        mBody = physicsWorld.getWorld()->CreateBody();
-        
-        if (mBody) {
-            // Set initial properties
-            mBody->BodyType = (bodyType == BodyType::Static) ? TypeBody::bStatic : TypeBody::bDynamic;
-            mBody->UseGravity = (gravityFactor > 0.0f);
-            mBody->isSleeping = false;
-        }
+    auto& physicsManager = PhysicsManager::getInstance();
+    
+    // Check if PhysicsManager is initialized
+    if (!physicsManager.getPhysics()) {
+        std::cerr << "PhysicalObject::createBody() - PhysicsManager not initialized yet!" << std::endl;
+        return;
+    }
+    
+    // Get transform from GameObject
+    glm::vec3 position = owner->getWorldPosition();
+    glm::quat rotation = owner->getWorldRotationQuat();
+    
+    physx::PxTransform transform(
+        physx::PxVec3(position.x, position.y, position.z),
+        physx::PxQuat(rotation.x, rotation.y, rotation.z, rotation.w)
+    );
+    
+    if (bodyType == BodyType::Dynamic) {
+        dynamicActor = physicsManager.createDynamicBody(transform, mass);
+        rigidActor = dynamicActor;
+    } else {
+        staticActor = physicsManager.createStaticBody(transform);
+        rigidActor = staticActor;
     }
 }
 
-void PhysicalObject::updateTransform() {
-    if (mBody && owner) {
-        syncTransformFromMBody();
+void PhysicalObject::createShape() {
+    auto& physicsManager = PhysicsManager::getInstance();
+    
+    // Check if PhysicsManager is initialized
+    if (!physicsManager.getPhysics()) {
+        std::cerr << "PhysicalObject::createShape() - PhysicsManager not initialized yet!" << std::endl;
+        return;
+    }
+    
+    switch (shapeType) {
+        case ShapeType::Box:
+            shape = physicsManager.createBoxShape(
+                physx::PxVec3(boxHalfExtents.x, boxHalfExtents.y, boxHalfExtents.z),
+                material
+            );
+            break;
+        case ShapeType::Sphere:
+            shape = physicsManager.createSphereShape(sphereRadius, material);
+            break;
+        case ShapeType::Capsule:
+            shape = physicsManager.createCapsuleShape(capsuleRadius, capsuleHalfHeight, material);
+            break;
+        case ShapeType::Plane:
+            shape = physicsManager.createPlaneShape(material);
+            break;
     }
 }
 
-void PhysicalObject::syncTransformToMBody() {
-    if (mBody && owner) {
-        auto position = owner->getWorldPosition();
-        auto rotation = owner->getWorldRotationQuat();
-        
-        // Convert glm to MantraxPhysics types
-        mBody->Position = Vector3(position.x, position.y, position.z);
-        mBody->Rotation = Quaternion(rotation.w, rotation.x, rotation.y, rotation.z);
-    }
+void PhysicalObject::syncTransformToPhysX() {
+    if (!rigidActor) return;
+    
+    glm::vec3 position = owner->getWorldPosition();
+    glm::quat rotation = owner->getWorldRotationQuat();
+    
+    physx::PxTransform transform(
+        physx::PxVec3(position.x, position.y, position.z),
+        physx::PxQuat(rotation.x, rotation.y, rotation.z, rotation.w)
+    );
+    
+    rigidActor->setGlobalPose(transform);
 }
 
-void PhysicalObject::syncTransformFromMBody() {
-    if (mBody && owner) {
-        // Convert MantraxPhysics to glm types
-        glm::vec3 position(mBody->Position.x, mBody->Position.y, mBody->Position.z);
-        glm::quat rotation(mBody->Rotation.w, mBody->Rotation.x, mBody->Rotation.y, mBody->Rotation.z);
-        
-        owner->setWorldPosition(position);
-        owner->setWorldRotationQuat(rotation);
-    }
-}
-
-void PhysicalObject::setBodyType(BodyType type) {
-    bodyType = type;
-    if (mBody) {
-        mBody->BodyType = (type == BodyType::Static) ? TypeBody::bStatic : TypeBody::bDynamic;
-    }
+void PhysicalObject::syncTransformFromPhysX() {
+    if (!rigidActor) return;
+    
+    physx::PxTransform transform = rigidActor->getGlobalPose();
+    
+    glm::vec3 position(transform.p.x, transform.p.y, transform.p.z);
+    glm::quat rotation(transform.q.w, transform.q.x, transform.q.y, transform.q.z);
+    
+    owner->setWorldPosition(position);
+    owner->setWorldRotationQuat(rotation);
 }
 
 void PhysicalObject::setMass(float newMass) {
     mass = newMass;
-    // Note: MantraxPhysics doesn't seem to have mass property, but we keep it for compatibility
-}
-
-void PhysicalObject::setLinearVelocity(const glm::vec3& velocity) {
-    if (mBody) {
-        mBody->Velocity = Vector3(velocity.x, velocity.y, velocity.z);
+    if (dynamicActor) {
+        physx::PxRigidBodyExt::updateMassAndInertia(*dynamicActor, mass);
     }
 }
 
-void PhysicalObject::setAngularVelocity(const glm::vec3& velocity) {
-    if (mBody) {
-        mBody->AngularVelocity = Vector3(velocity.x, velocity.y, velocity.z);
+void PhysicalObject::setVelocity(const glm::vec3& velocity) {
+    if (dynamicActor) {
+        dynamicActor->setLinearVelocity(physx::PxVec3(velocity.x, velocity.y, velocity.z));
     }
 }
 
-void PhysicalObject::setLinearDamping(float damping) {
-    linearDamping = damping;
+glm::vec3 PhysicalObject::getVelocity() const {
+    if (dynamicActor) {
+        physx::PxVec3 velocity = dynamicActor->getLinearVelocity();
+        return glm::vec3(velocity.x, velocity.y, velocity.z);
+    }
+    return glm::vec3(0.0f);
 }
 
-void PhysicalObject::setAngularDamping(float damping) {
-    angularDamping = damping;
+void PhysicalObject::setDamping(float newDamping) {
+    damping = newDamping;
+    if (dynamicActor) {
+        dynamicActor->setLinearDamping(damping);
+        dynamicActor->setAngularDamping(damping);
+    }
 }
 
 void PhysicalObject::setFriction(float newFriction) {
     friction = newFriction;
+    if (material) {
+        material->setStaticFriction(friction);
+        material->setDynamicFriction(friction);
+    }
 }
 
 void PhysicalObject::setRestitution(float newRestitution) {
     restitution = newRestitution;
+    if (material) {
+        material->setRestitution(restitution);
+    }
 }
 
 void PhysicalObject::setGravityFactor(float factor) {
     gravityFactor = factor;
-    if (mBody) {
-        mBody->UseGravity = (factor > 0.0f);
+    if (dynamicActor) {
+        dynamicActor->setActorFlag(physx::PxActorFlag::eDISABLE_GRAVITY, factor == 0.0f);
     }
 }
 
-glm::vec3 PhysicalObject::getLinearVelocity() const {
-    if (mBody) {
-        return glm::vec3(mBody->Velocity.x, mBody->Velocity.y, mBody->Velocity.z);
-    }
-    return glm::vec3(0.0f);
-}
-
-glm::vec3 PhysicalObject::getAngularVelocity() const {
-    if (mBody) {
-        return glm::vec3(mBody->AngularVelocity.x, mBody->AngularVelocity.y, mBody->AngularVelocity.z);
-    }
-    return glm::vec3(0.0f);
-}
-
-BodyType PhysicalObject::getBodyType() const {
-    return bodyType;
-}
-
-float PhysicalObject::getMass() const {
-    return mass;
-}
-
-float PhysicalObject::getLinearDamping() const {
-    return linearDamping;
-}
-
-float PhysicalObject::getAngularDamping() const {
-    return angularDamping;
-}
-
-float PhysicalObject::getFriction() const {
-    return friction;
-}
-
-float PhysicalObject::getRestitution() const {
-    return restitution;
-}
-
-float PhysicalObject::getGravityFactor() const {
-    return gravityFactor;
-}
-
-void PhysicalObject::addForce(const glm::vec3& force) {
-    if (mBody) {
-        // Convert force to velocity change (F = ma, so a = F/m)
-        Vector3 acceleration(force.x / mass, force.y / mass, force.z / mass);
-        mBody->Velocity += acceleration;
+void PhysicalObject::setBodyType(BodyType type) {
+    if (bodyType != type) {
+        bodyType = type;
+        if (initialized) {
+            destroy();
+            start();
+        }
     }
 }
 
-void PhysicalObject::addTorque(const glm::vec3& torque) {
-    if (mBody) {
-        // Convert torque to angular velocity change
-        // Simplified: assuming uniform mass distribution
-        Vector3 angularAcceleration(torque.x / mass, torque.y / mass, torque.z / mass);
-        mBody->AngularVelocity += angularAcceleration;
+void PhysicalObject::setShapeType(ShapeType type) {
+    if (shapeType != type) {
+        shapeType = type;
+        if (initialized) {
+            destroy();
+            start();
+        }
     }
 }
 
-void PhysicalObject::addImpulse(const glm::vec3& impulse) {
-    if (mBody) {
-        // Impulse directly changes velocity (J = mΔv, so Δv = J/m)
-        Vector3 velocityChange(impulse.x / mass, impulse.y / mass, impulse.z / mass);
-        mBody->Velocity += velocityChange;
+void PhysicalObject::setBoxHalfExtents(const glm::vec3& extents) {
+    boxHalfExtents = extents;
+    if (initialized && shapeType == ShapeType::Box) {
+        destroy();
+        start();
     }
 }
 
-void PhysicalObject::addAngularImpulse(const glm::vec3& impulse) {
-    if (mBody) {
-        // Angular impulse directly changes angular velocity
-        Vector3 angularVelocityChange(impulse.x / mass, impulse.y / mass, impulse.z / mass);
-        mBody->AngularVelocity += angularVelocityChange;
+void PhysicalObject::setSphereRadius(float radius) {
+    sphereRadius = radius;
+    if (initialized && shapeType == ShapeType::Sphere) {
+        destroy();
+        start();
+    }
+}
+
+void PhysicalObject::setCapsuleRadius(float radius) {
+    capsuleRadius = radius;
+    if (initialized && shapeType == ShapeType::Capsule) {
+        destroy();
+        start();
+    }
+}
+
+void PhysicalObject::setCapsuleHalfHeight(float halfHeight) {
+    capsuleHalfHeight = halfHeight;
+    if (initialized && shapeType == ShapeType::Capsule) {
+        destroy();
+        start();
+    }
+}
+
+void PhysicalObject::addForce(const glm::vec3& force, physx::PxForceMode::Enum mode) {
+    if (dynamicActor) {
+        dynamicActor->addForce(physx::PxVec3(force.x, force.y, force.z), mode);
+    }
+}
+
+void PhysicalObject::addTorque(const glm::vec3& torque, physx::PxForceMode::Enum mode) {
+    if (dynamicActor) {
+        dynamicActor->addTorque(physx::PxVec3(torque.x, torque.y, torque.z), mode);
+    }
+}
+
+void PhysicalObject::addImpulse(const glm::vec3& impulse, physx::PxForceMode::Enum mode) {
+    if (dynamicActor) {
+        dynamicActor->addForce(physx::PxVec3(impulse.x, impulse.y, impulse.z), mode);
     }
 }
 
 void PhysicalObject::wakeUp() {
-    if (mBody) {
-        mBody->isSleeping = false;
+    if (dynamicActor) {
+        dynamicActor->wakeUp();
     }
 }
 
 bool PhysicalObject::isAwake() const {
-    if (mBody) {
-        return !mBody->isSleeping;
+    if (dynamicActor) {
+        return !dynamicActor->isSleeping();
     }
     return false;
-}
-
-void PhysicalObject::enable() {
-    Component::enable();
-    if (mBody) {
-        mBody->isSleeping = false;
-    }
-}
-
-void PhysicalObject::disable() {
-    Component::disable();
-    if (mBody) {
-        mBody->isSleeping = true;
-    }
 } 

@@ -146,6 +146,17 @@ void setupInputSystem(Scene* activeScene) {
             }
         });
     }
+
+    auto switchToScene4 = inputSystem.getAction("SwitchToScene4");
+    if (switchToScene4) {
+        switchToScene4->bindButtonCallback([](bool pressed) {
+            if (pressed) {
+                Selection::GameObjectSelect = nullptr;
+                auto& sceneManager = SceneManager::getInstance();
+                sceneManager.setActiveScene("Physics Test Scene");
+            }
+        });
+    }
 }
 
 int main() {
@@ -236,7 +247,7 @@ int main() {
     std::cout << "\n=== CONTROLES ===" << std::endl;
     std::cout << "WASD: Mover camara | Espacio/Shift: Subir/Bajar" << std::endl;
     std::cout << "Mouse: Mirar | Click Derecho: Capturar Mouse" << std::endl;
-    std::cout << "1: Escena de Test | 2: Escena con Texturas | 3: ESCENA MASIVA (5000 objetos)" << std::endl;
+    std::cout << "1: Escena de Test | 2: Escena con Texturas | 3: ESCENA MASIVA (5000 objetos) | 4: Physics Test Scene" << std::endl;
     std::cout << "U: Toggle UI Demo Window (ImGui-based)" << std::endl;
     std::cout << "B: Mostrar Banner de Inicio" << std::endl;
     std::cout << "UI: Ventana 'UI System Demo' - Funciona en viewport y pantalla" << std::endl;

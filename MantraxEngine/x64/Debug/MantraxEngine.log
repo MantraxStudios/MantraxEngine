@@ -259,4 +259,11 @@ C:\Users\tupap\source\repos\MantraxEngine\src\components\LightComponent.h(42,28)
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Light>'
   
+C:\Users\tupap\source\repos\MantraxEngine\src\components\PhysicalObject.h(43,15): warning C4251: "PhysicalObject::boxHalfExtents": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "PhysicalObject"
+  (compilando archivo de origen "editor/Windows/Inspector.cpp")
+      C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
+      vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
+  
+     Creando biblioteca C:\Users\tupap\source\repos\MantraxEngine\x64\Debug\MantraxEngine.lib y objeto C:\Users\tupap\source\repos\MantraxEngine\x64\Debug\MantraxEngine.exp
+LINK : warning LNK4217: "?SaveScene@SceneSaver@@SA_NPEBVScene@@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z (public: static bool __cdecl SceneSaver::SaveScene(class Scene const *,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &))" importa el símbolo "SceneSaver.obj" definido en "MainBar.obj" en la función ""public: virtual void __cdecl MainBar::OnRenderGUI(void)" (?OnRenderGUI@MainBar@@UEAAXXZ)"
   MantraxEngine.vcxproj -> C:\Users\tupap\source\repos\MantraxEngine\x64\Debug\MantraxEngine.exe

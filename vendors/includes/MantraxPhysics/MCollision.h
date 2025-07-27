@@ -4,6 +4,8 @@
 class MCollisionBehaviour {
 public:
 	Vector3 Size;
+
+	virtual ~MCollisionBehaviour() {}
 };
 
 
