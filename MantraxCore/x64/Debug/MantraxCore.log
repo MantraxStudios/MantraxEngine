@@ -1,5 +1,5 @@
 ﻿  AudioSource.cpp
-C:\Users\tupap\source\repos\MantraxEngine\src\components\AudioSource.h(37,17): warning C4251: "AudioSource::soundPath": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "AudioSource"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\AudioSource.h(40,17): warning C4251: "AudioSource::soundPath": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "AudioSource"
   (compilando archivo de origen "../src/components/AudioSource.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
@@ -19,52 +19,52 @@ C:\Users\tupap\source\repos\MantraxEngine\src\render\Texture.h(24,17): warning C
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(65,17): warning C4251: "Material::name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(68,17): warning C4251: "Material::name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/AudioSource.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(68,15): warning C4251: "Material::albedo": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(71,15): warning C4251: "Material::albedo": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/AudioSource.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(71,15): warning C4251: "Material::emissive": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(74,15): warning C4251: "Material::emissive": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/AudioSource.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(72,15): warning C4251: "Material::tiling": "glm::vec<2,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(75,15): warning C4251: "Material::tiling": "glm::vec<2,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/AudioSource.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec2.hpp(17,9):
       vea la declaración de 'glm::vec<2,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(76,30): warning C4251: "Material::albedoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(79,30): warning C4251: "Material::albedoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/AudioSource.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(77,30): warning C4251: "Material::normalTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(80,30): warning C4251: "Material::normalTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/AudioSource.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(78,30): warning C4251: "Material::metallicTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(81,30): warning C4251: "Material::metallicTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/AudioSource.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(79,30): warning C4251: "Material::roughnessTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(82,30): warning C4251: "Material::roughnessTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/AudioSource.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(80,30): warning C4251: "Material::emissiveTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(83,30): warning C4251: "Material::emissiveTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/AudioSource.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(81,30): warning C4251: "Material::aoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(84,30): warning C4251: "Material::aoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/AudioSource.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
@@ -335,52 +335,52 @@ C:\Users\tupap\source\repos\MantraxEngine\src\render\Texture.h(24,17): warning C
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(65,17): warning C4251: "Material::name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(68,17): warning C4251: "Material::name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/EventSystem.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(68,15): warning C4251: "Material::albedo": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(71,15): warning C4251: "Material::albedo": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/EventSystem.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(71,15): warning C4251: "Material::emissive": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(74,15): warning C4251: "Material::emissive": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/EventSystem.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(72,15): warning C4251: "Material::tiling": "glm::vec<2,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(75,15): warning C4251: "Material::tiling": "glm::vec<2,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/EventSystem.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec2.hpp(17,9):
       vea la declaración de 'glm::vec<2,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(76,30): warning C4251: "Material::albedoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(79,30): warning C4251: "Material::albedoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/EventSystem.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(77,30): warning C4251: "Material::normalTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(80,30): warning C4251: "Material::normalTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/EventSystem.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(78,30): warning C4251: "Material::metallicTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(81,30): warning C4251: "Material::metallicTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/EventSystem.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(79,30): warning C4251: "Material::roughnessTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(82,30): warning C4251: "Material::roughnessTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/EventSystem.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(80,30): warning C4251: "Material::emissiveTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(83,30): warning C4251: "Material::emissiveTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/EventSystem.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(81,30): warning C4251: "Material::aoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(84,30): warning C4251: "Material::aoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/EventSystem.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
@@ -540,52 +540,52 @@ C:\Users\tupap\source\repos\MantraxEngine\src\render\Texture.h(24,17): warning C
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(65,17): warning C4251: "Material::name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(68,17): warning C4251: "Material::name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/GameObject.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(68,15): warning C4251: "Material::albedo": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(71,15): warning C4251: "Material::albedo": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/GameObject.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(71,15): warning C4251: "Material::emissive": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(74,15): warning C4251: "Material::emissive": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/GameObject.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(72,15): warning C4251: "Material::tiling": "glm::vec<2,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(75,15): warning C4251: "Material::tiling": "glm::vec<2,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/GameObject.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec2.hpp(17,9):
       vea la declaración de 'glm::vec<2,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(76,30): warning C4251: "Material::albedoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(79,30): warning C4251: "Material::albedoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/GameObject.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(77,30): warning C4251: "Material::normalTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(80,30): warning C4251: "Material::normalTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/GameObject.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(78,30): warning C4251: "Material::metallicTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(81,30): warning C4251: "Material::metallicTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/GameObject.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(79,30): warning C4251: "Material::roughnessTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(82,30): warning C4251: "Material::roughnessTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/GameObject.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(80,30): warning C4251: "Material::emissiveTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(83,30): warning C4251: "Material::emissiveTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/GameObject.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(81,30): warning C4251: "Material::aoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(84,30): warning C4251: "Material::aoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/GameObject.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
@@ -701,7 +701,7 @@ C:\Users\tupap\source\repos\MantraxEngine\src\render\Light.h(62,15): warning C42
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\LightComponent.h(39,28): warning C4251: "LightComponent::light": "std::shared_ptr<Light>" debe tener una interfaz DLL para que la usen los clientes de "LightComponent"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\LightComponent.h(42,28): warning C4251: "LightComponent::light": "std::shared_ptr<Light>" debe tener una interfaz DLL para que la usen los clientes de "LightComponent"
   (compilando archivo de origen "../src/components/LightComponent.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Light>'
@@ -711,52 +711,52 @@ C:\Users\tupap\source\repos\MantraxEngine\src\render\Texture.h(24,17): warning C
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(65,17): warning C4251: "Material::name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(68,17): warning C4251: "Material::name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/LightComponent.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(68,15): warning C4251: "Material::albedo": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(71,15): warning C4251: "Material::albedo": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/LightComponent.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(71,15): warning C4251: "Material::emissive": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(74,15): warning C4251: "Material::emissive": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/LightComponent.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(72,15): warning C4251: "Material::tiling": "glm::vec<2,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(75,15): warning C4251: "Material::tiling": "glm::vec<2,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/LightComponent.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec2.hpp(17,9):
       vea la declaración de 'glm::vec<2,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(76,30): warning C4251: "Material::albedoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(79,30): warning C4251: "Material::albedoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/LightComponent.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(77,30): warning C4251: "Material::normalTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(80,30): warning C4251: "Material::normalTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/LightComponent.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(78,30): warning C4251: "Material::metallicTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(81,30): warning C4251: "Material::metallicTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/LightComponent.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(79,30): warning C4251: "Material::roughnessTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(82,30): warning C4251: "Material::roughnessTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/LightComponent.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(80,30): warning C4251: "Material::emissiveTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(83,30): warning C4251: "Material::emissiveTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/LightComponent.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(81,30): warning C4251: "Material::aoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(84,30): warning C4251: "Material::aoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/LightComponent.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
@@ -942,52 +942,52 @@ C:\Users\tupap\source\repos\MantraxEngine\src\render\Texture.h(24,17): warning C
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(65,17): warning C4251: "Material::name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(68,17): warning C4251: "Material::name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/ModelScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(68,15): warning C4251: "Material::albedo": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(71,15): warning C4251: "Material::albedo": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/ModelScene.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(71,15): warning C4251: "Material::emissive": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(74,15): warning C4251: "Material::emissive": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/ModelScene.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(72,15): warning C4251: "Material::tiling": "glm::vec<2,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(75,15): warning C4251: "Material::tiling": "glm::vec<2,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/ModelScene.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec2.hpp(17,9):
       vea la declaración de 'glm::vec<2,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(76,30): warning C4251: "Material::albedoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(79,30): warning C4251: "Material::albedoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/ModelScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(77,30): warning C4251: "Material::normalTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(80,30): warning C4251: "Material::normalTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/ModelScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(78,30): warning C4251: "Material::metallicTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(81,30): warning C4251: "Material::metallicTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/ModelScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(79,30): warning C4251: "Material::roughnessTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(82,30): warning C4251: "Material::roughnessTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/ModelScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(80,30): warning C4251: "Material::emissiveTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(83,30): warning C4251: "Material::emissiveTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/ModelScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(81,30): warning C4251: "Material::aoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(84,30): warning C4251: "Material::aoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/ModelScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
@@ -1193,52 +1193,52 @@ C:\Users\tupap\source\repos\MantraxEngine\src\render\Texture.h(24,17): warning C
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(65,17): warning C4251: "Material::name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(68,17): warning C4251: "Material::name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/Scene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(68,15): warning C4251: "Material::albedo": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(71,15): warning C4251: "Material::albedo": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/Scene.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(71,15): warning C4251: "Material::emissive": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(74,15): warning C4251: "Material::emissive": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/Scene.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(72,15): warning C4251: "Material::tiling": "glm::vec<2,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(75,15): warning C4251: "Material::tiling": "glm::vec<2,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/Scene.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec2.hpp(17,9):
       vea la declaración de 'glm::vec<2,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(76,30): warning C4251: "Material::albedoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(79,30): warning C4251: "Material::albedoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/Scene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(77,30): warning C4251: "Material::normalTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(80,30): warning C4251: "Material::normalTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/Scene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(78,30): warning C4251: "Material::metallicTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(81,30): warning C4251: "Material::metallicTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/Scene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(79,30): warning C4251: "Material::roughnessTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(82,30): warning C4251: "Material::roughnessTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/Scene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(80,30): warning C4251: "Material::emissiveTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(83,30): warning C4251: "Material::emissiveTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/Scene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(81,30): warning C4251: "Material::aoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(84,30): warning C4251: "Material::aoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/Scene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
@@ -1439,52 +1439,52 @@ C:\Users\tupap\source\repos\MantraxEngine\src\render\Texture.h(24,17): warning C
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(65,17): warning C4251: "Material::name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(68,17): warning C4251: "Material::name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/SceneManager.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(68,15): warning C4251: "Material::albedo": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(71,15): warning C4251: "Material::albedo": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/SceneManager.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(71,15): warning C4251: "Material::emissive": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(74,15): warning C4251: "Material::emissive": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/SceneManager.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(72,15): warning C4251: "Material::tiling": "glm::vec<2,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(75,15): warning C4251: "Material::tiling": "glm::vec<2,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/SceneManager.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec2.hpp(17,9):
       vea la declaración de 'glm::vec<2,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(76,30): warning C4251: "Material::albedoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(79,30): warning C4251: "Material::albedoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/SceneManager.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(77,30): warning C4251: "Material::normalTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(80,30): warning C4251: "Material::normalTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/SceneManager.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(78,30): warning C4251: "Material::metallicTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(81,30): warning C4251: "Material::metallicTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/SceneManager.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(79,30): warning C4251: "Material::roughnessTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(82,30): warning C4251: "Material::roughnessTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/SceneManager.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(80,30): warning C4251: "Material::emissiveTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(83,30): warning C4251: "Material::emissiveTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/SceneManager.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(81,30): warning C4251: "Material::aoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(84,30): warning C4251: "Material::aoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/SceneManager.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
@@ -1690,52 +1690,52 @@ C:\Users\tupap\source\repos\MantraxEngine\src\render\Texture.h(24,17): warning C
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(65,17): warning C4251: "Material::name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(68,17): warning C4251: "Material::name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/TestScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(68,15): warning C4251: "Material::albedo": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(71,15): warning C4251: "Material::albedo": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/TestScene.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(71,15): warning C4251: "Material::emissive": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(74,15): warning C4251: "Material::emissive": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/TestScene.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(72,15): warning C4251: "Material::tiling": "glm::vec<2,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(75,15): warning C4251: "Material::tiling": "glm::vec<2,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/TestScene.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec2.hpp(17,9):
       vea la declaración de 'glm::vec<2,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(76,30): warning C4251: "Material::albedoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(79,30): warning C4251: "Material::albedoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/TestScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(77,30): warning C4251: "Material::normalTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(80,30): warning C4251: "Material::normalTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/TestScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(78,30): warning C4251: "Material::metallicTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(81,30): warning C4251: "Material::metallicTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/TestScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(79,30): warning C4251: "Material::roughnessTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(82,30): warning C4251: "Material::roughnessTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/TestScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(80,30): warning C4251: "Material::emissiveTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(83,30): warning C4251: "Material::emissiveTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/TestScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(81,30): warning C4251: "Material::aoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(84,30): warning C4251: "Material::aoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/TestScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
@@ -1936,52 +1936,52 @@ C:\Users\tupap\source\repos\MantraxEngine\src\render\Texture.h(24,17): warning C
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(65,17): warning C4251: "Material::name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(68,17): warning C4251: "Material::name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/TexturedScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(68,15): warning C4251: "Material::albedo": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(71,15): warning C4251: "Material::albedo": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/TexturedScene.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(71,15): warning C4251: "Material::emissive": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(74,15): warning C4251: "Material::emissive": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/TexturedScene.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(72,15): warning C4251: "Material::tiling": "glm::vec<2,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(75,15): warning C4251: "Material::tiling": "glm::vec<2,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/TexturedScene.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec2.hpp(17,9):
       vea la declaración de 'glm::vec<2,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(76,30): warning C4251: "Material::albedoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(79,30): warning C4251: "Material::albedoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/TexturedScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(77,30): warning C4251: "Material::normalTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(80,30): warning C4251: "Material::normalTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/TexturedScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(78,30): warning C4251: "Material::metallicTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(81,30): warning C4251: "Material::metallicTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/TexturedScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(79,30): warning C4251: "Material::roughnessTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(82,30): warning C4251: "Material::roughnessTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/TexturedScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(80,30): warning C4251: "Material::emissiveTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(83,30): warning C4251: "Material::emissiveTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/TexturedScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(81,30): warning C4251: "Material::aoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(84,30): warning C4251: "Material::aoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/components/TexturedScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
@@ -2192,52 +2192,52 @@ C:\Users\tupap\source\repos\MantraxEngine\src\render\Texture.h(24,17): warning C
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(65,17): warning C4251: "Material::name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(68,17): warning C4251: "Material::name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/core/AudioManager.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(68,15): warning C4251: "Material::albedo": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(71,15): warning C4251: "Material::albedo": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/core/AudioManager.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(71,15): warning C4251: "Material::emissive": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(74,15): warning C4251: "Material::emissive": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/core/AudioManager.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(72,15): warning C4251: "Material::tiling": "glm::vec<2,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(75,15): warning C4251: "Material::tiling": "glm::vec<2,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/core/AudioManager.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec2.hpp(17,9):
       vea la declaración de 'glm::vec<2,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(76,30): warning C4251: "Material::albedoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(79,30): warning C4251: "Material::albedoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/core/AudioManager.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(77,30): warning C4251: "Material::normalTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(80,30): warning C4251: "Material::normalTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/core/AudioManager.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(78,30): warning C4251: "Material::metallicTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(81,30): warning C4251: "Material::metallicTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/core/AudioManager.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(79,30): warning C4251: "Material::roughnessTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(82,30): warning C4251: "Material::roughnessTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/core/AudioManager.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(80,30): warning C4251: "Material::emissiveTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(83,30): warning C4251: "Material::emissiveTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/core/AudioManager.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(81,30): warning C4251: "Material::aoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(84,30): warning C4251: "Material::aoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/core/AudioManager.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
@@ -2443,52 +2443,52 @@ C:\Users\tupap\source\repos\MantraxEngine\src\render\Texture.h(24,17): warning C
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(65,17): warning C4251: "Material::name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(68,17): warning C4251: "Material::name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/core/CoreWrapper.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(68,15): warning C4251: "Material::albedo": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(71,15): warning C4251: "Material::albedo": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/core/CoreWrapper.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(71,15): warning C4251: "Material::emissive": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(74,15): warning C4251: "Material::emissive": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/core/CoreWrapper.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(72,15): warning C4251: "Material::tiling": "glm::vec<2,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(75,15): warning C4251: "Material::tiling": "glm::vec<2,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/core/CoreWrapper.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec2.hpp(17,9):
       vea la declaración de 'glm::vec<2,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(76,30): warning C4251: "Material::albedoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(79,30): warning C4251: "Material::albedoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/core/CoreWrapper.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(77,30): warning C4251: "Material::normalTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(80,30): warning C4251: "Material::normalTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/core/CoreWrapper.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(78,30): warning C4251: "Material::metallicTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(81,30): warning C4251: "Material::metallicTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/core/CoreWrapper.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(79,30): warning C4251: "Material::roughnessTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(82,30): warning C4251: "Material::roughnessTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/core/CoreWrapper.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(80,30): warning C4251: "Material::emissiveTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(83,30): warning C4251: "Material::emissiveTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/core/CoreWrapper.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(81,30): warning C4251: "Material::aoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(84,30): warning C4251: "Material::aoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/core/CoreWrapper.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
@@ -2824,52 +2824,52 @@ C:\Users\tupap\source\repos\MantraxEngine\src\render\Texture.h(24,17): warning C
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(65,17): warning C4251: "Material::name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(68,17): warning C4251: "Material::name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/main/MantraxEngine.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(68,15): warning C4251: "Material::albedo": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(71,15): warning C4251: "Material::albedo": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/main/MantraxEngine.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(71,15): warning C4251: "Material::emissive": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(74,15): warning C4251: "Material::emissive": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/main/MantraxEngine.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(72,15): warning C4251: "Material::tiling": "glm::vec<2,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(75,15): warning C4251: "Material::tiling": "glm::vec<2,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/main/MantraxEngine.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec2.hpp(17,9):
       vea la declaración de 'glm::vec<2,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(76,30): warning C4251: "Material::albedoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(79,30): warning C4251: "Material::albedoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/main/MantraxEngine.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(77,30): warning C4251: "Material::normalTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(80,30): warning C4251: "Material::normalTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/main/MantraxEngine.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(78,30): warning C4251: "Material::metallicTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(81,30): warning C4251: "Material::metallicTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/main/MantraxEngine.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(79,30): warning C4251: "Material::roughnessTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(82,30): warning C4251: "Material::roughnessTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/main/MantraxEngine.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(80,30): warning C4251: "Material::emissiveTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(83,30): warning C4251: "Material::emissiveTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/main/MantraxEngine.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(81,30): warning C4251: "Material::aoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(84,30): warning C4251: "Material::aoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/main/MantraxEngine.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
@@ -3079,6 +3079,123 @@ C:\Users\tupap\source\repos\MantraxEngine\src\core\AudioManager.h(49,45): warnin
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\unordered_map(61,7):
       vea la declaración de 'std::unordered_map<int,FMOD::Channel *,std::hash<SDL_Keycode>,std::equal_to<SDL_Keycode>,std::allocator<std::pair<const int,FMOD::Channel *>>>'
   
+  Material.cpp
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Texture.h(24,17): warning C4251: "Texture::filePath": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Texture"
+  (compilando archivo de origen "../src/render/Material.cpp")
+      C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
+      vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
+  
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(68,17): warning C4251: "Material::name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+  (compilando archivo de origen "../src/render/Material.cpp")
+      C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
+      vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
+  
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(71,15): warning C4251: "Material::albedo": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+  (compilando archivo de origen "../src/render/Material.cpp")
+      C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
+      vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
+  
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(74,15): warning C4251: "Material::emissive": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+  (compilando archivo de origen "../src/render/Material.cpp")
+      C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
+      vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
+  
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(75,15): warning C4251: "Material::tiling": "glm::vec<2,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+  (compilando archivo de origen "../src/render/Material.cpp")
+      C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec2.hpp(17,9):
+      vea la declaración de 'glm::vec<2,float,glm::packed_highp>'
+  
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(79,30): warning C4251: "Material::albedoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+  (compilando archivo de origen "../src/render/Material.cpp")
+      C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
+      vea la declaración de 'std::shared_ptr<Texture>'
+  
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(80,30): warning C4251: "Material::normalTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+  (compilando archivo de origen "../src/render/Material.cpp")
+      C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
+      vea la declaración de 'std::shared_ptr<Texture>'
+  
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(81,30): warning C4251: "Material::metallicTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+  (compilando archivo de origen "../src/render/Material.cpp")
+      C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
+      vea la declaración de 'std::shared_ptr<Texture>'
+  
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(82,30): warning C4251: "Material::roughnessTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+  (compilando archivo de origen "../src/render/Material.cpp")
+      C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
+      vea la declaración de 'std::shared_ptr<Texture>'
+  
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(83,30): warning C4251: "Material::emissiveTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+  (compilando archivo de origen "../src/render/Material.cpp")
+      C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
+      vea la declaración de 'std::shared_ptr<Texture>'
+  
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(84,30): warning C4251: "Material::aoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+  (compilando archivo de origen "../src/render/Material.cpp")
+      C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
+      vea la declaración de 'std::shared_ptr<Texture>'
+  
+  MaterialManager.cpp
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Texture.h(24,17): warning C4251: "Texture::filePath": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Texture"
+  (compilando archivo de origen "../src/render/MaterialManager.cpp")
+      C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
+      vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
+  
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(68,17): warning C4251: "Material::name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+  (compilando archivo de origen "../src/render/MaterialManager.cpp")
+      C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
+      vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
+  
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(71,15): warning C4251: "Material::albedo": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+  (compilando archivo de origen "../src/render/MaterialManager.cpp")
+      C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
+      vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
+  
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(74,15): warning C4251: "Material::emissive": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+  (compilando archivo de origen "../src/render/MaterialManager.cpp")
+      C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
+      vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
+  
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(75,15): warning C4251: "Material::tiling": "glm::vec<2,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+  (compilando archivo de origen "../src/render/MaterialManager.cpp")
+      C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec2.hpp(17,9):
+      vea la declaración de 'glm::vec<2,float,glm::packed_highp>'
+  
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(79,30): warning C4251: "Material::albedoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+  (compilando archivo de origen "../src/render/MaterialManager.cpp")
+      C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
+      vea la declaración de 'std::shared_ptr<Texture>'
+  
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(80,30): warning C4251: "Material::normalTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+  (compilando archivo de origen "../src/render/MaterialManager.cpp")
+      C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
+      vea la declaración de 'std::shared_ptr<Texture>'
+  
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(81,30): warning C4251: "Material::metallicTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+  (compilando archivo de origen "../src/render/MaterialManager.cpp")
+      C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
+      vea la declaración de 'std::shared_ptr<Texture>'
+  
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(82,30): warning C4251: "Material::roughnessTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+  (compilando archivo de origen "../src/render/MaterialManager.cpp")
+      C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
+      vea la declaración de 'std::shared_ptr<Texture>'
+  
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(83,30): warning C4251: "Material::emissiveTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+  (compilando archivo de origen "../src/render/MaterialManager.cpp")
+      C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
+      vea la declaración de 'std::shared_ptr<Texture>'
+  
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(84,30): warning C4251: "Material::aoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+  (compilando archivo de origen "../src/render/MaterialManager.cpp")
+      C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
+      vea la declaración de 'std::shared_ptr<Texture>'
+  
+C:\Users\tupap\source\repos\MantraxEngine\src\render\MaterialManager.h(44,64): warning C4251: "MaterialManager::materials": "std::unordered_map<std::string,std::shared_ptr<Material>,std::hash<std::string>,std::equal_to<std::string>,std::allocator<std::pair<const std::string,std::shared_ptr<Material>>>>" debe tener una interfaz DLL para que la usen los clientes de "MaterialManager"
+  (compilando archivo de origen "../src/render/MaterialManager.cpp")
+      C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\unordered_map(61,7):
+      vea la declaración de 'std::unordered_map<std::string,std::shared_ptr<Material>,std::hash<std::string>,std::equal_to<std::string>,std::allocator<std::pair<const std::string,std::shared_ptr<Material>>>>'
+  
   RenderPipeline.cpp
 C:\Users\tupap\source\repos\MantraxEngine\src\render\RenderPipeline.h(77,30): warning C4251: "RenderPipeline::sceneObjects": "std::vector<GameObject *,std::allocator<GameObject *>>" debe tener una interfaz DLL para que la usen los clientes de "RenderPipeline"
   (compilando archivo de origen "../src/render/RenderPipeline.cpp")
@@ -3165,52 +3282,52 @@ C:\Users\tupap\source\repos\MantraxEngine\src\render\Texture.h(24,17): warning C
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(65,17): warning C4251: "Material::name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(68,17): warning C4251: "Material::name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/render/RenderPipeline.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(68,15): warning C4251: "Material::albedo": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(71,15): warning C4251: "Material::albedo": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/render/RenderPipeline.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(71,15): warning C4251: "Material::emissive": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(74,15): warning C4251: "Material::emissive": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/render/RenderPipeline.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(72,15): warning C4251: "Material::tiling": "glm::vec<2,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(75,15): warning C4251: "Material::tiling": "glm::vec<2,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/render/RenderPipeline.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec2.hpp(17,9):
       vea la declaración de 'glm::vec<2,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(76,30): warning C4251: "Material::albedoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(79,30): warning C4251: "Material::albedoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/render/RenderPipeline.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(77,30): warning C4251: "Material::normalTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(80,30): warning C4251: "Material::normalTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/render/RenderPipeline.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(78,30): warning C4251: "Material::metallicTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(81,30): warning C4251: "Material::metallicTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/render/RenderPipeline.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(79,30): warning C4251: "Material::roughnessTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(82,30): warning C4251: "Material::roughnessTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/render/RenderPipeline.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(80,30): warning C4251: "Material::emissiveTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(83,30): warning C4251: "Material::emissiveTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/render/RenderPipeline.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(81,30): warning C4251: "Material::aoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(84,30): warning C4251: "Material::aoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
   (compilando archivo de origen "../src/render/RenderPipeline.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'

@@ -142,6 +142,9 @@
     <ClCompile Include="..\src\components\LightComponent.cpp">
       <Filter>01_Natives\Components</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\core\FileSystem.cpp">
+      <Filter>01_Natives\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\core\CoreExporter.h">
@@ -276,6 +279,9 @@
       <Filter>Vendors\FMOD</Filter>
     </ClInclude>
     <ClInclude Include="..\src\components\LightComponent.h">
+      <Filter>01_Natives\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\FileSystem.h">
       <Filter>01_Natives\Components</Filter>
     </ClInclude>
   </ItemGroup>

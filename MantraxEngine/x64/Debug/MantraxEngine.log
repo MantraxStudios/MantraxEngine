@@ -1,252 +1,266 @@
-﻿  Hierarchy.cpp
+﻿  SceneSaver.cpp
 C:\Users\tupap\source\repos\MantraxEngine\src\render\Texture.h(24,17): warning C4251: "Texture::filePath": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Texture"
-  (compilando archivo de origen "editor/Windows/Hierarchy.cpp")
+  (compilando archivo de origen "editor/SceneSaver.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(65,17): warning C4251: "Material::name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Material"
-  (compilando archivo de origen "editor/Windows/Hierarchy.cpp")
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(68,17): warning C4251: "Material::name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+  (compilando archivo de origen "editor/SceneSaver.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(68,15): warning C4251: "Material::albedo": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
-  (compilando archivo de origen "editor/Windows/Hierarchy.cpp")
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(71,15): warning C4251: "Material::albedo": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+  (compilando archivo de origen "editor/SceneSaver.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(71,15): warning C4251: "Material::emissive": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
-  (compilando archivo de origen "editor/Windows/Hierarchy.cpp")
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(74,15): warning C4251: "Material::emissive": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+  (compilando archivo de origen "editor/SceneSaver.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(72,15): warning C4251: "Material::tiling": "glm::vec<2,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
-  (compilando archivo de origen "editor/Windows/Hierarchy.cpp")
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(75,15): warning C4251: "Material::tiling": "glm::vec<2,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+  (compilando archivo de origen "editor/SceneSaver.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec2.hpp(17,9):
       vea la declaración de 'glm::vec<2,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(76,30): warning C4251: "Material::albedoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
-  (compilando archivo de origen "editor/Windows/Hierarchy.cpp")
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(79,30): warning C4251: "Material::albedoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+  (compilando archivo de origen "editor/SceneSaver.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(77,30): warning C4251: "Material::normalTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
-  (compilando archivo de origen "editor/Windows/Hierarchy.cpp")
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(80,30): warning C4251: "Material::normalTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+  (compilando archivo de origen "editor/SceneSaver.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(78,30): warning C4251: "Material::metallicTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
-  (compilando archivo de origen "editor/Windows/Hierarchy.cpp")
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(81,30): warning C4251: "Material::metallicTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+  (compilando archivo de origen "editor/SceneSaver.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(79,30): warning C4251: "Material::roughnessTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
-  (compilando archivo de origen "editor/Windows/Hierarchy.cpp")
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(82,30): warning C4251: "Material::roughnessTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+  (compilando archivo de origen "editor/SceneSaver.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(80,30): warning C4251: "Material::emissiveTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
-  (compilando archivo de origen "editor/Windows/Hierarchy.cpp")
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(83,30): warning C4251: "Material::emissiveTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+  (compilando archivo de origen "editor/SceneSaver.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(81,30): warning C4251: "Material::aoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
-  (compilando archivo de origen "editor/Windows/Hierarchy.cpp")
+C:\Users\tupap\source\repos\MantraxEngine\src\render\Material.h(84,30): warning C4251: "Material::aoTexture": "std::shared_ptr<Texture>" debe tener una interfaz DLL para que la usen los clientes de "Material"
+  (compilando archivo de origen "editor/SceneSaver.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Texture>'
   
 C:\Users\tupap\source\repos\MantraxEngine\src\render\Frustum.h(13,15): warning C4251: "Plane::normal": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Plane"
-  (compilando archivo de origen "editor/Windows/Hierarchy.cpp")
+  (compilando archivo de origen "editor/SceneSaver.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
 C:\Users\tupap\source\repos\MantraxEngine\src\render\Frustum.h(27,15): warning C4251: "BoundingBox::min": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "BoundingBox"
-  (compilando archivo de origen "editor/Windows/Hierarchy.cpp")
+  (compilando archivo de origen "editor/SceneSaver.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
 C:\Users\tupap\source\repos\MantraxEngine\src\render\Frustum.h(28,15): warning C4251: "BoundingBox::max": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "BoundingBox"
-  (compilando archivo de origen "editor/Windows/Hierarchy.cpp")
+  (compilando archivo de origen "editor/SceneSaver.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
 C:\Users\tupap\source\repos\MantraxEngine\src\render\Frustum.h(40,15): warning C4251: "BoundingSphere::center": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "BoundingSphere"
-  (compilando archivo de origen "editor/Windows/Hierarchy.cpp")
+  (compilando archivo de origen "editor/SceneSaver.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
 C:\Users\tupap\source\repos\MantraxEngine\src\core\UIDGenerator.h(15,38): warning C4251: "UIDGenerator::counter": "std::atomic<unsigned int>" debe tener una interfaz DLL para que la usen los clientes de "UIDGenerator"
-  (compilando archivo de origen "editor/Windows/Hierarchy.cpp")
+  (compilando archivo de origen "editor/SceneSaver.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\atomic(2131,8):
       vea la declaración de 'std::atomic<unsigned int>'
   
 C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(198,17): warning C4251: "GameObject::Name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
-  (compilando archivo de origen "editor/Windows/Hierarchy.cpp")
+  (compilando archivo de origen "editor/SceneSaver.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
 C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(199,17): warning C4251: "GameObject::Tag": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
-  (compilando archivo de origen "editor/Windows/Hierarchy.cpp")
+  (compilando archivo de origen "editor/SceneSaver.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
 C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(200,17): warning C4251: "GameObject::ObjectID": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
-  (compilando archivo de origen "editor/Windows/Hierarchy.cpp")
+  (compilando archivo de origen "editor/SceneSaver.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
 C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(201,17): warning C4251: "GameObject::ModelPath": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
-  (compilando archivo de origen "editor/Windows/Hierarchy.cpp")
+  (compilando archivo de origen "editor/SceneSaver.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
 C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(203,37): warning C4251: "GameObject::sharedGeometry": "std::shared_ptr<AssimpGeometry>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
-  (compilando archivo de origen "editor/Windows/Hierarchy.cpp")
+  (compilando archivo de origen "editor/SceneSaver.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<AssimpGeometry>'
   
 C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(204,31): warning C4251: "GameObject::material": "std::shared_ptr<Material>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
-  (compilando archivo de origen "editor/Windows/Hierarchy.cpp")
+  (compilando archivo de origen "editor/SceneSaver.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Material>'
   
 C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(207,15): warning C4251: "GameObject::localPosition": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
-  (compilando archivo de origen "editor/Windows/Hierarchy.cpp")
+  (compilando archivo de origen "editor/SceneSaver.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
 C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(208,15): warning C4251: "GameObject::localScale": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
-  (compilando archivo de origen "editor/Windows/Hierarchy.cpp")
+  (compilando archivo de origen "editor/SceneSaver.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
 C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(209,15): warning C4251: "GameObject::localRotation": "glm::qua<float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
-  (compilando archivo de origen "editor/Windows/Hierarchy.cpp")
+  (compilando archivo de origen "editor/SceneSaver.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_quat.hpp(33,9):
       vea la declaración de 'glm::qua<float,glm::packed_highp>'
   
 C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(210,23): warning C4251: "GameObject::localModelMatrix": "glm::mat<4,4,glm::f32,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
-  (compilando archivo de origen "editor/Windows/Hierarchy.cpp")
+  (compilando archivo de origen "editor/SceneSaver.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_mat4x4.hpp(13,9):
       vea la declaración de 'glm::mat<4,4,glm::f32,glm::packed_highp>'
   
 C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(211,23): warning C4251: "GameObject::worldModelMatrix": "glm::mat<4,4,glm::f32,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
-  (compilando archivo de origen "editor/Windows/Hierarchy.cpp")
+  (compilando archivo de origen "editor/SceneSaver.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_mat4x4.hpp(13,9):
       vea la declaración de 'glm::mat<4,4,glm::f32,glm::packed_highp>'
   
 C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(217,30): warning C4251: "GameObject::children": "std::vector<GameObject *,std::allocator<GameObject *>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
-  (compilando archivo de origen "editor/Windows/Hierarchy.cpp")
+  (compilando archivo de origen "editor/SceneSaver.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<GameObject *,std::allocator<GameObject *>>'
   
 C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(234,45): warning C4251: "GameObject::components": "std::vector<std::unique_ptr<Component,std::default_delete<Component>>,std::allocator<std::unique_ptr<Component,std::default_delete<Component>>>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
-  (compilando archivo de origen "editor/Windows/Hierarchy.cpp")
+  (compilando archivo de origen "editor/SceneSaver.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<std::unique_ptr<Component,std::default_delete<Component>>,std::allocator<std::unique_ptr<Component,std::default_delete<Component>>>>'
   
 C:\Users\tupap\source\repos\MantraxEngine\src\render\Camera.h(76,15): warning C4251: "Camera::position": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Camera"
-  (compilando archivo de origen "editor/Windows/Hierarchy.cpp")
+  (compilando archivo de origen "editor/SceneSaver.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
 C:\Users\tupap\source\repos\MantraxEngine\src\render\Camera.h(77,15): warning C4251: "Camera::target": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Camera"
-  (compilando archivo de origen "editor/Windows/Hierarchy.cpp")
+  (compilando archivo de origen "editor/SceneSaver.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
 C:\Users\tupap\source\repos\MantraxEngine\src\render\Camera.h(78,15): warning C4251: "Camera::up": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Camera"
-  (compilando archivo de origen "editor/Windows/Hierarchy.cpp")
+  (compilando archivo de origen "editor/SceneSaver.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
 C:\Users\tupap\source\repos\MantraxEngine\src\render\Camera.h(79,15): warning C4251: "Camera::m_forward": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Camera"
-  (compilando archivo de origen "editor/Windows/Hierarchy.cpp")
+  (compilando archivo de origen "editor/SceneSaver.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
 C:\Users\tupap\source\repos\MantraxEngine\src\render\Camera.h(80,15): warning C4251: "Camera::m_right": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Camera"
-  (compilando archivo de origen "editor/Windows/Hierarchy.cpp")
+  (compilando archivo de origen "editor/SceneSaver.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
 C:\Users\tupap\source\repos\MantraxEngine\src\render\Camera.h(81,15): warning C4251: "Camera::m_up": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Camera"
-  (compilando archivo de origen "editor/Windows/Hierarchy.cpp")
+  (compilando archivo de origen "editor/SceneSaver.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
 C:\Users\tupap\source\repos\MantraxEngine\src\render\Camera.h(82,15): warning C4251: "Camera::m_lastPosition": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Camera"
-  (compilando archivo de origen "editor/Windows/Hierarchy.cpp")
+  (compilando archivo de origen "editor/SceneSaver.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
 C:\Users\tupap\source\repos\MantraxEngine\src\render\Camera.h(83,15): warning C4251: "Camera::m_velocity": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Camera"
-  (compilando archivo de origen "editor/Windows/Hierarchy.cpp")
+  (compilando archivo de origen "editor/SceneSaver.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
 C:\Users\tupap\source\repos\MantraxEngine\src\render\Light.h(51,15): warning C4251: "Light::color": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Light"
-  (compilando archivo de origen "editor/Windows/Hierarchy.cpp")
+  (compilando archivo de origen "editor/SceneSaver.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
 C:\Users\tupap\source\repos\MantraxEngine\src\render\Light.h(53,15): warning C4251: "Light::position": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Light"
-  (compilando archivo de origen "editor/Windows/Hierarchy.cpp")
+  (compilando archivo de origen "editor/SceneSaver.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
 C:\Users\tupap\source\repos\MantraxEngine\src\render\Light.h(54,15): warning C4251: "Light::direction": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Light"
-  (compilando archivo de origen "editor/Windows/Hierarchy.cpp")
+  (compilando archivo de origen "editor/SceneSaver.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
 C:\Users\tupap\source\repos\MantraxEngine\src\render\Light.h(62,15): warning C4251: "Light::attenuation": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "Light"
-  (compilando archivo de origen "editor/Windows/Hierarchy.cpp")
+  (compilando archivo de origen "editor/SceneSaver.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
 C:\Users\tupap\source\repos\MantraxEngine\src\render\RenderPipeline.h(77,30): warning C4251: "RenderPipeline::sceneObjects": "std::vector<GameObject *,std::allocator<GameObject *>>" debe tener una interfaz DLL para que la usen los clientes de "RenderPipeline"
-  (compilando archivo de origen "editor/Windows/Hierarchy.cpp")
+  (compilando archivo de origen "editor/SceneSaver.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<GameObject *,std::allocator<GameObject *>>'
   
 C:\Users\tupap\source\repos\MantraxEngine\src\render\RenderPipeline.h(78,41): warning C4251: "RenderPipeline::lights": "std::vector<std::shared_ptr<Light>,std::allocator<std::shared_ptr<Light>>>" debe tener una interfaz DLL para que la usen los clientes de "RenderPipeline"
-  (compilando archivo de origen "editor/Windows/Hierarchy.cpp")
+  (compilando archivo de origen "editor/SceneSaver.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<std::shared_ptr<Light>,std::allocator<std::shared_ptr<Light>>>'
   
 C:\Users\tupap\source\repos\MantraxEngine\src\render\RenderPipeline.h(91,70): warning C4251: "RenderPipeline::modelCache": "std::unordered_map<std::string,std::shared_ptr<AssimpGeometry>,std::hash<std::string>,std::equal_to<std::string>,std::allocator<std::pair<const std::string,std::shared_ptr<AssimpGeometry>>>>" debe tener una interfaz DLL para que la usen los clientes de "RenderPipeline"
-  (compilando archivo de origen "editor/Windows/Hierarchy.cpp")
+  (compilando archivo de origen "editor/SceneSaver.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\unordered_map(61,7):
       vea la declaración de 'std::unordered_map<std::string,std::shared_ptr<AssimpGeometry>,std::hash<std::string>,std::equal_to<std::string>,std::allocator<std::pair<const std::string,std::shared_ptr<AssimpGeometry>>>>'
   
 C:\Users\tupap\source\repos\MantraxEngine\src\render\RenderPipeline.h(93,44): warning C4251: "RenderPipeline::materialPool": "std::vector<std::shared_ptr<Material>,std::allocator<std::shared_ptr<Material>>>" debe tener una interfaz DLL para que la usen los clientes de "RenderPipeline"
-  (compilando archivo de origen "editor/Windows/Hierarchy.cpp")
+  (compilando archivo de origen "editor/SceneSaver.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<std::shared_ptr<Material>,std::allocator<std::shared_ptr<Material>>>'
   
 C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(69,17): warning C4251: "Scene::name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
-  (compilando archivo de origen "editor/Windows/Hierarchy.cpp")
+  (compilando archivo de origen "editor/SceneSaver.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
 C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(70,30): warning C4251: "Scene::gameObjects": "std::vector<GameObject *,std::allocator<GameObject *>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
-  (compilando archivo de origen "editor/Windows/Hierarchy.cpp")
+  (compilando archivo de origen "editor/SceneSaver.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<GameObject *,std::allocator<GameObject *>>'
   
 C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(71,41): warning C4251: "Scene::lights": "std::vector<std::shared_ptr<Light>,std::allocator<std::shared_ptr<Light>>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
-  (compilando archivo de origen "editor/Windows/Hierarchy.cpp")
+  (compilando archivo de origen "editor/SceneSaver.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<std::shared_ptr<Light>,std::allocator<std::shared_ptr<Light>>>'
   
 C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(72,29): warning C4251: "Scene::camera": "std::unique_ptr<Camera,std::default_delete<Camera>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
-  (compilando archivo de origen "editor/Windows/Hierarchy.cpp")
+  (compilando archivo de origen "editor/SceneSaver.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(3347,7):
       vea la declaración de 'std::unique_ptr<Camera,std::default_delete<Camera>>'
   
 C:\Users\tupap\source\repos\MantraxEngine\src\components\SceneManager.h(34,61): warning C4251: "SceneManager::scenes": "std::unordered_map<std::string,std::unique_ptr<Scene,std::default_delete<Scene>>,std::hash<std::string>,std::equal_to<std::string>,std::allocator<std::pair<const std::string,std::unique_ptr<Scene,std::default_delete<Scene>>>>>" debe tener una interfaz DLL para que la usen los clientes de "SceneManager"
-  (compilando archivo de origen "editor/Windows/Hierarchy.cpp")
+  (compilando archivo de origen "editor/SceneSaver.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\unordered_map(61,7):
       vea la declaración de 'std::unordered_map<std::string,std::unique_ptr<Scene,std::default_delete<Scene>>,std::hash<std::string>,std::equal_to<std::string>,std::allocator<std::pair<const std::string,std::unique_ptr<Scene,std::default_delete<Scene>>>>>'
+  
+C:\Users\tupap\source\repos\MantraxEngine\src\components\LightComponent.h(42,28): warning C4251: "LightComponent::light": "std::shared_ptr<Light>" debe tener una interfaz DLL para que la usen los clientes de "LightComponent"
+  (compilando archivo de origen "editor/SceneSaver.cpp")
+      C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
+      vea la declaración de 'std::shared_ptr<Light>'
+  
+C:\Users\tupap\source\repos\MantraxEngine\src\components\AudioSource.h(40,17): warning C4251: "AudioSource::soundPath": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "AudioSource"
+  (compilando archivo de origen "editor/SceneSaver.cpp")
+      C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
+      vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
+  
+C:\Users\tupap\source\repos\MantraxEngine\editor\SceneSaver.cpp(10,18): warning C4273: 'SceneSaver::SaveScene': vinculación de DLL incoherente
+      C:\Users\tupap\source\repos\MantraxEngine\editor\SceneSaver.h(10,17):
+      vea la definición anterior de “SceneSaver::SaveScene”
   
   MantraxEngine.vcxproj -> C:\Users\tupap\source\repos\MantraxEngine\x64\Debug\MantraxEngine.exe

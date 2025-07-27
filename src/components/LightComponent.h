@@ -10,6 +10,9 @@ public:
     void setOwner(GameObject* owner) override;
     void update() override;
 
+    // Validación del componente
+    bool isValid() const override { return Component::isValid() && light != nullptr; }
+
     // Delegación de funciones de Light
     void setColor(const glm::vec3& color);
     void setIntensity(float intensity);

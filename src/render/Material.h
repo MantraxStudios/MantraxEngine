@@ -11,6 +11,9 @@ public:
     Material(const std::string& name);
     ~Material();
 
+    // Validación del material
+    bool isValid() const { return !name.empty(); }
+
     // Propiedades del material
     void setName(const std::string& materialName);
     void setAlbedo(const glm::vec3& color);

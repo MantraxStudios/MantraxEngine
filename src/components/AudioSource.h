@@ -9,6 +9,9 @@ public:
     AudioSource() = default;
     void setOwner(GameObject* owner) override;
 
+    // Validación del componente
+    bool isValid() const override { return Component::isValid() && !soundPath.empty(); }
+
     // Configuración del sonido
     void setSound(const std::string& path, bool is3D = true, bool isLooping = false, bool isStream = false);
     void setVolume(float volume);
