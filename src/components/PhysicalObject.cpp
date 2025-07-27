@@ -1,9 +1,9 @@
-#include "RigidBody.h"
+#include "PhysicalObject.h"
 #include "GameObject.h"
 #include "../core/PhysicsManager.h"
 #include <glm/gtc/quaternion.hpp>
 
-RigidBody::RigidBody(GameObject* owner) : Component() {
+PhysicalObject::PhysicalObject(GameObject* owner) : Component() {
     setOwner(owner);
     mBody = nullptr;
     bodyType = BodyType::Dynamic;
@@ -15,16 +15,16 @@ RigidBody::RigidBody(GameObject* owner) : Component() {
     gravityFactor = 1.0f;
 }
 
-RigidBody::~RigidBody() {
+PhysicalObject::~PhysicalObject() {
     destroy();
 }
 
-void RigidBody::start() {
+void PhysicalObject::start() {
     createBody();
     syncTransformToMBody();
 }
 
-void RigidBody::destroy() {
+void PhysicalObject::destroy() {
     if (mBody) {
         // Remove from physics world
         auto& physicsWorld = PhysicsManager::getInstance();
@@ -35,13 +35,13 @@ void RigidBody::destroy() {
     }
 }
 
-void RigidBody::update() {
+void PhysicalObject::update() {
     if (mBody && isEnabled) {
         syncTransformFromMBody();
     }
 }
 
-void RigidBody::createBody() {
+void PhysicalObject::createBody() {
     if (!mBody) {
         auto& physicsWorld = PhysicsManager::getInstance();
         mBody = physicsWorld.getWorld()->CreateBody();
@@ -55,13 +55,13 @@ void RigidBody::createBody() {
     }
 }
 
-void RigidBody::updateTransform() {
+void PhysicalObject::updateTransform() {
     if (mBody && owner) {
         syncTransformFromMBody();
     }
 }
 
-void RigidBody::syncTransformToMBody() {
+void PhysicalObject::syncTransformToMBody() {
     if (mBody && owner) {
         auto position = owner->getWorldPosition();
         auto rotation = owner->getWorldRotationQuat();
@@ -72,7 +72,7 @@ void RigidBody::syncTransformToMBody() {
     }
 }
 
-void RigidBody::syncTransformFromMBody() {
+void PhysicalObject::syncTransformFromMBody() {
     if (mBody && owner) {
         // Convert MantraxPhysics to glm types
         glm::vec3 position(mBody->Position.x, mBody->Position.y, mBody->Position.z);
@@ -83,96 +83,96 @@ void RigidBody::syncTransformFromMBody() {
     }
 }
 
-void RigidBody::setBodyType(BodyType type) {
+void PhysicalObject::setBodyType(BodyType type) {
     bodyType = type;
     if (mBody) {
         mBody->BodyType = (type == BodyType::Static) ? TypeBody::bStatic : TypeBody::bDynamic;
     }
 }
 
-void RigidBody::setMass(float newMass) {
+void PhysicalObject::setMass(float newMass) {
     mass = newMass;
     // Note: MantraxPhysics doesn't seem to have mass property, but we keep it for compatibility
 }
 
-void RigidBody::setLinearVelocity(const glm::vec3& velocity) {
+void PhysicalObject::setLinearVelocity(const glm::vec3& velocity) {
     if (mBody) {
         mBody->Velocity = Vector3(velocity.x, velocity.y, velocity.z);
     }
 }
 
-void RigidBody::setAngularVelocity(const glm::vec3& velocity) {
+void PhysicalObject::setAngularVelocity(const glm::vec3& velocity) {
     if (mBody) {
         mBody->AngularVelocity = Vector3(velocity.x, velocity.y, velocity.z);
     }
 }
 
-void RigidBody::setLinearDamping(float damping) {
+void PhysicalObject::setLinearDamping(float damping) {
     linearDamping = damping;
 }
 
-void RigidBody::setAngularDamping(float damping) {
+void PhysicalObject::setAngularDamping(float damping) {
     angularDamping = damping;
 }
 
-void RigidBody::setFriction(float newFriction) {
+void PhysicalObject::setFriction(float newFriction) {
     friction = newFriction;
 }
 
-void RigidBody::setRestitution(float newRestitution) {
+void PhysicalObject::setRestitution(float newRestitution) {
     restitution = newRestitution;
 }
 
-void RigidBody::setGravityFactor(float factor) {
+void PhysicalObject::setGravityFactor(float factor) {
     gravityFactor = factor;
     if (mBody) {
         mBody->UseGravity = (factor > 0.0f);
     }
 }
 
-glm::vec3 RigidBody::getLinearVelocity() const {
+glm::vec3 PhysicalObject::getLinearVelocity() const {
     if (mBody) {
         return glm::vec3(mBody->Velocity.x, mBody->Velocity.y, mBody->Velocity.z);
     }
     return glm::vec3(0.0f);
 }
 
-glm::vec3 RigidBody::getAngularVelocity() const {
+glm::vec3 PhysicalObject::getAngularVelocity() const {
     if (mBody) {
         return glm::vec3(mBody->AngularVelocity.x, mBody->AngularVelocity.y, mBody->AngularVelocity.z);
     }
     return glm::vec3(0.0f);
 }
 
-BodyType RigidBody::getBodyType() const {
+BodyType PhysicalObject::getBodyType() const {
     return bodyType;
 }
 
-float RigidBody::getMass() const {
+float PhysicalObject::getMass() const {
     return mass;
 }
 
-float RigidBody::getLinearDamping() const {
+float PhysicalObject::getLinearDamping() const {
     return linearDamping;
 }
 
-float RigidBody::getAngularDamping() const {
+float PhysicalObject::getAngularDamping() const {
     return angularDamping;
 }
 
-float RigidBody::getFriction() const {
+float PhysicalObject::getFriction() const {
     return friction;
 }
 
-float RigidBody::getRestitution() const {
+float PhysicalObject::getRestitution() const {
     return restitution;
 }
 
-float RigidBody::getGravityFactor() const {
+float PhysicalObject::getGravityFactor() const {
     return gravityFactor;
 }
 
-void RigidBody::addForce(const glm::vec3& force) {
+void PhysicalObject::addForce(const glm::vec3& force) {
     if (mBody) {
         // Convert force to velocity change (F = ma, so a = F/m)
         Vector3 acceleration(force.x / mass, force.y / mass, force.z / mass);
@@ -180,7 +180,7 @@ void RigidBody::addForce(const glm::vec3& force) {
     }
 }
 
-void RigidBody::addTorque(const glm::vec3& torque) {
+void PhysicalObject::addTorque(const glm::vec3& torque) {
     if (mBody) {
         // Convert torque to angular velocity change
         // Simplified: assuming uniform mass distribution
@@ -189,7 +189,7 @@ void RigidBody::addTorque(const glm::vec3& torque) {
     }
 }
 
-void RigidBody::addImpulse(const glm::vec3& impulse) {
+void PhysicalObject::addImpulse(const glm::vec3& impulse) {
     if (mBody) {
         // Impulse directly changes velocity (J = mΔv, so Δv = J/m)
         Vector3 velocityChange(impulse.x / mass, impulse.y / mass, impulse.z / mass);
@@ -197,7 +197,7 @@ void RigidBody::addImpulse(const glm::vec3& impulse) {
     }
 }
 
-void RigidBody::addAngularImpulse(const glm::vec3& impulse) {
+void PhysicalObject::addAngularImpulse(const glm::vec3& impulse) {
     if (mBody) {
         // Angular impulse directly changes angular velocity
         Vector3 angularVelocityChange(impulse.x / mass, impulse.y / mass, impulse.z / mass);
@@ -205,27 +205,27 @@ void RigidBody::addAngularImpulse(const glm::vec3& impulse) {
     }
 }
 
-void RigidBody::wakeUp() {
+void PhysicalObject::wakeUp() {
     if (mBody) {
         mBody->isSleeping = false;
     }
 }
 
-bool RigidBody::isAwake() const {
+bool PhysicalObject::isAwake() const {
     if (mBody) {
         return !mBody->isSleeping;
     }
     return false;
 }
 
-void RigidBody::enable() {
+void PhysicalObject::enable() {
     Component::enable();
     if (mBody) {
         mBody->isSleeping = false;
     }
 }
 
-void RigidBody::disable() {
+void PhysicalObject::disable() {
     Component::disable();
     if (mBody) {
         mBody->isSleeping = true;

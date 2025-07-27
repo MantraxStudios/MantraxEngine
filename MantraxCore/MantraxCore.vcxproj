@@ -23,7 +23,7 @@
     <ClCompile Include="..\src\components\GameObject.cpp" />
     <ClCompile Include="..\src\components\LightComponent.cpp" />
     <ClCompile Include="..\src\components\ModelScene.cpp" />
-    <ClCompile Include="..\src\components\RigidBody.cpp" />
+    <ClCompile Include="..\src\components\PhysicalObject.cpp" />
     <ClCompile Include="..\src\components\SceneManager.cpp" />
     <ClCompile Include="..\src\components\Scene.cpp" />
     <ClCompile Include="..\src\components\TestScene.cpp" />
@@ -64,7 +64,7 @@
     <ClInclude Include="..\src\components\GameObject.h" />
     <ClInclude Include="..\src\components\LightComponent.h" />
     <ClInclude Include="..\src\components\ModelScene.h" />
-    <ClInclude Include="..\src\components\RigidBody.h" />
+    <ClInclude Include="..\src\components\PhysicalObject.h" />
     <ClInclude Include="..\src\components\Scene.h" />
     <ClInclude Include="..\src\components\SceneManager.h" />
     <ClInclude Include="..\src\components\TestScene.h" />
@@ -109,6 +109,7 @@
     <ClInclude Include="..\vendors\includes\fmod\fmod_output.h" />
     <ClInclude Include="..\vendors\includes\MantraxPhysics\libs\MMaths.hpp" />
     <ClInclude Include="..\vendors\includes\MantraxPhysics\MBody.h" />
+    <ClInclude Include="..\vendors\includes\MantraxPhysics\MCollision.h" />
     <ClInclude Include="..\vendors\includes\MantraxPhysics\MWorld.h" />
     <ClInclude Include="..\vendors\includes\stb_image.h" />
   </ItemGroup>

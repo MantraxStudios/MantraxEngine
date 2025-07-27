@@ -5,3 +5,10 @@ class MCollisionBehaviour {
 public:
 	Vector3 Size;
 };
+
+
+class MCollisionBox : public MCollisionBehaviour {
+public:
+	bool contactListener;
+	bool isTrigger;
+};

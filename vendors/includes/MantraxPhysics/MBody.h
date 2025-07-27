@@ -1,5 +1,6 @@
 #pragma once
 #include "libs/MMaths.hpp"
+#include "MCollision.h"
 
 enum TypeBody {
 	bStatic,
@@ -18,6 +19,8 @@ public:
 	
 	bool isSleeping;
 	bool UseGravity = true;
+
+	MCollisionBehaviour* AttachShaped;
 	
 	void UpdateBody(float deltaTime);
 };

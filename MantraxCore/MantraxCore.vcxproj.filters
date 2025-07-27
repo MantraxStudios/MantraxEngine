@@ -153,7 +153,7 @@
     <ClCompile Include="..\src\core\PhysicsManager.cpp">
       <Filter>01_Natives\Physics</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\components\RigidBody.cpp">
+    <ClCompile Include="..\src\components\PhysicalObject.cpp">
       <Filter>01_Natives\Physics</Filter>
     </ClCompile>
     <ClCompile Include="..\src\render\MaterialManager.cpp">
@@ -306,7 +306,7 @@
     <ClInclude Include="..\src\core\PhysicsManager.h">
       <Filter>01_Natives\Physics</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\components\RigidBody.h">
+    <ClInclude Include="..\src\components\PhysicalObject.h">
       <Filter>01_Natives\Physics</Filter>
     </ClInclude>
     <ClInclude Include="..\src\render\MaterialManager.h">
@@ -319,6 +319,9 @@
       <Filter>Vendors\MPhysics</Filter>
     </ClInclude>
     <ClInclude Include="..\vendors\includes\MantraxPhysics\MBody.h">
+      <Filter>Vendors\MPhysics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\vendors\includes\MantraxPhysics\MCollision.h">
       <Filter>Vendors\MPhysics</Filter>
     </ClInclude>
   </ItemGroup>

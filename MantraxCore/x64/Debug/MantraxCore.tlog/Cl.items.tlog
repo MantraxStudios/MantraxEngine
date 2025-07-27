@@ -2,7 +2,7 @@ C:\Users\tupap\source\repos\MantraxEngine\src\components\AudioSource.cpp;C:\User
 C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\GameObject.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\components\LightComponent.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\LightComponent.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\components\ModelScene.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\ModelScene.obj
-C:\Users\tupap\source\repos\MantraxEngine\src\components\RigidBody.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\RigidBody.obj
+C:\Users\tupap\source\repos\MantraxEngine\src\components\PhysicalObject.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\PhysicalObject.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\components\SceneManager.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\SceneManager.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\Scene.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\components\TestScene.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\TestScene.obj

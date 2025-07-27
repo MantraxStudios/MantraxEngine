@@ -2,11 +2,13 @@
 #include "components/SceneManager.h"
 #include "components/GameObject.h"
 #include "components/LightComponent.h"
-#include "components/RigidBody.h"
+#include "components/PhysicalObject.h"
 #include "render/RenderConfig.h"
 #include "Selection.h"
 #include <glm/gtc/type_ptr.hpp>
 #include <cstring>
+#include <MantraxPhysics/MBody.h>
+#include <MantraxPhysics/MCollision.h>
 
 void Inspector::OnRenderGUI() {
     if (!isOpen) return;
@@ -330,20 +332,20 @@ void Inspector::RenderGameObjectInspector(GameObject* go) {
     }
 
     // RigidBody Component
-    if (auto rigidBody = go->getComponent<RigidBody>()) {
+    if (auto rigidBody = go->getComponent<PhysicalObject>()) {
         bool removeComponent = false;
-        bool treeNodeOpen = ImGui::TreeNode("[RigidBody]");
+        bool treeNodeOpen = ImGui::TreeNode("[Physical Object]");
         
         if (treeNodeOpen) {
             // Botón de opciones alineado a la derecha pero dentro de la ventana
             float windowWidth = ImGui::GetContentRegionAvail().x;
             ImGui::SameLine(windowWidth - 35);
-            if (ImGui::Button(" ... ##RigidBody", ImVec2(30, 0))) {
-                ImGui::OpenPopup("RigidBodyOptions");
+            if (ImGui::Button(" ... ##PhysicalObject", ImVec2(30, 0))) {
+                ImGui::OpenPopup("PhysicalObjectOptions");
             }
 
             // Popup de opciones
-            if (ImGui::BeginPopup("RigidBodyOptions")) {
+            if (ImGui::BeginPopup("PhysicalObjectOptions")) {
                 if (ImGui::MenuItem("Remove Component")) {
                     removeComponent = true;
                 }
@@ -460,6 +462,68 @@ void Inspector::RenderGameObjectInspector(GameObject* go) {
                 }
 
                 ImGui::Separator();
+                ImGui::Text("Collision");
+
+                // Collision toggle checkbox
+                MBody* mBody = rigidBody->getMBody();
+                bool hasCollision = (mBody && mBody->AttachShaped);
+                
+                if (ImGui::Checkbox("Enable Collision", &hasCollision)) {
+                    if (hasCollision) {
+                        // Enable collision - add new MCollisionBox
+                        MCollisionBox* boxCollision = new MCollisionBox();
+                        boxCollision->Size = Vector3(1.0f, 1.0f, 1.0f); // Default size
+                        boxCollision->contactListener = false;
+                        boxCollision->isTrigger = false;
+                        mBody->AttachShaped = boxCollision;
+                    } else {
+                        // Disable collision - remove existing collision
+                        delete mBody->AttachShaped;
+                        mBody->AttachShaped = nullptr;
+                    }
+                }
+                if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("Enable/disable collision detection with a box shape");
+                }
+
+                // Show collision properties if collision exists
+                if (hasCollision && mBody && mBody->AttachShaped) {
+                    // Since MCollisionBehaviour is not polymorphic, we'll assume it's MCollisionBox
+                    // as that's what we create when enabling collision
+                    MCollisionBox* boxCollision = static_cast<MCollisionBox*>(mBody->AttachShaped);
+                        ImGui::Separator();
+                        ImGui::Text("Collision Properties");
+                        
+                        // Size property
+                        Vector3 size = boxCollision->Size;
+                        float sizeArray[3] = { size.x, size.y, size.z };
+                        if (ImGui::DragFloat3("Size", sizeArray, 0.1f, 0.1f, 10.0f)) {
+                            boxCollision->Size = Vector3(sizeArray[0], sizeArray[1], sizeArray[2]);
+                        }
+                        if (ImGui::IsItemHovered()) {
+                            ImGui::SetTooltip("Size of the collision box (X, Y, Z)");
+                        }
+                        
+                        // Is Trigger property
+                        bool isTrigger = boxCollision->isTrigger;
+                        if (ImGui::Checkbox("Is Trigger", &isTrigger)) {
+                            boxCollision->isTrigger = isTrigger;
+                        }
+                        if (ImGui::IsItemHovered()) {
+                            ImGui::SetTooltip("Trigger colliders don't cause physical collisions but can detect overlaps");
+                        }
+                        
+                        // Contact Listener property
+                        bool contactListener = boxCollision->contactListener;
+                        if (ImGui::Checkbox("Contact Listener", &contactListener)) {
+                            boxCollision->contactListener = contactListener;
+                        }
+                        if (ImGui::IsItemHovered()) {
+                            ImGui::SetTooltip("Enable contact callbacks for this collision shape");
+                        }
+                }
+
+                ImGui::Separator();
                 ImGui::Text("Physics State");
 
                 // Is Awake
@@ -556,7 +620,7 @@ void Inspector::RenderGameObjectInspector(GameObject* go) {
             ImGui::TreePop();
         }
         if (removeComponent) {
-            go->removeComponent<RigidBody>();
+            go->removeComponent<PhysicalObject>();
         }
     }
 
@@ -606,21 +670,17 @@ void Inspector::RenderGameObjectInspector(GameObject* go) {
         ImGui::Separator();
         ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "PHYSICS");
         ImGui::Separator();
-
-        if (ImGui::MenuItem("[Collider]", "Adds collision detection")) {
-            // TODO: Implementar sistema de colisiones
-        }
         if (ImGui::IsItemHovered()) {
             ImGui::SetTooltip("Add collision detection to this object");
         }
 
-        if (!go->getComponent<RigidBody>()) {
-            if (ImGui::MenuItem("[Rigidbody]", "Adds physics simulation")) {
-                go->addComponent<RigidBody>(go);
+        if (!go->getComponent<PhysicalObject>()) {
+            if (ImGui::MenuItem("[PhysicalObject]", "Add a physical object")) {
+                go->addComponent<PhysicalObject>(go);
                 ImGui::CloseCurrentPopup();
             }
             if (ImGui::IsItemHovered()) {
-                ImGui::SetTooltip("Add physics simulation to this object");
+                ImGui::SetTooltip("Adds both collisions and rigid objects");
             }
         }
 

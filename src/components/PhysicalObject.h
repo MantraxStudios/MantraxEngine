@@ -11,10 +11,10 @@ enum class BodyType {
     Kinematic
 };
 
-class MANTRAXCORE_API RigidBody : public Component {
+class MANTRAXCORE_API PhysicalObject : public Component {
 public:
-    RigidBody(GameObject* owner);
-    virtual ~RigidBody();
+    PhysicalObject(GameObject* owner);
+    virtual ~PhysicalObject();
 
     void start() override;
     void update() override;
