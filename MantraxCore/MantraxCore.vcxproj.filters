@@ -43,6 +43,9 @@
     <Filter Include="Vendors\FMOD">
       <UniqueIdentifier>{63e941ad-dec7-4fc8-b446-de2980d719b8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01_Natives\Physics">
+      <UniqueIdentifier>{e09beec6-a1ca-46dd-b6fd-6670a71a4fc2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\main\MantraxEngine.cpp">
@@ -144,6 +147,12 @@
     </ClCompile>
     <ClCompile Include="..\src\core\FileSystem.cpp">
       <Filter>01_Natives\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\PhysicsManager.cpp">
+      <Filter>01_Natives\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\components\RigidBody.cpp">
+      <Filter>01_Natives\Physics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -283,6 +292,12 @@
     </ClInclude>
     <ClInclude Include="..\src\core\FileSystem.h">
       <Filter>01_Natives\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\PhysicsManager.h">
+      <Filter>01_Natives\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\components\RigidBody.h">
+      <Filter>01_Natives\Physics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -2,6 +2,7 @@ C:\Users\tupap\source\repos\MantraxEngine\src\components\AudioSource.cpp;C:\User
 C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\GameObject.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\components\LightComponent.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\LightComponent.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\components\ModelScene.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\ModelScene.obj
+C:\Users\tupap\source\repos\MantraxEngine\src\components\RigidBody.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\RigidBody.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\components\SceneManager.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\SceneManager.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\Scene.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\components\TestScene.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\TestScene.obj
@@ -11,6 +12,7 @@ C:\Users\tupap\source\repos\MantraxEngine\src\core\AudioManager.cpp;C:\Users\tup
 C:\Users\tupap\source\repos\MantraxEngine\src\core\CoreWrapper.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\CoreWrapper.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\core\FileSystem.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\FileSystem.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\core\InputConfigLoader.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\InputConfigLoader.obj
+C:\Users\tupap\source\repos\MantraxEngine\src\core\PhysicsManager.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\PhysicsManager.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\core\UIDGenerator.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\UIDGenerator.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\main\MantraxEngine.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\MantraxEngine.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\render\AssimpGeometry.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\AssimpGeometry.obj

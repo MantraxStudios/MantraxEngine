@@ -6,6 +6,7 @@
 #include "Scene.h"
 #include "../render/RenderPipeline.h"
 #include "../core/CoreExporter.h"
+#include "../core/PhysicsManager.h"
 
 class MANTRAXCORE_API SceneManager {
 public:
@@ -24,9 +25,14 @@ public:
     void setRenderPipeline(RenderPipeline* pipeline) { renderPipeline = pipeline; }
     void initializeAllScenes();
 
+    // Physics system initialization
+    bool initializePhysics();
+    void cleanupPhysics();
+    PhysicsManager& getPhysicsManager() { return PhysicsManager::getInstance(); }
+
 private:
-    SceneManager() : activeScene(nullptr) {}
-    ~SceneManager() = default;
+    SceneManager();
+    ~SceneManager();
     
     SceneManager(const SceneManager&) = delete;
     SceneManager& operator=(const SceneManager&) = delete;
@@ -34,4 +40,5 @@ private:
     std::unordered_map<std::string, std::unique_ptr<Scene>> scenes;
     Scene* activeScene;
     RenderPipeline* renderPipeline = nullptr;
+    bool physicsInitialized = false;
 }; 

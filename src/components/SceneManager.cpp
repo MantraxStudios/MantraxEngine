@@ -2,6 +2,38 @@
 #include <stdexcept>
 #include <iostream>
 
+SceneManager::SceneManager() : activeScene(nullptr), physicsInitialized(false) {
+}
+
+SceneManager::~SceneManager() {
+    cleanupPhysics();
+}
+
+bool SceneManager::initializePhysics() {
+    if (physicsInitialized) {
+        return true;
+    }
+
+    try {
+        if (PhysicsManager::getInstance().initialize()) {
+            physicsInitialized = true;
+            std::cout << "Physics system initialized successfully" << std::endl;
+            return true;
+        }
+    }
+    catch (const std::exception& e) {
+        std::cerr << "Failed to initialize physics system: " << e.what() << std::endl;
+    }
+    return false;
+}
+
+void SceneManager::cleanupPhysics() {
+    if (physicsInitialized) {
+        PhysicsManager::getInstance().cleanup();
+        physicsInitialized = false;
+    }
+}
+
 void SceneManager::addScene(std::unique_ptr<Scene> scene) {
     if (!scene) {
         throw std::invalid_argument("Cannot add null scene");
@@ -69,6 +101,12 @@ Scene* SceneManager::getScene(const std::string& sceneName) {
 }
 
 void SceneManager::update(float deltaTime) {
+    // Update physics first
+    if (physicsInitialized) {
+        PhysicsManager::getInstance().update(deltaTime);
+    }
+
+    // Then update scene and game objects
     if (activeScene) {
         activeScene->update(deltaTime);
         activeScene->updateNative(deltaTime);
@@ -92,6 +130,13 @@ void SceneManager::setupRenderPipeline(RenderPipeline& pipeline) {
 void SceneManager::initializeAllScenes() {
     std::cout << "SceneManager::initializeAllScenes() called" << std::endl;
     
+    // Initialize physics system first
+    if (!physicsInitialized) {
+        if (!initializePhysics()) {
+            std::cerr << "WARNING: Failed to initialize physics system!" << std::endl;
+        }
+    }
+
     if (!renderPipeline) {
         std::cerr << "ERROR: Cannot initialize scenes without RenderPipeline!" << std::endl;
         return;

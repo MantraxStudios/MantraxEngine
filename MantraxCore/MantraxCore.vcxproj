@@ -23,6 +23,7 @@
     <ClCompile Include="..\src\components\GameObject.cpp" />
     <ClCompile Include="..\src\components\LightComponent.cpp" />
     <ClCompile Include="..\src\components\ModelScene.cpp" />
+    <ClCompile Include="..\src\components\RigidBody.cpp" />
     <ClCompile Include="..\src\components\SceneManager.cpp" />
     <ClCompile Include="..\src\components\Scene.cpp" />
     <ClCompile Include="..\src\components\TestScene.cpp" />
@@ -32,6 +33,7 @@
     <ClCompile Include="..\src\core\CoreWrapper.cpp" />
     <ClCompile Include="..\src\core\FileSystem.cpp" />
     <ClCompile Include="..\src\core\InputConfigLoader.cpp" />
+    <ClCompile Include="..\src\core\PhysicsManager.cpp" />
     <ClCompile Include="..\src\core\UIDGenerator.cpp" />
     <ClCompile Include="..\src\main\MantraxEngine.cpp" />
     <ClCompile Include="..\src\render\AssimpGeometry.cpp" />
@@ -60,6 +62,7 @@
     <ClInclude Include="..\src\components\GameObject.h" />
     <ClInclude Include="..\src\components\LightComponent.h" />
     <ClInclude Include="..\src\components\ModelScene.h" />
+    <ClInclude Include="..\src\components\RigidBody.h" />
     <ClInclude Include="..\src\components\Scene.h" />
     <ClInclude Include="..\src\components\SceneManager.h" />
     <ClInclude Include="..\src\components\TestScene.h" />
@@ -70,6 +73,7 @@
     <ClInclude Include="..\src\core\CoreWrapper.h" />
     <ClInclude Include="..\src\core\FileSystem.h" />
     <ClInclude Include="..\src\core\InputConfigLoader.h" />
+    <ClInclude Include="..\src\core\PhysicsManager.h" />
     <ClInclude Include="..\src\core\Time.h" />
     <ClInclude Include="..\src\core\UIDGenerator.h" />
     <ClInclude Include="..\src\input\InputAction.h" />
@@ -209,7 +213,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalLibraryDirectories>$(SolutionDir)vendors/libs</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glew32.lib;assimp-vc143-mt.lib;fmod_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glew32.lib;assimp-vc143-mt.lib;fmod_vc.lib;Jolt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
