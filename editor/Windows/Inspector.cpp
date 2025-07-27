@@ -8,12 +8,14 @@
 #include <cstring>
 
 void Inspector::OnRenderGUI() {
+    if (!isOpen) return;
+
     ImGui::Begin("Inspector", &isOpen);
 
     GameObject* go = Selection::GameObjectSelect;
     std::shared_ptr<Light> light = Selection::LightSelect;
 
-    if (go != nullptr) {
+    if (go != nullptr && go->isValid()) {
         RenderGameObjectInspector(go);
     }
     else if (light != nullptr) {
@@ -27,7 +29,10 @@ void Inspector::OnRenderGUI() {
 }
 
 void Inspector::RenderGameObjectInspector(GameObject* go) {
-    if (!go) return;
+    if (!go || !go->isValid()) {
+        ImGui::Text("Invalid GameObject.");
+        return;
+    }
 
     // Nombre del objeto
     char nameBuffer[128] = {};
@@ -97,7 +102,9 @@ void Inspector::RenderGameObjectInspector(GameObject* go) {
     // Audio Source Component
     if (auto audioSource = go->getComponent<AudioSource>()) {
         bool removeComponent = false;
-        if (ImGui::TreeNode("[Audio Source]")) {
+        bool treeNodeOpen = ImGui::TreeNode("[Audio Source]");
+        
+        if (treeNodeOpen) {
             // Botón de opciones alineado a la derecha pero dentro de la ventana
             float windowWidth = ImGui::GetContentRegionAvail().x;
             ImGui::SameLine(windowWidth - 35);
@@ -119,7 +126,7 @@ void Inspector::RenderGameObjectInspector(GameObject* go) {
                 ImGui::EndPopup();
             }
 
-            if (!removeComponent) {
+            if (!removeComponent && audioSource != nullptr) {
                 // Path del sonido
                 static char soundPath[256] = "";
                 if (ImGui::InputText("Sound Path", soundPath, sizeof(soundPath))) {
@@ -150,7 +157,7 @@ void Inspector::RenderGameObjectInspector(GameObject* go) {
                         audioSource->setMinDistance(minDist);
                     }
                     if (ImGui::IsItemHovered()) {
-                        ImGui::SetTooltip("Distancia mínima antes de que el sonido comience a atenuarse");
+                        ImGui::SetTooltip("Minimum distance before sound starts to attenuate");
                     }
 
                     float maxDist = audioSource->getMaxDistance();
@@ -158,7 +165,7 @@ void Inspector::RenderGameObjectInspector(GameObject* go) {
                         audioSource->setMaxDistance(maxDist);
                     }
                     if (ImGui::IsItemHovered()) {
-                        ImGui::SetTooltip("Distancia máxima a la que se puede escuchar el sonido");
+                        ImGui::SetTooltip("Maximum distance at which the sound can be heard");
                     }
                 }
 
@@ -189,7 +196,9 @@ void Inspector::RenderGameObjectInspector(GameObject* go) {
     // Light Component
     if (auto lightComp = go->getComponent<LightComponent>()) {
         bool removeComponent = false;
-        if (ImGui::TreeNode("[Light]")) {
+        bool treeNodeOpen = ImGui::TreeNode("[Light]");
+        
+        if (treeNodeOpen) {
             // Botón de opciones alineado a la derecha pero dentro de la ventana
             float windowWidth = ImGui::GetContentRegionAvail().x;
             ImGui::SameLine(windowWidth - 35);
@@ -211,7 +220,7 @@ void Inspector::RenderGameObjectInspector(GameObject* go) {
                 ImGui::EndPopup();
             }
 
-            if (!removeComponent) {
+            if (!removeComponent && lightComp != nullptr) {
                 // Tipo de luz (solo mostrar, no editable)
                 const char* lightType = 
                     lightComp->getType() == LightType::Directional ? "Directional Light" :
@@ -422,6 +431,11 @@ void Inspector::RenderGameObjectInspector(GameObject* go) {
 }
 
 void Inspector::RenderLightInspector(std::shared_ptr<Light> light) {
+    if (!light) {
+        ImGui::Text("Invalid Light.");
+        return;
+    }
+
     // Tipo de luz
     const char* lightType = 
         light->getType() == LightType::Directional ? "Directional Light" :

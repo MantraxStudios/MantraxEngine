@@ -41,6 +41,15 @@ public:
     GameObject(GameObject&&) noexcept = default;
     GameObject& operator=(GameObject&&) noexcept = default;
 
+    // Destructor virtual para asegurar la correcta destrucción de clases derivadas
+    virtual ~GameObject();
+
+    // Método para destruir el objeto de forma segura
+    void destroy();
+
+    // Validación del objeto
+    bool isValid() const { return !isDestroyed && ObjectID != ""; }
+
     // ===== TRANSFORM SYSTEM =====
     // Local Transform (relative to parent)
     void setLocalPosition(const glm::vec3 &pos);
@@ -146,6 +155,16 @@ public:
         return nullptr;
     }
 
+    template<typename T>
+    const T* getComponent() const {
+        for (const auto& comp : components) {
+            if (const T* casted = dynamic_cast<const T*>(comp.get())) {
+                return casted;
+            }
+        }
+        return nullptr;
+    }
+
     template <typename T>
     bool removeComponent() {
         static_assert(std::is_base_of<Component, T>::value, "T must inherit from Component");
@@ -162,8 +181,8 @@ public:
     }
 
     // Obtener todos los componentes
-    std::vector<Component*> getAllComponents() const {
-        std::vector<Component*> result;
+    std::vector<const Component*> getAllComponents() const {
+        std::vector<const Component*> result;
         result.reserve(components.size());
         for (const auto& comp : components) {
             if (comp) {
@@ -210,8 +229,10 @@ private:
     void removeFromParent();
     void addToParent(GameObject* newParent);
     void invalidateWorldTransform();
+    void cleanup(); // Método interno para limpieza
 
     std::vector<std::unique_ptr<Component>> components;
     bool shouldRender{true};
     bool shouldUpdateTransform{true};
+    bool isDestroyed{false}; // Variable para tracking de estado
 };

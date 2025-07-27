@@ -94,67 +94,67 @@ C:\Users\tupap\source\repos\MantraxEngine\src\core\UIDGenerator.h(15,38): warnin
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\atomic(2131,8):
       vea la declaración de 'std::atomic<unsigned int>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(179,17): warning C4251: "GameObject::Name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(198,17): warning C4251: "GameObject::Name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/AudioSource.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(180,17): warning C4251: "GameObject::Tag": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(199,17): warning C4251: "GameObject::Tag": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/AudioSource.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(181,17): warning C4251: "GameObject::ObjectID": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(200,17): warning C4251: "GameObject::ObjectID": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/AudioSource.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(182,17): warning C4251: "GameObject::ModelPath": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(201,17): warning C4251: "GameObject::ModelPath": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/AudioSource.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(184,37): warning C4251: "GameObject::sharedGeometry": "std::shared_ptr<AssimpGeometry>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(203,37): warning C4251: "GameObject::sharedGeometry": "std::shared_ptr<AssimpGeometry>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/AudioSource.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<AssimpGeometry>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(185,31): warning C4251: "GameObject::material": "std::shared_ptr<Material>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(204,31): warning C4251: "GameObject::material": "std::shared_ptr<Material>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/AudioSource.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Material>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(188,15): warning C4251: "GameObject::localPosition": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(207,15): warning C4251: "GameObject::localPosition": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/AudioSource.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(189,15): warning C4251: "GameObject::localScale": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(208,15): warning C4251: "GameObject::localScale": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/AudioSource.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(190,15): warning C4251: "GameObject::localRotation": "glm::qua<float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(209,15): warning C4251: "GameObject::localRotation": "glm::qua<float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/AudioSource.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_quat.hpp(33,9):
       vea la declaración de 'glm::qua<float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(191,23): warning C4251: "GameObject::localModelMatrix": "glm::mat<4,4,glm::f32,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(210,23): warning C4251: "GameObject::localModelMatrix": "glm::mat<4,4,glm::f32,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/AudioSource.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_mat4x4.hpp(13,9):
       vea la declaración de 'glm::mat<4,4,glm::f32,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(192,23): warning C4251: "GameObject::worldModelMatrix": "glm::mat<4,4,glm::f32,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(211,23): warning C4251: "GameObject::worldModelMatrix": "glm::mat<4,4,glm::f32,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/AudioSource.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_mat4x4.hpp(13,9):
       vea la declaración de 'glm::mat<4,4,glm::f32,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(198,30): warning C4251: "GameObject::children": "std::vector<GameObject *,std::allocator<GameObject *>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(217,30): warning C4251: "GameObject::children": "std::vector<GameObject *,std::allocator<GameObject *>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/AudioSource.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<GameObject *,std::allocator<GameObject *>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(214,45): warning C4251: "GameObject::components": "std::vector<std::unique_ptr<Component,std::default_delete<Component>>,std::allocator<std::unique_ptr<Component,std::default_delete<Component>>>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(234,45): warning C4251: "GameObject::components": "std::vector<std::unique_ptr<Component,std::default_delete<Component>>,std::allocator<std::unique_ptr<Component,std::default_delete<Component>>>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/AudioSource.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<std::unique_ptr<Component,std::default_delete<Component>>,std::allocator<std::unique_ptr<Component,std::default_delete<Component>>>>'
@@ -239,22 +239,22 @@ C:\Users\tupap\source\repos\MantraxEngine\src\render\RenderPipeline.h(93,44): wa
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<std::shared_ptr<Material>,std::allocator<std::shared_ptr<Material>>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(68,17): warning C4251: "Scene::name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(69,17): warning C4251: "Scene::name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
   (compilando archivo de origen "../src/components/AudioSource.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(69,30): warning C4251: "Scene::gameObjects": "std::vector<GameObject *,std::allocator<GameObject *>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(70,30): warning C4251: "Scene::gameObjects": "std::vector<GameObject *,std::allocator<GameObject *>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
   (compilando archivo de origen "../src/components/AudioSource.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<GameObject *,std::allocator<GameObject *>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(70,41): warning C4251: "Scene::lights": "std::vector<std::shared_ptr<Light>,std::allocator<std::shared_ptr<Light>>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(71,41): warning C4251: "Scene::lights": "std::vector<std::shared_ptr<Light>,std::allocator<std::shared_ptr<Light>>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
   (compilando archivo de origen "../src/components/AudioSource.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<std::shared_ptr<Light>,std::allocator<std::shared_ptr<Light>>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(71,29): warning C4251: "Scene::camera": "std::unique_ptr<Camera,std::default_delete<Camera>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(72,29): warning C4251: "Scene::camera": "std::unique_ptr<Camera,std::default_delete<Camera>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
   (compilando archivo de origen "../src/components/AudioSource.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(3347,7):
       vea la declaración de 'std::unique_ptr<Camera,std::default_delete<Camera>>'
@@ -390,67 +390,67 @@ C:\Users\tupap\source\repos\MantraxEngine\src\core\UIDGenerator.h(15,38): warnin
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\atomic(2131,8):
       vea la declaración de 'std::atomic<unsigned int>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(179,17): warning C4251: "GameObject::Name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(198,17): warning C4251: "GameObject::Name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/EventSystem.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(180,17): warning C4251: "GameObject::Tag": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(199,17): warning C4251: "GameObject::Tag": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/EventSystem.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(181,17): warning C4251: "GameObject::ObjectID": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(200,17): warning C4251: "GameObject::ObjectID": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/EventSystem.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(182,17): warning C4251: "GameObject::ModelPath": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(201,17): warning C4251: "GameObject::ModelPath": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/EventSystem.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(184,37): warning C4251: "GameObject::sharedGeometry": "std::shared_ptr<AssimpGeometry>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(203,37): warning C4251: "GameObject::sharedGeometry": "std::shared_ptr<AssimpGeometry>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/EventSystem.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<AssimpGeometry>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(185,31): warning C4251: "GameObject::material": "std::shared_ptr<Material>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(204,31): warning C4251: "GameObject::material": "std::shared_ptr<Material>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/EventSystem.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Material>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(188,15): warning C4251: "GameObject::localPosition": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(207,15): warning C4251: "GameObject::localPosition": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/EventSystem.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(189,15): warning C4251: "GameObject::localScale": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(208,15): warning C4251: "GameObject::localScale": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/EventSystem.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(190,15): warning C4251: "GameObject::localRotation": "glm::qua<float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(209,15): warning C4251: "GameObject::localRotation": "glm::qua<float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/EventSystem.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_quat.hpp(33,9):
       vea la declaración de 'glm::qua<float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(191,23): warning C4251: "GameObject::localModelMatrix": "glm::mat<4,4,glm::f32,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(210,23): warning C4251: "GameObject::localModelMatrix": "glm::mat<4,4,glm::f32,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/EventSystem.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_mat4x4.hpp(13,9):
       vea la declaración de 'glm::mat<4,4,glm::f32,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(192,23): warning C4251: "GameObject::worldModelMatrix": "glm::mat<4,4,glm::f32,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(211,23): warning C4251: "GameObject::worldModelMatrix": "glm::mat<4,4,glm::f32,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/EventSystem.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_mat4x4.hpp(13,9):
       vea la declaración de 'glm::mat<4,4,glm::f32,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(198,30): warning C4251: "GameObject::children": "std::vector<GameObject *,std::allocator<GameObject *>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(217,30): warning C4251: "GameObject::children": "std::vector<GameObject *,std::allocator<GameObject *>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/EventSystem.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<GameObject *,std::allocator<GameObject *>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(214,45): warning C4251: "GameObject::components": "std::vector<std::unique_ptr<Component,std::default_delete<Component>>,std::allocator<std::unique_ptr<Component,std::default_delete<Component>>>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(234,45): warning C4251: "GameObject::components": "std::vector<std::unique_ptr<Component,std::default_delete<Component>>,std::allocator<std::unique_ptr<Component,std::default_delete<Component>>>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/EventSystem.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<std::unique_ptr<Component,std::default_delete<Component>>,std::allocator<std::unique_ptr<Component,std::default_delete<Component>>>>'
@@ -505,22 +505,22 @@ C:\Users\tupap\source\repos\MantraxEngine\src\render\RenderPipeline.h(93,44): wa
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<std::shared_ptr<Material>,std::allocator<std::shared_ptr<Material>>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(68,17): warning C4251: "Scene::name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(69,17): warning C4251: "Scene::name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
   (compilando archivo de origen "../src/components/EventSystem.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(69,30): warning C4251: "Scene::gameObjects": "std::vector<GameObject *,std::allocator<GameObject *>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(70,30): warning C4251: "Scene::gameObjects": "std::vector<GameObject *,std::allocator<GameObject *>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
   (compilando archivo de origen "../src/components/EventSystem.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<GameObject *,std::allocator<GameObject *>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(70,41): warning C4251: "Scene::lights": "std::vector<std::shared_ptr<Light>,std::allocator<std::shared_ptr<Light>>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(71,41): warning C4251: "Scene::lights": "std::vector<std::shared_ptr<Light>,std::allocator<std::shared_ptr<Light>>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
   (compilando archivo de origen "../src/components/EventSystem.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<std::shared_ptr<Light>,std::allocator<std::shared_ptr<Light>>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(71,29): warning C4251: "Scene::camera": "std::unique_ptr<Camera,std::default_delete<Camera>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(72,29): warning C4251: "Scene::camera": "std::unique_ptr<Camera,std::default_delete<Camera>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
   (compilando archivo de origen "../src/components/EventSystem.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(3347,7):
       vea la declaración de 'std::unique_ptr<Camera,std::default_delete<Camera>>'
@@ -615,67 +615,67 @@ C:\Users\tupap\source\repos\MantraxEngine\src\core\UIDGenerator.h(15,38): warnin
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\atomic(2131,8):
       vea la declaración de 'std::atomic<unsigned int>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(179,17): warning C4251: "GameObject::Name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(198,17): warning C4251: "GameObject::Name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/GameObject.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(180,17): warning C4251: "GameObject::Tag": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(199,17): warning C4251: "GameObject::Tag": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/GameObject.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(181,17): warning C4251: "GameObject::ObjectID": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(200,17): warning C4251: "GameObject::ObjectID": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/GameObject.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(182,17): warning C4251: "GameObject::ModelPath": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(201,17): warning C4251: "GameObject::ModelPath": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/GameObject.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(184,37): warning C4251: "GameObject::sharedGeometry": "std::shared_ptr<AssimpGeometry>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(203,37): warning C4251: "GameObject::sharedGeometry": "std::shared_ptr<AssimpGeometry>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/GameObject.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<AssimpGeometry>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(185,31): warning C4251: "GameObject::material": "std::shared_ptr<Material>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(204,31): warning C4251: "GameObject::material": "std::shared_ptr<Material>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/GameObject.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Material>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(188,15): warning C4251: "GameObject::localPosition": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(207,15): warning C4251: "GameObject::localPosition": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/GameObject.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(189,15): warning C4251: "GameObject::localScale": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(208,15): warning C4251: "GameObject::localScale": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/GameObject.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(190,15): warning C4251: "GameObject::localRotation": "glm::qua<float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(209,15): warning C4251: "GameObject::localRotation": "glm::qua<float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/GameObject.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_quat.hpp(33,9):
       vea la declaración de 'glm::qua<float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(191,23): warning C4251: "GameObject::localModelMatrix": "glm::mat<4,4,glm::f32,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(210,23): warning C4251: "GameObject::localModelMatrix": "glm::mat<4,4,glm::f32,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/GameObject.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_mat4x4.hpp(13,9):
       vea la declaración de 'glm::mat<4,4,glm::f32,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(192,23): warning C4251: "GameObject::worldModelMatrix": "glm::mat<4,4,glm::f32,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(211,23): warning C4251: "GameObject::worldModelMatrix": "glm::mat<4,4,glm::f32,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/GameObject.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_mat4x4.hpp(13,9):
       vea la declaración de 'glm::mat<4,4,glm::f32,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(198,30): warning C4251: "GameObject::children": "std::vector<GameObject *,std::allocator<GameObject *>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(217,30): warning C4251: "GameObject::children": "std::vector<GameObject *,std::allocator<GameObject *>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/GameObject.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<GameObject *,std::allocator<GameObject *>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(214,45): warning C4251: "GameObject::components": "std::vector<std::unique_ptr<Component,std::default_delete<Component>>,std::allocator<std::unique_ptr<Component,std::default_delete<Component>>>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(234,45): warning C4251: "GameObject::components": "std::vector<std::unique_ptr<Component,std::default_delete<Component>>,std::allocator<std::unique_ptr<Component,std::default_delete<Component>>>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/GameObject.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<std::unique_ptr<Component,std::default_delete<Component>>,std::allocator<std::unique_ptr<Component,std::default_delete<Component>>>>'
@@ -786,67 +786,67 @@ C:\Users\tupap\source\repos\MantraxEngine\src\core\UIDGenerator.h(15,38): warnin
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\atomic(2131,8):
       vea la declaración de 'std::atomic<unsigned int>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(179,17): warning C4251: "GameObject::Name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(198,17): warning C4251: "GameObject::Name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/LightComponent.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(180,17): warning C4251: "GameObject::Tag": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(199,17): warning C4251: "GameObject::Tag": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/LightComponent.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(181,17): warning C4251: "GameObject::ObjectID": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(200,17): warning C4251: "GameObject::ObjectID": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/LightComponent.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(182,17): warning C4251: "GameObject::ModelPath": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(201,17): warning C4251: "GameObject::ModelPath": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/LightComponent.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(184,37): warning C4251: "GameObject::sharedGeometry": "std::shared_ptr<AssimpGeometry>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(203,37): warning C4251: "GameObject::sharedGeometry": "std::shared_ptr<AssimpGeometry>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/LightComponent.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<AssimpGeometry>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(185,31): warning C4251: "GameObject::material": "std::shared_ptr<Material>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(204,31): warning C4251: "GameObject::material": "std::shared_ptr<Material>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/LightComponent.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Material>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(188,15): warning C4251: "GameObject::localPosition": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(207,15): warning C4251: "GameObject::localPosition": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/LightComponent.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(189,15): warning C4251: "GameObject::localScale": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(208,15): warning C4251: "GameObject::localScale": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/LightComponent.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(190,15): warning C4251: "GameObject::localRotation": "glm::qua<float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(209,15): warning C4251: "GameObject::localRotation": "glm::qua<float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/LightComponent.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_quat.hpp(33,9):
       vea la declaración de 'glm::qua<float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(191,23): warning C4251: "GameObject::localModelMatrix": "glm::mat<4,4,glm::f32,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(210,23): warning C4251: "GameObject::localModelMatrix": "glm::mat<4,4,glm::f32,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/LightComponent.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_mat4x4.hpp(13,9):
       vea la declaración de 'glm::mat<4,4,glm::f32,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(192,23): warning C4251: "GameObject::worldModelMatrix": "glm::mat<4,4,glm::f32,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(211,23): warning C4251: "GameObject::worldModelMatrix": "glm::mat<4,4,glm::f32,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/LightComponent.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_mat4x4.hpp(13,9):
       vea la declaración de 'glm::mat<4,4,glm::f32,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(198,30): warning C4251: "GameObject::children": "std::vector<GameObject *,std::allocator<GameObject *>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(217,30): warning C4251: "GameObject::children": "std::vector<GameObject *,std::allocator<GameObject *>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/LightComponent.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<GameObject *,std::allocator<GameObject *>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(214,45): warning C4251: "GameObject::components": "std::vector<std::unique_ptr<Component,std::default_delete<Component>>,std::allocator<std::unique_ptr<Component,std::default_delete<Component>>>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(234,45): warning C4251: "GameObject::components": "std::vector<std::unique_ptr<Component,std::default_delete<Component>>,std::allocator<std::unique_ptr<Component,std::default_delete<Component>>>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/LightComponent.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<std::unique_ptr<Component,std::default_delete<Component>>,std::allocator<std::unique_ptr<Component,std::default_delete<Component>>>>'
@@ -911,22 +911,22 @@ C:\Users\tupap\source\repos\MantraxEngine\src\render\RenderPipeline.h(93,44): wa
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<std::shared_ptr<Material>,std::allocator<std::shared_ptr<Material>>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(68,17): warning C4251: "Scene::name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(69,17): warning C4251: "Scene::name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
   (compilando archivo de origen "../src/components/LightComponent.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(69,30): warning C4251: "Scene::gameObjects": "std::vector<GameObject *,std::allocator<GameObject *>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(70,30): warning C4251: "Scene::gameObjects": "std::vector<GameObject *,std::allocator<GameObject *>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
   (compilando archivo de origen "../src/components/LightComponent.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<GameObject *,std::allocator<GameObject *>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(70,41): warning C4251: "Scene::lights": "std::vector<std::shared_ptr<Light>,std::allocator<std::shared_ptr<Light>>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(71,41): warning C4251: "Scene::lights": "std::vector<std::shared_ptr<Light>,std::allocator<std::shared_ptr<Light>>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
   (compilando archivo de origen "../src/components/LightComponent.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<std::shared_ptr<Light>,std::allocator<std::shared_ptr<Light>>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(71,29): warning C4251: "Scene::camera": "std::unique_ptr<Camera,std::default_delete<Camera>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(72,29): warning C4251: "Scene::camera": "std::unique_ptr<Camera,std::default_delete<Camera>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
   (compilando archivo de origen "../src/components/LightComponent.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(3347,7):
       vea la declaración de 'std::unique_ptr<Camera,std::default_delete<Camera>>'
@@ -1017,67 +1017,67 @@ C:\Users\tupap\source\repos\MantraxEngine\src\core\UIDGenerator.h(15,38): warnin
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\atomic(2131,8):
       vea la declaración de 'std::atomic<unsigned int>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(179,17): warning C4251: "GameObject::Name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(198,17): warning C4251: "GameObject::Name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/ModelScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(180,17): warning C4251: "GameObject::Tag": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(199,17): warning C4251: "GameObject::Tag": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/ModelScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(181,17): warning C4251: "GameObject::ObjectID": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(200,17): warning C4251: "GameObject::ObjectID": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/ModelScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(182,17): warning C4251: "GameObject::ModelPath": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(201,17): warning C4251: "GameObject::ModelPath": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/ModelScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(184,37): warning C4251: "GameObject::sharedGeometry": "std::shared_ptr<AssimpGeometry>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(203,37): warning C4251: "GameObject::sharedGeometry": "std::shared_ptr<AssimpGeometry>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/ModelScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<AssimpGeometry>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(185,31): warning C4251: "GameObject::material": "std::shared_ptr<Material>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(204,31): warning C4251: "GameObject::material": "std::shared_ptr<Material>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/ModelScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Material>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(188,15): warning C4251: "GameObject::localPosition": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(207,15): warning C4251: "GameObject::localPosition": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/ModelScene.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(189,15): warning C4251: "GameObject::localScale": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(208,15): warning C4251: "GameObject::localScale": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/ModelScene.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(190,15): warning C4251: "GameObject::localRotation": "glm::qua<float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(209,15): warning C4251: "GameObject::localRotation": "glm::qua<float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/ModelScene.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_quat.hpp(33,9):
       vea la declaración de 'glm::qua<float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(191,23): warning C4251: "GameObject::localModelMatrix": "glm::mat<4,4,glm::f32,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(210,23): warning C4251: "GameObject::localModelMatrix": "glm::mat<4,4,glm::f32,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/ModelScene.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_mat4x4.hpp(13,9):
       vea la declaración de 'glm::mat<4,4,glm::f32,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(192,23): warning C4251: "GameObject::worldModelMatrix": "glm::mat<4,4,glm::f32,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(211,23): warning C4251: "GameObject::worldModelMatrix": "glm::mat<4,4,glm::f32,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/ModelScene.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_mat4x4.hpp(13,9):
       vea la declaración de 'glm::mat<4,4,glm::f32,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(198,30): warning C4251: "GameObject::children": "std::vector<GameObject *,std::allocator<GameObject *>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(217,30): warning C4251: "GameObject::children": "std::vector<GameObject *,std::allocator<GameObject *>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/ModelScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<GameObject *,std::allocator<GameObject *>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(214,45): warning C4251: "GameObject::components": "std::vector<std::unique_ptr<Component,std::default_delete<Component>>,std::allocator<std::unique_ptr<Component,std::default_delete<Component>>>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(234,45): warning C4251: "GameObject::components": "std::vector<std::unique_ptr<Component,std::default_delete<Component>>,std::allocator<std::unique_ptr<Component,std::default_delete<Component>>>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/ModelScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<std::unique_ptr<Component,std::default_delete<Component>>,std::allocator<std::unique_ptr<Component,std::default_delete<Component>>>>'
@@ -1162,22 +1162,22 @@ C:\Users\tupap\source\repos\MantraxEngine\src\render\RenderPipeline.h(93,44): wa
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<std::shared_ptr<Material>,std::allocator<std::shared_ptr<Material>>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(68,17): warning C4251: "Scene::name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(69,17): warning C4251: "Scene::name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
   (compilando archivo de origen "../src/components/ModelScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(69,30): warning C4251: "Scene::gameObjects": "std::vector<GameObject *,std::allocator<GameObject *>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(70,30): warning C4251: "Scene::gameObjects": "std::vector<GameObject *,std::allocator<GameObject *>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
   (compilando archivo de origen "../src/components/ModelScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<GameObject *,std::allocator<GameObject *>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(70,41): warning C4251: "Scene::lights": "std::vector<std::shared_ptr<Light>,std::allocator<std::shared_ptr<Light>>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(71,41): warning C4251: "Scene::lights": "std::vector<std::shared_ptr<Light>,std::allocator<std::shared_ptr<Light>>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
   (compilando archivo de origen "../src/components/ModelScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<std::shared_ptr<Light>,std::allocator<std::shared_ptr<Light>>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(71,29): warning C4251: "Scene::camera": "std::unique_ptr<Camera,std::default_delete<Camera>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(72,29): warning C4251: "Scene::camera": "std::unique_ptr<Camera,std::default_delete<Camera>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
   (compilando archivo de origen "../src/components/ModelScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(3347,7):
       vea la declaración de 'std::unique_ptr<Camera,std::default_delete<Camera>>'
@@ -1268,67 +1268,67 @@ C:\Users\tupap\source\repos\MantraxEngine\src\core\UIDGenerator.h(15,38): warnin
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\atomic(2131,8):
       vea la declaración de 'std::atomic<unsigned int>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(179,17): warning C4251: "GameObject::Name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(198,17): warning C4251: "GameObject::Name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/Scene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(180,17): warning C4251: "GameObject::Tag": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(199,17): warning C4251: "GameObject::Tag": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/Scene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(181,17): warning C4251: "GameObject::ObjectID": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(200,17): warning C4251: "GameObject::ObjectID": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/Scene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(182,17): warning C4251: "GameObject::ModelPath": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(201,17): warning C4251: "GameObject::ModelPath": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/Scene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(184,37): warning C4251: "GameObject::sharedGeometry": "std::shared_ptr<AssimpGeometry>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(203,37): warning C4251: "GameObject::sharedGeometry": "std::shared_ptr<AssimpGeometry>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/Scene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<AssimpGeometry>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(185,31): warning C4251: "GameObject::material": "std::shared_ptr<Material>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(204,31): warning C4251: "GameObject::material": "std::shared_ptr<Material>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/Scene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Material>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(188,15): warning C4251: "GameObject::localPosition": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(207,15): warning C4251: "GameObject::localPosition": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/Scene.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(189,15): warning C4251: "GameObject::localScale": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(208,15): warning C4251: "GameObject::localScale": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/Scene.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(190,15): warning C4251: "GameObject::localRotation": "glm::qua<float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(209,15): warning C4251: "GameObject::localRotation": "glm::qua<float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/Scene.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_quat.hpp(33,9):
       vea la declaración de 'glm::qua<float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(191,23): warning C4251: "GameObject::localModelMatrix": "glm::mat<4,4,glm::f32,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(210,23): warning C4251: "GameObject::localModelMatrix": "glm::mat<4,4,glm::f32,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/Scene.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_mat4x4.hpp(13,9):
       vea la declaración de 'glm::mat<4,4,glm::f32,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(192,23): warning C4251: "GameObject::worldModelMatrix": "glm::mat<4,4,glm::f32,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(211,23): warning C4251: "GameObject::worldModelMatrix": "glm::mat<4,4,glm::f32,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/Scene.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_mat4x4.hpp(13,9):
       vea la declaración de 'glm::mat<4,4,glm::f32,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(198,30): warning C4251: "GameObject::children": "std::vector<GameObject *,std::allocator<GameObject *>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(217,30): warning C4251: "GameObject::children": "std::vector<GameObject *,std::allocator<GameObject *>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/Scene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<GameObject *,std::allocator<GameObject *>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(214,45): warning C4251: "GameObject::components": "std::vector<std::unique_ptr<Component,std::default_delete<Component>>,std::allocator<std::unique_ptr<Component,std::default_delete<Component>>>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(234,45): warning C4251: "GameObject::components": "std::vector<std::unique_ptr<Component,std::default_delete<Component>>,std::allocator<std::unique_ptr<Component,std::default_delete<Component>>>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/Scene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<std::unique_ptr<Component,std::default_delete<Component>>,std::allocator<std::unique_ptr<Component,std::default_delete<Component>>>>'
@@ -1413,22 +1413,22 @@ C:\Users\tupap\source\repos\MantraxEngine\src\render\RenderPipeline.h(93,44): wa
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<std::shared_ptr<Material>,std::allocator<std::shared_ptr<Material>>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(68,17): warning C4251: "Scene::name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(69,17): warning C4251: "Scene::name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
   (compilando archivo de origen "../src/components/Scene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(69,30): warning C4251: "Scene::gameObjects": "std::vector<GameObject *,std::allocator<GameObject *>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(70,30): warning C4251: "Scene::gameObjects": "std::vector<GameObject *,std::allocator<GameObject *>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
   (compilando archivo de origen "../src/components/Scene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<GameObject *,std::allocator<GameObject *>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(70,41): warning C4251: "Scene::lights": "std::vector<std::shared_ptr<Light>,std::allocator<std::shared_ptr<Light>>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(71,41): warning C4251: "Scene::lights": "std::vector<std::shared_ptr<Light>,std::allocator<std::shared_ptr<Light>>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
   (compilando archivo de origen "../src/components/Scene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<std::shared_ptr<Light>,std::allocator<std::shared_ptr<Light>>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(71,29): warning C4251: "Scene::camera": "std::unique_ptr<Camera,std::default_delete<Camera>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(72,29): warning C4251: "Scene::camera": "std::unique_ptr<Camera,std::default_delete<Camera>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
   (compilando archivo de origen "../src/components/Scene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(3347,7):
       vea la declaración de 'std::unique_ptr<Camera,std::default_delete<Camera>>'
@@ -1514,67 +1514,67 @@ C:\Users\tupap\source\repos\MantraxEngine\src\core\UIDGenerator.h(15,38): warnin
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\atomic(2131,8):
       vea la declaración de 'std::atomic<unsigned int>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(179,17): warning C4251: "GameObject::Name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(198,17): warning C4251: "GameObject::Name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/SceneManager.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(180,17): warning C4251: "GameObject::Tag": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(199,17): warning C4251: "GameObject::Tag": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/SceneManager.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(181,17): warning C4251: "GameObject::ObjectID": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(200,17): warning C4251: "GameObject::ObjectID": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/SceneManager.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(182,17): warning C4251: "GameObject::ModelPath": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(201,17): warning C4251: "GameObject::ModelPath": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/SceneManager.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(184,37): warning C4251: "GameObject::sharedGeometry": "std::shared_ptr<AssimpGeometry>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(203,37): warning C4251: "GameObject::sharedGeometry": "std::shared_ptr<AssimpGeometry>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/SceneManager.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<AssimpGeometry>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(185,31): warning C4251: "GameObject::material": "std::shared_ptr<Material>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(204,31): warning C4251: "GameObject::material": "std::shared_ptr<Material>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/SceneManager.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Material>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(188,15): warning C4251: "GameObject::localPosition": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(207,15): warning C4251: "GameObject::localPosition": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/SceneManager.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(189,15): warning C4251: "GameObject::localScale": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(208,15): warning C4251: "GameObject::localScale": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/SceneManager.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(190,15): warning C4251: "GameObject::localRotation": "glm::qua<float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(209,15): warning C4251: "GameObject::localRotation": "glm::qua<float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/SceneManager.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_quat.hpp(33,9):
       vea la declaración de 'glm::qua<float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(191,23): warning C4251: "GameObject::localModelMatrix": "glm::mat<4,4,glm::f32,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(210,23): warning C4251: "GameObject::localModelMatrix": "glm::mat<4,4,glm::f32,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/SceneManager.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_mat4x4.hpp(13,9):
       vea la declaración de 'glm::mat<4,4,glm::f32,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(192,23): warning C4251: "GameObject::worldModelMatrix": "glm::mat<4,4,glm::f32,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(211,23): warning C4251: "GameObject::worldModelMatrix": "glm::mat<4,4,glm::f32,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/SceneManager.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_mat4x4.hpp(13,9):
       vea la declaración de 'glm::mat<4,4,glm::f32,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(198,30): warning C4251: "GameObject::children": "std::vector<GameObject *,std::allocator<GameObject *>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(217,30): warning C4251: "GameObject::children": "std::vector<GameObject *,std::allocator<GameObject *>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/SceneManager.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<GameObject *,std::allocator<GameObject *>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(214,45): warning C4251: "GameObject::components": "std::vector<std::unique_ptr<Component,std::default_delete<Component>>,std::allocator<std::unique_ptr<Component,std::default_delete<Component>>>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(234,45): warning C4251: "GameObject::components": "std::vector<std::unique_ptr<Component,std::default_delete<Component>>,std::allocator<std::unique_ptr<Component,std::default_delete<Component>>>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/SceneManager.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<std::unique_ptr<Component,std::default_delete<Component>>,std::allocator<std::unique_ptr<Component,std::default_delete<Component>>>>'
@@ -1659,22 +1659,22 @@ C:\Users\tupap\source\repos\MantraxEngine\src\render\RenderPipeline.h(93,44): wa
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<std::shared_ptr<Material>,std::allocator<std::shared_ptr<Material>>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(68,17): warning C4251: "Scene::name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(69,17): warning C4251: "Scene::name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
   (compilando archivo de origen "../src/components/SceneManager.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(69,30): warning C4251: "Scene::gameObjects": "std::vector<GameObject *,std::allocator<GameObject *>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(70,30): warning C4251: "Scene::gameObjects": "std::vector<GameObject *,std::allocator<GameObject *>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
   (compilando archivo de origen "../src/components/SceneManager.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<GameObject *,std::allocator<GameObject *>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(70,41): warning C4251: "Scene::lights": "std::vector<std::shared_ptr<Light>,std::allocator<std::shared_ptr<Light>>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(71,41): warning C4251: "Scene::lights": "std::vector<std::shared_ptr<Light>,std::allocator<std::shared_ptr<Light>>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
   (compilando archivo de origen "../src/components/SceneManager.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<std::shared_ptr<Light>,std::allocator<std::shared_ptr<Light>>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(71,29): warning C4251: "Scene::camera": "std::unique_ptr<Camera,std::default_delete<Camera>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(72,29): warning C4251: "Scene::camera": "std::unique_ptr<Camera,std::default_delete<Camera>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
   (compilando archivo de origen "../src/components/SceneManager.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(3347,7):
       vea la declaración de 'std::unique_ptr<Camera,std::default_delete<Camera>>'
@@ -1765,67 +1765,67 @@ C:\Users\tupap\source\repos\MantraxEngine\src\core\UIDGenerator.h(15,38): warnin
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\atomic(2131,8):
       vea la declaración de 'std::atomic<unsigned int>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(179,17): warning C4251: "GameObject::Name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(198,17): warning C4251: "GameObject::Name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/TestScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(180,17): warning C4251: "GameObject::Tag": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(199,17): warning C4251: "GameObject::Tag": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/TestScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(181,17): warning C4251: "GameObject::ObjectID": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(200,17): warning C4251: "GameObject::ObjectID": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/TestScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(182,17): warning C4251: "GameObject::ModelPath": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(201,17): warning C4251: "GameObject::ModelPath": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/TestScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(184,37): warning C4251: "GameObject::sharedGeometry": "std::shared_ptr<AssimpGeometry>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(203,37): warning C4251: "GameObject::sharedGeometry": "std::shared_ptr<AssimpGeometry>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/TestScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<AssimpGeometry>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(185,31): warning C4251: "GameObject::material": "std::shared_ptr<Material>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(204,31): warning C4251: "GameObject::material": "std::shared_ptr<Material>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/TestScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Material>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(188,15): warning C4251: "GameObject::localPosition": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(207,15): warning C4251: "GameObject::localPosition": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/TestScene.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(189,15): warning C4251: "GameObject::localScale": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(208,15): warning C4251: "GameObject::localScale": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/TestScene.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(190,15): warning C4251: "GameObject::localRotation": "glm::qua<float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(209,15): warning C4251: "GameObject::localRotation": "glm::qua<float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/TestScene.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_quat.hpp(33,9):
       vea la declaración de 'glm::qua<float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(191,23): warning C4251: "GameObject::localModelMatrix": "glm::mat<4,4,glm::f32,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(210,23): warning C4251: "GameObject::localModelMatrix": "glm::mat<4,4,glm::f32,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/TestScene.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_mat4x4.hpp(13,9):
       vea la declaración de 'glm::mat<4,4,glm::f32,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(192,23): warning C4251: "GameObject::worldModelMatrix": "glm::mat<4,4,glm::f32,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(211,23): warning C4251: "GameObject::worldModelMatrix": "glm::mat<4,4,glm::f32,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/TestScene.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_mat4x4.hpp(13,9):
       vea la declaración de 'glm::mat<4,4,glm::f32,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(198,30): warning C4251: "GameObject::children": "std::vector<GameObject *,std::allocator<GameObject *>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(217,30): warning C4251: "GameObject::children": "std::vector<GameObject *,std::allocator<GameObject *>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/TestScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<GameObject *,std::allocator<GameObject *>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(214,45): warning C4251: "GameObject::components": "std::vector<std::unique_ptr<Component,std::default_delete<Component>>,std::allocator<std::unique_ptr<Component,std::default_delete<Component>>>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(234,45): warning C4251: "GameObject::components": "std::vector<std::unique_ptr<Component,std::default_delete<Component>>,std::allocator<std::unique_ptr<Component,std::default_delete<Component>>>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/TestScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<std::unique_ptr<Component,std::default_delete<Component>>,std::allocator<std::unique_ptr<Component,std::default_delete<Component>>>>'
@@ -1910,22 +1910,22 @@ C:\Users\tupap\source\repos\MantraxEngine\src\render\RenderPipeline.h(93,44): wa
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<std::shared_ptr<Material>,std::allocator<std::shared_ptr<Material>>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(68,17): warning C4251: "Scene::name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(69,17): warning C4251: "Scene::name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
   (compilando archivo de origen "../src/components/TestScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(69,30): warning C4251: "Scene::gameObjects": "std::vector<GameObject *,std::allocator<GameObject *>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(70,30): warning C4251: "Scene::gameObjects": "std::vector<GameObject *,std::allocator<GameObject *>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
   (compilando archivo de origen "../src/components/TestScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<GameObject *,std::allocator<GameObject *>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(70,41): warning C4251: "Scene::lights": "std::vector<std::shared_ptr<Light>,std::allocator<std::shared_ptr<Light>>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(71,41): warning C4251: "Scene::lights": "std::vector<std::shared_ptr<Light>,std::allocator<std::shared_ptr<Light>>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
   (compilando archivo de origen "../src/components/TestScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<std::shared_ptr<Light>,std::allocator<std::shared_ptr<Light>>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(71,29): warning C4251: "Scene::camera": "std::unique_ptr<Camera,std::default_delete<Camera>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(72,29): warning C4251: "Scene::camera": "std::unique_ptr<Camera,std::default_delete<Camera>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
   (compilando archivo de origen "../src/components/TestScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(3347,7):
       vea la declaración de 'std::unique_ptr<Camera,std::default_delete<Camera>>'
@@ -2011,67 +2011,67 @@ C:\Users\tupap\source\repos\MantraxEngine\src\core\UIDGenerator.h(15,38): warnin
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\atomic(2131,8):
       vea la declaración de 'std::atomic<unsigned int>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(179,17): warning C4251: "GameObject::Name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(198,17): warning C4251: "GameObject::Name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/TexturedScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(180,17): warning C4251: "GameObject::Tag": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(199,17): warning C4251: "GameObject::Tag": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/TexturedScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(181,17): warning C4251: "GameObject::ObjectID": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(200,17): warning C4251: "GameObject::ObjectID": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/TexturedScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(182,17): warning C4251: "GameObject::ModelPath": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(201,17): warning C4251: "GameObject::ModelPath": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/TexturedScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(184,37): warning C4251: "GameObject::sharedGeometry": "std::shared_ptr<AssimpGeometry>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(203,37): warning C4251: "GameObject::sharedGeometry": "std::shared_ptr<AssimpGeometry>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/TexturedScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<AssimpGeometry>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(185,31): warning C4251: "GameObject::material": "std::shared_ptr<Material>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(204,31): warning C4251: "GameObject::material": "std::shared_ptr<Material>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/TexturedScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Material>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(188,15): warning C4251: "GameObject::localPosition": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(207,15): warning C4251: "GameObject::localPosition": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/TexturedScene.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(189,15): warning C4251: "GameObject::localScale": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(208,15): warning C4251: "GameObject::localScale": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/TexturedScene.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(190,15): warning C4251: "GameObject::localRotation": "glm::qua<float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(209,15): warning C4251: "GameObject::localRotation": "glm::qua<float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/TexturedScene.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_quat.hpp(33,9):
       vea la declaración de 'glm::qua<float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(191,23): warning C4251: "GameObject::localModelMatrix": "glm::mat<4,4,glm::f32,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(210,23): warning C4251: "GameObject::localModelMatrix": "glm::mat<4,4,glm::f32,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/TexturedScene.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_mat4x4.hpp(13,9):
       vea la declaración de 'glm::mat<4,4,glm::f32,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(192,23): warning C4251: "GameObject::worldModelMatrix": "glm::mat<4,4,glm::f32,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(211,23): warning C4251: "GameObject::worldModelMatrix": "glm::mat<4,4,glm::f32,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/TexturedScene.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_mat4x4.hpp(13,9):
       vea la declaración de 'glm::mat<4,4,glm::f32,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(198,30): warning C4251: "GameObject::children": "std::vector<GameObject *,std::allocator<GameObject *>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(217,30): warning C4251: "GameObject::children": "std::vector<GameObject *,std::allocator<GameObject *>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/TexturedScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<GameObject *,std::allocator<GameObject *>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(214,45): warning C4251: "GameObject::components": "std::vector<std::unique_ptr<Component,std::default_delete<Component>>,std::allocator<std::unique_ptr<Component,std::default_delete<Component>>>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(234,45): warning C4251: "GameObject::components": "std::vector<std::unique_ptr<Component,std::default_delete<Component>>,std::allocator<std::unique_ptr<Component,std::default_delete<Component>>>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/components/TexturedScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<std::unique_ptr<Component,std::default_delete<Component>>,std::allocator<std::unique_ptr<Component,std::default_delete<Component>>>>'
@@ -2156,22 +2156,22 @@ C:\Users\tupap\source\repos\MantraxEngine\src\render\RenderPipeline.h(93,44): wa
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<std::shared_ptr<Material>,std::allocator<std::shared_ptr<Material>>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(68,17): warning C4251: "Scene::name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(69,17): warning C4251: "Scene::name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
   (compilando archivo de origen "../src/components/TexturedScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(69,30): warning C4251: "Scene::gameObjects": "std::vector<GameObject *,std::allocator<GameObject *>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(70,30): warning C4251: "Scene::gameObjects": "std::vector<GameObject *,std::allocator<GameObject *>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
   (compilando archivo de origen "../src/components/TexturedScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<GameObject *,std::allocator<GameObject *>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(70,41): warning C4251: "Scene::lights": "std::vector<std::shared_ptr<Light>,std::allocator<std::shared_ptr<Light>>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(71,41): warning C4251: "Scene::lights": "std::vector<std::shared_ptr<Light>,std::allocator<std::shared_ptr<Light>>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
   (compilando archivo de origen "../src/components/TexturedScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<std::shared_ptr<Light>,std::allocator<std::shared_ptr<Light>>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(71,29): warning C4251: "Scene::camera": "std::unique_ptr<Camera,std::default_delete<Camera>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(72,29): warning C4251: "Scene::camera": "std::unique_ptr<Camera,std::default_delete<Camera>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
   (compilando archivo de origen "../src/components/TexturedScene.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(3347,7):
       vea la declaración de 'std::unique_ptr<Camera,std::default_delete<Camera>>'
@@ -2267,67 +2267,67 @@ C:\Users\tupap\source\repos\MantraxEngine\src\core\UIDGenerator.h(15,38): warnin
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\atomic(2131,8):
       vea la declaración de 'std::atomic<unsigned int>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(179,17): warning C4251: "GameObject::Name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(198,17): warning C4251: "GameObject::Name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/core/AudioManager.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(180,17): warning C4251: "GameObject::Tag": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(199,17): warning C4251: "GameObject::Tag": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/core/AudioManager.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(181,17): warning C4251: "GameObject::ObjectID": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(200,17): warning C4251: "GameObject::ObjectID": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/core/AudioManager.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(182,17): warning C4251: "GameObject::ModelPath": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(201,17): warning C4251: "GameObject::ModelPath": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/core/AudioManager.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(184,37): warning C4251: "GameObject::sharedGeometry": "std::shared_ptr<AssimpGeometry>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(203,37): warning C4251: "GameObject::sharedGeometry": "std::shared_ptr<AssimpGeometry>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/core/AudioManager.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<AssimpGeometry>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(185,31): warning C4251: "GameObject::material": "std::shared_ptr<Material>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(204,31): warning C4251: "GameObject::material": "std::shared_ptr<Material>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/core/AudioManager.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Material>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(188,15): warning C4251: "GameObject::localPosition": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(207,15): warning C4251: "GameObject::localPosition": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/core/AudioManager.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(189,15): warning C4251: "GameObject::localScale": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(208,15): warning C4251: "GameObject::localScale": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/core/AudioManager.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(190,15): warning C4251: "GameObject::localRotation": "glm::qua<float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(209,15): warning C4251: "GameObject::localRotation": "glm::qua<float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/core/AudioManager.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_quat.hpp(33,9):
       vea la declaración de 'glm::qua<float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(191,23): warning C4251: "GameObject::localModelMatrix": "glm::mat<4,4,glm::f32,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(210,23): warning C4251: "GameObject::localModelMatrix": "glm::mat<4,4,glm::f32,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/core/AudioManager.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_mat4x4.hpp(13,9):
       vea la declaración de 'glm::mat<4,4,glm::f32,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(192,23): warning C4251: "GameObject::worldModelMatrix": "glm::mat<4,4,glm::f32,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(211,23): warning C4251: "GameObject::worldModelMatrix": "glm::mat<4,4,glm::f32,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/core/AudioManager.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_mat4x4.hpp(13,9):
       vea la declaración de 'glm::mat<4,4,glm::f32,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(198,30): warning C4251: "GameObject::children": "std::vector<GameObject *,std::allocator<GameObject *>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(217,30): warning C4251: "GameObject::children": "std::vector<GameObject *,std::allocator<GameObject *>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/core/AudioManager.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<GameObject *,std::allocator<GameObject *>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(214,45): warning C4251: "GameObject::components": "std::vector<std::unique_ptr<Component,std::default_delete<Component>>,std::allocator<std::unique_ptr<Component,std::default_delete<Component>>>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(234,45): warning C4251: "GameObject::components": "std::vector<std::unique_ptr<Component,std::default_delete<Component>>,std::allocator<std::unique_ptr<Component,std::default_delete<Component>>>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/core/AudioManager.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<std::unique_ptr<Component,std::default_delete<Component>>,std::allocator<std::unique_ptr<Component,std::default_delete<Component>>>>'
@@ -2412,22 +2412,22 @@ C:\Users\tupap\source\repos\MantraxEngine\src\render\RenderPipeline.h(93,44): wa
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<std::shared_ptr<Material>,std::allocator<std::shared_ptr<Material>>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(68,17): warning C4251: "Scene::name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(69,17): warning C4251: "Scene::name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
   (compilando archivo de origen "../src/core/AudioManager.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(69,30): warning C4251: "Scene::gameObjects": "std::vector<GameObject *,std::allocator<GameObject *>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(70,30): warning C4251: "Scene::gameObjects": "std::vector<GameObject *,std::allocator<GameObject *>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
   (compilando archivo de origen "../src/core/AudioManager.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<GameObject *,std::allocator<GameObject *>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(70,41): warning C4251: "Scene::lights": "std::vector<std::shared_ptr<Light>,std::allocator<std::shared_ptr<Light>>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(71,41): warning C4251: "Scene::lights": "std::vector<std::shared_ptr<Light>,std::allocator<std::shared_ptr<Light>>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
   (compilando archivo de origen "../src/core/AudioManager.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<std::shared_ptr<Light>,std::allocator<std::shared_ptr<Light>>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(71,29): warning C4251: "Scene::camera": "std::unique_ptr<Camera,std::default_delete<Camera>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(72,29): warning C4251: "Scene::camera": "std::unique_ptr<Camera,std::default_delete<Camera>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
   (compilando archivo de origen "../src/core/AudioManager.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(3347,7):
       vea la declaración de 'std::unique_ptr<Camera,std::default_delete<Camera>>'
@@ -2518,67 +2518,67 @@ C:\Users\tupap\source\repos\MantraxEngine\src\core\UIDGenerator.h(15,38): warnin
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\atomic(2131,8):
       vea la declaración de 'std::atomic<unsigned int>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(179,17): warning C4251: "GameObject::Name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(198,17): warning C4251: "GameObject::Name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/core/CoreWrapper.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(180,17): warning C4251: "GameObject::Tag": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(199,17): warning C4251: "GameObject::Tag": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/core/CoreWrapper.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(181,17): warning C4251: "GameObject::ObjectID": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(200,17): warning C4251: "GameObject::ObjectID": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/core/CoreWrapper.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(182,17): warning C4251: "GameObject::ModelPath": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(201,17): warning C4251: "GameObject::ModelPath": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/core/CoreWrapper.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(184,37): warning C4251: "GameObject::sharedGeometry": "std::shared_ptr<AssimpGeometry>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(203,37): warning C4251: "GameObject::sharedGeometry": "std::shared_ptr<AssimpGeometry>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/core/CoreWrapper.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<AssimpGeometry>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(185,31): warning C4251: "GameObject::material": "std::shared_ptr<Material>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(204,31): warning C4251: "GameObject::material": "std::shared_ptr<Material>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/core/CoreWrapper.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Material>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(188,15): warning C4251: "GameObject::localPosition": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(207,15): warning C4251: "GameObject::localPosition": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/core/CoreWrapper.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(189,15): warning C4251: "GameObject::localScale": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(208,15): warning C4251: "GameObject::localScale": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/core/CoreWrapper.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(190,15): warning C4251: "GameObject::localRotation": "glm::qua<float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(209,15): warning C4251: "GameObject::localRotation": "glm::qua<float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/core/CoreWrapper.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_quat.hpp(33,9):
       vea la declaración de 'glm::qua<float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(191,23): warning C4251: "GameObject::localModelMatrix": "glm::mat<4,4,glm::f32,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(210,23): warning C4251: "GameObject::localModelMatrix": "glm::mat<4,4,glm::f32,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/core/CoreWrapper.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_mat4x4.hpp(13,9):
       vea la declaración de 'glm::mat<4,4,glm::f32,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(192,23): warning C4251: "GameObject::worldModelMatrix": "glm::mat<4,4,glm::f32,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(211,23): warning C4251: "GameObject::worldModelMatrix": "glm::mat<4,4,glm::f32,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/core/CoreWrapper.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_mat4x4.hpp(13,9):
       vea la declaración de 'glm::mat<4,4,glm::f32,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(198,30): warning C4251: "GameObject::children": "std::vector<GameObject *,std::allocator<GameObject *>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(217,30): warning C4251: "GameObject::children": "std::vector<GameObject *,std::allocator<GameObject *>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/core/CoreWrapper.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<GameObject *,std::allocator<GameObject *>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(214,45): warning C4251: "GameObject::components": "std::vector<std::unique_ptr<Component,std::default_delete<Component>>,std::allocator<std::unique_ptr<Component,std::default_delete<Component>>>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(234,45): warning C4251: "GameObject::components": "std::vector<std::unique_ptr<Component,std::default_delete<Component>>,std::allocator<std::unique_ptr<Component,std::default_delete<Component>>>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/core/CoreWrapper.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<std::unique_ptr<Component,std::default_delete<Component>>,std::allocator<std::unique_ptr<Component,std::default_delete<Component>>>>'
@@ -2663,22 +2663,22 @@ C:\Users\tupap\source\repos\MantraxEngine\src\render\RenderPipeline.h(93,44): wa
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<std::shared_ptr<Material>,std::allocator<std::shared_ptr<Material>>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(68,17): warning C4251: "Scene::name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(69,17): warning C4251: "Scene::name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
   (compilando archivo de origen "../src/core/CoreWrapper.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(69,30): warning C4251: "Scene::gameObjects": "std::vector<GameObject *,std::allocator<GameObject *>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(70,30): warning C4251: "Scene::gameObjects": "std::vector<GameObject *,std::allocator<GameObject *>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
   (compilando archivo de origen "../src/core/CoreWrapper.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<GameObject *,std::allocator<GameObject *>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(70,41): warning C4251: "Scene::lights": "std::vector<std::shared_ptr<Light>,std::allocator<std::shared_ptr<Light>>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(71,41): warning C4251: "Scene::lights": "std::vector<std::shared_ptr<Light>,std::allocator<std::shared_ptr<Light>>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
   (compilando archivo de origen "../src/core/CoreWrapper.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<std::shared_ptr<Light>,std::allocator<std::shared_ptr<Light>>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(71,29): warning C4251: "Scene::camera": "std::unique_ptr<Camera,std::default_delete<Camera>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(72,29): warning C4251: "Scene::camera": "std::unique_ptr<Camera,std::default_delete<Camera>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
   (compilando archivo de origen "../src/core/CoreWrapper.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(3347,7):
       vea la declaración de 'std::unique_ptr<Camera,std::default_delete<Camera>>'
@@ -2899,67 +2899,67 @@ C:\Users\tupap\source\repos\MantraxEngine\src\core\UIDGenerator.h(15,38): warnin
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\atomic(2131,8):
       vea la declaración de 'std::atomic<unsigned int>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(179,17): warning C4251: "GameObject::Name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(198,17): warning C4251: "GameObject::Name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/main/MantraxEngine.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(180,17): warning C4251: "GameObject::Tag": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(199,17): warning C4251: "GameObject::Tag": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/main/MantraxEngine.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(181,17): warning C4251: "GameObject::ObjectID": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(200,17): warning C4251: "GameObject::ObjectID": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/main/MantraxEngine.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(182,17): warning C4251: "GameObject::ModelPath": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(201,17): warning C4251: "GameObject::ModelPath": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/main/MantraxEngine.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(184,37): warning C4251: "GameObject::sharedGeometry": "std::shared_ptr<AssimpGeometry>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(203,37): warning C4251: "GameObject::sharedGeometry": "std::shared_ptr<AssimpGeometry>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/main/MantraxEngine.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<AssimpGeometry>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(185,31): warning C4251: "GameObject::material": "std::shared_ptr<Material>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(204,31): warning C4251: "GameObject::material": "std::shared_ptr<Material>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/main/MantraxEngine.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Material>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(188,15): warning C4251: "GameObject::localPosition": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(207,15): warning C4251: "GameObject::localPosition": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/main/MantraxEngine.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(189,15): warning C4251: "GameObject::localScale": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(208,15): warning C4251: "GameObject::localScale": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/main/MantraxEngine.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(190,15): warning C4251: "GameObject::localRotation": "glm::qua<float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(209,15): warning C4251: "GameObject::localRotation": "glm::qua<float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/main/MantraxEngine.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_quat.hpp(33,9):
       vea la declaración de 'glm::qua<float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(191,23): warning C4251: "GameObject::localModelMatrix": "glm::mat<4,4,glm::f32,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(210,23): warning C4251: "GameObject::localModelMatrix": "glm::mat<4,4,glm::f32,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/main/MantraxEngine.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_mat4x4.hpp(13,9):
       vea la declaración de 'glm::mat<4,4,glm::f32,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(192,23): warning C4251: "GameObject::worldModelMatrix": "glm::mat<4,4,glm::f32,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(211,23): warning C4251: "GameObject::worldModelMatrix": "glm::mat<4,4,glm::f32,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/main/MantraxEngine.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_mat4x4.hpp(13,9):
       vea la declaración de 'glm::mat<4,4,glm::f32,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(198,30): warning C4251: "GameObject::children": "std::vector<GameObject *,std::allocator<GameObject *>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(217,30): warning C4251: "GameObject::children": "std::vector<GameObject *,std::allocator<GameObject *>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/main/MantraxEngine.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<GameObject *,std::allocator<GameObject *>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(214,45): warning C4251: "GameObject::components": "std::vector<std::unique_ptr<Component,std::default_delete<Component>>,std::allocator<std::unique_ptr<Component,std::default_delete<Component>>>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(234,45): warning C4251: "GameObject::components": "std::vector<std::unique_ptr<Component,std::default_delete<Component>>,std::allocator<std::unique_ptr<Component,std::default_delete<Component>>>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/main/MantraxEngine.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<std::unique_ptr<Component,std::default_delete<Component>>,std::allocator<std::unique_ptr<Component,std::default_delete<Component>>>>'
@@ -2984,22 +2984,22 @@ C:\Users\tupap\source\repos\MantraxEngine\src\render\RenderPipeline.h(93,44): wa
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<std::shared_ptr<Material>,std::allocator<std::shared_ptr<Material>>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(68,17): warning C4251: "Scene::name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(69,17): warning C4251: "Scene::name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
   (compilando archivo de origen "../src/main/MantraxEngine.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(69,30): warning C4251: "Scene::gameObjects": "std::vector<GameObject *,std::allocator<GameObject *>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(70,30): warning C4251: "Scene::gameObjects": "std::vector<GameObject *,std::allocator<GameObject *>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
   (compilando archivo de origen "../src/main/MantraxEngine.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<GameObject *,std::allocator<GameObject *>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(70,41): warning C4251: "Scene::lights": "std::vector<std::shared_ptr<Light>,std::allocator<std::shared_ptr<Light>>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(71,41): warning C4251: "Scene::lights": "std::vector<std::shared_ptr<Light>,std::allocator<std::shared_ptr<Light>>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
   (compilando archivo de origen "../src/main/MantraxEngine.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<std::shared_ptr<Light>,std::allocator<std::shared_ptr<Light>>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(71,29): warning C4251: "Scene::camera": "std::unique_ptr<Camera,std::default_delete<Camera>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.h(72,29): warning C4251: "Scene::camera": "std::unique_ptr<Camera,std::default_delete<Camera>>" debe tener una interfaz DLL para que la usen los clientes de "Scene"
   (compilando archivo de origen "../src/main/MantraxEngine.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(3347,7):
       vea la declaración de 'std::unique_ptr<Camera,std::default_delete<Camera>>'
@@ -3245,71 +3245,72 @@ C:\Users\tupap\source\repos\MantraxEngine\src\core\UIDGenerator.h(15,38): warnin
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\atomic(2131,8):
       vea la declaración de 'std::atomic<unsigned int>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(179,17): warning C4251: "GameObject::Name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(198,17): warning C4251: "GameObject::Name": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/render/RenderPipeline.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(180,17): warning C4251: "GameObject::Tag": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(199,17): warning C4251: "GameObject::Tag": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/render/RenderPipeline.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(181,17): warning C4251: "GameObject::ObjectID": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(200,17): warning C4251: "GameObject::ObjectID": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/render/RenderPipeline.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(182,17): warning C4251: "GameObject::ModelPath": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(201,17): warning C4251: "GameObject::ModelPath": "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/render/RenderPipeline.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(184,37): warning C4251: "GameObject::sharedGeometry": "std::shared_ptr<AssimpGeometry>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(203,37): warning C4251: "GameObject::sharedGeometry": "std::shared_ptr<AssimpGeometry>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/render/RenderPipeline.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<AssimpGeometry>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(185,31): warning C4251: "GameObject::material": "std::shared_ptr<Material>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(204,31): warning C4251: "GameObject::material": "std::shared_ptr<Material>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/render/RenderPipeline.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
       vea la declaración de 'std::shared_ptr<Material>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(188,15): warning C4251: "GameObject::localPosition": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(207,15): warning C4251: "GameObject::localPosition": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/render/RenderPipeline.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(189,15): warning C4251: "GameObject::localScale": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(208,15): warning C4251: "GameObject::localScale": "glm::vec<3,float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/render/RenderPipeline.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_vec3.hpp(17,9):
       vea la declaración de 'glm::vec<3,float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(190,15): warning C4251: "GameObject::localRotation": "glm::qua<float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(209,15): warning C4251: "GameObject::localRotation": "glm::qua<float,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/render/RenderPipeline.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_quat.hpp(33,9):
       vea la declaración de 'glm::qua<float,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(191,23): warning C4251: "GameObject::localModelMatrix": "glm::mat<4,4,glm::f32,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(210,23): warning C4251: "GameObject::localModelMatrix": "glm::mat<4,4,glm::f32,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/render/RenderPipeline.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_mat4x4.hpp(13,9):
       vea la declaración de 'glm::mat<4,4,glm::f32,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(192,23): warning C4251: "GameObject::worldModelMatrix": "glm::mat<4,4,glm::f32,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(211,23): warning C4251: "GameObject::worldModelMatrix": "glm::mat<4,4,glm::f32,glm::packed_highp>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/render/RenderPipeline.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\glm\detail\type_mat4x4.hpp(13,9):
       vea la declaración de 'glm::mat<4,4,glm::f32,glm::packed_highp>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(198,30): warning C4251: "GameObject::children": "std::vector<GameObject *,std::allocator<GameObject *>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(217,30): warning C4251: "GameObject::children": "std::vector<GameObject *,std::allocator<GameObject *>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/render/RenderPipeline.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<GameObject *,std::allocator<GameObject *>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(214,45): warning C4251: "GameObject::components": "std::vector<std::unique_ptr<Component,std::default_delete<Component>>,std::allocator<std::unique_ptr<Component,std::default_delete<Component>>>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
+C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(234,45): warning C4251: "GameObject::components": "std::vector<std::unique_ptr<Component,std::default_delete<Component>>,std::allocator<std::unique_ptr<Component,std::default_delete<Component>>>>" debe tener una interfaz DLL para que la usen los clientes de "GameObject"
   (compilando archivo de origen "../src/render/RenderPipeline.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\vector(442,7):
       vea la declaración de 'std::vector<std::unique_ptr<Component,std::default_delete<Component>>,std::allocator<std::unique_ptr<Component,std::default_delete<Component>>>>'
   
 C:\Users\tupap\source\repos\MantraxEngine\src\render\RenderPipeline.cpp(208,42): warning C4267: '=': conversión de 'size_t' a 'int'; posible pérdida de datos
   Generando código...
+     Creando biblioteca C:\Users\tupap\source\repos\MantraxEngine\x64\Debug\MantraxCore.lib y objeto C:\Users\tupap\source\repos\MantraxEngine\x64\Debug\MantraxCore.exp
   MantraxCore.vcxproj -> C:\Users\tupap\source\repos\MantraxEngine\x64\Debug\MantraxCore.dll

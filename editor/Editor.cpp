@@ -149,7 +149,7 @@ void setupInputSystem(Scene* activeScene) {
 }
 
 int main() {
-    // Registrar manejador de se�ales para cierre seguro
+    // Registrar manejador de senales para cierre seguro
     signal(SIGINT, signalHandler);
     signal(SIGTERM, signalHandler);
     
@@ -234,14 +234,14 @@ int main() {
     setupInputSystem(activeScene);
 
     std::cout << "\n=== CONTROLES ===" << std::endl;
-    std::cout << "WASD: Mover c�mara | Espacio/Shift: Subir/Bajar" << std::endl;
+    std::cout << "WASD: Mover camara | Espacio/Shift: Subir/Bajar" << std::endl;
     std::cout << "Mouse: Mirar | Click Derecho: Capturar Mouse" << std::endl;
-    std::cout << "1: Escena de Test | 2: Escena con Texturas | 3: ⚡ ESCENA MASIVA (5000 objetos)" << std::endl;
+    std::cout << "1: Escena de Test | 2: Escena con Texturas | 3: ESCENA MASIVA (5000 objetos)" << std::endl;
     std::cout << "U: Toggle UI Demo Window (ImGui-based)" << std::endl;
     std::cout << "B: Mostrar Banner de Inicio" << std::endl;
     std::cout << "UI: Ventana 'UI System Demo' - Funciona en viewport y pantalla" << std::endl;
     std::cout << "Escape: Liberar Mouse" << std::endl;
-    std::cout << "⚠️  ADVERTENCIA: Escena 3 = Prueba de estrés con 5000 objetos" << std::endl;
+    std::cout << "ADVERTENCIA: Escena 3 = Prueba de estrés con 5000 objetos" << std::endl;
     std::cout << "=================\n" << std::endl;
 
     // Enable camera framebuffer for viewport rendering

@@ -74,11 +74,11 @@ auto* redCube = new GameObject(cubeGeometry);
 redCube->Name = "RedCube";
 redCube->setLocalPosition({ -2.0f, 0.0f, 0.0f });
 redCube->setMaterial(redMaterial);
-addGameObject(redCube);  // ✅ Solo esto es suficiente
+addGameObject(redCube);  // Solo esto es suficiente
 
 // SceneManager::setupRenderPipeline() se llama automáticamente
 for (auto* obj : activeScene->getGameObjects()) {
-    pipeline.AddGameObject(obj);  // ✅ Sincronización automática
+    pipeline.AddGameObject(obj);  // Sincronización automática
 }
 ```
 
@@ -88,15 +88,15 @@ for (auto* obj : activeScene->getGameObjects()) {
 
 ```cpp
 // MainBar.cpp
-activeScene->addGameObject(NewObject);        // ✅ Agregar a escena
-pipeline->AddGameObject(NewObject);           // ✅ Agregar manualmente al pipeline
+activeScene->addGameObject(NewObject);        // Agregar a escena
+pipeline->AddGameObject(NewObject);           // Agregar manualmente al pipeline
 ```
 
 **Ahora (Automático):**
 
 ```cpp
 // MainBar.cpp
-activeScene->addGameObject(NewObject);        // ✅ Sincronización automática
+activeScene->addGameObject(NewObject);        // Sincronización automática
 
 // Scene.h - addGameObject() mejorado
 void addGameObject(GameObject* object) {
@@ -105,7 +105,7 @@ void addGameObject(GameObject* object) {
 
         // Sincronizar automáticamente con RenderPipeline
         if (renderPipeline) {
-            renderPipeline->AddGameObject(object);  // ✅ Automático
+            renderPipeline->AddGameObject(object);  // Automático
         }
     }
 }
@@ -174,7 +174,7 @@ void addGameObject(GameObject* object) {
 // En TestScene::initialize()
 auto* obj = new GameObject(geometry);
 obj->setLocalPosition({ 0.0f, 0.0f, 0.0f });
-addGameObject(obj);  // ✅ Automático
+addGameObject(obj);  // Automático
 ```
 
 ### **Crear Objetos en Runtime**
@@ -183,14 +183,14 @@ addGameObject(obj);  // ✅ Automático
 // En MainBar.cpp
 auto* obj = new GameObject(geometry);
 obj->setLocalPosition({ 0.0f, 0.0f, 0.0f });
-activeScene->addGameObject(obj);  // ✅ Automático
+activeScene->addGameObject(obj);  // Automático
 ```
 
 ### **Crear Objetos sin Sincronización (Casos Especiales)**
 
 ```cpp
 // Para objetos que no deben renderizarse
-activeScene->addGameObjectNoSync(obj);  // ✅ Solo en escena
+activeScene->addGameObjectNoSync(obj);  // Solo en escena
 ```
 
 ## Ventajas del Sistema Mejorado

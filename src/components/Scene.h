@@ -61,6 +61,7 @@ public:
     const std::vector<GameObject*>& getGameObjects() const { return gameObjects; }
     const std::vector<std::shared_ptr<Light>>& getLights() const { return lights; }
 
+    const Camera* getCamera() const { return camera.get(); }
     Camera* getCamera() { return camera.get(); }
     void setCamera(std::unique_ptr<Camera> newCamera) { camera = std::move(newCamera); }
 

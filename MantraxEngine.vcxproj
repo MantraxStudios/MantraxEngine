@@ -137,6 +137,7 @@
     <ClCompile Include="editor\Editor.cpp" />
     <ClCompile Include="editor\EUI\EditorInfo.cpp" />
     <ClCompile Include="editor\EUI\ImGuiLoader.cpp" />
+    <ClCompile Include="editor\SceneSaver.cpp" />
     <ClCompile Include="editor\Windows\Gizmos.cpp" />
     <ClCompile Include="editor\Windows\Hierarchy.cpp" />
     <ClCompile Include="editor\Windows\Inspector.cpp" />
@@ -161,6 +162,7 @@
     <ClInclude Include="editor\EUI\EditorInfo.h" />
     <ClInclude Include="editor\EUI\ImGuiLoader.h" />
     <ClInclude Include="editor\EUI\ImGuiThemes.h" />
+    <ClInclude Include="editor\SceneSaver.h" />
     <ClInclude Include="editor\Windows\Gizmos.h" />
     <ClInclude Include="editor\Windows\Hierarchy.h" />
     <ClInclude Include="editor\Windows\Inspector.h" />

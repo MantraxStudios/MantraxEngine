@@ -3,23 +3,76 @@
 #include "components/GameObject.h"
 #include "render/RenderConfig.h"
 #include "render/RenderPipeline.h"
+#include "render/DefaultShaders.h"
+#include "render/Camera.h"
 #include "../EUI/EditorInfo.h"
 #include "Selection.h"
 #include "RenderWindows.h"
+#include "../SceneSaver.h"
 #include <iostream>
 
+// Declaración de la variable externa
+extern volatile bool g_running;
 
 void MainBar::OnRenderGUI() {
 	ImGui::BeginMainMenuBar();
 	if (ImGui::BeginMenu("File")) {
-		if (ImGui::MenuItem ("Save"))
-		{
+		if (ImGui::MenuItem("New Empty Scene")) {
+			auto& sceneManager = SceneManager::getInstance();
+			Scene* newScene = new Scene("Empty Scene");
+			
+			// Crear una cámara por defecto
+			auto camera = std::make_unique<Camera>(65.0f, 1200.0f/800.0f, 0.1f, 1000.0f);
+			camera->setPosition(glm::vec3(0.0f, 5.0f, 10.0f));
+			camera->setTarget(glm::vec3(0.0f));
+			newScene->setCamera(std::move(camera));
 
+			// Configurar el RenderPipeline
+			if (auto currentScene = sceneManager.getActiveScene()) {
+				// Reusar el pipeline de la escena actual si existe
+				newScene->setRenderPipeline(currentScene->getRenderPipeline());
+			} else {
+				// Si no hay escena activa, crear un nuevo pipeline con shaders por defecto
+				std::unique_ptr<DefaultShaders> shaders = std::make_unique<DefaultShaders>();
+				RenderPipeline* pipeline = new RenderPipeline(newScene->getCamera(), shaders.get());
+				
+				// Cargar materiales desde la configuración
+				if (!pipeline->loadMaterialsFromConfig("config/materials_config.json")) {
+					std::cerr << "Warning: Failed to load materials configuration" << std::endl;
+				}
+				
+				newScene->setRenderPipeline(pipeline);
+			}
+
+			newScene->initialize();
+			newScene->setInitialized(true);
+			sceneManager.addScene(std::unique_ptr<Scene>(newScene));
+			sceneManager.setActiveScene("Empty Scene");
+			std::cout << "Created new empty scene with RenderPipeline" << std::endl;
 		}
 
-		if (ImGui::MenuItem("Exit"))
-		{
+		if (ImGui::MenuItem("Save")) {
+			auto& sceneManager = SceneManager::getInstance();
+			Scene* activeScene = sceneManager.getActiveScene();
+			if (activeScene) {
+				std::string filename = "scenes/" + activeScene->getName() + ".scene";
+				if (SceneSaver::SaveScene(activeScene, filename)) {
+					std::cout << "Scene saved successfully!" << std::endl;
+				} else {
+					std::cerr << "Failed to save scene!" << std::endl;
+				}
+			}
+		}
 
+		if (ImGui::MenuItem("Save As...")) {
+			// TODO: Implementar diálogo de selección de archivo
+		}
+
+		ImGui::Separator();
+
+		if (ImGui::MenuItem("Exit")) {
+			// Señalizar cierre seguro
+			g_running = false;
 		}
 		ImGui::EndMenu();
 	}
@@ -41,9 +94,9 @@ void MainBar::OnRenderGUI() {
 				// Agregar a la escena (sincronización automática con RenderPipeline)
 				activeScene->addGameObject(NewObject);
 				
-				std::cout << "✅ Created new object: " << NewObject->Name << std::endl;
+				std::cout << "Created new object: " << NewObject->Name << std::endl;
 			} else {
-				std::cerr << "❌ Error: No RenderPipeline available" << std::endl;
+				std::cerr << "Error: No RenderPipeline available" << std::endl;
 			}
 		}
 		
@@ -60,7 +113,7 @@ void MainBar::OnRenderGUI() {
 			// Agregar a la escena
 			activeScene->addGameObject(NewObject);
 			
-			std::cout << "✅ Created empty object: " << NewObject->Name << std::endl;
+			std::cout << "Created empty object: " << NewObject->Name << std::endl;
 		}
 		
 		if (ImGui::MenuItem("New Object from Model"))
@@ -79,9 +132,9 @@ void MainBar::OnRenderGUI() {
 				// Solo agregar si se cargó correctamente
 				if (NewObject->hasGeometry()) {
 					activeScene->addGameObject(NewObject);
-					std::cout << "✅ Created model object: " << NewObject->Name << std::endl;
+					std::cout << "Created model object: " << NewObject->Name << std::endl;
 				} else {
-					std::cout << "⚠️ Model failed to load, creating fallback object" << std::endl;
+					std::cout << "Warning: Model failed to load, creating fallback object" << std::endl;
 					delete NewObject;
 					
 					// Crear objeto con geometría por defecto
@@ -114,7 +167,7 @@ void MainBar::OnRenderGUI() {
 				activeScene->initialize();
 				activeScene->setInitialized(true);
 				
-				std::cout << "🧹 Cleared all objects from scene" << std::endl;
+				std::cout << "Cleared all objects from scene" << std::endl;
 			}
 		}
 		
@@ -125,9 +178,9 @@ void MainBar::OnRenderGUI() {
 			RenderPipeline* pipeline = activeScene->getRenderPipeline();
 			
 			if (pipeline) {
-				std::cout << "📊 Scene Objects: " << activeScene->getGameObjects().size() << std::endl;
-				std::cout << "📊 Pipeline Objects: " << pipeline->getTotalObjectsCount() << std::endl;
-				std::cout << "📊 Visible Objects: " << pipeline->getVisibleObjectsCount() << std::endl;
+				std::cout << "Scene Objects: " << activeScene->getGameObjects().size() << std::endl;
+				std::cout << "Pipeline Objects: " << pipeline->getTotalObjectsCount() << std::endl;
+				std::cout << "Visible Objects: " << pipeline->getVisibleObjectsCount() << std::endl;
 			}
 		}
 		ImGui::EndMenu();
@@ -142,13 +195,13 @@ void MainBar::OnRenderGUI() {
 			bool usePBR = pipeline->getUsePBR();
 			if (ImGui::MenuItem("Toggle PBR/Phong", nullptr, &usePBR)) {
 				pipeline->setUsePBR(usePBR);
-				std::cout << "🎨 Switched to " << (usePBR ? "PBR" : "Blinn-Phong") << " lighting" << std::endl;
+				std::cout << "Switched to " << (usePBR ? "PBR" : "Blinn-Phong") << " lighting" << std::endl;
 			}
 			
 			bool lowAmbient = pipeline->getLowAmbient();
 			if (ImGui::MenuItem("Toggle Low Ambient", nullptr, &lowAmbient)) {
 				pipeline->setLowAmbient(lowAmbient);
-				std::cout << "💡 " << (lowAmbient ? "Enabled" : "Disabled") << " low ambient lighting" << std::endl;
+				std::cout << (lowAmbient ? "Enabled" : "Disabled") << " low ambient lighting" << std::endl;
 			}
 			
 			ImGui::Separator();
@@ -161,7 +214,7 @@ void MainBar::OnRenderGUI() {
 			bool frustumCulling = pipeline->getFrustumCulling();
 			if (ImGui::MenuItem("Toggle Frustum Culling", nullptr, &frustumCulling)) {
 				pipeline->setFrustumCulling(frustumCulling);
-				std::cout << "👁️ " << (frustumCulling ? "Enabled" : "Disabled") << " frustum culling" << std::endl;
+				std::cout << (frustumCulling ? "Enabled" : "Disabled") << " frustum culling" << std::endl;
 			}
 		}
 		
@@ -176,31 +229,31 @@ void MainBar::OnRenderGUI() {
 		if (ImGui::RadioButton("Disabled (0x)", currentAntialiasing == 0)) {
 			currentAntialiasing = 0;
 			config.setAntialiasing(0);
-			std::cout << "🔧 Antialiasing disabled" << std::endl;
+			std::cout << "Antialiasing disabled" << std::endl;
 		}
 		
 		if (ImGui::RadioButton("2x MSAA", currentAntialiasing == 2)) {
 			currentAntialiasing = 2;
 			config.setAntialiasing(2);
-			std::cout << "🔧 Antialiasing set to 2x MSAA" << std::endl;
+			std::cout << "Antialiasing set to 2x MSAA" << std::endl;
 		}
 		
 		if (ImGui::RadioButton("4x MSAA", currentAntialiasing == 4)) {
 			currentAntialiasing = 4;
 			config.setAntialiasing(4);
-			std::cout << "🔧 Antialiasing set to 4x MSAA" << std::endl;
+			std::cout << "Antialiasing set to 4x MSAA" << std::endl;
 		}
 		
 		if (ImGui::RadioButton("8x MSAA", currentAntialiasing == 8)) {
 			currentAntialiasing = 8;
 			config.setAntialiasing(8);
-			std::cout << "🔧 Antialiasing set to 8x MSAA" << std::endl;
+			std::cout << "Antialiasing set to 8x MSAA" << std::endl;
 		}
 		
 		if (ImGui::RadioButton("16x MSAA", currentAntialiasing == 16)) {
 			currentAntialiasing = 16;
 			config.setAntialiasing(16);
-			std::cout << "🔧 Antialiasing set to 16x MSAA" << std::endl;
+			std::cout << "Antialiasing set to 16x MSAA" << std::endl;
 		}
 		
 		ImGui::Separator();

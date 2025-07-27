@@ -74,17 +74,6 @@ void AudioManager::update() {
 
             // Actualizar atributos del listener
             system->set3DListenerAttributes(0, &fmodPosition, &fmodVelocity, &fmodForward, &fmodUp);
-
-            // Debug info
-            static float debugTimer = 0.0f;
-            debugTimer += 0.1f; // Aproximadamente cada 0.1 segundos
-            if (debugTimer >= 1.0f) {
-                std::cout << "Audio Listener - Position: (" 
-                          << position.x << ", " << position.y << ", " << position.z 
-                          << ") Forward: (" 
-                          << forward.x << ", " << forward.y << ", " << forward.z << ")\n";
-                debugTimer = 0.0f;
-            }
         }
 
         // Actualizar el sistema FMOD

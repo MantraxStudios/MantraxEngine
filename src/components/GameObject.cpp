@@ -14,7 +14,8 @@ GameObject::GameObject()
     : geometry(nullptr), sharedGeometry(nullptr), material(nullptr), 
       localPosition(0.0f), localScale(1.0f), localRotation(1.0f, 0.0f, 0.0f, 0.0f), 
       dirtyLocalTransform(true), dirtyWorldTransform(true), parent(nullptr),
-      localBoundingRadius(0.5f), worldBoundingSphereDirty(true), ModelPath("") {
+      localBoundingRadius(0.5f), worldBoundingSphereDirty(true), ModelPath(""),
+      isDestroyed(false) {
     calculateBoundingVolumes();
 }
 
@@ -51,6 +52,38 @@ GameObject::GameObject(std::shared_ptr<AssimpGeometry> geometry, std::shared_ptr
       dirtyLocalTransform(true), dirtyWorldTransform(true), parent(nullptr),
       localBoundingRadius(0.5f), worldBoundingSphereDirty(true), ModelPath("") {
     calculateBoundingVolumes();
+}
+
+GameObject::~GameObject() {
+    cleanup();
+}
+
+void GameObject::destroy() {
+    if (!isDestroyed) {
+        isDestroyed = true;
+        cleanup();
+    }
+}
+
+void GameObject::cleanup() {
+    // Primero destruir todos los hijos
+    for (auto* child : children) {
+        if (child) {
+            child->destroy();
+        }
+    }
+    children.clear();
+
+    // Desvincularse del padre
+    removeFromParent();
+
+    // Limpiar componentes
+    components.clear();
+
+    // Limpiar referencias
+    geometry = nullptr;
+    sharedGeometry = nullptr;
+    material = nullptr;
 }
 
 void GameObject::setLocalPosition(const glm::vec3 &pos) {
@@ -205,19 +238,17 @@ glm::mat4 GameObject::getWorldToLocalMatrix() const {
 }
 
 void GameObject::setParent(GameObject* newParent) {
-    if (newParent == this || isChildOf(newParent)) {
-        return;
-    }
+    if (isDestroyed || (newParent && newParent->isDestroyed)) return;
+    if (newParent == this || isChildOf(newParent)) return;
     
     removeFromParent();
-    
     addToParent(newParent);
-    
     invalidateWorldTransform();
 }
 
 void GameObject::addChild(GameObject* child) {
-    if (child && child != this && !isParentOf(child)) {
+    if (isDestroyed || !child || child->isDestroyed) return;
+    if (child != this && !isParentOf(child)) {
         child->setParent(this);
     }
 }
@@ -345,6 +376,8 @@ void GameObject::updateWorldModelMatrix() const {
 }
 
 void GameObject::update(float deltaTime) {
+    if (isDestroyed) return;
+
     // Actualizar todos los componentes
     for (auto& comp : components) {
         if (comp) {
