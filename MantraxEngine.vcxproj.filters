@@ -58,6 +58,9 @@
     <ClCompile Include="editor\SceneSaver.cpp">
       <Filter>01_Main</Filter>
     </ClCompile>
+    <ClCompile Include="editor\Windows\ContentBrowser.cpp">
+      <Filter>01_Main\Windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Vendors">
@@ -148,6 +151,9 @@
     </ClInclude>
     <ClInclude Include="editor\SceneSaver.h">
       <Filter>01_Main</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\Windows\ContentBrowser.h">
+      <Filter>01_Main\Windows</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

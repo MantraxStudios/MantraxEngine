@@ -2,6 +2,7 @@ C:\Users\tupap\source\repos\MantraxEngine\editor\Editor.cpp;C:\Users\tupap\sourc
 C:\Users\tupap\source\repos\MantraxEngine\editor\EUI\EditorInfo.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxEngine\x64\Debug\EditorInfo.obj
 C:\Users\tupap\source\repos\MantraxEngine\editor\EUI\ImGuiLoader.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxEngine\x64\Debug\ImGuiLoader.obj
 C:\Users\tupap\source\repos\MantraxEngine\editor\SceneSaver.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxEngine\x64\Debug\SceneSaver.obj
+C:\Users\tupap\source\repos\MantraxEngine\editor\Windows\ContentBrowser.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxEngine\x64\Debug\ContentBrowser.obj
 C:\Users\tupap\source\repos\MantraxEngine\editor\Windows\Gizmos.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxEngine\x64\Debug\Gizmos.obj
 C:\Users\tupap\source\repos\MantraxEngine\editor\Windows\Hierarchy.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxEngine\x64\Debug\Hierarchy.obj
 C:\Users\tupap\source\repos\MantraxEngine\editor\Windows\Inspector.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxEngine\x64\Debug\Inspector.obj

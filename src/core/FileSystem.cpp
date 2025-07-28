@@ -158,10 +158,6 @@ std::string FileSystem::combinePath(const std::string& path1, const std::string&
     return combined.string();
 }
 
-std::string FileSystem::normalizePath(const std::string& path) {
-    return fs::path(path).lexically_normal().string();
-}
-
 std::string FileSystem::getAbsolutePath(const std::string& relativePath) {
     try {
         return fs::absolute(relativePath).string();
@@ -194,4 +190,49 @@ bool FileSystem::ensureDirectoryExists(const std::string& filePath) {
         std::cerr << "Error ensuring directory exists for " << filePath << ": " << e.what() << std::endl;
         return false;
     }
-} 
+}
+
+std::string FileSystem::getProjectPath() {
+    try {
+        // Ruta por defecto del proyecto (SIN barra final)
+        std::string defaultProjectPath = "D:\\Proyects\\MantraxGame";
+
+        // Verificar si la ruta existe
+        if (std::filesystem::exists(defaultProjectPath)) {
+            return defaultProjectPath;
+        }
+
+        // Si no existe, intentar crear el directorio
+        std::filesystem::create_directories(defaultProjectPath);
+
+        return defaultProjectPath;
+    }
+    catch (const std::exception& e) {
+        std::cerr << "Error getting project path: " << e.what() << std::endl;
+        // Devolver ruta por defecto sin barra final
+        return "D:\\Proyects\\MantraxGame";
+    }
+}
+
+// Función auxiliar para normalizar rutas
+std::string FileSystem::normalizePath(const std::string& path) {
+    std::string normalized = path;
+
+    // Reemplazar barras diagonales por barras invertidas en Windows
+    std::replace(normalized.begin(), normalized.end(), '/', '\\');
+
+    // Remover barras dobles
+    size_t pos = 0;
+    while ((pos = normalized.find("\\\\", pos)) != std::string::npos) {
+        normalized.replace(pos, 2, "\\");
+        pos += 1;
+    }
+
+    // Remover barra final si existe (excepto para rutas raíz como "C:\")
+    if (normalized.length() > 3 &&
+        (normalized.back() == '\\' || normalized.back() == '/')) {
+        normalized.pop_back();
+    }
+
+    return normalized;
+}

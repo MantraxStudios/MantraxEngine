@@ -6,6 +6,7 @@
 #include "Inspector.h"
 #include "Gizmos.h"
 #include "MainBar.h"
+#include "ContentBrowser.h"
 
 class RenderWindows {
 private:
@@ -18,6 +19,7 @@ public:
         m_windows.push_back(std::make_unique<Inspector>());
         m_windows.push_back(std::make_unique<Gizmos>());
         m_windows.push_back(std::make_unique<MainBar>());
+        m_windows.push_back(std::make_unique<ContentBrowser>());
     }
     
     // Delete copy constructor and assignment operator

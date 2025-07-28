@@ -1,0 +1,14 @@
+#pragma once
+#include "WindowBehaviour.h"
+#include <string>
+#include <vector>
+
+class ContentBrowser : public WindowBehaviour {
+public:
+    void OnRenderGUI() override;
+
+    const std::string& getName() const override {
+        static const std::string name = "ContentBrowser";
+        return name;
+    }
+}; 

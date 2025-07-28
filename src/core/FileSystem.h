@@ -31,6 +31,7 @@ public:
     static std::string normalizePath(const std::string& path);
     static std::string getAbsolutePath(const std::string& relativePath);
     static std::string getRelativePath(const std::string& absolutePath, const std::string& basePath);
+    static std::string getProjectPath();
 
 private:
     static bool ensureDirectoryExists(const std::string& filePath);

@@ -49,7 +49,7 @@
     <Filter Include="Vendors\MPhysics">
       <UniqueIdentifier>{e33f40e8-66cb-4978-8263-fa85c0041b01}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01_Natives\WrapperAndLoader">
+    <Filter Include="01_Natives\BehaviourInyector">
       <UniqueIdentifier>{f74021d3-cbd6-4f1d-8444-a4587d2f421c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -162,8 +162,11 @@
     <ClCompile Include="..\src\core\PhysicsEventHandler.cpp">
       <Filter>01_Natives\Physics</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\components\ScriptExecutor.cpp">
+      <Filter>01_Natives\BehaviourInyector</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\components\DLLLoader.cpp">
-      <Filter>01_Natives\WrapperAndLoader</Filter>
+      <Filter>01_Natives\BehaviourInyector</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -318,8 +321,23 @@
     <ClInclude Include="..\src\core\PhysicsEventCallback.h">
       <Filter>01_Natives\Physics</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\components\MantraxBehaviour.h">
+      <Filter>01_Natives\BehaviourInyector</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\components\types.h">
+      <Filter>01_Natives\BehaviourInyector</Filter>
+    </ClInclude>
     <ClInclude Include="..\src\components\DLLLoader.h">
-      <Filter>01_Natives\WrapperAndLoader</Filter>
+      <Filter>01_Natives\BehaviourInyector</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\components\Loader.h">
+      <Filter>01_Natives\BehaviourInyector</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\components\GameBehaviourFactory.h">
+      <Filter>01_Natives\BehaviourInyector</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\components\ScriptExecutor.h">
+      <Filter>01_Natives\BehaviourInyector</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

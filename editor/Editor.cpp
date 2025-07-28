@@ -39,7 +39,6 @@
 #include <exception>
 #include "Windows/RenderWindows.h"
 #include "core/InputConfigLoader.h"
-#include "components/DLLLoader.h"
 
 // ==== ImGui ====
 #include <imgui/imgui.h>
@@ -47,8 +46,14 @@
 #include <imgui/imgui_impl_opengl3.h>
 #include "Windows/Selection.h"
 
+#include "components/DLLLoader.h"
+#include "components/GameBehaviourFactory.h"
+
 // Variable global para manejo seguro del cierre
 volatile bool g_running = true;
+
+GameBehaviourFactory* factory_behaviour = new GameBehaviourFactory();
+DLLLoader* loader_dll = new DLLLoader();
 
 void signalHandler(int signal) {
     std::cout << "\nSeal de cierre recibida (" << signal << "). Cerrando de forma segura..." << std::endl;
@@ -59,8 +64,6 @@ void setupInputSystem(Scene* activeScene) {
     InputConfigLoader::loadInputConfigFromJSON();
     
     // Initialize DLL Loader for C# bridge
-    DLLLoader::Inyection();
-    
     auto& inputSystem = InputSystem::getInstance();
     
     auto moveAction = inputSystem.getAction("Move");
@@ -294,8 +297,8 @@ int main() {
     // Event handling
     SDL_Event event;
 
-    DLLLoader::Inyection();
-
+    //loader_dll->create();
+    //loader_dll->load_components("");
 
     while (g_running) {
         Time::update();
@@ -325,8 +328,6 @@ int main() {
                 std::cout << "Startup banner triggered" << std::endl;
                 continue;
             }
-
-
 
             // Handle mouse capture toggle
             if (event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_RIGHT && EditorInfo::IsHoveringScene) {

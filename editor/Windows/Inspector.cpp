@@ -3,6 +3,8 @@
 #include "components/GameObject.h"
 #include "components/LightComponent.h"
 #include "components/PhysicalObject.h"
+#include "components/ScriptExecutor.h"
+#include "components/GameBehaviourFactory.h"
 #include "core/PhysicsManager.h"
 #include "render/RenderConfig.h"
 #include "Selection.h"
@@ -1056,6 +1058,100 @@ void Inspector::RenderGameObjectInspector(GameObject* go) {
     }
 
     // Bot�n de agregar componente con men� desplegable
+    // ScriptExecutor Component
+    if (auto scriptExecutor = go->getComponent<ScriptExecutor>()) {
+        bool removeComponent = false;
+        bool treeNodeOpen = ImGui::TreeNodeEx("[Script Executor]", ImGuiTreeNodeFlags_DefaultOpen);
+
+        if (treeNodeOpen) {
+            // Botón de opciones alineado a la derecha pero dentro de la ventana
+            float windowWidth = ImGui::GetContentRegionAvail().x;
+            ImGui::SameLine(windowWidth - 35);
+            if (ImGui::Button(" ... ##ScriptExecutor", ImVec2(30, 0))) {
+                ImGui::OpenPopup("ScriptExecutorOptions");
+            }
+
+            // Popup de opciones
+            if (ImGui::BeginPopup("ScriptExecutorOptions")) {
+                if (ImGui::MenuItem("Remove Component")) {
+                    removeComponent = true;
+                }
+                if (ImGui::MenuItem("Reset")) {
+                    scriptExecutor->resetToDefaults();
+                }
+                if (ImGui::MenuItem("Copy Settings")) {
+                    // TODO: Implementar copia de configuración
+                }
+                ImGui::EndPopup();
+            }
+
+            if (!removeComponent && scriptExecutor != nullptr) {
+                // Enabled/Disabled
+                bool enabled = scriptExecutor->isActive();
+                if (ImGui::Checkbox("Enabled", &enabled)) {
+                    if (enabled) {
+                        scriptExecutor->enable();
+                    }
+                    else {
+                        scriptExecutor->disable();
+                    }
+                }
+
+                ImGui::Separator();
+                ImGui::Text("Script Properties");
+
+                // Script Class Name
+                std::string currentScriptName = scriptExecutor->getScriptClassName();
+                char scriptClassNameBuffer[256] = "";
+                strncpy_s(scriptClassNameBuffer, sizeof(scriptClassNameBuffer), currentScriptName.c_str(), _TRUNCATE);
+                
+                if (ImGui::InputText("Script Class Name", scriptClassNameBuffer, sizeof(scriptClassNameBuffer))) {
+                    scriptExecutor->setScriptClassName(std::string(scriptClassNameBuffer));
+                }
+                if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("Name of the script class to load (must be registered in GameBehaviourFactory)");
+                }
+
+                // Auto Start
+                bool autoStart = scriptExecutor->getAutoStart();
+                if (ImGui::Checkbox("Auto Start", &autoStart)) {
+                    scriptExecutor->setAutoStart(autoStart);
+                }
+                if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("Automatically load and start the script when the component starts");
+                }
+
+                ImGui::Separator();
+                ImGui::Text("Script Status");
+
+                // Show script status
+                if (scriptExecutor->hasScript()) {
+                    ImGui::TextColored(ImVec4(0.2f, 0.8f, 0.2f, 1.0f), "✓ Script Loaded");
+                    ImGui::Text("Script: %s", scriptExecutor->getScriptClassName().c_str());
+                }
+                else {
+                    ImGui::TextColored(ImVec4(0.8f, 0.2f, 0.2f, 1.0f), "✗ No Script Loaded");
+                }
+
+                ImGui::Separator();
+                ImGui::Text("Script Controls");
+
+                // Load/Unload buttons
+                if (ImGui::Button("Load Script")) {
+                    scriptExecutor->loadScript();
+                }
+                ImGui::SameLine();
+                if (ImGui::Button("Unload Script")) {
+                    scriptExecutor->unloadScript();
+                }
+            }
+            ImGui::TreePop();
+        }
+        if (removeComponent) {
+            go->removeComponent<ScriptExecutor>();
+        }
+    }
+
     if (ImGui::Button("Add Component", ImVec2(-1, 0))) {
         ImGui::OpenPopup("ComponentMenu");
     }
@@ -1119,6 +1215,20 @@ void Inspector::RenderGameObjectInspector(GameObject* go) {
         }
 
         ImGui::Separator();
+        ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "SCRIPT");
+        ImGui::Separator();
+
+        if (!go->getComponent<ScriptExecutor>()) {
+            if (ImGui::MenuItem("[Script Executor]", "Adds script execution capability")) {
+                go->addComponent<ScriptExecutor>();
+                ImGui::CloseCurrentPopup();
+            }
+            if (ImGui::IsItemHovered()) {
+                ImGui::SetTooltip("Add script execution capabilities to this object");
+            }
+        }
+
+        ImGui::Separator();
         ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "EFFECTS");
         ImGui::Separator();
 
@@ -1157,6 +1267,8 @@ void Inspector::RenderGameObjectInspector(GameObject* go) {
         ImGui::EndPopup();
     }
     ImGui::PopStyleVar();
+
+
 }
 
 void Inspector::RenderLightInspector(std::shared_ptr<Light> light) {

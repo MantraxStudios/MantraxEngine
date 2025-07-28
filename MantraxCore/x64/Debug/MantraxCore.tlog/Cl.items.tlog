@@ -6,6 +6,7 @@ C:\Users\tupap\source\repos\MantraxEngine\src\components\ModelScene.cpp;C:\Users
 C:\Users\tupap\source\repos\MantraxEngine\src\components\PhysicalObject.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\PhysicalObject.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\components\SceneManager.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\SceneManager.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\components\Scene.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\Scene.obj
+C:\Users\tupap\source\repos\MantraxEngine\src\components\ScriptExecutor.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\ScriptExecutor.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\components\TestScene.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\TestScene.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\components\TexturedScene.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\TexturedScene.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\components\EventSystem.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\EventSystem.obj
