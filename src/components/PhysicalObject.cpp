@@ -1,7 +1,119 @@
 #include "PhysicalObject.h"
 #include "GameObject.h"
 #include "../core/PhysicsManager.h"
+#include "../core/PhysicsEventHandler.h"
+#include "../components/SceneManager.h"
 #include <iostream>
+#include <functional>
+#include <algorithm>
+
+// Helper function to get shape type as string
+std::string PhysicalObject::getShapeTypeString() const {
+    switch (shapeType) {
+        case ShapeType::Box: return "Box";
+        case ShapeType::Sphere: return "Sphere";
+        case ShapeType::Capsule: return "Capsule";
+        case ShapeType::Plane: return "Plane";
+        default: return "Unknown";
+    }
+}
+
+// Helper function to safely set collision filters, recreating shape if necessary
+void PhysicalObject::safeSetCollisionFilters(CollisionGroup group, CollisionMask mask) {
+    if (!shape) return;
+    
+    // Check if the shape is shared (attached to multiple actors)
+    bool needsRecreation = false;
+    
+    // Try to set the filter data, if it fails, we need to recreate the shape
+    try {
+        auto& physicsManager = PhysicsManager::getInstance();
+        // Pasa el parámetro isTrigger correctamente
+        physicsManager.setupShapeCollisionFilter(shape, group, mask, isTriggerShape);
+    } catch (const std::exception& e) {
+        // If setting filter data fails, we need to recreate the shape
+        needsRecreation = true;
+    }
+    
+    if (needsRecreation) {
+        // Store current shape properties
+        ShapeType currentShapeType = shapeType;
+        glm::vec3 currentBoxExtents = boxHalfExtents;
+        float currentSphereRadius = sphereRadius;
+        float currentCapsuleRadius = capsuleRadius;
+        float currentCapsuleHalfHeight = capsuleHalfHeight;
+        bool currentIsTrigger = isTriggerShape;
+        
+        // Detach shape from actor first
+        if (rigidActor && shape) {
+            rigidActor->detachShape(*shape);
+        }
+        
+        // Destroy current shape and recreate it
+        if (shape) {
+            shape->release();
+            shape = nullptr;
+        }
+        
+        // Recreate the shape with the same properties
+        createShape();
+        
+        // Reattach to actor
+        if (rigidActor && shape) {
+            rigidActor->attachShape(*shape);
+            
+            // Configure shape flags correctly
+            if (isTriggerShape) {
+                shape->setFlag(physx::PxShapeFlag::eTRIGGER_SHAPE, true);
+                shape->setFlag(physx::PxShapeFlag::eSIMULATION_SHAPE, false);
+            } else {
+                shape->setFlag(physx::PxShapeFlag::eTRIGGER_SHAPE, false);
+                shape->setFlag(physx::PxShapeFlag::eSIMULATION_SHAPE, true);
+            }
+            
+        }
+    }
+}
+
+// Helper function to recreate shape safely when shared shape issues occur
+void PhysicalObject::recreateShapeSafely() {
+    // Store current properties
+    ShapeType currentShapeType = shapeType;
+    glm::vec3 currentBoxExtents = boxHalfExtents;
+    float currentSphereRadius = sphereRadius;
+    float currentCapsuleRadius = capsuleRadius;
+    float currentCapsuleHalfHeight = capsuleHalfHeight;
+    bool currentIsTrigger = isTriggerShape;
+    
+    // Detach shape from actor first
+    if (rigidActor && shape) {
+        rigidActor->detachShape(*shape);
+    }
+    
+    // Destroy current shape
+    if (shape) {
+        shape->release();
+        shape = nullptr;
+    }
+    
+    // Recreate the shape with the same properties
+    createShape();
+    
+    // Reattach to actor
+    if (rigidActor && shape) {
+        rigidActor->attachShape(*shape);
+        
+        // Configure shape flags correctly
+        if (isTriggerShape) {
+            shape->setFlag(physx::PxShapeFlag::eTRIGGER_SHAPE, true);
+            shape->setFlag(physx::PxShapeFlag::eSIMULATION_SHAPE, false);
+        } else {
+            shape->setFlag(physx::PxShapeFlag::eTRIGGER_SHAPE, false);
+            shape->setFlag(physx::PxShapeFlag::eSIMULATION_SHAPE, true);
+        }
+        
+    }
+}
 
 PhysicalObject::PhysicalObject(GameObject* obj) : Component() {
     setOwner(obj);
@@ -10,6 +122,7 @@ PhysicalObject::PhysicalObject(GameObject* obj) : Component() {
     staticActor = nullptr;
     shape = nullptr;
     material = nullptr;
+    colliderReference = nullptr;
     bodyType = BodyType::Dynamic;
     shapeType = ShapeType::Box;
     mass = 1.0f;
@@ -22,9 +135,22 @@ PhysicalObject::PhysicalObject(GameObject* obj) : Component() {
     capsuleRadius = 0.5f;
     capsuleHalfHeight = 0.5f;
     initialized = false;
+    isTriggerShape = false;
+    
+    // Initialize layer configuration
+    currentLayer = LAYER_0;
+    currentLayerMask = LAYER_0 | LAYER_1 | LAYER_2 | LAYER_3 | LAYER_4 | LAYER_5 | LAYER_6 | LAYER_7 | LAYER_8 | LAYER_9 | LAYER_10 | LAYER_11 | LAYER_12 | LAYER_13 | LAYER_14 | LAYER_15 | LAYER_16 | LAYER_17 | LAYER_18 | LAYER_19 | LAYER_TRIGGER | LAYER_PLAYER | LAYER_ENEMY | LAYER_ENVIRONMENT;
     
     // Don't auto-start - wait for explicit initialization
     // start() will be called later when PhysicsManager is ready
+    
+    // Set up default contact callback
+    setContactCallback([](PhysicalObject* obj1, PhysicalObject* obj2, const glm::vec3& contactPoint, const glm::vec3& contactNormal, float contactForce) {
+        if (obj1 && obj2) {
+            auto* owner1 = obj1->getOwner();
+            auto* owner2 = obj2->getOwner();
+        }
+    });
 }
 
 PhysicalObject::~PhysicalObject() {
@@ -46,14 +172,41 @@ void PhysicalObject::initializePhysics() {
         return;
     }
     
+    // Initialize layer configuration from GameObject
+    if (owner) {
+        currentLayer = owner->getLayer();
+        currentLayerMask = owner->getLayerMask();
+    }
+    
     createBody();
     createShape();
     
     if (rigidActor && shape) {
         rigidActor->attachShape(*shape);
         physicsManager.addActor(*rigidActor);
+        
+        // Register this PhysicalObject with the PhysicsEventHandler
+        PhysicsEventHandler* eventHandler = physicsManager.getEventHandler();
+        if (eventHandler) {
+            eventHandler->registerPhysicalObject(rigidActor, this);
+        }
+        
         initialized = true;
-        std::cout << "PhysicalObject initialized successfully!" << std::endl;
+        
+        // Debug collision filters
+        debugCollisionFilters();
+        
+        // If this is a trigger, automatically set up the trigger callback
+        if (isTriggerShape && !triggerCallback) {
+            setTriggerCallback([](PhysicalObject* trigger, PhysicalObject* other) {
+                if (trigger) {
+                    if (other) {
+                    }
+                    else {
+                    }
+                }
+            });
+        }
     } else {
         std::cerr << "PhysicalObject::initializePhysics() - Failed to create body or shape!" << std::endl;
     }
@@ -63,6 +216,36 @@ void PhysicalObject::update() {
     auto& physicsManager = PhysicsManager::getInstance();
     if (rigidActor && isActive() && physicsManager.getPhysics()) {
         syncTransformFromPhysX();
+        
+        // Update collision filters only when necessary
+        // Check if layer configuration has changed
+        if (owner) {
+            physx::PxU32 gameObjectLayer = owner->getLayer();
+            physx::PxU32 gameObjectLayerMask = owner->getLayerMask();
+            
+            // Only update if the layer configuration has actually changed
+            if (gameObjectLayer != currentLayer || gameObjectLayerMask != currentLayerMask) {
+                currentLayer = gameObjectLayer;
+                currentLayerMask = gameObjectLayerMask;
+                
+                // Update filters safely
+                if (shape) {
+                    try {
+                        physx::PxFilterData filterData;
+                        filterData.word0 = currentLayer;
+                        filterData.word1 = currentLayerMask;
+                        filterData.word2 = isTriggerShape ? 0x1 : 0x0;
+                        
+                        shape->setSimulationFilterData(filterData);
+                        shape->setQueryFilterData(filterData);
+                        
+                    } catch (const std::exception& e) {
+                        std::cerr << "Error updating filters, recreating shape: " << e.what() << std::endl;
+                        recreateShapeSafely();
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -114,30 +297,78 @@ void PhysicalObject::createBody() {
 
 void PhysicalObject::createShape() {
     auto& physicsManager = PhysicsManager::getInstance();
-    
-    // Check if PhysicsManager is initialized
+
     if (!physicsManager.getPhysics()) {
         std::cerr << "PhysicalObject::createShape() - PhysicsManager not initialized yet!" << std::endl;
         return;
     }
-    
+
+    // Crear el shape básico sin configurar flags especiales aún
     switch (shapeType) {
-        case ShapeType::Box:
-            shape = physicsManager.createBoxShape(
-                physx::PxVec3(boxHalfExtents.x, boxHalfExtents.y, boxHalfExtents.z),
-                material
-            );
-            break;
-        case ShapeType::Sphere:
-            shape = physicsManager.createSphereShape(sphereRadius, material);
-            break;
-        case ShapeType::Capsule:
-            shape = physicsManager.createCapsuleShape(capsuleRadius, capsuleHalfHeight, material);
-            break;
-        case ShapeType::Plane:
-            shape = physicsManager.createPlaneShape(material);
-            break;
+    case ShapeType::Box:
+        shape = physicsManager.createBoxShape(
+            physx::PxVec3(boxHalfExtents.x, boxHalfExtents.y, boxHalfExtents.z),
+            material
+        );
+        break;
+    case ShapeType::Sphere:
+        shape = physicsManager.createSphereShape(sphereRadius, material);
+        break;
+    case ShapeType::Capsule:
+        shape = physicsManager.createCapsuleShape(capsuleRadius, capsuleHalfHeight, material);
+        break;
+    case ShapeType::Plane:
+        shape = physicsManager.createPlaneShape(material);
+        break;
     }
+
+    if (!shape) {
+        std::cerr << "Failed to create shape!" << std::endl;
+        return;
+    }
+
+    // IMPORTANTE: Configurar filter data PRIMERO, antes de los flags
+    physx::PxU32 gameObjectLayer = owner ? owner->getLayer() : LAYER_0;
+    physx::PxU32 gameObjectLayerMask = owner ? owner->getLayerMask() :
+        (LAYER_0 | LAYER_1 | LAYER_2 | LAYER_3 | LAYER_4 | LAYER_5 | LAYER_6 | LAYER_7 |
+            LAYER_8 | LAYER_9 | LAYER_10 | LAYER_11 | LAYER_12 | LAYER_13 | LAYER_14 | LAYER_15 |
+            LAYER_16 | LAYER_17 | LAYER_18 | LAYER_19 | LAYER_TRIGGER | LAYER_PLAYER |
+            LAYER_ENEMY | LAYER_ENVIRONMENT);
+
+    // Configurar filter data
+    physx::PxFilterData filterData;
+    filterData.word0 = gameObjectLayer;
+    filterData.word1 = gameObjectLayerMask;
+    filterData.word2 = isTriggerShape ? 0x1 : 0x0;
+    filterData.word3 = 0;
+
+    shape->setSimulationFilterData(filterData);
+    shape->setQueryFilterData(filterData);
+
+    // NOTA: NO configurar flags aquí - se harán DESPUÉS del attach
+    
+    // Establecer la referencia del collider para el inspector
+    setColliderReference(shape);
+}
+
+void PhysicalObject::verifyTriggerSetup() {
+    if (!shape || !rigidActor) {
+        return;
+    }
+
+    // Verificar flags del shape
+    physx::PxShapeFlags flags = shape->getFlags();
+    bool isTriggerFlag = flags.isSet(physx::PxShapeFlag::eTRIGGER_SHAPE);
+    bool isSimulationFlag = flags.isSet(physx::PxShapeFlag::eSIMULATION_SHAPE);
+    bool isSceneQueryFlag = flags.isSet(physx::PxShapeFlag::eSCENE_QUERY_SHAPE);
+
+    // Verificar filter data
+    physx::PxFilterData filterData = shape->getSimulationFilterData();
+
+    // Verificar si está correctamente configurado
+    bool isCorrectlyConfigured = (isTriggerShape == isTriggerFlag) &&
+        (isTriggerShape ? !isSimulationFlag : isSimulationFlag) &&
+        ((filterData.word2 & 0x1) == (isTriggerShape ? 1 : 0));
 }
 
 void PhysicalObject::syncTransformToPhysX() {
@@ -269,6 +500,94 @@ void PhysicalObject::setCapsuleHalfHeight(float halfHeight) {
     }
 }
 
+void PhysicalObject::setTrigger(bool isTrigger) {
+    std::cout << "=== SETTING TRIGGER ===" << std::endl;
+    std::cout << "Object: " << (owner ? owner->Name : "Unknown") << std::endl;
+    std::cout << "Setting trigger to: " << (isTrigger ? "true" : "false") << std::endl;
+    std::cout << "Current trigger state: " << (isTriggerShape ? "true" : "false") << std::endl;
+
+    bool wasInitialized = initialized;
+    isTriggerShape = isTrigger;
+    std::cout << "isTriggerShape set to: " << (isTriggerShape ? "true" : "false") << std::endl;
+
+    if (wasInitialized) {
+        std::cout << "Object is initialized, recreating..." << std::endl;
+        destroy();
+        initializePhysics(); // Usar initializePhysics en lugar de start()
+
+        // Verificar que la configuración sea correcta después de recrear
+        verifyTriggerSetup();
+        
+        // Debug: Verificar configuración de trigger
+        if (rigidActor) {
+            auto& physicsManager = PhysicsManager::getInstance();
+            physicsManager.debugTriggerSetup(rigidActor, isTriggerShape);
+        }
+    }
+
+    std::cout << "=== TRIGGER SET COMPLETE ===" << std::endl;
+
+    // If this is being set as a trigger, automatically set up a default trigger callback
+    if (isTrigger && !triggerCallback) {
+        setTriggerCallback([](PhysicalObject* trigger, PhysicalObject* other) {
+            if (trigger) {
+                auto* triggerOwner = trigger->getOwner();
+                if (other) {
+                    auto* otherOwner = other->getOwner();
+                    glm::vec3 triggerPos = triggerOwner->getWorldPosition();
+                    glm::vec3 otherPos = otherOwner->getWorldPosition();
+
+                    // Cambiar de escena
+                    try {
+                        auto& sceneManager = SceneManager::getInstance();
+
+                        // Obtener la escena actual
+                        Scene* currentScene = sceneManager.getActiveScene();
+
+                        // Lista de escenas disponibles
+                        std::vector<std::string> availableScenes = {
+                            "TestScene",
+                            "TexturedScene",
+                            "Physics Test Scene"
+                        };
+
+                        // Encontrar la siguiente escena
+                        std::string nextSceneName = "TestScene"; // Por defecto
+                        if (currentScene) {
+                            std::string currentSceneName = currentScene->getName();
+                            auto it = std::find(availableScenes.begin(), availableScenes.end(), currentSceneName);
+                            if (it != availableScenes.end()) {
+                                size_t currentIndex = std::distance(availableScenes.begin(), it);
+                                size_t nextIndex = (currentIndex + 1) % availableScenes.size();
+                                nextSceneName = availableScenes[nextIndex];
+                            }
+                        }
+
+                        sceneManager.setActiveScene(nextSceneName);
+
+                    }
+                    catch (const std::exception& e) {
+                    }
+                }
+                else {
+                }
+            }
+            });
+    }
+}
+
+void PhysicalObject::setCollisionGroup(CollisionGroup group) {
+    safeSetCollisionFilters(group, CollisionMask::DYNAMIC_MASK);
+}
+
+void PhysicalObject::setCollisionMask(CollisionMask mask) {
+    safeSetCollisionFilters(CollisionGroup::DYNAMIC_GROUP, mask);
+}
+
+void PhysicalObject::setupCollisionFilters(CollisionGroup group, CollisionMask mask) {
+    safeSetCollisionFilters(group, mask);
+}
+
 void PhysicalObject::addForce(const glm::vec3& force, physx::PxForceMode::Enum mode) {
     if (dynamicActor) {
         dynamicActor->addForce(physx::PxVec3(force.x, force.y, force.z), mode);
@@ -298,4 +617,312 @@ bool PhysicalObject::isAwake() const {
         return !dynamicActor->isSleeping();
     }
     return false;
+}
+
+// Trigger and contact event methods
+void PhysicalObject::setTriggerCallback(std::function<void(PhysicalObject*, PhysicalObject*)> callback) {
+    triggerCallback = callback;
+    
+    // Register with PhysicsEventHandler if we have a rigid actor
+    if (rigidActor) {
+        auto& physicsManager = PhysicsManager::getInstance();
+        PhysicsEventHandler* eventHandler = physicsManager.getEventHandler();
+        if (eventHandler) {
+            eventHandler->registerTriggerCallback(rigidActor, [this, eventHandler](const TriggerEvent& event) {
+                if (triggerCallback) {
+                    // Find the other PhysicalObject using the mapping
+                    PhysicalObject* other = eventHandler->getPhysicalObject(event.otherActor);
+                    triggerCallback(this, other);
+                }
+            });
+        }
+    }
+}
+
+void PhysicalObject::setContactCallback(std::function<void(PhysicalObject*, PhysicalObject*, const glm::vec3&, const glm::vec3&, float)> callback) {
+    contactCallback = callback;
+    
+    // Register with PhysicsEventHandler if we have a rigid actor
+    if (rigidActor) {
+        auto& physicsManager = PhysicsManager::getInstance();
+        PhysicsEventHandler* eventHandler = physicsManager.getEventHandler();
+        if (eventHandler) {
+            eventHandler->registerContactCallback(rigidActor, [this, eventHandler](const ContactEvent& event) {
+                if (contactCallback) {
+                    // Find the other PhysicalObject
+                    PhysicalObject* other = nullptr;
+                    
+                    // Determine which actor is the "other" one
+                    if (event.actor1 == rigidActor) {
+                        other = eventHandler->getPhysicalObject(event.actor2);
+                    } else if (event.actor2 == rigidActor) {
+                        other = eventHandler->getPhysicalObject(event.actor1);
+                    }
+                    
+                    contactCallback(this, other, event.contactPoint, event.contactNormal, event.contactForce);
+                }
+            });
+        }
+    }
+}
+
+// Static raycast methods
+struct RaycastHit PhysicalObject::raycast(const glm::vec3& origin, const glm::vec3& direction, float maxDistance) {
+    return PhysicsManager::getInstance().raycast(origin, direction, maxDistance);
+}
+
+std::vector<struct RaycastHit> PhysicalObject::raycastAll(const glm::vec3& origin, const glm::vec3& direction, float maxDistance) {
+    return PhysicsManager::getInstance().raycastAll(origin, direction, maxDistance);
+}
+
+void PhysicalObject::setLayer(physx::PxU32 layer) {
+    currentLayer = layer;
+    
+    // Force update collision filters
+    forceUpdateCollisionFilters();
+}
+
+void PhysicalObject::setLayerMask(physx::PxU32 layerMask) {
+    currentLayerMask = layerMask;
+    
+    // Force update collision filters
+    forceUpdateCollisionFilters();
+}
+
+void PhysicalObject::setupAsTrigger(physx::PxU32 triggerLayer, physx::PxU32 collisionMask) {
+    // Set as trigger
+    setTrigger(true);
+    
+    // Set layer configuration
+    setLayer(triggerLayer);
+    setLayerMask(collisionMask);
+}
+
+void PhysicalObject::setupAsSceneChangeTrigger(const std::string& targetSceneName, physx::PxU32 triggerLayer, physx::PxU32 collisionMask) {
+    // Set as trigger
+    setTrigger(true);
+    
+    // Set layer configuration
+    setLayer(triggerLayer);
+    setLayerMask(collisionMask);
+    
+    // Set up custom trigger callback for scene change
+    setTriggerCallback([targetSceneName](PhysicalObject* trigger, PhysicalObject* other) {
+        if (trigger && other) {
+            auto* triggerOwner = trigger->getOwner();
+            auto* otherOwner = other->getOwner();
+            
+            // Cambiar a la escena específica
+            try {
+                auto& sceneManager = SceneManager::getInstance();
+                sceneManager.setActiveScene(targetSceneName);
+            } catch (const std::exception& e) {
+            }
+        }
+    });
+}
+
+void PhysicalObject::forceUpdateCollisionFilters() {
+    if (shape) {
+        try {
+            if (isTriggerShape) {
+                // Configure trigger flags
+                shape->setFlag(physx::PxShapeFlag::eTRIGGER_SHAPE, true);
+                shape->setFlag(physx::PxShapeFlag::eSIMULATION_SHAPE, false);
+                
+                // Set trigger collision filters
+                physx::PxFilterData filterData;
+                filterData.word0 = currentLayer;
+                filterData.word1 = currentLayerMask;
+                filterData.word2 = 0x1; // Trigger flag
+                
+                shape->setSimulationFilterData(filterData);
+                shape->setQueryFilterData(filterData);
+                
+            } else {
+                // Configure normal collision flags
+                shape->setFlag(physx::PxShapeFlag::eTRIGGER_SHAPE, false);
+                shape->setFlag(physx::PxShapeFlag::eSIMULATION_SHAPE, true);
+                
+                // Set normal collision filters
+                physx::PxFilterData filterData;
+                filterData.word0 = currentLayer;
+                filterData.word1 = currentLayerMask;
+                filterData.word2 = 0x0; // Not trigger
+                
+                shape->setSimulationFilterData(filterData);
+                shape->setQueryFilterData(filterData);
+                
+            }
+            
+        } catch (const std::exception& e) {
+            std::cerr << "Error updating collision filters: " << e.what() << std::endl;
+            std::cerr << "Shape may be shared between multiple actors. Recreating shape..." << std::endl;
+            
+            // Use the safe recreation method
+            recreateShapeSafely();
+        }
+    }
+} 
+
+// Force update collision filters with recreation if needed
+void PhysicalObject::forceUpdateCollisionFiltersAggressive() {
+    // Always recreate the shape to ensure fresh configuration
+    recreateShapeSafely();
+    
+    // Force update the filters after recreation
+    if (shape) {
+        try {
+            physx::PxFilterData filterData;
+            filterData.word0 = currentLayer;
+            filterData.word1 = currentLayerMask;
+            filterData.word2 = isTriggerShape ? 0x1 : 0x0;
+            
+            shape->setSimulationFilterData(filterData);
+            shape->setQueryFilterData(filterData);
+            
+            debugCollisionFilters();
+        } catch (const std::exception& e) {
+            std::cerr << "Error in aggressive filter update: " << e.what() << std::endl;
+        }
+    }
+}
+
+// Debug method to print current collision filter configuration
+void PhysicalObject::debugCollisionFilters() {
+    if (!shape) {
+        return;
+    }
+    
+    // Get current filter data
+    physx::PxFilterData simFilter = shape->getSimulationFilterData();
+    physx::PxFilterData queryFilter = shape->getQueryFilterData();
+    
+    // Check shape flags
+    physx::PxShapeFlags flags = shape->getFlags();
+    
+    // Check GameObject layer configuration
+    if (owner) {
+    }
+} 
+
+// Collider reference management methods
+void PhysicalObject::setColliderReference(physx::PxShape* collider) {
+    colliderReference = collider;
+    
+    // If we have a reference, update our shape to match it
+    if (colliderReference && shape) {
+        updateColliderFromReference();
+    }
+}
+
+void PhysicalObject::updateColliderFromReference() {
+    if (!colliderReference || !shape) {
+        return;
+    }
+    
+    try {
+        // Copy geometry from reference to our shape
+        physx::PxGeometryHolder refGeometry = colliderReference->getGeometry();
+        
+        // Update our shape's geometry based on the reference
+        switch (refGeometry.getType()) {
+            case physx::PxGeometryType::eBOX: {
+                physx::PxBoxGeometry boxGeom = refGeometry.box();
+                shape->setGeometry(boxGeom);
+                boxHalfExtents = glm::vec3(boxGeom.halfExtents.x, boxGeom.halfExtents.y, boxGeom.halfExtents.z);
+                shapeType = ShapeType::Box;
+                break;
+            }
+            case physx::PxGeometryType::eSPHERE: {
+                physx::PxSphereGeometry sphereGeom = refGeometry.sphere();
+                shape->setGeometry(sphereGeom);
+                sphereRadius = sphereGeom.radius;
+                shapeType = ShapeType::Sphere;
+                break;
+            }
+            case physx::PxGeometryType::eCAPSULE: {
+                physx::PxCapsuleGeometry capsuleGeom = refGeometry.capsule();
+                shape->setGeometry(capsuleGeom);
+                capsuleRadius = capsuleGeom.radius;
+                capsuleHalfHeight = capsuleGeom.halfHeight;
+                shapeType = ShapeType::Capsule;
+                break;
+            }
+            case physx::PxGeometryType::ePLANE: {
+                physx::PxPlaneGeometry planeGeom = refGeometry.plane();
+                shape->setGeometry(planeGeom);
+                shapeType = ShapeType::Plane;
+                break;
+            }
+            default:
+                break;
+        }
+        
+        // Copy flags from reference
+        physx::PxShapeFlags refFlags = colliderReference->getFlags();
+        shape->setFlags(refFlags);
+        
+        // Copy filter data from reference
+        physx::PxFilterData refFilterData = colliderReference->getSimulationFilterData();
+        shape->setSimulationFilterData(refFilterData);
+        shape->setQueryFilterData(refFilterData);
+        
+        // Update our internal state
+        isTriggerShape = refFlags.isSet(physx::PxShapeFlag::eTRIGGER_SHAPE);
+        currentLayer = refFilterData.word0;
+        currentLayerMask = refFilterData.word1;
+        
+    } catch (const std::exception& e) {
+        std::cerr << "Error updating collider from reference: " << e.what() << std::endl;
+    }
+}
+
+void PhysicalObject::updateReferenceFromCollider() {
+    if (!colliderReference || !shape) {
+        return;
+    }
+    
+    try {
+        // Copy geometry from our shape to reference
+        physx::PxGeometryHolder ourGeometry = shape->getGeometry();
+        
+        // Update reference's geometry based on our shape
+        switch (ourGeometry.getType()) {
+            case physx::PxGeometryType::eBOX: {
+                physx::PxBoxGeometry boxGeom = ourGeometry.box();
+                colliderReference->setGeometry(boxGeom);
+                break;
+            }
+            case physx::PxGeometryType::eSPHERE: {
+                physx::PxSphereGeometry sphereGeom = ourGeometry.sphere();
+                colliderReference->setGeometry(sphereGeom);
+                break;
+            }
+            case physx::PxGeometryType::eCAPSULE: {
+                physx::PxCapsuleGeometry capsuleGeom = ourGeometry.capsule();
+                colliderReference->setGeometry(capsuleGeom);
+                break;
+            }
+            case physx::PxGeometryType::ePLANE: {
+                physx::PxPlaneGeometry planeGeom = ourGeometry.plane();
+                colliderReference->setGeometry(planeGeom);
+                break;
+            }
+            default:
+                break;
+        }
+        
+        // Copy flags from our shape to reference
+        physx::PxShapeFlags ourFlags = shape->getFlags();
+        colliderReference->setFlags(ourFlags);
+        
+        // Copy filter data from our shape to reference
+        physx::PxFilterData ourFilterData = shape->getSimulationFilterData();
+        colliderReference->setSimulationFilterData(ourFilterData);
+        colliderReference->setQueryFilterData(ourFilterData);
+        
+    } catch (const std::exception& e) {
+        std::cerr << "Error updating reference from collider: " << e.what() << std::endl;
+    }
 } 

@@ -159,6 +159,9 @@
     <ClCompile Include="..\src\render\MaterialManager.cpp">
       <Filter>01_Natives\Render</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\core\PhysicsEventHandler.cpp">
+      <Filter>01_Natives\Physics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\core\CoreExporter.h">
@@ -305,6 +308,15 @@
     </ClInclude>
     <ClInclude Include="..\src\render\MaterialManager.h">
       <Filter>01_Natives\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\PhysicsEventHandler.h">
+      <Filter>01_Natives\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\PhysicsEvents.h">
+      <Filter>01_Natives\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\PhysicsEventCallback.h">
+      <Filter>01_Natives\Physics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

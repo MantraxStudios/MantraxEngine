@@ -2,6 +2,8 @@
 #include "WindowBehaviour.h"
 #include "../../src/components/GameObject.h"
 #include "../../src/components/AudioSource.h"
+#include "../../src/components/PhysicalObject.h"
+#include "../../src/core/PhysicsManager.h"
 #include "render/Light.h"
 #include <memory>
 

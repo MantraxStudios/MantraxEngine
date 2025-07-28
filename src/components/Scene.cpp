@@ -1,5 +1,7 @@
 #include "Scene.h"
 #include "../render/RenderPipeline.h"
+#include "../components/PhysicalObject.h"
+#include "SceneManager.h"
 #include <iostream>
 
 Scene::Scene(const std::string& name) : name(name), initialized(false) {
@@ -23,15 +25,25 @@ void Scene::addGameObjectNoSync(GameObject* object) {
 }
 
 void Scene::updateNative(float deltaTime) {
-    // Update camera if available
-    if (camera) {
-        camera->update(deltaTime);
-    }
-
     // Update all game objects
-    for (auto& gameObject : gameObjects) {
-        if (gameObject) {
-            gameObject->update(deltaTime);
+    for (auto* obj : gameObjects) {
+        if (obj) {
+            obj->update(deltaTime);
+        }
+    }
+    
+    // Initialize physics components if physics is available
+    auto& sceneManager = SceneManager::getInstance();
+    if (sceneManager.getPhysicsManager().getPhysics()) {
+        for (auto* obj : gameObjects) {
+            if (obj) {
+                // Initialize any PhysicalObject components that haven't been initialized yet
+                if (auto physicalObject = obj->getComponent<PhysicalObject>()) {
+                    if (!physicalObject->isInitialized()) {
+                        physicalObject->initializePhysics();
+                    }
+                }
+            }
         }
     }
 }

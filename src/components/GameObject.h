@@ -8,6 +8,7 @@
 #include <string>
 #include <unordered_map>
 #include <typeindex>
+#include <physx/PxPhysicsAPI.h>
 
 #include "../render/Material.h"
 #include "../render/Frustum.h"
@@ -15,6 +16,32 @@
 #include "../core/UIDGenerator.h"
 #include "../render/AssimpGeometry.h"
 #include "Component.h"
+
+// Layer constants for physics
+#define LAYER_0 (1 << 0)
+#define LAYER_1 (1 << 1)
+#define LAYER_2 (1 << 2)
+#define LAYER_3 (1 << 3)
+#define LAYER_4 (1 << 4)
+#define LAYER_5 (1 << 5)
+#define LAYER_6 (1 << 6)
+#define LAYER_7 (1 << 7)
+#define LAYER_8 (1 << 8)
+#define LAYER_9 (1 << 9)
+#define LAYER_10 (1 << 10)
+#define LAYER_11 (1 << 11)
+#define LAYER_12 (1 << 12)
+#define LAYER_13 (1 << 13)
+#define LAYER_14 (1 << 14)
+#define LAYER_15 (1 << 15)
+#define LAYER_16 (1 << 16)
+#define LAYER_17 (1 << 17)
+#define LAYER_18 (1 << 18)
+#define LAYER_19 (1 << 19)
+#define LAYER_TRIGGER (1 << 20)
+#define LAYER_PLAYER (1 << 21)
+#define LAYER_ENEMY (1 << 22)
+#define LAYER_ENVIRONMENT (1 << 23)
 
 // Forward declaration
 class AssimpGeometry;
@@ -132,6 +159,16 @@ public:
     glm::vec3 getWorldBoundingBoxMax() const;
     void setBoundingRadius(float radius);
     void calculateBoundingVolumes(); // Calcula bounding volumes de la geometría
+
+    // Layer configuration for physics
+    physx::PxU32 Layer = LAYER_0;
+    physx::PxU32 LayerMask = LAYER_0 | LAYER_1 | LAYER_2 | LAYER_3 | LAYER_4 | LAYER_5 | LAYER_6 | LAYER_7 | LAYER_8 | LAYER_9 | LAYER_10 | LAYER_11 | LAYER_12 | LAYER_13 | LAYER_14 | LAYER_15 | LAYER_16 | LAYER_17 | LAYER_18 | LAYER_19 | LAYER_TRIGGER | LAYER_PLAYER | LAYER_ENEMY | LAYER_ENVIRONMENT;
+    
+    // Getters and setters for layer configuration
+    physx::PxU32 getLayer() const { return Layer; }
+    void setLayer(physx::PxU32 layer) { Layer = layer; }
+    physx::PxU32 getLayerMask() const { return LayerMask; }
+    void setLayerMask(physx::PxU32 layerMask) { LayerMask = layerMask; }
 
     // Sistema de componentes
     template<typename T, typename... Args>

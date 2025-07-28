@@ -3,10 +3,25 @@
 #include "components/GameObject.h"
 #include "components/LightComponent.h"
 #include "components/PhysicalObject.h"
+#include "core/PhysicsManager.h"
 #include "render/RenderConfig.h"
 #include "Selection.h"
 #include <glm/gtc/type_ptr.hpp>
 #include <cstring>
+#include <iostream>
+
+// Helper function to calculate collision mask from checkboxes
+CollisionMask CalculateCollisionMask(bool staticObj, bool dynamicObj, bool trigger, bool player, bool enemy, bool projectile, bool sensor) {
+    CollisionMask mask = static_cast<CollisionMask>(0);
+    if (staticObj) mask = static_cast<CollisionMask>(static_cast<physx::PxU32>(mask) | static_cast<physx::PxU32>(CollisionMask::STATIC_MASK));
+    if (dynamicObj) mask = static_cast<CollisionMask>(static_cast<physx::PxU32>(mask) | static_cast<physx::PxU32>(CollisionMask::DYNAMIC_MASK));
+    if (trigger) mask = static_cast<CollisionMask>(static_cast<physx::PxU32>(mask) | static_cast<physx::PxU32>(CollisionMask::TRIGGER_MASK));
+    if (player) mask = static_cast<CollisionMask>(static_cast<physx::PxU32>(mask) | static_cast<physx::PxU32>(CollisionMask::PLAYER_MASK));
+    if (enemy) mask = static_cast<CollisionMask>(static_cast<physx::PxU32>(mask) | static_cast<physx::PxU32>(CollisionMask::ENEMY_MASK));
+    if (projectile) mask = static_cast<CollisionMask>(static_cast<physx::PxU32>(mask) | static_cast<physx::PxU32>(CollisionMask::PROJECTILE_MASK));
+    if (sensor) mask = static_cast<CollisionMask>(static_cast<physx::PxU32>(mask) | static_cast<physx::PxU32>(CollisionMask::SENSOR_MASK));
+    return mask;
+}
 
 void Inspector::OnRenderGUI() {
     if (!isOpen) return;
@@ -85,6 +100,36 @@ void Inspector::RenderGameObjectInspector(GameObject* go) {
     }
     else {
         ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "Transform updates disabled");
+    }
+
+    // Layer Configuration
+    ImGui::Separator();
+    ImGui::Text("Layer Configuration");
+    
+    // Layer selection
+    static int currentLayerIndex = 0;
+    const char* layerNames[] = {
+        "Layer 0", "Layer 1", "Layer 2", "Layer 3", "Layer 4", "Layer 5", "Layer 6", "Layer 7", "Layer 8", "Layer 9",
+        "Layer 10", "Layer 11", "Layer 12", "Layer 13", "Layer 14", "Layer 15", "Layer 16", "Layer 17", "Layer 18", "Layer 19",
+        "Trigger", "Player", "Enemy", "Environment"
+    };
+    
+    // Find current layer index
+    physx::PxU32 currentLayer = go->getLayer();
+    for (int i = 0; i < 24; i++) {
+        physx::PxU32 layerValue = (1 << i);
+        if (currentLayer == layerValue) {
+            currentLayerIndex = i;
+            break;
+        }
+    }
+    
+    if (ImGui::Combo("Layer", &currentLayerIndex, layerNames, 24)) {
+        physx::PxU32 newLayer = (1 << currentLayerIndex);
+        go->setLayer(newLayer);
+    }
+    if (ImGui::IsItemHovered()) {
+        ImGui::SetTooltip("Select the layer this object belongs to");
     }
 
     // Componentes
@@ -288,7 +333,7 @@ void Inspector::RenderGameObjectInspector(GameObject* go) {
                     break;
                 }
                 case LightType::Spot: {
-                    // �ngulos del cono
+                    // �ngulos del conoah
                     float cutOffDegrees = glm::degrees(lightComp->getCutOffAngle());
                     float outerCutOffDegrees = glm::degrees(lightComp->getOuterCutOffAngle());
                     bool anglesChanged = false;
@@ -507,6 +552,428 @@ void Inspector::RenderGameObjectInspector(GameObject* go) {
                 }
 
                 ImGui::Separator();
+                ImGui::Text("Trigger Properties");
+
+                // Is Trigger checkbox
+                bool isTrigger = physicalObject->isTrigger();
+                std::cout << "=== INSPECTOR TRIGGER DEBUG ===" << std::endl;
+                std::cout << "Current trigger state: " << (isTrigger ? "true" : "false") << std::endl;
+                std::cout << "Checkbox value before: " << (isTrigger ? "true" : "false") << std::endl;
+                
+                bool checkboxChanged = ImGui::Checkbox("Is Trigger", &isTrigger);
+                std::cout << "Checkbox changed: " << (checkboxChanged ? "YES" : "NO") << std::endl;
+                std::cout << "Checkbox value after: " << (isTrigger ? "true" : "false") << std::endl;
+                
+                if (checkboxChanged) {
+                    std::cout << "Checkbox changed to: " << (isTrigger ? "true" : "false") << std::endl;
+                    physicalObject->setTrigger(isTrigger);
+                    std::cout << "setTrigger() called with: " << (isTrigger ? "true" : "false") << std::endl;
+                }
+                std::cout << "=== END INSPECTOR TRIGGER DEBUG ===" << std::endl;
+
+                // Debug button to force trigger change
+                if (ImGui::Button("Force Toggle Trigger")) {
+                    bool currentTrigger = physicalObject->isTrigger();
+                    std::cout << "Force toggling trigger from " << (currentTrigger ? "true" : "false") << " to " << (!currentTrigger ? "true" : "false") << std::endl;
+                    physicalObject->setTrigger(!currentTrigger);
+                }
+                if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("Force toggle trigger state for debugging");
+                }
+
+                if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("Trigger shapes don't cause physical collisions but can detect overlaps");
+                }
+
+                // Show trigger status
+                if (isTrigger) {
+                    ImGui::TextColored(ImVec4(0.2f, 0.8f, 0.2f, 1.0f), "✓ Trigger Active");
+                }
+
+                ImGui::Separator();
+                ImGui::Text("Collision Filters");
+
+                // Collision Group (Word0)
+                static int currentCollisionGroup = 0;
+                const char* collisionGroups[] = { 
+                    "Static", "Dynamic", "Trigger", "Player", "Enemy", "Projectile", "Sensor" 
+                };
+                if (ImGui::Combo("Collision Group (Word0)", &currentCollisionGroup, collisionGroups, 7)) {
+                    CollisionGroup group = static_cast<CollisionGroup>(1 << currentCollisionGroup);
+                    physicalObject->setCollisionGroup(group);
+                }
+                if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("Word0: What type of object this is for collision detection");
+                }
+
+                // Collision Mask (Word1 - what this object can collide with)
+                ImGui::Text("Collision Mask (Word1 - What this object can collide with):");
+                
+                static bool collisionMaskStatic = true;
+                static bool collisionMaskDynamic = true;
+                static bool collisionMaskTrigger = false;
+                static bool collisionMaskPlayer = false;
+                static bool collisionMaskEnemy = false;
+                static bool collisionMaskProjectile = false;
+                static bool collisionMaskSensor = false;
+
+                if (ImGui::Checkbox("Static Objects", &collisionMaskStatic)) {
+                    CollisionMask mask = CalculateCollisionMask(collisionMaskStatic, collisionMaskDynamic, collisionMaskTrigger, 
+                                                              collisionMaskPlayer, collisionMaskEnemy, collisionMaskProjectile, collisionMaskSensor);
+                    physicalObject->setCollisionMask(mask);
+                }
+                if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("Word1: Can collide with static objects (walls, floors)");
+                }
+
+                if (ImGui::Checkbox("Dynamic Objects", &collisionMaskDynamic)) {
+                    CollisionMask mask = CalculateCollisionMask(collisionMaskStatic, collisionMaskDynamic, collisionMaskTrigger, 
+                                                              collisionMaskPlayer, collisionMaskEnemy, collisionMaskProjectile, collisionMaskSensor);
+                    physicalObject->setCollisionMask(mask);
+                }
+                if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("Word1: Can collide with dynamic objects (moving objects)");
+                }
+
+                if (ImGui::Checkbox("Triggers", &collisionMaskTrigger)) {
+                    CollisionMask mask = CalculateCollisionMask(collisionMaskStatic, collisionMaskDynamic, collisionMaskTrigger, 
+                                                              collisionMaskPlayer, collisionMaskEnemy, collisionMaskProjectile, collisionMaskSensor);
+                    physicalObject->setCollisionMask(mask);
+                }
+                if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("Word1: Can collide with trigger zones");
+                }
+
+                if (ImGui::Checkbox("Player", &collisionMaskPlayer)) {
+                    CollisionMask mask = CalculateCollisionMask(collisionMaskStatic, collisionMaskDynamic, collisionMaskTrigger, 
+                                                              collisionMaskPlayer, collisionMaskEnemy, collisionMaskProjectile, collisionMaskSensor);
+                    physicalObject->setCollisionMask(mask);
+                }
+                if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("Word1: Can collide with player objects");
+                }
+
+                if (ImGui::Checkbox("Enemy", &collisionMaskEnemy)) {
+                    CollisionMask mask = CalculateCollisionMask(collisionMaskStatic, collisionMaskDynamic, collisionMaskTrigger, 
+                                                              collisionMaskPlayer, collisionMaskEnemy, collisionMaskProjectile, collisionMaskSensor);
+                    physicalObject->setCollisionMask(mask);
+                }
+                if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("Word1: Can collide with enemy objects");
+                }
+
+                if (ImGui::Checkbox("Projectiles", &collisionMaskProjectile)) {
+                    CollisionMask mask = CalculateCollisionMask(collisionMaskStatic, collisionMaskDynamic, collisionMaskTrigger, 
+                                                              collisionMaskPlayer, collisionMaskEnemy, collisionMaskProjectile, collisionMaskSensor);
+                    physicalObject->setCollisionMask(mask);
+                }
+                if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("Word1: Can collide with projectile objects");
+                }
+
+                if (ImGui::Checkbox("Sensors", &collisionMaskSensor)) {
+                    CollisionMask mask = CalculateCollisionMask(collisionMaskStatic, collisionMaskDynamic, collisionMaskTrigger, 
+                                                              collisionMaskPlayer, collisionMaskEnemy, collisionMaskProjectile, collisionMaskSensor);
+                    physicalObject->setCollisionMask(mask);
+                }
+                if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("Word1: Can collide with sensor objects");
+                }
+
+                // Preset buttons for common configurations
+                ImGui::Separator();
+                ImGui::Text("Quick Presets (Word0/Word1):");
+                
+                if (ImGui::Button("Static Wall")) {
+                    physicalObject->setupCollisionFilters(CollisionGroup::STATIC_GROUP, CollisionMask::STATIC_MASK);
+                    collisionMaskStatic = true;
+                    collisionMaskDynamic = true;
+                    collisionMaskTrigger = false;
+                    collisionMaskPlayer = true;
+                    collisionMaskEnemy = true;
+                    collisionMaskProjectile = true;
+                    collisionMaskSensor = false;
+                }
+                if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("Word0: Static, Word1: All except triggers");
+                }
+
+                ImGui::SameLine();
+                if (ImGui::Button("Dynamic Object")) {
+                    physicalObject->setupCollisionFilters(CollisionGroup::DYNAMIC_GROUP, CollisionMask::DYNAMIC_MASK);
+                    collisionMaskStatic = true;
+                    collisionMaskDynamic = true;
+                    collisionMaskTrigger = true;
+                    collisionMaskPlayer = true;
+                    collisionMaskEnemy = true;
+                    collisionMaskProjectile = true;
+                    collisionMaskSensor = false;
+                }
+                if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("Word0: Dynamic, Word1: All except sensors");
+                }
+
+                ImGui::SameLine();
+                if (ImGui::Button("Trigger Zone")) {
+                    physicalObject->setupCollisionFilters(CollisionGroup::TRIGGER_GROUP, CollisionMask::TRIGGER_MASK);
+                    physicalObject->setTrigger(true);
+                    collisionMaskStatic = false;
+                    collisionMaskDynamic = true;
+                    collisionMaskTrigger = false;
+                    collisionMaskPlayer = true;
+                    collisionMaskEnemy = true;
+                    collisionMaskProjectile = true;
+                    collisionMaskSensor = false;
+                }
+                if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("Word0: Trigger, Word1: Dynamic + Player + Enemy + Projectile");
+                }
+
+                if (ImGui::Button("Player")) {
+                    physicalObject->setupCollisionFilters(CollisionGroup::PLAYER_GROUP, CollisionMask::PLAYER_MASK);
+                    collisionMaskStatic = true;
+                    collisionMaskDynamic = true;
+                    collisionMaskTrigger = true;
+                    collisionMaskPlayer = false;
+                    collisionMaskEnemy = true;
+                    collisionMaskProjectile = false;
+                    collisionMaskSensor = true;
+                }
+                if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("Word0: Player, Word1: Static + Dynamic + Trigger + Enemy + Sensor");
+                }
+
+                ImGui::SameLine();
+                if (ImGui::Button("Enemy")) {
+                    physicalObject->setupCollisionFilters(CollisionGroup::ENEMY_GROUP, CollisionMask::ENEMY_MASK);
+                    collisionMaskStatic = true;
+                    collisionMaskDynamic = true;
+                    collisionMaskTrigger = true;
+                    collisionMaskPlayer = true;
+                    collisionMaskEnemy = false;
+                    collisionMaskProjectile = true;
+                    collisionMaskSensor = false;
+                }
+                if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("Word0: Enemy, Word1: Static + Dynamic + Trigger + Player + Projectile");
+                }
+
+                ImGui::SameLine();
+                if (ImGui::Button("Projectile")) {
+                    physicalObject->setupCollisionFilters(CollisionGroup::PROJECTILE_GROUP, CollisionMask::PROJECTILE_MASK);
+                    collisionMaskStatic = true;
+                    collisionMaskDynamic = true;
+                    collisionMaskTrigger = true;
+                    collisionMaskPlayer = false;
+                    collisionMaskEnemy = true;
+                    collisionMaskProjectile = false;
+                    collisionMaskSensor = false;
+                }
+                if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("Word0: Projectile, Word1: Static + Dynamic + Trigger + Enemy");
+                }
+
+                // Collision visualization
+                ImGui::Separator();
+                ImGui::Text("Collision Info (Word0/Word1):");
+                
+                // Show current collision group (Word0)
+                const char* currentGroupName = collisionGroups[currentCollisionGroup];
+                ImGui::TextColored(ImVec4(0.2f, 0.8f, 0.2f, 1.0f), "Word0 (Group): %s", currentGroupName);
+                
+                // Show what this object can collide with (Word1)
+                ImGui::Text("Word1 (Can collide with):");
+                if (collisionMaskStatic) ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.2f, 1.0f), "  ✓ Static Objects");
+                if (collisionMaskDynamic) ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.2f, 1.0f), "  ✓ Dynamic Objects");
+                if (collisionMaskTrigger) ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.2f, 1.0f), "  ✓ Triggers");
+                if (collisionMaskPlayer) ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.2f, 1.0f), "  ✓ Player");
+                if (collisionMaskEnemy) ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.2f, 1.0f), "  ✓ Enemy");
+                if (collisionMaskProjectile) ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.2f, 1.0f), "  ✓ Projectiles");
+                if (collisionMaskSensor) ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.2f, 1.0f), "  ✓ Sensors");
+
+                // Collider Reference Management
+                ImGui::Separator();
+                ImGui::Text("Collider Reference Management");
+                
+                // Show collider reference status
+                physx::PxShape* colliderRef = physicalObject->getColliderReference();
+                if (colliderRef) {
+                    ImGui::TextColored(ImVec4(0.2f, 0.8f, 0.2f, 1.0f), "✓ Collider Reference: SET");
+                    
+                    // Buttons to sync collider with reference
+                    if (ImGui::Button("Sync Collider from Reference")) {
+                        physicalObject->updateColliderFromReference();
+                    }
+                    if (ImGui::IsItemHovered()) {
+                        ImGui::SetTooltip("Update this object's collider to match the reference collider");
+                    }
+                    
+                    ImGui::SameLine();
+                    if (ImGui::Button("Sync Reference from Collider")) {
+                        physicalObject->updateReferenceFromCollider();
+                    }
+                    if (ImGui::IsItemHovered()) {
+                        ImGui::SetTooltip("Update the reference collider to match this object's collider");
+                    }
+                    
+                    // Show reference collider info
+                    if (ImGui::TreeNode("Reference Collider Info")) {
+                        physx::PxGeometryHolder refGeometry = colliderRef->getGeometry();
+                        physx::PxShapeFlags refFlags = colliderRef->getFlags();
+                        physx::PxFilterData refFilterData = colliderRef->getSimulationFilterData();
+                        
+                        ImGui::Text("Geometry Type: %d", (int)refGeometry.getType());
+                        ImGui::Text("Is Trigger: %s", refFlags.isSet(physx::PxShapeFlag::eTRIGGER_SHAPE) ? "Yes" : "No");
+                        ImGui::Text("Is Simulation Shape: %s", refFlags.isSet(physx::PxShapeFlag::eSIMULATION_SHAPE) ? "Yes" : "No");
+                        ImGui::Text("Filter Data - Word0: %u, Word1: %u, Word2: %u", 
+                                   refFilterData.word0, refFilterData.word1, refFilterData.word2);
+                        
+                        // Direct modification of reference collider
+                        ImGui::Separator();
+                        ImGui::Text("Modify Reference Collider:");
+                        
+                        // Modify geometry
+                        if (ImGui::TreeNode("Modify Geometry")) {
+                            static int refShapeType = 0;
+                            const char* refShapeTypes[] = { "Box", "Sphere", "Capsule", "Plane" };
+                            
+                            if (ImGui::Combo("Reference Shape Type", &refShapeType, refShapeTypes, 4)) {
+                                auto& physicsManager = PhysicsManager::getInstance();
+                                if (physicsManager.getPhysics()) {
+                                    physx::PxShape* newRefCollider = nullptr;
+                                    
+                                    switch (refShapeType) {
+                                        case 0: // Box
+                                            newRefCollider = physicsManager.createBoxShape(
+                                                physx::PxVec3(1.0f, 1.0f, 1.0f), 
+                                                physicsManager.getDefaultMaterial()
+                                            );
+                                            break;
+                                        case 1: // Sphere
+                                            newRefCollider = physicsManager.createSphereShape(1.0f, physicsManager.getDefaultMaterial());
+                                            break;
+                                        case 2: // Capsule
+                                            newRefCollider = physicsManager.createCapsuleShape(0.5f, 1.0f, physicsManager.getDefaultMaterial());
+                                            break;
+                                        case 3: // Plane
+                                            newRefCollider = physicsManager.createPlaneShape(physicsManager.getDefaultMaterial());
+                                            break;
+                                    }
+                                    
+                                    if (newRefCollider) {
+                                        // Copy flags and filter data from old reference
+                                        newRefCollider->setFlags(refFlags);
+                                        newRefCollider->setSimulationFilterData(refFilterData);
+                                        newRefCollider->setQueryFilterData(refFilterData);
+                                        
+                                        // Release old reference and set new one
+                                        if (colliderRef) {
+                                            colliderRef->release();
+                                        }
+                                        physicalObject->setColliderReference(newRefCollider);
+                                        
+                                        std::cout << "Changed reference collider geometry for " << go->Name << std::endl;
+                                    }
+                                }
+                            }
+                            
+                            ImGui::TreePop();
+                        }
+                        
+                        // Modify flags
+                        if (ImGui::TreeNode("Modify Flags")) {
+                            bool refIsTrigger = refFlags.isSet(physx::PxShapeFlag::eTRIGGER_SHAPE);
+                            bool refIsSimulation = refFlags.isSet(physx::PxShapeFlag::eSIMULATION_SHAPE);
+                            
+                            if (ImGui::Checkbox("Reference Is Trigger", &refIsTrigger)) {
+                                colliderRef->setFlag(physx::PxShapeFlag::eTRIGGER_SHAPE, refIsTrigger);
+                                colliderRef->setFlag(physx::PxShapeFlag::eSIMULATION_SHAPE, !refIsTrigger);
+                                std::cout << "Updated reference collider flags for " << go->Name << std::endl;
+                            }
+                            
+                            if (ImGui::Checkbox("Reference Is Simulation Shape", &refIsSimulation)) {
+                                colliderRef->setFlag(physx::PxShapeFlag::eSIMULATION_SHAPE, refIsSimulation);
+                                colliderRef->setFlag(physx::PxShapeFlag::eTRIGGER_SHAPE, !refIsSimulation);
+                                std::cout << "Updated reference collider flags for " << go->Name << std::endl;
+                            }
+                            
+                            ImGui::TreePop();
+                        }
+                        
+                        // Modify filter data
+                        if (ImGui::TreeNode("Modify Filter Data")) {
+                            static physx::PxU32 refWord0 = refFilterData.word0;
+                            static physx::PxU32 refWord1 = refFilterData.word1;
+                            static physx::PxU32 refWord2 = refFilterData.word2;
+                            
+                            if (ImGui::DragScalar("Reference Word0 (Layer)", ImGuiDataType_U32, &refWord0, 1.0f)) {
+                                refFilterData.word0 = refWord0;
+                                colliderRef->setSimulationFilterData(refFilterData);
+                                colliderRef->setQueryFilterData(refFilterData);
+                                std::cout << "Updated reference collider Word0 for " << go->Name << std::endl;
+                            }
+                            
+                            if (ImGui::DragScalar("Reference Word1 (Layer Mask)", ImGuiDataType_U32, &refWord1, 1.0f)) {
+                                refFilterData.word1 = refWord1;
+                                colliderRef->setSimulationFilterData(refFilterData);
+                                colliderRef->setQueryFilterData(refFilterData);
+                                std::cout << "Updated reference collider Word1 for " << go->Name << std::endl;
+                            }
+                            
+                            if (ImGui::DragScalar("Reference Word2 (Trigger Flag)", ImGuiDataType_U32, &refWord2, 1.0f)) {
+                                refFilterData.word2 = refWord2;
+                                colliderRef->setSimulationFilterData(refFilterData);
+                                colliderRef->setQueryFilterData(refFilterData);
+                                std::cout << "Updated reference collider Word2 for " << go->Name << std::endl;
+                            }
+                            
+                            ImGui::TreePop();
+                        }
+                        
+                        ImGui::TreePop();
+                    }
+                } else {
+                    ImGui::TextColored(ImVec4(0.8f, 0.2f, 0.2f, 1.0f), "✗ Collider Reference: NOT SET");
+                    ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "No reference collider available");
+                    
+                    // Button to create a reference collider
+                    if (ImGui::Button("Create Reference Collider")) {
+                        // Create a new collider as reference
+                        auto& physicsManager = PhysicsManager::getInstance();
+                        if (physicsManager.getPhysics()) {
+                            // Create a basic box collider as reference
+                            physx::PxShape* refCollider = physicsManager.createBoxShape(
+                                physx::PxVec3(1.0f, 1.0f, 1.0f), 
+                                physicsManager.getDefaultMaterial()
+                            );
+                            
+                            if (refCollider) {
+                                // Configure the reference collider
+                                refCollider->setFlag(physx::PxShapeFlag::eTRIGGER_SHAPE, false);
+                                refCollider->setFlag(physx::PxShapeFlag::eSIMULATION_SHAPE, true);
+                                
+                                // Set basic filter data
+                                physx::PxFilterData filterData;
+                                filterData.word0 = LAYER_0;
+                                filterData.word1 = LAYER_0 | LAYER_1 | LAYER_2 | LAYER_3 | LAYER_4 | LAYER_5 | LAYER_6 | LAYER_7 | LAYER_8 | LAYER_9 | LAYER_10 | LAYER_11 | LAYER_12 | LAYER_13 | LAYER_14 | LAYER_15 | LAYER_16 | LAYER_17 | LAYER_18 | LAYER_19 | LAYER_TRIGGER | LAYER_PLAYER | LAYER_ENEMY | LAYER_ENVIRONMENT;
+                                filterData.word2 = 0x0;
+                                
+                                refCollider->setSimulationFilterData(filterData);
+                                refCollider->setQueryFilterData(filterData);
+                                
+                                // Set as reference
+                                physicalObject->setColliderReference(refCollider);
+                                
+                                std::cout << "Created reference collider for " << go->Name << std::endl;
+                            }
+                        }
+                    }
+                    if (ImGui::IsItemHovered()) {
+                        ImGui::SetTooltip("Create a new collider as reference for this object");
+                    }
+                }
+
+                ImGui::Separator();
                 ImGui::Text("Physics State");
 
                 // Is Awake
@@ -609,6 +1076,56 @@ void Inspector::RenderGameObjectInspector(GameObject* go) {
                 }
                 if (ImGui::IsItemHovered()) {
                     ImGui::SetTooltip("Apply an impulse to the object");
+                }
+
+                ImGui::Separator();
+                ImGui::Text("Raycast Testing");
+
+                static glm::vec3 raycastOrigin(0.0f, 0.0f, 0.0f);
+                static glm::vec3 raycastDirection(0.0f, 0.0f, 1.0f);
+                static float raycastDistance = 100.0f;
+                static RaycastHit lastRaycastHit;
+
+                if (ImGui::DragFloat3("Raycast Origin", glm::value_ptr(raycastOrigin), 0.1f)) {
+                    // Origin updated
+                }
+                if (ImGui::DragFloat3("Raycast Direction", glm::value_ptr(raycastDirection), 0.1f)) {
+                    // Direction updated
+                }
+                if (ImGui::DragFloat("Raycast Distance", &raycastDistance, 1.0f, 1.0f, 1000.0f)) {
+                    // Distance updated
+                }
+
+                if (ImGui::Button("Perform Raycast")) {
+                    lastRaycastHit = PhysicalObject::raycast(raycastOrigin, raycastDirection, raycastDistance);
+                }
+                if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("Perform a raycast from the specified origin in the specified direction");
+                }
+
+                ImGui::SameLine();
+                if (ImGui::Button("Camera Raycast")) {
+                    // Get camera from active scene
+                    auto& sceneManager = SceneManager::getInstance();
+                    if (auto* activeScene = sceneManager.getActiveScene()) {
+                                            if (auto* camera = activeScene->getCamera()) {
+                        glm::vec3 cameraPos = camera->getPosition();
+                        glm::vec3 cameraDir = camera->getForward();
+                        lastRaycastHit = PhysicalObject::raycast(cameraPos, cameraDir, raycastDistance);
+                    }
+                    }
+                }
+                if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("Perform a raycast from the camera position in the camera direction");
+                }
+
+                if (lastRaycastHit.hit) {
+                    ImGui::TextColored(ImVec4(0.2f, 0.8f, 0.2f, 1.0f), "Raycast Hit!");
+                    ImGui::Text("Position: (%.2f, %.2f, %.2f)", lastRaycastHit.position.x, lastRaycastHit.position.y, lastRaycastHit.position.z);
+                    ImGui::Text("Normal: (%.2f, %.2f, %.2f)", lastRaycastHit.normal.x, lastRaycastHit.normal.y, lastRaycastHit.normal.z);
+                    ImGui::Text("Distance: %.2f", lastRaycastHit.distance);
+                } else {
+                    ImGui::TextColored(ImVec4(0.8f, 0.2f, 0.2f, 1.0f), "No raycast hit");
                 }
 
                 // Impulse application dialog

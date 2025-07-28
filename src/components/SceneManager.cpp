@@ -67,6 +67,7 @@ void SceneManager::addScene(std::unique_ptr<Scene> scene) {
 void SceneManager::setActiveScene(const std::string& sceneName) {
     auto it = scenes.find(sceneName);
     if (it == scenes.end()) {
+
         throw std::runtime_error("Scene '" + sceneName + "' not found");
     }
 
@@ -102,26 +103,19 @@ Scene* SceneManager::getScene(const std::string& sceneName) {
 }
 
 void SceneManager::update(float deltaTime) {
-    // Update physics first
+    // Initialize physics if not already done
+    if (!physicsInitialized) {
+        initializePhysics();
+    }
+    
+    // Update physics
     if (physicsInitialized) {
         PhysicsManager::getInstance().update(deltaTime);
     }
-
-    // Then update scene and game objects
+    
+    // Update active scene
     if (activeScene) {
-        activeScene->update(deltaTime);
         activeScene->updateNative(deltaTime);
-        
-        // Initialize any PhysicalObjects that haven't been initialized yet
-        if (physicsInitialized) {
-            for (auto* obj : activeScene->getGameObjects()) {
-                if (auto physicalObject = obj->getComponent<PhysicalObject>()) {
-                    if (!physicalObject->isInitialized()) {
-                        physicalObject->initializePhysics();
-                    }
-                }
-            }
-        }
     }
 }
 

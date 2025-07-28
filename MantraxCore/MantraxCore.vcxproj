@@ -33,6 +33,7 @@
     <ClCompile Include="..\src\core\CoreWrapper.cpp" />
     <ClCompile Include="..\src\core\FileSystem.cpp" />
     <ClCompile Include="..\src\core\InputConfigLoader.cpp" />
+    <ClCompile Include="..\src\core\PhysicsEventHandler.cpp" />
     <ClCompile Include="..\src\core\PhysicsManager.cpp" />
     <ClCompile Include="..\src\core\UIDGenerator.cpp" />
     <ClCompile Include="..\src\main\MantraxEngine.cpp" />
@@ -73,6 +74,9 @@
     <ClInclude Include="..\src\core\CoreWrapper.h" />
     <ClInclude Include="..\src\core\FileSystem.h" />
     <ClInclude Include="..\src\core\InputConfigLoader.h" />
+    <ClInclude Include="..\src\core\PhysicsEventCallback.h" />
+    <ClInclude Include="..\src\core\PhysicsEventHandler.h" />
+    <ClInclude Include="..\src\core\PhysicsEvents.h" />
     <ClInclude Include="..\src\core\PhysicsManager.h" />
     <ClInclude Include="..\src\core\Time.h" />
     <ClInclude Include="..\src\core\UIDGenerator.h" />

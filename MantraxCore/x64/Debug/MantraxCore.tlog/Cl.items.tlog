@@ -12,6 +12,7 @@ C:\Users\tupap\source\repos\MantraxEngine\src\core\AudioManager.cpp;C:\Users\tup
 C:\Users\tupap\source\repos\MantraxEngine\src\core\CoreWrapper.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\CoreWrapper.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\core\FileSystem.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\FileSystem.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\core\InputConfigLoader.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\InputConfigLoader.obj
+C:\Users\tupap\source\repos\MantraxEngine\src\core\PhysicsEventHandler.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\PhysicsEventHandler.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\core\PhysicsManager.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\PhysicsManager.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\core\UIDGenerator.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\UIDGenerator.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\main\MantraxEngine.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\MantraxEngine.obj
