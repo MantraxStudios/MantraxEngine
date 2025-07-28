@@ -745,6 +745,8 @@ void PhysicalObject::setupAsSceneChangeTrigger(const std::string& targetSceneNam
     });
 }
 
+
+
 void PhysicalObject::forceUpdateCollisionFilters() {
     if (shape) {
         try {

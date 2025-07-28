@@ -1,5 +1,4 @@
 #pragma once
-
 #include "PhysicsEvents.h"
 #include <physx/PxPhysicsAPI.h>
 #include <iostream>
@@ -7,6 +6,7 @@
 // Forward declarations
 class PhysicalObject;
 class PhysicsEventHandler;
+class SceneManager;
 
 class PhysicsEventCallback : public physx::PxSimulationEventCallback {
 private:
