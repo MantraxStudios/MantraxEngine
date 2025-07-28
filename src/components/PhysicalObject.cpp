@@ -25,11 +25,29 @@ void PhysicalObject::safeSetCollisionFilters(CollisionGroup group, CollisionMask
     // Check if the shape is shared (attached to multiple actors)
     bool needsRecreation = false;
     
-    // Try to set the filter data, if it fails, we need to recreate the shape
+    // Try to set the filter data for custom filter shader
     try {
-        auto& physicsManager = PhysicsManager::getInstance();
-        // Pasa el parámetro isTrigger correctamente
-        physicsManager.setupShapeCollisionFilter(shape, group, mask, isTriggerShape);
+        // Configure shape flags for custom filter shader
+        if (isTriggerShape) {
+            shape->setFlag(physx::PxShapeFlag::eTRIGGER_SHAPE, true);
+            shape->setFlag(physx::PxShapeFlag::eSIMULATION_SHAPE, false);
+            shape->setFlag(physx::PxShapeFlag::eSCENE_QUERY_SHAPE, true);
+        } else {
+            shape->setFlag(physx::PxShapeFlag::eTRIGGER_SHAPE, false);
+            shape->setFlag(physx::PxShapeFlag::eSIMULATION_SHAPE, true);
+            shape->setFlag(physx::PxShapeFlag::eSCENE_QUERY_SHAPE, true);
+        }
+        
+        // Set filter data for custom filter shader
+        physx::PxFilterData filterData;
+        filterData.word0 = static_cast<physx::PxU32>(group);  // Collision group
+        filterData.word1 = static_cast<physx::PxU32>(mask);   // Collision mask
+        filterData.word2 = isTriggerShape ? 0x1 : 0x0;        // Trigger flag
+        filterData.word3 = 0;
+        
+        shape->setSimulationFilterData(filterData);
+        shape->setQueryFilterData(filterData);
+        
     } catch (const std::exception& e) {
         // If setting filter data fails, we need to recreate the shape
         needsRecreation = true;
@@ -62,13 +80,15 @@ void PhysicalObject::safeSetCollisionFilters(CollisionGroup group, CollisionMask
         if (rigidActor && shape) {
             rigidActor->attachShape(*shape);
             
-            // Configure shape flags correctly
+            // Configure shape flags correctly for custom filter shader
             if (isTriggerShape) {
                 shape->setFlag(physx::PxShapeFlag::eTRIGGER_SHAPE, true);
                 shape->setFlag(physx::PxShapeFlag::eSIMULATION_SHAPE, false);
+                shape->setFlag(physx::PxShapeFlag::eSCENE_QUERY_SHAPE, true);
             } else {
                 shape->setFlag(physx::PxShapeFlag::eTRIGGER_SHAPE, false);
                 shape->setFlag(physx::PxShapeFlag::eSIMULATION_SHAPE, true);
+                shape->setFlag(physx::PxShapeFlag::eSCENE_QUERY_SHAPE, true);
             }
             
         }
@@ -228,13 +248,26 @@ void PhysicalObject::update() {
                 currentLayer = gameObjectLayer;
                 currentLayerMask = gameObjectLayerMask;
                 
-                // Update filters safely
+                // Update filters safely for custom filter shader
                 if (shape) {
                     try {
+                        // Configure shape flags for custom filter shader
+                        if (isTriggerShape) {
+                            shape->setFlag(physx::PxShapeFlag::eTRIGGER_SHAPE, true);
+                            shape->setFlag(physx::PxShapeFlag::eSIMULATION_SHAPE, false);
+                            shape->setFlag(physx::PxShapeFlag::eSCENE_QUERY_SHAPE, true);
+                        } else {
+                            shape->setFlag(physx::PxShapeFlag::eTRIGGER_SHAPE, false);
+                            shape->setFlag(physx::PxShapeFlag::eSIMULATION_SHAPE, true);
+                            shape->setFlag(physx::PxShapeFlag::eSCENE_QUERY_SHAPE, true);
+                        }
+                        
+                        // Set filter data for custom filter shader
                         physx::PxFilterData filterData;
-                        filterData.word0 = currentLayer;
-                        filterData.word1 = currentLayerMask;
-                        filterData.word2 = isTriggerShape ? 0x1 : 0x0;
+                        filterData.word0 = currentLayer;  // Collision group
+                        filterData.word1 = currentLayerMask;  // Collision mask
+                        filterData.word2 = isTriggerShape ? 0x1 : 0x0;  // Trigger flag
+                        filterData.word3 = 0;
                         
                         shape->setSimulationFilterData(filterData);
                         shape->setQueryFilterData(filterData);
@@ -303,7 +336,7 @@ void PhysicalObject::createShape() {
         return;
     }
 
-    // Crear el shape básico sin configurar flags especiales aún
+    // Create the shape with unique configuration
     switch (shapeType) {
     case ShapeType::Box:
         shape = physicsManager.createBoxShape(
@@ -327,7 +360,7 @@ void PhysicalObject::createShape() {
         return;
     }
 
-    // IMPORTANTE: Configurar filter data PRIMERO, antes de los flags
+    // Configure filter data for custom filter shader
     physx::PxU32 gameObjectLayer = owner ? owner->getLayer() : LAYER_0;
     physx::PxU32 gameObjectLayerMask = owner ? owner->getLayerMask() :
         (LAYER_0 | LAYER_1 | LAYER_2 | LAYER_3 | LAYER_4 | LAYER_5 | LAYER_6 | LAYER_7 |
@@ -335,17 +368,27 @@ void PhysicalObject::createShape() {
             LAYER_16 | LAYER_17 | LAYER_18 | LAYER_19 | LAYER_TRIGGER | LAYER_PLAYER |
             LAYER_ENEMY | LAYER_ENVIRONMENT);
 
-    // Configurar filter data
+    // Set up filter data for custom filter shader
     physx::PxFilterData filterData;
-    filterData.word0 = gameObjectLayer;
-    filterData.word1 = gameObjectLayerMask;
-    filterData.word2 = isTriggerShape ? 0x1 : 0x0;
+    filterData.word0 = gameObjectLayer;  // Collision group
+    filterData.word1 = gameObjectLayerMask;  // Collision mask
+    filterData.word2 = isTriggerShape ? 0x1 : 0x0;  // Trigger flag
     filterData.word3 = 0;
 
+    // Configure shape flags BEFORE setting filter data
+    if (isTriggerShape) {
+        shape->setFlag(physx::PxShapeFlag::eTRIGGER_SHAPE, true);
+        shape->setFlag(physx::PxShapeFlag::eSIMULATION_SHAPE, false);
+        shape->setFlag(physx::PxShapeFlag::eSCENE_QUERY_SHAPE, true);
+    } else {
+        shape->setFlag(physx::PxShapeFlag::eTRIGGER_SHAPE, false);
+        shape->setFlag(physx::PxShapeFlag::eSIMULATION_SHAPE, true);
+        shape->setFlag(physx::PxShapeFlag::eSCENE_QUERY_SHAPE, true);
+    }
+
+    // Set filter data AFTER configuring flags
     shape->setSimulationFilterData(filterData);
     shape->setQueryFilterData(filterData);
-
-    // NOTA: NO configurar flags aquí - se harán DESPUÉS del attach
     
     // Establecer la referencia del collider para el inspector
     setColliderReference(shape);
@@ -501,80 +544,60 @@ void PhysicalObject::setCapsuleHalfHeight(float halfHeight) {
 }
 
 void PhysicalObject::setTrigger(bool isTrigger) {
-    std::cout << "=== SETTING TRIGGER ===" << std::endl;
-    std::cout << "Object: " << (owner ? owner->Name : "Unknown") << std::endl;
-    std::cout << "Setting trigger to: " << (isTrigger ? "true" : "false") << std::endl;
-    std::cout << "Current trigger state: " << (isTriggerShape ? "true" : "false") << std::endl;
-
-    bool wasInitialized = initialized;
+    std::cout << "=== SET TRIGGER DEBUG ===" << std::endl;
+    std::cout << "Setting trigger: " << (isTrigger ? "TRUE" : "FALSE") << std::endl;
+    std::cout << "Shape exists: " << (shape ? "YES" : "NO") << std::endl;
+    std::cout << "RigidActor exists: " << (rigidActor ? "YES" : "NO") << std::endl;
+    
     isTriggerShape = isTrigger;
-    std::cout << "isTriggerShape set to: " << (isTriggerShape ? "true" : "false") << std::endl;
 
-    if (wasInitialized) {
-        std::cout << "Object is initialized, recreating..." << std::endl;
-        destroy();
-        initializePhysics(); // Usar initializePhysics en lugar de start()
-
-        // Verificar que la configuración sea correcta después de recrear
-        verifyTriggerSetup();
-        
-        // Debug: Verificar configuración de trigger
-        if (rigidActor) {
-            auto& physicsManager = PhysicsManager::getInstance();
-            physicsManager.debugTriggerSetup(rigidActor, isTriggerShape);
-        }
-    }
-
-    std::cout << "=== TRIGGER SET COMPLETE ===" << std::endl;
-
-    // If this is being set as a trigger, automatically set up a default trigger callback
-    if (isTrigger && !triggerCallback) {
-        setTriggerCallback([](PhysicalObject* trigger, PhysicalObject* other) {
-            if (trigger) {
-                auto* triggerOwner = trigger->getOwner();
-                if (other) {
-                    auto* otherOwner = other->getOwner();
-                    glm::vec3 triggerPos = triggerOwner->getWorldPosition();
-                    glm::vec3 otherPos = otherOwner->getWorldPosition();
-
-                    // Cambiar de escena
-                    try {
-                        auto& sceneManager = SceneManager::getInstance();
-
-                        // Obtener la escena actual
-                        Scene* currentScene = sceneManager.getActiveScene();
-
-                        // Lista de escenas disponibles
-                        std::vector<std::string> availableScenes = {
-                            "TestScene",
-                            "TexturedScene",
-                            "Physics Test Scene"
-                        };
-
-                        // Encontrar la siguiente escena
-                        std::string nextSceneName = "TestScene"; // Por defecto
-                        if (currentScene) {
-                            std::string currentSceneName = currentScene->getName();
-                            auto it = std::find(availableScenes.begin(), availableScenes.end(), currentSceneName);
-                            if (it != availableScenes.end()) {
-                                size_t currentIndex = std::distance(availableScenes.begin(), it);
-                                size_t nextIndex = (currentIndex + 1) % availableScenes.size();
-                                nextSceneName = availableScenes[nextIndex];
-                            }
-                        }
-
-                        sceneManager.setActiveScene(nextSceneName);
-
-                    }
-                    catch (const std::exception& e) {
-                    }
+    if (shape && rigidActor) {
+        try {
+            // Configure shape flags for custom filter shader
+            if (isTriggerShape) {
+                shape->setFlag(physx::PxShapeFlag::eTRIGGER_SHAPE, true);
+                shape->setFlag(physx::PxShapeFlag::eSIMULATION_SHAPE, false);
+                shape->setFlag(physx::PxShapeFlag::eSCENE_QUERY_SHAPE, true);
+                
+                // Asegurarse de que el actor tenga la configuración correcta para triggers
+                if (dynamicActor) {
+                    // Para objetos dinámicos, asegurarse de que no colisionen pero sigan recibiendo eventos
+                    dynamicActor->setActorFlag(physx::PxActorFlag::eDISABLE_SIMULATION, true);
                 }
-                else {
+                std::cout << "Trigger flags set successfully" << std::endl;
+            } else {
+                shape->setFlag(physx::PxShapeFlag::eTRIGGER_SHAPE, false);
+                shape->setFlag(physx::PxShapeFlag::eSIMULATION_SHAPE, true);
+                shape->setFlag(physx::PxShapeFlag::eSCENE_QUERY_SHAPE, true);
+                
+                // Restaurar la configuración normal para colisiones
+                if (dynamicActor) {
+                    dynamicActor->setActorFlag(physx::PxActorFlag::eDISABLE_SIMULATION, false);
                 }
+                std::cout << "Normal collision flags set successfully" << std::endl;
             }
-            });
+
+            // Update filter data for custom filter shader
+            physx::PxFilterData filterData = shape->getSimulationFilterData();
+            filterData.word2 = isTriggerShape ? 0x1 : 0x0;  // Trigger flag
+            shape->setSimulationFilterData(filterData);
+            shape->setQueryFilterData(filterData);
+            std::cout << "Filter data updated successfully" << std::endl;
+            
+        } catch (const std::exception& e) {
+            std::cerr << "Error in setTrigger: " << e.what() << std::endl;
+            std::cout << "Shape is shared, recreating..." << std::endl;
+            // Si obtenemos un error, intentamos recrear el shape
+            recreateShapeSafely();
+            std::cout << "Shape recreated successfully" << std::endl;
+        }
+    } else {
+        std::cout << "Cannot set trigger - shape or rigidActor is null" << std::endl;
     }
+    
+    std::cout << "==========================" << std::endl;
 }
+
 
 void PhysicalObject::setCollisionGroup(CollisionGroup group) {
     safeSetCollisionFilters(group, CollisionMask::DYNAMIC_MASK);
@@ -725,35 +748,26 @@ void PhysicalObject::setupAsSceneChangeTrigger(const std::string& targetSceneNam
 void PhysicalObject::forceUpdateCollisionFilters() {
     if (shape) {
         try {
-            if (isTriggerShape) {
-                // Configure trigger flags
-                shape->setFlag(physx::PxShapeFlag::eTRIGGER_SHAPE, true);
-                shape->setFlag(physx::PxShapeFlag::eSIMULATION_SHAPE, false);
-                
-                // Set trigger collision filters
-                physx::PxFilterData filterData;
-                filterData.word0 = currentLayer;
-                filterData.word1 = currentLayerMask;
-                filterData.word2 = 0x1; // Trigger flag
-                
-                shape->setSimulationFilterData(filterData);
-                shape->setQueryFilterData(filterData);
-                
-            } else {
-                // Configure normal collision flags
-                shape->setFlag(physx::PxShapeFlag::eTRIGGER_SHAPE, false);
-                shape->setFlag(physx::PxShapeFlag::eSIMULATION_SHAPE, true);
-                
-                // Set normal collision filters
-                physx::PxFilterData filterData;
-                filterData.word0 = currentLayer;
-                filterData.word1 = currentLayerMask;
-                filterData.word2 = 0x0; // Not trigger
-                
-                shape->setSimulationFilterData(filterData);
-                shape->setQueryFilterData(filterData);
-                
-            }
+                // Configure shape flags for custom filter shader
+    if (isTriggerShape) {
+        shape->setFlag(physx::PxShapeFlag::eTRIGGER_SHAPE, true);
+        shape->setFlag(physx::PxShapeFlag::eSIMULATION_SHAPE, false);
+        shape->setFlag(physx::PxShapeFlag::eSCENE_QUERY_SHAPE, true);
+    } else {
+        shape->setFlag(physx::PxShapeFlag::eTRIGGER_SHAPE, false);
+        shape->setFlag(physx::PxShapeFlag::eSIMULATION_SHAPE, true);
+        shape->setFlag(physx::PxShapeFlag::eSCENE_QUERY_SHAPE, true);
+    }
+    
+    // Set filter data for custom filter shader
+    physx::PxFilterData filterData;
+    filterData.word0 = currentLayer;  // Collision group
+    filterData.word1 = currentLayerMask;  // Collision mask
+    filterData.word2 = isTriggerShape ? 0x1 : 0x0;  // Trigger flag
+    filterData.word3 = 0;
+    
+    shape->setSimulationFilterData(filterData);
+    shape->setQueryFilterData(filterData);
             
         } catch (const std::exception& e) {
             std::cerr << "Error updating collision filters: " << e.what() << std::endl;
@@ -770,13 +784,26 @@ void PhysicalObject::forceUpdateCollisionFiltersAggressive() {
     // Always recreate the shape to ensure fresh configuration
     recreateShapeSafely();
     
-    // Force update the filters after recreation
+    // Force update the filters after recreation for custom filter shader
     if (shape) {
         try {
+            // Configure shape flags
+            if (isTriggerShape) {
+                shape->setFlag(physx::PxShapeFlag::eTRIGGER_SHAPE, true);
+                shape->setFlag(physx::PxShapeFlag::eSIMULATION_SHAPE, false);
+                shape->setFlag(physx::PxShapeFlag::eSCENE_QUERY_SHAPE, true);
+            } else {
+                shape->setFlag(physx::PxShapeFlag::eTRIGGER_SHAPE, false);
+                shape->setFlag(physx::PxShapeFlag::eSIMULATION_SHAPE, true);
+                shape->setFlag(physx::PxShapeFlag::eSCENE_QUERY_SHAPE, true);
+            }
+            
+            // Set filter data for custom filter shader
             physx::PxFilterData filterData;
-            filterData.word0 = currentLayer;
-            filterData.word1 = currentLayerMask;
-            filterData.word2 = isTriggerShape ? 0x1 : 0x0;
+            filterData.word0 = currentLayer;  // Collision group
+            filterData.word1 = currentLayerMask;  // Collision mask
+            filterData.word2 = isTriggerShape ? 0x1 : 0x0;  // Trigger flag
+            filterData.word3 = 0;
             
             shape->setSimulationFilterData(filterData);
             shape->setQueryFilterData(filterData);
@@ -925,4 +952,4 @@ void PhysicalObject::updateReferenceFromCollider() {
     } catch (const std::exception& e) {
         std::cerr << "Error updating reference from collider: " << e.what() << std::endl;
     }
-} 
+}

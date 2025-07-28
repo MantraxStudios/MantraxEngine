@@ -149,32 +149,37 @@ C:\Users\tupap\source\repos\MantraxEngine\src\components\AudioSource.h(40,17): w
       C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\include\xstring(541,7):
       vea la declaración de 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\core\PhysicsManager.h(13,9): warning C4005: 'LAYER_PLAYER': redefinición de macro
+C:\Users\tupap\source\repos\MantraxEngine\src\core\PhysicsManager.h(14,9): warning C4005: 'LAYER_PLAYER': redefinición de macro
   (compilando archivo de origen "editor/Windows/Inspector.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(42,9):
       vea la definición anterior de “LAYER_PLAYER”
   
-C:\Users\tupap\source\repos\MantraxEngine\src\core\PhysicsManager.h(14,9): warning C4005: 'LAYER_ENEMY': redefinición de macro
+C:\Users\tupap\source\repos\MantraxEngine\src\core\PhysicsManager.h(15,9): warning C4005: 'LAYER_ENEMY': redefinición de macro
   (compilando archivo de origen "editor/Windows/Inspector.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(43,9):
       vea la definición anterior de “LAYER_ENEMY”
   
-C:\Users\tupap\source\repos\MantraxEngine\src\core\PhysicsManager.h(15,9): warning C4005: 'LAYER_ENVIRONMENT': redefinición de macro
+C:\Users\tupap\source\repos\MantraxEngine\src\core\PhysicsManager.h(16,9): warning C4005: 'LAYER_ENVIRONMENT': redefinición de macro
   (compilando archivo de origen "editor/Windows/Inspector.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(44,9):
       vea la definición anterior de “LAYER_ENVIRONMENT”
   
-C:\Users\tupap\source\repos\MantraxEngine\src\core\PhysicsManager.h(16,9): warning C4005: 'LAYER_TRIGGER': redefinición de macro
+C:\Users\tupap\source\repos\MantraxEngine\src\core\PhysicsManager.h(17,9): warning C4005: 'LAYER_TRIGGER': redefinición de macro
   (compilando archivo de origen "editor/Windows/Inspector.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.h(41,9):
       vea la definición anterior de “LAYER_TRIGGER”
   
-C:\Users\tupap\source\repos\MantraxEngine\src\core\PhysicsManager.h(89,31): warning C4251: "PhysicsManager::mDefaultAllocatorCallback": "physx::PxDefaultAllocator" debe tener una interfaz DLL para que la usen los clientes de "PhysicsManager"
+C:\Users\tupap\source\repos\MantraxEngine\src\core\PhysicsManager.h(91,30): warning C4251: "PhysicsManager::toleranceScale": "physx::PxTolerancesScale" debe tener una interfaz DLL para que la usen los clientes de "PhysicsManager"
+  (compilando archivo de origen "editor/Windows/Inspector.cpp")
+      C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\physx\common\PxTolerancesScale.h(49,7):
+      vea la declaración de 'physx::PxTolerancesScale'
+  
+C:\Users\tupap\source\repos\MantraxEngine\src\core\PhysicsManager.h(102,31): warning C4251: "PhysicsManager::mDefaultAllocatorCallback": "physx::PxDefaultAllocator" debe tener una interfaz DLL para que la usen los clientes de "PhysicsManager"
   (compilando archivo de origen "editor/Windows/Inspector.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\physx\extensions\PxDefaultAllocator.h(85,7):
       vea la declaración de 'physx::PxDefaultAllocator'
   
-C:\Users\tupap\source\repos\MantraxEngine\src\core\PhysicsManager.h(90,35): warning C4251: "PhysicsManager::mDefaultErrorCallback": "physx::PxDefaultErrorCallback" debe tener una interfaz DLL para que la usen los clientes de "PhysicsManager"
+C:\Users\tupap\source\repos\MantraxEngine\src\core\PhysicsManager.h(103,35): warning C4251: "PhysicsManager::mDefaultErrorCallback": "physx::PxDefaultErrorCallback" debe tener una interfaz DLL para que la usen los clientes de "PhysicsManager"
   (compilando archivo de origen "editor/Windows/Inspector.cpp")
       C:\Users\tupap\source\repos\MantraxEngine\vendors\includes\physx\extensions\PxDefaultErrorCallback.h(48,8):
       vea la declaración de 'physx::PxDefaultErrorCallback'

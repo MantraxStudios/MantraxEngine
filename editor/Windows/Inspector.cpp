@@ -380,7 +380,7 @@ void Inspector::RenderGameObjectInspector(GameObject* go) {
     // PhysicalObject Component
     if (auto physicalObject = go->getComponent<PhysicalObject>()) {
         bool removeComponent = false;
-        bool treeNodeOpen = ImGui::TreeNode("[Physical Object]");
+        bool treeNodeOpen = ImGui::TreeNodeEx("[Physical Object]", ImGuiTreeNodeFlags_DefaultOpen);
 
         if (treeNodeOpen) {
             // Botón de opciones alineado a la derecha pero dentro de la ventana
@@ -556,29 +556,11 @@ void Inspector::RenderGameObjectInspector(GameObject* go) {
 
                 // Is Trigger checkbox
                 bool isTrigger = physicalObject->isTrigger();
-                std::cout << "=== INSPECTOR TRIGGER DEBUG ===" << std::endl;
-                std::cout << "Current trigger state: " << (isTrigger ? "true" : "false") << std::endl;
-                std::cout << "Checkbox value before: " << (isTrigger ? "true" : "false") << std::endl;
                 
                 bool checkboxChanged = ImGui::Checkbox("Is Trigger", &isTrigger);
-                std::cout << "Checkbox changed: " << (checkboxChanged ? "YES" : "NO") << std::endl;
-                std::cout << "Checkbox value after: " << (isTrigger ? "true" : "false") << std::endl;
                 
                 if (checkboxChanged) {
-                    std::cout << "Checkbox changed to: " << (isTrigger ? "true" : "false") << std::endl;
                     physicalObject->setTrigger(isTrigger);
-                    std::cout << "setTrigger() called with: " << (isTrigger ? "true" : "false") << std::endl;
-                }
-                std::cout << "=== END INSPECTOR TRIGGER DEBUG ===" << std::endl;
-
-                // Debug button to force trigger change
-                if (ImGui::Button("Force Toggle Trigger")) {
-                    bool currentTrigger = physicalObject->isTrigger();
-                    std::cout << "Force toggling trigger from " << (currentTrigger ? "true" : "false") << " to " << (!currentTrigger ? "true" : "false") << std::endl;
-                    physicalObject->setTrigger(!currentTrigger);
-                }
-                if (ImGui::IsItemHovered()) {
-                    ImGui::SetTooltip("Force toggle trigger state for debugging");
                 }
 
                 if (ImGui::IsItemHovered()) {
@@ -680,99 +662,6 @@ void Inspector::RenderGameObjectInspector(GameObject* go) {
                     ImGui::SetTooltip("Word1: Can collide with sensor objects");
                 }
 
-                // Preset buttons for common configurations
-                ImGui::Separator();
-                ImGui::Text("Quick Presets (Word0/Word1):");
-                
-                if (ImGui::Button("Static Wall")) {
-                    physicalObject->setupCollisionFilters(CollisionGroup::STATIC_GROUP, CollisionMask::STATIC_MASK);
-                    collisionMaskStatic = true;
-                    collisionMaskDynamic = true;
-                    collisionMaskTrigger = false;
-                    collisionMaskPlayer = true;
-                    collisionMaskEnemy = true;
-                    collisionMaskProjectile = true;
-                    collisionMaskSensor = false;
-                }
-                if (ImGui::IsItemHovered()) {
-                    ImGui::SetTooltip("Word0: Static, Word1: All except triggers");
-                }
-
-                ImGui::SameLine();
-                if (ImGui::Button("Dynamic Object")) {
-                    physicalObject->setupCollisionFilters(CollisionGroup::DYNAMIC_GROUP, CollisionMask::DYNAMIC_MASK);
-                    collisionMaskStatic = true;
-                    collisionMaskDynamic = true;
-                    collisionMaskTrigger = true;
-                    collisionMaskPlayer = true;
-                    collisionMaskEnemy = true;
-                    collisionMaskProjectile = true;
-                    collisionMaskSensor = false;
-                }
-                if (ImGui::IsItemHovered()) {
-                    ImGui::SetTooltip("Word0: Dynamic, Word1: All except sensors");
-                }
-
-                ImGui::SameLine();
-                if (ImGui::Button("Trigger Zone")) {
-                    physicalObject->setupCollisionFilters(CollisionGroup::TRIGGER_GROUP, CollisionMask::TRIGGER_MASK);
-                    physicalObject->setTrigger(true);
-                    collisionMaskStatic = false;
-                    collisionMaskDynamic = true;
-                    collisionMaskTrigger = false;
-                    collisionMaskPlayer = true;
-                    collisionMaskEnemy = true;
-                    collisionMaskProjectile = true;
-                    collisionMaskSensor = false;
-                }
-                if (ImGui::IsItemHovered()) {
-                    ImGui::SetTooltip("Word0: Trigger, Word1: Dynamic + Player + Enemy + Projectile");
-                }
-
-                if (ImGui::Button("Player")) {
-                    physicalObject->setupCollisionFilters(CollisionGroup::PLAYER_GROUP, CollisionMask::PLAYER_MASK);
-                    collisionMaskStatic = true;
-                    collisionMaskDynamic = true;
-                    collisionMaskTrigger = true;
-                    collisionMaskPlayer = false;
-                    collisionMaskEnemy = true;
-                    collisionMaskProjectile = false;
-                    collisionMaskSensor = true;
-                }
-                if (ImGui::IsItemHovered()) {
-                    ImGui::SetTooltip("Word0: Player, Word1: Static + Dynamic + Trigger + Enemy + Sensor");
-                }
-
-                ImGui::SameLine();
-                if (ImGui::Button("Enemy")) {
-                    physicalObject->setupCollisionFilters(CollisionGroup::ENEMY_GROUP, CollisionMask::ENEMY_MASK);
-                    collisionMaskStatic = true;
-                    collisionMaskDynamic = true;
-                    collisionMaskTrigger = true;
-                    collisionMaskPlayer = true;
-                    collisionMaskEnemy = false;
-                    collisionMaskProjectile = true;
-                    collisionMaskSensor = false;
-                }
-                if (ImGui::IsItemHovered()) {
-                    ImGui::SetTooltip("Word0: Enemy, Word1: Static + Dynamic + Trigger + Player + Projectile");
-                }
-
-                ImGui::SameLine();
-                if (ImGui::Button("Projectile")) {
-                    physicalObject->setupCollisionFilters(CollisionGroup::PROJECTILE_GROUP, CollisionMask::PROJECTILE_MASK);
-                    collisionMaskStatic = true;
-                    collisionMaskDynamic = true;
-                    collisionMaskTrigger = true;
-                    collisionMaskPlayer = false;
-                    collisionMaskEnemy = true;
-                    collisionMaskProjectile = false;
-                    collisionMaskSensor = false;
-                }
-                if (ImGui::IsItemHovered()) {
-                    ImGui::SetTooltip("Word0: Projectile, Word1: Static + Dynamic + Trigger + Enemy");
-                }
-
                 // Collision visualization
                 ImGui::Separator();
                 ImGui::Text("Collision Info (Word0/Word1):");
@@ -783,13 +672,13 @@ void Inspector::RenderGameObjectInspector(GameObject* go) {
                 
                 // Show what this object can collide with (Word1)
                 ImGui::Text("Word1 (Can collide with):");
-                if (collisionMaskStatic) ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.2f, 1.0f), "  ✓ Static Objects");
-                if (collisionMaskDynamic) ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.2f, 1.0f), "  ✓ Dynamic Objects");
-                if (collisionMaskTrigger) ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.2f, 1.0f), "  ✓ Triggers");
-                if (collisionMaskPlayer) ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.2f, 1.0f), "  ✓ Player");
-                if (collisionMaskEnemy) ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.2f, 1.0f), "  ✓ Enemy");
-                if (collisionMaskProjectile) ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.2f, 1.0f), "  ✓ Projectiles");
-                if (collisionMaskSensor) ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.2f, 1.0f), "  ✓ Sensors");
+                if (collisionMaskStatic) ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.2f, 1.0f), " Static Objects");
+                if (collisionMaskDynamic) ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.2f, 1.0f), " Dynamic Objects");
+                if (collisionMaskTrigger) ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.2f, 1.0f), " Triggers");
+                if (collisionMaskPlayer) ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.2f, 1.0f), " Player");
+                if (collisionMaskEnemy) ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.2f, 1.0f), " Enemy");
+                if (collisionMaskProjectile) ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.2f, 1.0f), " Projectiles");
+                if (collisionMaskSensor) ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.2f, 1.0f), " Sensors");
 
                 // Collider Reference Management
                 ImGui::Separator();

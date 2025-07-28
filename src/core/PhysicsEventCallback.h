@@ -78,13 +78,11 @@ public:
     void onTrigger(physx::PxTriggerPair* pairs, physx::PxU32 count) override {
         // Delegate trigger events to event handler
         if (!eventHandler) return;
-
         std::cout << "=== TRIGGER EVENT DETECTED ===" << std::endl;
         std::cout << "Number of trigger pairs: " << count << std::endl;
 
         for (physx::PxU32 i = 0; i < count; i++) {
             const physx::PxTriggerPair& pair = pairs[i];
-
             std::cout << "Trigger Pair " << i << ":" << std::endl;
             std::cout << "  Trigger Actor: " << (void*)pair.triggerActor << std::endl;
             std::cout << "  Other Actor: " << (void*)pair.otherActor << std::endl;
@@ -92,19 +90,19 @@ public:
 
             TriggerEvent event;
 
-            // CORRECCION: Usar el campo 'status' correctamente
-            if (pair.status & physx::PxPairFlag::eNOTIFY_TOUCH_FOUND) {
+            // CORRECCIÓN: Usar == en lugar de &
+            if (pair.status == physx::PxPairFlag::eNOTIFY_TOUCH_FOUND) {
                 event.type = TriggerEvent::ENTER;
                 std::cout << "  Event Type: ENTER" << std::endl;
             }
-            else if (pair.status & physx::PxPairFlag::eNOTIFY_TOUCH_LOST) {
+            else if (pair.status == physx::PxPairFlag::eNOTIFY_TOUCH_LOST) {
                 event.type = TriggerEvent::EXIT;
                 std::cout << "  Event Type: EXIT" << std::endl;
             }
             else {
-                // Este caso no debería ocurrir normalmente
+                // Para debug, imprimir el valor real
+                std::cout << "  Event Type: UNKNOWN (status value: " << (int)pair.status << ")" << std::endl;
                 event.type = TriggerEvent::ENTER; // Por defecto
-                std::cout << "  Event Type: UNKNOWN - defaulting to ENTER" << std::endl;
             }
 
             event.triggerActor = pair.triggerActor;
@@ -113,7 +111,6 @@ public:
             // Process the event through event handler
             eventHandler->processTriggerEvent(event);
         }
-
         std::cout << "=== END TRIGGER EVENT ===" << std::endl;
     }
 

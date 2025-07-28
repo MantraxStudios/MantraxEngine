@@ -120,10 +120,7 @@ public:
     
     // Trigger properties
     void setTrigger(bool isTrigger);
-    bool isTrigger() const { 
-        std::cout << "isTrigger() called, returning: " << (isTriggerShape ? "true" : "false") << std::endl;
-        return isTriggerShape; 
-    }
+    bool isTrigger() const { return isTriggerShape; }
     
     void setBoxHalfExtents(const glm::vec3& extents);
     glm::vec3 getBoxHalfExtents() const { return boxHalfExtents; }

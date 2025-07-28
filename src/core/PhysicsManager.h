@@ -4,6 +4,7 @@
 #include "PhysicsEventHandler.h"
 #include "PhysicsEventCallback.h"
 #include <physx/PxPhysicsAPI.h>
+#include <physx/pvd/PxPvd.h>
 #include "../core/CoreExporter.h"
 #include <vector>
 #include <functional>
@@ -69,10 +70,11 @@ inline CollisionMask operator&(CollisionMask a, CollisionMask b) {
     return static_cast<CollisionMask>(static_cast<physx::PxU32>(a) & static_cast<physx::PxU32>(b));
 }
 
-// Global filter shader function (must be outside the class for PhysX)
-physx::PxFilterFlags customFilterShader(physx::PxFilterObjectAttributes attributes0, physx::PxFilterData filterData0,
-                                        physx::PxFilterObjectAttributes attributes1, physx::PxFilterData filterData1,
-                                        physx::PxPairFlags& pairFlags, const void* constantBlock, physx::PxU32 constantBlockSize);
+// Custom filter shader declaration
+physx::PxFilterFlags CustomFilterShader(
+    physx::PxFilterObjectAttributes attributes0, physx::PxFilterData filterData0,
+    physx::PxFilterObjectAttributes attributes1, physx::PxFilterData filterData1,
+    physx::PxPairFlags& pairFlags, const void* constantBlock, physx::PxU32 constantBlockSize);
 
 class MANTRAXCORE_API PhysicsManager {
 private:
@@ -84,6 +86,17 @@ private:
     physx::PxScene* scene;
     physx::PxMaterial* defaultMaterial;
     physx::PxDefaultCpuDispatcher* cpuDispatcher;
+    
+    // Tolerance scale for better physics simulation
+    physx::PxTolerancesScale toleranceScale;
+    
+    // Controller manager for character controllers
+    physx::PxControllerManager* controllerManager;
+    
+    // PVD (PhysX Visual Debugger) objects
+    physx::PxPvd* pvd;
+    physx::PxPvdTransport* pvdTransport;
+    physx::PxPvdSceneClient* pvdClient;
     
     // Allocator and error callback instances
     physx::PxDefaultAllocator mDefaultAllocatorCallback;
@@ -105,6 +118,16 @@ public:
     bool initialize();
     void update(float deltaTime);
     void cleanup();
+    
+    // PVD methods
+    bool initializePVD();
+    void setupPvdFlags();
+    void connectPVD();
+    void disconnectPVD();
+    bool isPVDConnected() const;
+    
+    // Controller manager methods
+    physx::PxControllerManager* getControllerManager() const { return controllerManager; }
     
     // Getters
     physx::PxScene* getScene() const { return scene; }
