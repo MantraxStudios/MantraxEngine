@@ -311,14 +311,6 @@ void PhysicsManager::update(float deltaTime)
     {
         scene->simulate(deltaTime);
         scene->fetchResults(true);
-
-        // Debug: Log that physics simulation completed
-        static int frameCount = 0;
-        frameCount++;
-        if (frameCount % 60 == 0)
-        { // Log every 60 frames (1 second at 60fps)
-            std::cout << "Physics simulation frame: " << frameCount << std::endl;
-        }
     }
 }
 

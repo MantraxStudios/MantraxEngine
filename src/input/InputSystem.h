@@ -61,62 +61,62 @@ private:
         if (!action) return;
 
         switch (event.type) {
-            case SDL_KEYDOWN:
-            case SDL_KEYUP: {
-                bool pressed = (event.type == SDL_KEYDOWN);
-                keyStates[event.key.keysym.sym] = pressed;
+        case SDL_KEYDOWN:
+        case SDL_KEYUP: {
+            bool pressed = (event.type == SDL_KEYDOWN);
+            keyStates[event.key.keysym.sym] = pressed;
 
-                if (action->getType() == InputType::Button) {
-                    for (const auto& binding : action->getBindings()) {
-                        if (binding.isKeyboard && binding.key == event.key.keysym.sym) {
-                            action->updateButton(pressed);
+            if (action->getType() == InputType::Button) {
+                for (const auto& binding : action->getBindings()) {
+                    if (binding.isKeyboard && binding.key == event.key.keysym.sym) {
+                        action->updateButton(pressed);
+                    }
+                }
+            }
+            break;
+        }
+
+        case SDL_MOUSEBUTTONDOWN:
+        case SDL_MOUSEBUTTONUP: {
+            bool pressed = (event.type == SDL_MOUSEBUTTONDOWN);
+            mouseButtonStates[event.button.button] = pressed;
+
+            if (action->getType() == InputType::MouseButton) {
+                for (const auto& binding : action->getBindings()) {
+                    if (!binding.isKeyboard && binding.mouseButton == event.button.button) {
+                        action->updateButton(pressed);
+                    }
+                }
+            }
+            break;
+        }
+
+        case SDL_MOUSEMOTION: {
+            if (action->getType() == InputType::MouseAxis) {
+                for (const auto& binding : action->getBindings()) {
+                    if (!binding.isKeyboard) {
+                        if (binding.mouseAxis == MouseAxisType::X) {
+                            action->updateMouseAxis(static_cast<float>(event.motion.xrel));
+                        }
+                        else if (binding.mouseAxis == MouseAxisType::Y) {
+                            action->updateMouseAxis(static_cast<float>(event.motion.yrel));
                         }
                     }
                 }
-                break;
             }
+            break;
+        }
 
-            case SDL_MOUSEBUTTONDOWN:
-            case SDL_MOUSEBUTTONUP: {
-                bool pressed = (event.type == SDL_MOUSEBUTTONDOWN);
-                mouseButtonStates[event.button.button] = pressed;
-
-                if (action->getType() == InputType::MouseButton) {
-                    for (const auto& binding : action->getBindings()) {
-                        if (!binding.isKeyboard && binding.mouseButton == event.button.button) {
-                            action->updateButton(pressed);
-                        }
+        case SDL_MOUSEWHEEL: {
+            if (action->getType() == InputType::MouseAxis) {
+                for (const auto& binding : action->getBindings()) {
+                    if (!binding.isKeyboard && binding.mouseAxis == MouseAxisType::ScrollWheel) {
+                        action->updateMouseAxis(static_cast<float>(event.wheel.y));
                     }
                 }
-                break;
             }
-
-            case SDL_MOUSEMOTION: {
-                if (action->getType() == InputType::MouseAxis) {
-                    for (const auto& binding : action->getBindings()) {
-                        if (!binding.isKeyboard) {
-                            if (binding.mouseAxis == MouseAxisType::X) {
-                                action->updateMouseAxis(static_cast<float>(event.motion.xrel));
-                            }
-                            else if (binding.mouseAxis == MouseAxisType::Y) {
-                                action->updateMouseAxis(static_cast<float>(event.motion.yrel));
-                            }
-                        }
-                    }
-                }
-                break;
-            }
-
-            case SDL_MOUSEWHEEL: {
-                if (action->getType() == InputType::MouseAxis) {
-                    for (const auto& binding : action->getBindings()) {
-                        if (!binding.isKeyboard && binding.mouseAxis == MouseAxisType::ScrollWheel) {
-                            action->updateMouseAxis(static_cast<float>(event.wheel.y));
-                        }
-                    }
-                }
-                break;
-            }
+            break;
+        }
         }
     }
 
@@ -137,11 +137,12 @@ private:
                 float value = binding.isPositive ? 1.0f : -1.0f;
                 if (binding.axis == 0) {
                     vector.x += value;
-                } else {
+                }
+                else {
                     vector.y += value;
                 }
             }
         }
         action->updateVector(vector);
     }
-}; 
+};

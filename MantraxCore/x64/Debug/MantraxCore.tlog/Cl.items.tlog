@@ -1,4 +1,5 @@
 C:\Users\tupap\source\repos\MantraxEngine\src\components\AudioSource.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\AudioSource.obj
+C:\Users\tupap\source\repos\MantraxEngine\src\components\DLLLoader.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\DLLLoader.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\GameObject.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\components\LightComponent.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\LightComponent.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\components\ModelScene.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\ModelScene.obj
@@ -9,7 +10,6 @@ C:\Users\tupap\source\repos\MantraxEngine\src\components\TestScene.cpp;C:\Users\
 C:\Users\tupap\source\repos\MantraxEngine\src\components\TexturedScene.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\TexturedScene.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\components\EventSystem.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\EventSystem.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\core\AudioManager.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\AudioManager.obj
-C:\Users\tupap\source\repos\MantraxEngine\src\core\CoreWrapper.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\CoreWrapper.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\core\FileSystem.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\FileSystem.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\core\InputConfigLoader.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\InputConfigLoader.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\core\PhysicsEventHandler.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\PhysicsEventHandler.obj

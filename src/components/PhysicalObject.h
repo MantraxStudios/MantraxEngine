@@ -62,6 +62,10 @@ private:
     physx::PxU32 currentLayer;      // Word0: What type of object this is
     physx::PxU32 currentLayerMask;  // Word1: What this object can collide with
 
+    // C# Bridge methods for physics events
+    bool csharpBridgeEnabled = false;
+    std::string csharpObjectName = "Unknown";
+
 public:
     PhysicalObject(GameObject* obj);
     ~PhysicalObject();
@@ -195,4 +199,10 @@ public:
     physx::PxShape* getColliderReference() const { return colliderReference; }
     void updateColliderFromReference();
     void updateReferenceFromCollider();
+    
+    // C# Bridge methods for physics events
+    void enableCSharpBridge(bool enable) { csharpBridgeEnabled = enable; }
+    bool isCSharpBridgeEnabled() const { return csharpBridgeEnabled; }
+    void setCSharpObjectName(const std::string& name) { csharpObjectName = name; }
+    std::string getCSharpObjectName() const { return csharpObjectName; }
 }; 

@@ -65,7 +65,8 @@ struct MANTRAXCORE_API InputBinding {
 class MANTRAXCORE_API InputAction {
 public:
     InputAction(const std::string& name, InputType type)
-        : name(name), type(type), value(0.0f), vector(0.0f), mouseDelta(0.0f) {}
+        : name(name), type(type), value(0.0f), vector(0.0f), mouseDelta(0.0f) {
+    }
 
     void addKeyBinding(SDL_Keycode key, bool isPositive = true, int axis = 0) {
         bindings.push_back(InputBinding::ForKeyboard(key, isPositive, axis));
@@ -136,4 +137,4 @@ private:
     std::function<void(float)> valueCallback;
     std::function<void(const glm::vec2&)> vector2DCallback;
     std::function<void(float)> mouseAxisCallback;
-}; 
+};

@@ -39,6 +39,7 @@
 #include <exception>
 #include "Windows/RenderWindows.h"
 #include "core/InputConfigLoader.h"
+#include "components/DLLLoader.h"
 
 // ==== ImGui ====
 #include <imgui/imgui.h>
@@ -56,6 +57,9 @@ void signalHandler(int signal) {
 
 void setupInputSystem(Scene* activeScene) {
     InputConfigLoader::loadInputConfigFromJSON();
+    
+    // Initialize DLL Loader for C# bridge
+    DLLLoader::Inyection();
     
     auto& inputSystem = InputSystem::getInstance();
     
@@ -157,6 +161,19 @@ void setupInputSystem(Scene* activeScene) {
             }
         });
     }
+    
+    // Additional input actions for C# PlayerController
+    auto jumpAction = inputSystem.registerAction("Jump", InputType::Button);
+    jumpAction->addKeyBinding(SDLK_SPACE);
+    
+    auto fireAction = inputSystem.registerAction("Fire", InputType::Button);
+    fireAction->addKeyBinding(SDLK_LCTRL);
+    
+    auto reloadAction = inputSystem.registerAction("Reload", InputType::Button);
+    reloadAction->addKeyBinding(SDLK_r);
+    
+    auto interactAction = inputSystem.registerAction("Interact", InputType::Button);
+    interactAction->addKeyBinding(SDLK_e);
 }
 
 int main() {
@@ -276,6 +293,9 @@ int main() {
 
     // Event handling
     SDL_Event event;
+
+    DLLLoader::Inyection();
+
 
     while (g_running) {
         Time::update();

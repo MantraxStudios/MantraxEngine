@@ -49,6 +49,9 @@
     <Filter Include="Vendors\MPhysics">
       <UniqueIdentifier>{e33f40e8-66cb-4978-8263-fa85c0041b01}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01_Natives\WrapperAndLoader">
+      <UniqueIdentifier>{f74021d3-cbd6-4f1d-8444-a4587d2f421c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\main\MantraxEngine.cpp">
@@ -105,9 +108,6 @@
     <ClCompile Include="..\src\components\TestScene.cpp">
       <Filter>02_Scene\Scenes</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\core\CoreWrapper.cpp">
-      <Filter>00_Mains</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\ui\UIElement.cpp">
       <Filter>03_UI\Elements</Filter>
     </ClCompile>
@@ -161,6 +161,9 @@
     </ClCompile>
     <ClCompile Include="..\src\core\PhysicsEventHandler.cpp">
       <Filter>01_Natives\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\components\DLLLoader.cpp">
+      <Filter>01_Natives\WrapperAndLoader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -234,9 +237,6 @@
       <Filter>01_Natives\Components</Filter>
     </ClInclude>
     <ClInclude Include="..\vendors\includes\stb_image.h" />
-    <ClInclude Include="..\src\core\CoreWrapper.h">
-      <Filter>00_Mains</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\ui\UIElement.h">
       <Filter>03_UI\Elements</Filter>
     </ClInclude>
@@ -317,6 +317,9 @@
     </ClInclude>
     <ClInclude Include="..\src\core\PhysicsEventCallback.h">
       <Filter>01_Natives\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\components\DLLLoader.h">
+      <Filter>01_Natives\WrapperAndLoader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
