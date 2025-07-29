@@ -1,5 +1,7 @@
 #include "PhysicsEventCallback.h"
 #include "../components/SceneManager.h"
+#include "../components/ScriptExecutor.h"
+#include "../components/PhysicalObject.h"
 
     // PxSimulationEventCallback virtual methods
     void PhysicsEventCallback::onConstraintBreak(physx::PxConstraintInfo* constraints, physx::PxU32 count) {
@@ -73,15 +75,54 @@
 
             TriggerEvent event;
 
-            // CORRECCIÓN: Usar == en lugar de &
+            // CORRECCIÃ“N: Usar == en lugar de &
             if (pair.status == physx::PxPairFlag::eNOTIFY_TOUCH_FOUND) {
                 event.type = TriggerEvent::ENTER;
                 std::cout << "  Event Type: ENTER" << std::endl;
-                SceneManager::getInstance().setActiveScene("ModelScene");
+                
+                // Find ScriptExecutor components and call OnTriggerEnter
+                PhysicalObject* triggerPhysical = eventHandler->getPhysicalObject(pair.triggerActor);
+                PhysicalObject* otherPhysical = eventHandler->getPhysicalObject(pair.otherActor);
+                
+                if (triggerPhysical && otherPhysical) {
+                    GameObject* triggerObject = triggerPhysical->getOwner();
+                    GameObject* otherObject = otherPhysical->getOwner();
+                    
+                    if (triggerObject && otherObject) {
+                        // Find all ScriptExecutor components on the trigger object
+                        auto scriptExecutors = triggerObject->getAllComponents();
+                        for (const auto* comp : scriptExecutors) {
+                            if (const ScriptExecutor* scriptExec = dynamic_cast<const ScriptExecutor*>(comp)) {
+                                // Call OnTriggerEnter on the script
+                                const_cast<ScriptExecutor*>(scriptExec)->onTriggerEnter(otherObject);
+                            }
+                        }
+                    }
+                }
             }
             else if (pair.status == physx::PxPairFlag::eNOTIFY_TOUCH_LOST) {
                 event.type = TriggerEvent::EXIT;
                 std::cout << "  Event Type: EXIT" << std::endl;
+                
+                // Find ScriptExecutor components and call OnTriggerExit
+                PhysicalObject* triggerPhysical = eventHandler->getPhysicalObject(pair.triggerActor);
+                PhysicalObject* otherPhysical = eventHandler->getPhysicalObject(pair.otherActor);
+                
+                if (triggerPhysical && otherPhysical) {
+                    GameObject* triggerObject = triggerPhysical->getOwner();
+                    GameObject* otherObject = otherPhysical->getOwner();
+                    
+                    if (triggerObject && otherObject) {
+                        // Find all ScriptExecutor components on the trigger object
+                        auto scriptExecutors = triggerObject->getAllComponents();
+                        for (const auto* comp : scriptExecutors) {
+                            if (const ScriptExecutor* scriptExec = dynamic_cast<const ScriptExecutor*>(comp)) {
+                                // Call OnTriggerExit on the script
+                                const_cast<ScriptExecutor*>(scriptExec)->onTriggerExit(otherObject);
+                            }
+                        }
+                    }
+                }
             }
             else {
                 // Para debug, imprimir el valor real

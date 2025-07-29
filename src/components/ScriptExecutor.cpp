@@ -6,7 +6,7 @@ void ScriptExecutor::setOwner(GameObject* owner) {
 }
 
 void ScriptExecutor::start() {
-    // Abrimos librer�as de Lua
+    // Abrimos librerías de Lua
     lua.open_libraries(sol::lib::base, sol::lib::math, sol::lib::table, sol::lib::string);
 
     lua["ThisObject"] = sol::make_object(lua.lua_state(), getOwner());
@@ -89,4 +89,42 @@ bool ScriptExecutor::hasFunction(const std::string& functionName) const {
     
     sol::function func = scriptTable[functionName];
     return func.valid();
+}
+
+void ScriptExecutor::onTriggerEnter(GameObject* other) {
+    if (!scriptTable.valid() || !other) {
+        return;
+    }
+
+    // Llamar a OnTriggerEnter() en Lua si existe
+    sol::function triggerEnterFunc = scriptTable["OnTriggerEnter"];
+    if (triggerEnterFunc.valid()) {
+        try {
+            triggerEnterFunc(other);
+            lastError.clear(); // Clear error if successful
+        }
+        catch (const sol::error& e) {
+            lastError = e.what();
+            std::cerr << "Error en OnTriggerEnter() del script " << luaPath << ": " << e.what() << std::endl;
+        }
+    }
+}
+
+void ScriptExecutor::onTriggerExit(GameObject* other) {
+    if (!scriptTable.valid() || !other) {
+        return;
+    }
+
+    // Llamar a OnTriggerExit() en Lua si existe
+    sol::function triggerExitFunc = scriptTable["OnTriggerExit"];
+    if (triggerExitFunc.valid()) {
+        try {
+            triggerExitFunc(other);
+            lastError.clear(); // Clear error if successful
+        }
+        catch (const sol::error& e) {
+            lastError = e.what();
+            std::cerr << "Error en OnTriggerExit() del script " << luaPath << ": " << e.what() << std::endl;
+        }
+    }
 }
