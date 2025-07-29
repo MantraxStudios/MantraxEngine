@@ -20,8 +20,6 @@ public:
     Scene* getActiveScene() { return activeScene; }
     Scene* getScene(const std::string& sceneName);
 
-    static void ChangeScene(const std::string& sceneName);
-    
     void update(float deltaTime);
     void setupRenderPipeline(RenderPipeline& pipeline);
     void setRenderPipeline(RenderPipeline* pipeline) { renderPipeline = pipeline; }

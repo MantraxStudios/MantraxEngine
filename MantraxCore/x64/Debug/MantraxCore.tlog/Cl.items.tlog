@@ -1,5 +1,4 @@
 C:\Users\tupap\source\repos\MantraxEngine\src\components\AudioSource.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\AudioSource.obj
-C:\Users\tupap\source\repos\MantraxEngine\src\components\DLLLoader.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\DLLLoader.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\components\GameObject.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\GameObject.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\components\LightComponent.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\LightComponent.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\components\ModelScene.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\ModelScene.obj
@@ -13,6 +12,7 @@ C:\Users\tupap\source\repos\MantraxEngine\src\components\EventSystem.cpp;C:\User
 C:\Users\tupap\source\repos\MantraxEngine\src\core\AudioManager.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\AudioManager.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\core\FileSystem.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\FileSystem.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\core\InputConfigLoader.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\InputConfigLoader.obj
+C:\Users\tupap\source\repos\MantraxEngine\src\core\PhysicsEventCallback.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\PhysicsEventCallback.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\core\PhysicsEventHandler.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\PhysicsEventHandler.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\core\PhysicsManager.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\PhysicsManager.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\core\UIDGenerator.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\UIDGenerator.obj
@@ -36,3 +36,4 @@ C:\Users\tupap\source\repos\MantraxEngine\src\ui\Image.cpp;C:\Users\tupap\source
 C:\Users\tupap\source\repos\MantraxEngine\src\ui\Canvas.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\Canvas.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\ui\UIDemo.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\UIDemo.obj
 C:\Users\tupap\source\repos\MantraxEngine\src\ui\UIManager.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\UIManager.obj
+C:\Users\tupap\source\repos\MantraxEngine\src\wrapper\CoreWrapper.cpp;C:\Users\tupap\source\repos\MantraxEngine\MantraxCore\x64\Debug\CoreWrapper.obj

@@ -530,3 +530,8 @@ glm::vec3 GameObject::getWorldBoundingBoxMin() const {
 glm::vec3 GameObject::getWorldBoundingBoxMax() const {
     return getWorldBoundingBox().max;
 }
+
+
+GameObject* GameObject::getSelfObject() {
+    return this;
+}

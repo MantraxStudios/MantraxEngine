@@ -46,14 +46,9 @@
 #include <imgui/imgui_impl_opengl3.h>
 #include "Windows/Selection.h"
 
-#include "components/DLLLoader.h"
-#include "components/GameBehaviourFactory.h"
 
 // Variable global para manejo seguro del cierre
 volatile bool g_running = true;
-
-GameBehaviourFactory* factory_behaviour = new GameBehaviourFactory();
-DLLLoader* loader_dll = new DLLLoader();
 
 void signalHandler(int signal) {
     std::cout << "\nSeal de cierre recibida (" << signal << "). Cerrando de forma segura..." << std::endl;
@@ -127,7 +122,7 @@ void setupInputSystem(Scene* activeScene) {
             if (pressed) {
                 Selection::GameObjectSelect = nullptr;
                 auto& sceneManager = SceneManager::getInstance();
-                sceneManager.setActiveScene("TestScene");
+                //sceneManager.setActiveScene("TestScene");
             }
         });
     }
@@ -149,7 +144,7 @@ void setupInputSystem(Scene* activeScene) {
             if (pressed) {
                 Selection::GameObjectSelect = nullptr;
                 auto& sceneManager = SceneManager::getInstance();
-                SceneManager::ChangeScene("ModelScene");
+                sceneManager.setActiveScene("ModelScene");
             }
         });
     }
@@ -164,19 +159,6 @@ void setupInputSystem(Scene* activeScene) {
             }
         });
     }
-    
-    // Additional input actions for C# PlayerController
-    auto jumpAction = inputSystem.registerAction("Jump", InputType::Button);
-    jumpAction->addKeyBinding(SDLK_SPACE);
-    
-    auto fireAction = inputSystem.registerAction("Fire", InputType::Button);
-    fireAction->addKeyBinding(SDLK_LCTRL);
-    
-    auto reloadAction = inputSystem.registerAction("Reload", InputType::Button);
-    reloadAction->addKeyBinding(SDLK_r);
-    
-    auto interactAction = inputSystem.registerAction("Interact", InputType::Button);
-    interactAction->addKeyBinding(SDLK_e);
 }
 
 int main() {
@@ -296,9 +278,6 @@ int main() {
 
     // Event handling
     SDL_Event event;
-
-    loader_dll->create();
-    loader_dll->load_components("");
 
     while (g_running) {
         Time::update();

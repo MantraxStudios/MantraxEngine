@@ -67,6 +67,7 @@ public:
     // Permitir movimiento
     GameObject(GameObject&&) noexcept = default;
     GameObject& operator=(GameObject&&) noexcept = default;
+    GameObject* getSelfObject();
 
     // Destructor virtual para asegurar la correcta destrucción de clases derivadas
     virtual ~GameObject();

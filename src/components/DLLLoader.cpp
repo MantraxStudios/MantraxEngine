@@ -1,7 +1,8 @@
-#include "SceneManager.h"
 #include "DLLLoader.h"
 #include "GameBehaviourFactory.h"
 #include <stdexcept>
+#include "SceneManager.h"
+#include "../wrapper/CoreWrapper.h"
 
 DLLLoader* DLLLoader::instance = nullptr;
 
@@ -120,8 +121,45 @@ void DLLLoader::load_components(const std::string& _path)
 
         EngineWrapperLoad([](const char* sceneNameCStr) {
             std::string sceneName(sceneNameCStr);
-            SceneManager::ChangeScene(sceneName);
-            });
+            CoreWrapper::ChangeScene(sceneName);
+        });
+
+        // Load Input System Wrapper Functions
+        typedef void (*LoadInputWrapper)(
+            InputAction* (*registerAction)(const char*, int),
+            void (*addKeyBinding)(const char*, int, bool, int),
+            void (*addMouseButtonBinding)(const char*, int),
+            void (*addMouseAxisBinding)(const char*, int),
+            bool (*getButton)(const char*),
+            float (*getValue)(const char*),
+            void (*getVector2D)(const char*, float*, float*),
+            float (*getMouseAxis)(const char*),
+            void (*bindButtonCallback)(const char*, void (*)(bool)),
+            void (*bindValueCallback)(const char*, void (*)(float)),
+            void (*bindVector2DCallback)(const char*, void (*)(float, float)),
+            void (*bindMouseAxisCallback)(const char*, void (*)(float))
+        );
+
+        auto InputWrapperLoad = loader->get_function<LoadInputWrapper>("LoadInputWrapper");
+        if (InputWrapperLoad) {
+            InputWrapperLoad(
+                CoreWrapper::RegisterInputAction,
+                CoreWrapper::AddKeyBinding,
+                CoreWrapper::AddMouseButtonBinding,
+                CoreWrapper::AddMouseAxisBinding,
+                CoreWrapper::GetInputActionButton,
+                CoreWrapper::GetInputActionValue,
+                CoreWrapper::GetInputActionVector2D,
+                CoreWrapper::GetInputActionMouseAxis,
+                CoreWrapper::BindButtonCallback,
+                CoreWrapper::BindValueCallback,
+                CoreWrapper::BindVector2DCallback,
+                CoreWrapper::BindMouseAxisCallback
+            );
+            std::cout << "Input System Wrapper Installed In DLL Successfully" << std::endl;
+        } else {
+            std::cout << "Input System Wrapper not found in DLL (optional)" << std::endl;
+        }
     }
     catch (const std::exception& e)
     {

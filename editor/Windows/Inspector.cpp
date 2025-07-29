@@ -11,6 +11,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <cstring>
 #include <iostream>
+#include <filesystem>
 
 // Helper function to calculate collision mask from checkboxes
 CollisionMask CalculateCollisionMask(bool staticObj, bool dynamicObj, bool trigger, bool player, bool enemy, bool projectile, bool sensor) {
@@ -1064,88 +1065,7 @@ void Inspector::RenderGameObjectInspector(GameObject* go) {
         bool treeNodeOpen = ImGui::TreeNodeEx("[Script Executor]", ImGuiTreeNodeFlags_DefaultOpen);
 
         if (treeNodeOpen) {
-            // Botón de opciones alineado a la derecha pero dentro de la ventana
-            float windowWidth = ImGui::GetContentRegionAvail().x;
-            ImGui::SameLine(windowWidth - 35);
-            if (ImGui::Button(" ... ##ScriptExecutor", ImVec2(30, 0))) {
-                ImGui::OpenPopup("ScriptExecutorOptions");
-            }
-
-            // Popup de opciones
-            if (ImGui::BeginPopup("ScriptExecutorOptions")) {
-                if (ImGui::MenuItem("Remove Component")) {
-                    removeComponent = true;
-                }
-                if (ImGui::MenuItem("Copy Settings")) {
-                    // TODO: Implementar copia de configuración
-                }
-                ImGui::EndPopup();
-            }
-
-            if (!removeComponent && scriptExecutor != nullptr) {
-                // Enabled/Disabled
-                bool enabled = scriptExecutor->isActive();
-                if (ImGui::Checkbox("Enabled", &enabled)) {
-                    if (enabled) {
-                        scriptExecutor->enable();
-                    }
-                    else {
-                        scriptExecutor->disable();
-                    }
-                }
-
-                ImGui::Separator();
-                ImGui::Text("Script Properties");
-
-                // Script Class Name
-                ImGui::Text("Script Class: %s", scriptExecutor->scriptClassName.c_str());
-                if (ImGui::Button("Select Script Class")) {
-                    ImGui::OpenPopup("ScriptClassSelector");
-                }
-                if (ImGui::IsItemHovered()) {
-                    ImGui::SetTooltip("Click to select a script class from available options");
-                }
-
-                // Script Class Selection Popup
-                if (ImGui::BeginPopup("ScriptClassSelector")) {
-                    ImGui::Text("Available Script Classes:");
-                    ImGui::Separator();
-                    
-                    // Get available script classes from factory
-                    try {
-                        auto& factory = GameBehaviourFactory::instance();
-                        auto availableClasses = factory.get_registered_class_names();
-                        
-                        if (availableClasses.empty()) {
-                            ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "No script classes available");
-                            ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "Register script classes to see them here");
-                        } else {
-                            for (const auto& className : availableClasses) {
-                                bool isSelected = (className == scriptExecutor->scriptClassName);
-                                if (ImGui::Selectable(className.c_str(), isSelected)) {
-                                    scriptExecutor->scriptClassName = className;
-                                    ImGui::CloseCurrentPopup();
-                                }
-                            }
-                        }
-                    } catch (const std::exception& e) {
-                        ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "Error loading script classes");
-                        ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "Using fallback classes");
-                        
-                        // Fallback to hardcoded classes if factory fails
-                        const char* fallbackClasses[] = {"FirstScript", "PlayerController", "TestScript"};
-                        for (int i = 0; i < 3; i++) {
-                            bool isSelected = (std::string(fallbackClasses[i]) == scriptExecutor->scriptClassName);
-                            if (ImGui::Selectable(fallbackClasses[i], isSelected)) {
-                                scriptExecutor->scriptClassName = std::string(fallbackClasses[i]);
-                                ImGui::CloseCurrentPopup();
-                            }
-                        }
-                    }
-                    
-                    ImGui::EndPopup();
-                }
-            }
+            
             ImGui::TreePop();
         }
         if (removeComponent) {
