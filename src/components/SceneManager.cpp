@@ -71,10 +71,12 @@ void SceneManager::setActiveScene(const std::string& sceneName) {
         throw std::runtime_error("Scene '" + sceneName + "' not found");
     }
 
+
     // Only change if it's a different scene
     if (activeScene != it->second.get()) {
         // Cleanup the current scene if it exists
         if (activeScene) {
+            std::cout << "Loading Scene: " << sceneName << std::endl;
             activeScene->cleanup();
         }
         
@@ -166,3 +168,23 @@ void SceneManager::initializeAllScenes() {
     
     std::cout << "RenderPipeline set for all scenes, active scene initialized" << std::endl;
 } 
+
+void SceneManager::ChangeScene(const std::string& sceneName) {
+    std::cout << "Try Change Scene " << sceneName << std::endl;
+
+    auto& sceneManager = SceneManager::getInstance();
+
+    // Listar todas las escenas disponibles
+    std::cout << "Escenas registradas: ";
+    if (sceneManager.scenes.empty()) {
+        std::cout << "(ninguna)";
+    }
+    else {
+        for (const auto& kv : sceneManager.scenes) {
+            std::cout << kv.first << " ";
+        }
+    }
+    std::cout << std::endl;
+
+    sceneManager.setActiveScene(sceneName);
+}

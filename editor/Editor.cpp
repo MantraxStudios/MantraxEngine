@@ -149,7 +149,7 @@ void setupInputSystem(Scene* activeScene) {
             if (pressed) {
                 Selection::GameObjectSelect = nullptr;
                 auto& sceneManager = SceneManager::getInstance();
-                sceneManager.setActiveScene("ModelScene");
+                SceneManager::ChangeScene("ModelScene");
             }
         });
     }
@@ -297,8 +297,8 @@ int main() {
     // Event handling
     SDL_Event event;
 
-    //loader_dll->create();
-    //loader_dll->load_components("");
+    loader_dll->create();
+    loader_dll->load_components("");
 
     while (g_running) {
         Time::update();

@@ -1,12 +1,12 @@
 #include "Inspector.h"
-#include "components/SceneManager.h"
-#include "components/GameObject.h"
-#include "components/LightComponent.h"
-#include "components/PhysicalObject.h"
-#include "components/ScriptExecutor.h"
-#include "components/GameBehaviourFactory.h"
-#include "core/PhysicsManager.h"
-#include "render/RenderConfig.h"
+#include "../../src/components/SceneManager.h"
+#include "../../src/components/GameObject.h"
+#include "../../src/components/LightComponent.h"
+#include "../../src/components/PhysicalObject.h"
+#include "../../src/components/ScriptExecutor.h"
+#include "../../src/components/GameBehaviourFactory.h"
+#include "../../src/core/PhysicsManager.h"
+#include "../../src/render/RenderConfig.h"
 #include "Selection.h"
 #include <glm/gtc/type_ptr.hpp>
 #include <cstring>
@@ -1076,9 +1076,6 @@ void Inspector::RenderGameObjectInspector(GameObject* go) {
                 if (ImGui::MenuItem("Remove Component")) {
                     removeComponent = true;
                 }
-                if (ImGui::MenuItem("Reset")) {
-                    scriptExecutor->resetToDefaults();
-                }
                 if (ImGui::MenuItem("Copy Settings")) {
                     // TODO: Implementar copia de configuración
                 }
@@ -1101,48 +1098,52 @@ void Inspector::RenderGameObjectInspector(GameObject* go) {
                 ImGui::Text("Script Properties");
 
                 // Script Class Name
-                std::string currentScriptName = scriptExecutor->getScriptClassName();
-                char scriptClassNameBuffer[256] = "";
-                strncpy_s(scriptClassNameBuffer, sizeof(scriptClassNameBuffer), currentScriptName.c_str(), _TRUNCATE);
-                
-                if (ImGui::InputText("Script Class Name", scriptClassNameBuffer, sizeof(scriptClassNameBuffer))) {
-                    scriptExecutor->setScriptClassName(std::string(scriptClassNameBuffer));
+                ImGui::Text("Script Class: %s", scriptExecutor->scriptClassName.c_str());
+                if (ImGui::Button("Select Script Class")) {
+                    ImGui::OpenPopup("ScriptClassSelector");
                 }
                 if (ImGui::IsItemHovered()) {
-                    ImGui::SetTooltip("Name of the script class to load (must be registered in GameBehaviourFactory)");
+                    ImGui::SetTooltip("Click to select a script class from available options");
                 }
 
-                // Auto Start
-                bool autoStart = scriptExecutor->getAutoStart();
-                if (ImGui::Checkbox("Auto Start", &autoStart)) {
-                    scriptExecutor->setAutoStart(autoStart);
-                }
-                if (ImGui::IsItemHovered()) {
-                    ImGui::SetTooltip("Automatically load and start the script when the component starts");
-                }
-
-                ImGui::Separator();
-                ImGui::Text("Script Status");
-
-                // Show script status
-                if (scriptExecutor->hasScript()) {
-                    ImGui::TextColored(ImVec4(0.2f, 0.8f, 0.2f, 1.0f), "✓ Script Loaded");
-                    ImGui::Text("Script: %s", scriptExecutor->getScriptClassName().c_str());
-                }
-                else {
-                    ImGui::TextColored(ImVec4(0.8f, 0.2f, 0.2f, 1.0f), "✗ No Script Loaded");
-                }
-
-                ImGui::Separator();
-                ImGui::Text("Script Controls");
-
-                // Load/Unload buttons
-                if (ImGui::Button("Load Script")) {
-                    scriptExecutor->loadScript();
-                }
-                ImGui::SameLine();
-                if (ImGui::Button("Unload Script")) {
-                    scriptExecutor->unloadScript();
+                // Script Class Selection Popup
+                if (ImGui::BeginPopup("ScriptClassSelector")) {
+                    ImGui::Text("Available Script Classes:");
+                    ImGui::Separator();
+                    
+                    // Get available script classes from factory
+                    try {
+                        auto& factory = GameBehaviourFactory::instance();
+                        auto availableClasses = factory.get_registered_class_names();
+                        
+                        if (availableClasses.empty()) {
+                            ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "No script classes available");
+                            ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "Register script classes to see them here");
+                        } else {
+                            for (const auto& className : availableClasses) {
+                                bool isSelected = (className == scriptExecutor->scriptClassName);
+                                if (ImGui::Selectable(className.c_str(), isSelected)) {
+                                    scriptExecutor->scriptClassName = className;
+                                    ImGui::CloseCurrentPopup();
+                                }
+                            }
+                        }
+                    } catch (const std::exception& e) {
+                        ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "Error loading script classes");
+                        ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "Using fallback classes");
+                        
+                        // Fallback to hardcoded classes if factory fails
+                        const char* fallbackClasses[] = {"FirstScript", "PlayerController", "TestScript"};
+                        for (int i = 0; i < 3; i++) {
+                            bool isSelected = (std::string(fallbackClasses[i]) == scriptExecutor->scriptClassName);
+                            if (ImGui::Selectable(fallbackClasses[i], isSelected)) {
+                                scriptExecutor->scriptClassName = std::string(fallbackClasses[i]);
+                                ImGui::CloseCurrentPopup();
+                            }
+                        }
+                    }
+                    
+                    ImGui::EndPopup();
                 }
             }
             ImGui::TreePop();

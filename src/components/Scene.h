@@ -21,9 +21,6 @@ public:
     void updateNative(float deltaTime);
     virtual void cleanup() {
         // Delete all game objects
-        for (auto* obj : gameObjects) {
-            delete obj;
-        }
         gameObjects.clear();
         
         // Clear lights from RenderPipeline first

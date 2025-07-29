@@ -111,6 +111,17 @@ void DLLLoader::load_components(const std::string& _path)
         }
 
         func_graphics(&SceneManager::getInstance());
+
+
+        typedef void (*LoadScene)(const char*);
+        typedef void (*LoadEngineWrapper)(LoadScene);
+
+        auto EngineWrapperLoad = loader->get_function<LoadEngineWrapper>("LoadEngineWrapper");
+
+        EngineWrapperLoad([](const char* sceneNameCStr) {
+            std::string sceneName(sceneNameCStr);
+            SceneManager::ChangeScene(sceneName);
+            });
     }
     catch (const std::exception& e)
     {

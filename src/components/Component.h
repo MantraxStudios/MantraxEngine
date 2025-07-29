@@ -5,7 +5,7 @@ class GameObject;
 
 class MANTRAXCORE_API Component {
 public:
-    virtual ~Component() { destroy(); }
+    ~Component() { destroy(); }
     virtual void start() {}
     virtual void update() {}
 
