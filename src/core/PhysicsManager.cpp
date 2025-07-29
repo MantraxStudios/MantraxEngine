@@ -90,17 +90,30 @@ PhysicsManager::PhysicsManager()
 
 PhysicsManager::~PhysicsManager()
 {
+    std::cout << "PhysicsManager: Starting destruction..." << std::endl;
+    
+    // Clear event handler first to prevent any callbacks during cleanup
+    if (eventHandler) {
+        std::cout << "PhysicsManager: Clearing event handler..." << std::endl;
+        eventHandler->clear();
+    }
+    
     cleanup();
+    
     if (eventCallback)
     {
+        std::cout << "PhysicsManager: Deleting event callback..." << std::endl;
         delete eventCallback;
         eventCallback = nullptr;
     }
     if (eventHandler)
     {
+        std::cout << "PhysicsManager: Deleting event handler..." << std::endl;
         delete eventHandler;
         eventHandler = nullptr;
     }
+    
+    std::cout << "PhysicsManager: Destruction completed." << std::endl;
 }
 
 PhysicsManager &PhysicsManager::getInstance()
@@ -319,23 +332,30 @@ void PhysicsManager::cleanup()
     // Disconnect PVD
     disconnectPVD();
 
-    if (scene)
-    {
-        scene->release();
-        scene = nullptr;
-    }
+    // IMPORTANT: Release controller manager BEFORE the scene
+    // This is the correct order according to PhysX documentation
     if (controllerManager)
     {
+        std::cout << "Releasing controller manager..." << std::endl;
         controllerManager->release();
         controllerManager = nullptr;
     }
+
+    if (scene)
+    {
+        std::cout << "Releasing scene..." << std::endl;
+        scene->release();
+        scene = nullptr;
+    }
     if (cpuDispatcher)
     {
+        std::cout << "Releasing CPU dispatcher..." << std::endl;
         cpuDispatcher->release();
         cpuDispatcher = nullptr;
     }
     if (physics)
     {
+        std::cout << "Releasing physics..." << std::endl;
         physics->release();
         physics = nullptr;
     }
@@ -343,20 +363,25 @@ void PhysicsManager::cleanup()
     // Cleanup PVD objects
     if (pvdTransport)
     {
+        std::cout << "Releasing PVD transport..." << std::endl;
         pvdTransport->release();
         pvdTransport = nullptr;
     }
     if (pvd)
     {
+        std::cout << "Releasing PVD..." << std::endl;
         pvd->release();
         pvd = nullptr;
     }
 
     if (foundation)
     {
+        std::cout << "Releasing foundation..." << std::endl;
         foundation->release();
         foundation = nullptr;
     }
+
+    std::cout << "PhysicsManager cleanup completed successfully." << std::endl;
 }
 
 physx::PxMaterial *PhysicsManager::createMaterial(float staticFriction, float dynamicFriction, float restitution)
@@ -760,4 +785,37 @@ void PhysicsManager::debugTriggerSetup(physx::PxActor *actor, bool isTrigger)
     }
 
     std::cout << "==========================" << std::endl;
+}
+
+void PhysicsManager::forceCleanupAllObjects()
+{
+    std::cout << "PhysicsManager: Force cleaning up all objects..." << std::endl;
+    
+    // Clear event handler to prevent any callbacks during cleanup
+    if (eventHandler) {
+        eventHandler->clear();
+    }
+    
+    // Remove all actors from the scene
+    if (scene) {
+        std::cout << "PhysicsManager: Removing all actors from scene..." << std::endl;
+        
+        // Get all actors in the scene
+        physx::PxU32 nbActors = scene->getNbActors(physx::PxActorTypeFlag::eRIGID_DYNAMIC | physx::PxActorTypeFlag::eRIGID_STATIC);
+        if (nbActors > 0) {
+            std::vector<physx::PxRigidActor*> actors(nbActors);
+            scene->getActors(physx::PxActorTypeFlag::eRIGID_DYNAMIC | physx::PxActorTypeFlag::eRIGID_STATIC, 
+                           reinterpret_cast<physx::PxActor**>(actors.data()), nbActors);
+            
+            // Remove each actor
+            for (physx::PxU32 i = 0; i < nbActors; i++) {
+                if (actors[i]) {
+                    std::cout << "PhysicsManager: Removing actor " << i << " from scene..." << std::endl;
+                    scene->removeActor(*actors[i]);
+                }
+            }
+        }
+    }
+    
+    std::cout << "PhysicsManager: Force cleanup completed." << std::endl;
 }

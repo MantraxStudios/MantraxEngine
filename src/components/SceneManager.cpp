@@ -30,8 +30,29 @@ bool SceneManager::initializePhysics() {
 
 void SceneManager::cleanupPhysics() {
     if (physicsInitialized) {
+        std::cout << "SceneManager: Starting physics cleanup..." << std::endl;
+        
+        // First, cleanup all scenes to destroy all PhysicalObjects
+        for (auto& scenePair : scenes) {
+            if (scenePair.second) {
+                std::cout << "SceneManager: Cleaning up scene: " << scenePair.first << std::endl;
+                scenePair.second->cleanup();
+            }
+        }
+        
+        // Clear the active scene reference
+        activeScene = nullptr;
+        
+        // Force cleanup all remaining physics objects
+        std::cout << "SceneManager: Force cleaning up all physics objects..." << std::endl;
+        PhysicsManager::getInstance().forceCleanupAllObjects();
+        
+        // Now cleanup the PhysicsManager
+        std::cout << "SceneManager: Cleaning up PhysicsManager..." << std::endl;
         PhysicsManager::getInstance().cleanup();
         physicsInitialized = false;
+        
+        std::cout << "SceneManager: Physics cleanup completed." << std::endl;
     }
 }
 

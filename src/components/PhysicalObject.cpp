@@ -283,22 +283,48 @@ void PhysicalObject::update() {
 }
 
 void PhysicalObject::destroy() {
+    std::cout << "PhysicalObject: Starting cleanup..." << std::endl;
+    
     auto& physicsManager = PhysicsManager::getInstance();
     
+    // Unregister from event handler first
+    if (rigidActor) {
+        PhysicsEventHandler* eventHandler = physicsManager.getEventHandler();
+        if (eventHandler) {
+            eventHandler->unregisterTriggerCallback(rigidActor);
+            eventHandler->unregisterContactCallback(rigidActor);
+            eventHandler->unregisterPhysicalObject(rigidActor);
+        }
+    }
+    
+    // Remove from scene and release actor
     if (rigidActor && physicsManager.getPhysics()) {
+        std::cout << "PhysicalObject: Removing actor from scene..." << std::endl;
         physicsManager.removeActor(*rigidActor);
+        
+        std::cout << "PhysicalObject: Releasing rigid actor..." << std::endl;
         rigidActor->release();
         rigidActor = nullptr;
         dynamicActor = nullptr;
         staticActor = nullptr;
     }
     
+    // Release shape
     if (shape) {
+        std::cout << "PhysicalObject: Releasing shape..." << std::endl;
         shape->release();
         shape = nullptr;
     }
     
+    // Release material if we own it
+    if (material) {
+        // Note: We don't release material here as it might be shared
+        // The PhysicsManager will handle material cleanup
+        material = nullptr;
+    }
+    
     initialized = false;
+    std::cout << "PhysicalObject: Cleanup completed." << std::endl;
 }
 
 void PhysicalObject::createBody() {

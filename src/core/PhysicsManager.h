@@ -173,4 +173,10 @@ public:
     
     // Debug methods
     void debugTriggerSetup(physx::PxActor* actor, bool isTrigger);
+    
+    // Clear all data
+    void clear();
+    
+    // Force cleanup of all physics objects (call before destruction)
+    void forceCleanupAllObjects();
 }; 

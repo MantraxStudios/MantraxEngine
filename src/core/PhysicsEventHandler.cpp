@@ -51,6 +51,12 @@ void PhysicsEventHandler::registerPhysicalObject(physx::PxActor* actor, Physical
     }
 }
 
+void PhysicsEventHandler::unregisterPhysicalObject(physx::PxActor* actor) {
+    if (actor) {
+        actorToPhysicalObject.erase(actor);
+    }
+}
+
 PhysicalObject* PhysicsEventHandler::getPhysicalObject(physx::PxActor* actor) {
     auto it = actorToPhysicalObject.find(actor);
     return (it != actorToPhysicalObject.end()) ? it->second : nullptr;

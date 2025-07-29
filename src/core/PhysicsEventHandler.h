@@ -36,6 +36,7 @@ public:
     
     // Actor mapping
     void registerPhysicalObject(physx::PxActor* actor, PhysicalObject* physicalObject);
+    void unregisterPhysicalObject(physx::PxActor* actor);
     PhysicalObject* getPhysicalObject(physx::PxActor* actor);
     
     // Clear all data
