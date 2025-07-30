@@ -5,6 +5,8 @@
 
 namespace fs = std::filesystem;
 
+std::string FileSystem::projectPath;
+
 bool FileSystem::writeString(const std::string& filePath, const std::string& content) {
     try {
         if (!ensureDirectoryExists(filePath)) {
@@ -195,7 +197,7 @@ bool FileSystem::ensureDirectoryExists(const std::string& filePath) {
 std::string FileSystem::getProjectPath() {
     try {
         // Ruta por defecto del proyecto (SIN barra final)
-        std::string defaultProjectPath = "D:\\Proyects\\MantraxGame";
+        std::string defaultProjectPath = projectPath;
 
         // Verificar si la ruta existe
         if (std::filesystem::exists(defaultProjectPath)) {
@@ -210,7 +212,7 @@ std::string FileSystem::getProjectPath() {
     catch (const std::exception& e) {
         std::cerr << "Error getting project path: " << e.what() << std::endl;
         // Devolver ruta por defecto sin barra final
-        return "D:\\Proyects\\MantraxGame";
+        return "projects";
     }
 }
 
@@ -235,4 +237,8 @@ std::string FileSystem::normalizePath(const std::string& path) {
     }
 
     return normalized;
+}
+
+std::filesystem::path FileSystem::workDirectory() {
+    return std::filesystem::current_path();
 }

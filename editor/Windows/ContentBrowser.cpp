@@ -509,7 +509,7 @@ void ContentBrowser::OnRenderGUI() {
     // Inicializar la ruta si es necesario
     if (s_currentPath->empty()) {
         try {
-            std::string projectPath = "D:\\Proyects\\MantraxGame\\";
+            std::string projectPath = FileSystem::getProjectPath();
             // Remover barra final si existe
             if (!projectPath.empty() && (projectPath.back() == '\\' || projectPath.back() == '/')) {
                 projectPath.pop_back();

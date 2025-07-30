@@ -46,6 +46,8 @@
 #include <imgui/imgui_impl_sdl2.h>
 #include <imgui/imgui_impl_opengl3.h>
 #include "Windows/Selection.h"
+#include "Windows/ProjectHub.h"
+#include "SceneSaver.h"
 
 
 // Variable global para manejo seguro del cierre
@@ -58,10 +60,10 @@ void signalHandler(int signal) {
 
 void setupInputSystem(Scene* activeScene) {
     InputConfigLoader::loadInputConfigFromJSON();
-    
+
     // Initialize DLL Loader for C# bridge
     auto& inputSystem = InputSystem::getInstance();
-    
+
     auto moveAction = inputSystem.getAction("Move");
     if (moveAction) {
         moveAction->bindVector2DCallback([activeScene](const glm::vec2& movement) {
@@ -74,7 +76,7 @@ void setupInputSystem(Scene* activeScene) {
                     camera->moveRight(movement.x * speed * Time::getDeltaTime());
                 }
             }
-        });
+            });
     }
 
     auto verticalMoveAction = inputSystem.getAction("VerticalMove");
@@ -84,7 +86,7 @@ void setupInputSystem(Scene* activeScene) {
                 const float speed = 1.0f;
                 camera->moveUp(value * speed * Time::getDeltaTime());
             }
-        });
+            });
     }
 
     auto mouseLookX = inputSystem.getAction("MouseLookX");
@@ -94,7 +96,7 @@ void setupInputSystem(Scene* activeScene) {
                 const float sensitivity = 0.1f;
                 camera->rotate(delta * sensitivity, 0.0f);
             }
-        });
+            });
     }
 
     auto mouseLookY = inputSystem.getAction("MouseLookY");
@@ -104,7 +106,7 @@ void setupInputSystem(Scene* activeScene) {
                 const float sensitivity = 0.1f;
                 camera->rotate(0.0f, -delta * sensitivity);
             }
-        });
+            });
     }
 
     auto mouseWheel = inputSystem.getAction("MouseWheel");
@@ -114,7 +116,7 @@ void setupInputSystem(Scene* activeScene) {
                 const float zoomSpeed = 1.0f;
                 camera->moveForward(delta * zoomSpeed * Time::getDeltaTime());
             }
-        });
+            });
     }
 
     auto switchToScene1 = inputSystem.getAction("SwitchToScene1");
@@ -125,7 +127,7 @@ void setupInputSystem(Scene* activeScene) {
                 auto& sceneManager = SceneManager::getInstance();
                 //sceneManager.setActiveScene("TestScene");
             }
-        });
+            });
     }
 
     auto switchToScene2 = inputSystem.getAction("SwitchToScene2");
@@ -136,7 +138,7 @@ void setupInputSystem(Scene* activeScene) {
                 auto& sceneManager = SceneManager::getInstance();
                 sceneManager.setActiveScene("TexturedScene");
             }
-        });
+            });
     }
 
     auto switchToScene3 = inputSystem.getAction("SwitchToScene3");
@@ -147,7 +149,7 @@ void setupInputSystem(Scene* activeScene) {
                 auto& sceneManager = SceneManager::getInstance();
                 sceneManager.setActiveScene("ModelScene");
             }
-        });
+            });
     }
 
     auto switchToScene4 = inputSystem.getAction("SwitchToScene4");
@@ -158,7 +160,7 @@ void setupInputSystem(Scene* activeScene) {
                 auto& sceneManager = SceneManager::getInstance();
                 sceneManager.setActiveScene("Physics Test Scene");
             }
-        });
+            });
     }
 }
 
@@ -166,7 +168,9 @@ int main() {
     // Registrar manejador de senales para cierre seguro
     signal(SIGINT, signalHandler);
     signal(SIGTERM, signalHandler);
-    
+
+    ProjectHub hub("projects");
+
     // Initialize RenderConfig singleton
     RenderConfig::initialize(1200, 800, 65.0f);
     RenderConfig& config = RenderConfig::getInstance();
@@ -191,13 +195,11 @@ int main() {
     std::cout << "Using ImGui-based UI system (SDL_Renderer disabled)" << std::endl;
 
     DefaultShaders shaders;
-    
+
     // Initialize SceneManager and create scenes
     auto& sceneManager = SceneManager::getInstance();
-    
-    sceneManager.addScene(std::make_unique<TestScene>());
-    sceneManager.addScene(std::make_unique<TexturedScene>());
-    sceneManager.addScene(std::make_unique<ModelScene>());
+
+    SceneSaver::MakeNewScene("Empty Scene");
 
     // Get active scene (but don't check camera yet - scenes not initialized)
     Scene* activeScene = sceneManager.getActiveScene();
@@ -205,7 +207,7 @@ int main() {
         std::cerr << "Failed to get active scene from SceneManager" << std::endl;
         return -1;
     }
-    
+
     std::cout << "Active scene: " << activeScene->getName() << " (not initialized yet)" << std::endl;
 
     // Create a temporary camera for RenderPipeline initialization
@@ -217,32 +219,33 @@ int main() {
     RenderPipeline pipeline(tempCamera.get(), &shaders);
 
     EditorInfo::pipeline = &pipeline;
-    
+
     // Load materials from configuration file
     if (!pipeline.loadMaterialsFromConfig("config/materials_config.json")) {
         std::cerr << "Warning: Failed to load materials configurations" << std::endl;
-    } else {
+    }
+    else {
         std::cout << "Materials loaded successfully from configurations" << std::endl;
         pipeline.listMaterials();
     }
-    
+
     // Setup resource management for scenes
     sceneManager.setRenderPipeline(&pipeline);
-    
+
     // Initialize all scenes now that they have RenderPipeline access
     sceneManager.initializeAllScenes();
-    
+
     // Now check if active scene has camera and update pipeline
     std::cout << "After initialization - Active scene has camera: " << (activeScene->getCamera() ? "YES" : "NO") << std::endl;
-    
+
     if (!activeScene->getCamera()) {
         std::cerr << "Active scene '" << activeScene->getName() << "' has no camera after initialization" << std::endl;
         return -1;
     }
-    
+
     // Replace temporary camera with scene's camera
     pipeline.setCamera(activeScene->getCamera());
-    
+
     // Setup render pipeline with current scene objects
     sceneManager.setupRenderPipeline(pipeline);
 
@@ -342,10 +345,11 @@ int main() {
                     SDL_WarpMouseInWindow(window, windowWidth / 2, windowHeight / 2);
                 }
                 InputSystem::getInstance().processInput(event);
-            } else if (event.type != SDL_MOUSEMOTION && 
-                      event.type != SDL_MOUSEWHEEL && 
-                      event.type != SDL_MOUSEBUTTONDOWN && 
-                      event.type != SDL_MOUSEBUTTONUP) {
+            }
+            else if (event.type != SDL_MOUSEMOTION &&
+                event.type != SDL_MOUSEWHEEL &&
+                event.type != SDL_MOUSEBUTTONDOWN &&
+                event.type != SDL_MOUSEBUTTONUP) {
                 InputSystem::getInstance().processInput(event);
             }
         }
@@ -355,7 +359,7 @@ int main() {
 
         // Update scene
         sceneManager.update(Time::getDeltaTime());
-        
+
         // Update active scene pointer if it changed
         Scene* newActiveScene = sceneManager.getActiveScene();
         if (newActiveScene != activeScene) {
@@ -364,17 +368,17 @@ int main() {
                 activeScene->getCamera()->enableFramebuffer(false);
                 std::cout << "Framebuffer disabled for old scene: " << activeScene->getName() << std::endl;
             }
-            
+
             // Update active scene
             activeScene = newActiveScene;
-            
+
             // Update pipeline with new scene
             pipeline.setCamera(activeScene->getCamera());
             pipeline.clearGameObjects();
             pipeline.clearLights();
             sceneManager.setupRenderPipeline(pipeline);
             setupInputSystem(activeScene);
-            
+
             // Enable framebuffer for new camera
             if (activeScene->getCamera()) {
                 activeScene->getCamera()->enableFramebuffer(true);
@@ -386,66 +390,73 @@ int main() {
         // Render scene to framebuffer (for ImGui viewport) and to main window
         pipeline.renderFrame();
         //pipeline.renderToScreen();
-        
+
         // ==== ImGui Frame Begin ====
         ImGuiLoader::MakeFrame();
 
-        // Banner de inicio
-        if (showStartupBanner) {
-            // Inicializar tiempo de inicio si es la primera vez
-            if (bannerStartTime == 0.0f) {
-                bannerStartTime = Time::getTime();
-            }
-            
-            // Calcular tiempo transcurrido
-            float elapsedTime = Time::getTime() - bannerStartTime;
-            
-            // Si ha pasado el tiempo, ocultar el banner
-            if (elapsedTime >= bannerDuration) {
-                showStartupBanner = false;
-            } else {
-                // Configurar estilo para el banner
-                ImGui::SetNextWindowBgAlpha(0.9f);
-                ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x * 0.5f, ImGui::GetIO().DisplaySize.y * 0.3f), ImGuiCond_Always, ImVec2(0.5f, 0.5f));
-                ImGui::SetNextWindowSize(ImVec2(400, 200), ImGuiCond_Always);
-                
-                ImGui::Begin("MantraxEngine Banner", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar);
-                
-                // Centrar el texto
-                ImGui::SetCursorPosY(ImGui::GetWindowHeight() * 0.3f);
-                
-                // Título principal
-                ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[0]); // Usar la fuente más grande disponible
-                ImGui::SetCursorPosX((ImGui::GetWindowWidth() - ImGui::CalcTextSize("MANTRAX ENGINE").x) * 0.5f);
-                ImGui::TextColored(ImVec4(0.2f, 0.6f, 1.0f, 1.0f), "MANTRAX ENGINE");
-                ImGui::PopFont();
-                
-                // Subtítulo
-                ImGui::SetCursorPosY(ImGui::GetWindowHeight() * 0.6f);
-                ImGui::SetCursorPosX((ImGui::GetWindowWidth() - ImGui::CalcTextSize("Game Engine & Editor").x) * 0.5f);
-                ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.8f, 1.0f), "Game Engine & Editor");
-                
-                // Barra de progreso
-                ImGui::SetCursorPosY(ImGui::GetWindowHeight() * 0.8f);
-                ImGui::SetCursorPosX(50);
-                ImGui::ProgressBar(elapsedTime / bannerDuration, ImVec2(300, 20), "");
-                
-                ImGui::End();
-            }
+        if (EditorInfo::SelectedProjectPath.empty()) {
+            hub.render();
         }
 
-        //ImGui::Begin("Scene Info");
-        //ImGui::Text("Objects: %zu", SceneManager::getInstance().getActiveScene()->getGameObjects().size());
-        //ImGui::Text("Visible: %d/%d", pipeline.getVisibleObjectsCount(), pipeline.getTotalObjectsCount());
-        //ImGui::Text("Scene: %s", activeScene->getName().c_str());
-        //ImGui::Text("FPS: %.1f", Time::getFPS());
-        //ImGui::End();
+        if (!EditorInfo::SelectedProjectPath.empty()) {
+            // Banner de inicio
+            if (showStartupBanner) {
+                // Inicializar tiempo de inicio si es la primera vez
+                if (bannerStartTime == 0.0f) {
+                    bannerStartTime = Time::getTime();
+                }
 
-        RenderWindows::getInstance().RenderUI();
+                // Calcular tiempo transcurrido
+                float elapsedTime = Time::getTime() - bannerStartTime;
+
+                // Si ha pasado el tiempo, ocultar el banner
+                if (elapsedTime >= bannerDuration) {
+                    showStartupBanner = false;
+                }
+                else {
+                    // Configurar estilo para el banner
+                    ImGui::SetNextWindowBgAlpha(0.9f);
+                    ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x * 0.5f, ImGui::GetIO().DisplaySize.y * 0.3f), ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+                    ImGui::SetNextWindowSize(ImVec2(400, 200), ImGuiCond_Always);
+
+                    ImGui::Begin("MantraxEngine Banner", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar);
+
+                    // Centrar el texto
+                    ImGui::SetCursorPosY(ImGui::GetWindowHeight() * 0.3f);
+
+                    // Título principal
+                    ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[0]); // Usar la fuente más grande disponible
+                    ImGui::SetCursorPosX((ImGui::GetWindowWidth() - ImGui::CalcTextSize("MANTRAX ENGINE").x) * 0.5f);
+                    ImGui::TextColored(ImVec4(0.2f, 0.6f, 1.0f, 1.0f), "MANTRAX ENGINE");
+                    ImGui::PopFont();
+
+                    // Subtítulo
+                    ImGui::SetCursorPosY(ImGui::GetWindowHeight() * 0.6f);
+                    ImGui::SetCursorPosX((ImGui::GetWindowWidth() - ImGui::CalcTextSize("Game Engine & Editor").x) * 0.5f);
+                    ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.8f, 1.0f), "Game Engine & Editor");
+
+                    // Barra de progreso
+                    ImGui::SetCursorPosY(ImGui::GetWindowHeight() * 0.8f);
+                    ImGui::SetCursorPosX(50);
+                    ImGui::ProgressBar(elapsedTime / bannerDuration, ImVec2(300, 20), "");
+
+                    ImGui::End();
+                }
+            }
+
+            //ImGui::Begin("Scene Info");
+            //ImGui::Text("Objects: %zu", SceneManager::getInstance().getActiveScene()->getGameObjects().size());
+            //ImGui::Text("Visible: %d/%d", pipeline.getVisibleObjectsCount(), pipeline.getTotalObjectsCount());
+            //ImGui::Text("Scene: %s", activeScene->getName().c_str());
+            //ImGui::Text("FPS: %.1f", Time::getFPS());
+            //ImGui::End();
+
+            RenderWindows::getInstance().RenderUI();
+        }
 
         ImGuiLoader::SendToRender();
         SDL_GL_SwapWindow(window);
-        
+
         // Update title
         std::stringstream title;
         title << "MantraxEngine - " << std::fixed << std::setprecision(1) << Time::getFPS() << " FPS";
@@ -458,6 +469,6 @@ int main() {
     audioManager.destroy();
     ImGuiLoader::CleanEUI();
     RenderConfig::destroy();
-    
+
     return 0;
 }

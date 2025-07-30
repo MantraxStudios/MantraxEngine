@@ -7,6 +7,8 @@
 
 class MANTRAXCORE_API FileSystem {
 public:
+    static std::string projectPath;
+
     // Escritura de archivos
     static bool writeString(const std::string& filePath, const std::string& content);
     static bool writeLines(const std::string& filePath, const std::vector<std::string>& lines);
@@ -32,6 +34,7 @@ public:
     static std::string getAbsolutePath(const std::string& relativePath);
     static std::string getRelativePath(const std::string& absolutePath, const std::string& basePath);
     static std::string getProjectPath();
+    static std::filesystem::path workDirectory();
 
 private:
     static bool ensureDirectoryExists(const std::string& filePath);

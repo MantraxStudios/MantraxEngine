@@ -121,7 +121,7 @@ void Inspector::RenderGameObjectInspector(GameObject* go) {
         openModelPicker = true;
     }
 
-    ImGui::Text("Current: %s", go->getModelPath().c_str());
+    ImGui::Text("Currents : %s", go->getModelPath().c_str());
 
     // Llamar directamente al FileExplorer (sin popup adicional)
     if (openModelPicker) {

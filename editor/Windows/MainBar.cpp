@@ -18,36 +18,7 @@ void MainBar::OnRenderGUI() {
 	ImGui::BeginMainMenuBar();
 	if (ImGui::BeginMenu("File")) {
 		if (ImGui::MenuItem("New Empty Scene")) {
-			auto& sceneManager = SceneManager::getInstance();
-			Scene* newScene = new Scene("Empty Scene");
-			
-			// Crear una cámara por defecto
-			auto camera = std::make_unique<Camera>(65.0f, 1200.0f/800.0f, 0.1f, 1000.0f);
-			camera->setPosition(glm::vec3(0.0f, 5.0f, 10.0f));
-			camera->setTarget(glm::vec3(0.0f));
-			newScene->setCamera(std::move(camera));
-
-			// Configurar el RenderPipeline
-			if (auto currentScene = sceneManager.getActiveScene()) {
-				// Reusar el pipeline de la escena actual si existe
-				newScene->setRenderPipeline(currentScene->getRenderPipeline());
-			} else {
-				// Si no hay escena activa, crear un nuevo pipeline con shaders por defecto
-				std::unique_ptr<DefaultShaders> shaders = std::make_unique<DefaultShaders>();
-				RenderPipeline* pipeline = new RenderPipeline(newScene->getCamera(), shaders.get());
-				
-				// Cargar materiales desde la configuración
-				if (!pipeline->loadMaterialsFromConfig("config/materials_config.json")) {
-					std::cerr << "Warning: Failed to load materials configuration" << std::endl;
-				}
-				
-				newScene->setRenderPipeline(pipeline);
-			}
-
-			newScene->initialize();
-			newScene->setInitialized(true);
-			sceneManager.addScene(std::unique_ptr<Scene>(newScene));
-			sceneManager.setActiveScene("Empty Scene");
+			SceneSaver::MakeNewScene("New Scene");
 			std::cout << "Created new empty scene with RenderPipeline" << std::endl;
 		}
 

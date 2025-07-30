@@ -266,3 +266,35 @@ bool SceneSaver::LoadScene(const std::string& filepath) {
     std::cout << "Scene loaded successfully from: " << filepath << std::endl;
     return true;
 }
+
+
+Scene* SceneSaver::MakeNewScene(std::string sceneName) {
+    auto& sceneManager = SceneManager::getInstance();
+    Scene* newScene = new Scene(sceneName);
+
+    auto camera = std::make_unique<Camera>(65.0f, 1200.0f / 800.0f, 0.1f, 1000.0f);
+    camera->setPosition(glm::vec3(0.0f, 5.0f, 10.0f));
+    camera->setTarget(glm::vec3(0.0f));
+    newScene->setCamera(std::move(camera));
+
+    if (auto currentScene = sceneManager.getActiveScene()) {
+        newScene->setRenderPipeline(currentScene->getRenderPipeline());
+    }
+    else {
+        std::unique_ptr<DefaultShaders> shaders = std::make_unique<DefaultShaders>();
+        RenderPipeline* pipeline = new RenderPipeline(newScene->getCamera(), shaders.get());
+
+        if (!pipeline->loadMaterialsFromConfig("config/materials_config.json")) {
+            std::cerr << "Warning: Failed to load materials configuration" << std::endl;
+        }
+
+        newScene->setRenderPipeline(pipeline);
+    }
+
+    newScene->initialize();
+    newScene->setInitialized(true);
+    sceneManager.addScene(std::unique_ptr<Scene>(newScene));
+    sceneManager.setActiveScene(sceneName);
+
+    return newScene;
+}

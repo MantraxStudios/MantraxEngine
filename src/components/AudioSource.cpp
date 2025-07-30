@@ -29,6 +29,7 @@ void AudioSource::setVolume(float vol) {
     if (channel) {
         channel->setVolume(volume);
     }
+
 }
 
 void AudioSource::set3DAttributes(bool enabled) {

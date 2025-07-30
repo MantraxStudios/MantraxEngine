@@ -21,7 +21,7 @@ bool FileExplorer::ShowPopup(const std::string& root, std::string& outSelected, 
     {
         // Safety: Check folder exists
         if (!fs::exists(currentDir) || !fs::is_directory(currentDir)) {
-            ImGui::Text("Directory does not exist:\n%s", currentDir.c_str());
+            ImGui::Text("Directory doesnot exist:\n%s", currentDir.c_str());
             if (ImGui::Button("Close")) {
                 ImGui::CloseCurrentPopup();
                 initialized = false;

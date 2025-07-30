@@ -2,6 +2,7 @@
 #include <iostream>
 #include "../components/SceneManager.h"
 #include "../render/Camera.h"
+#include "../core/FileSystem.h"
 
 AudioManager* AudioManager::instance = nullptr;
 
@@ -120,9 +121,9 @@ FMOD::Sound* AudioManager::loadSound(const std::string& path, bool is3D, bool is
     }
 
     // Cargar el sonido
-    FMOD_RESULT result = system->createSound(path.c_str(), mode, nullptr, &sound);
+    FMOD_RESULT result = system->createSound((FileSystem::getProjectPath() + "\\Content\\" + path).c_str(), mode, nullptr, &sound);
     if (!checkError(result)) {
-        std::cerr << "Failed to load sound: " << path << std::endl;
+        std::cerr << "111 Failed to load sound: " << path << std::endl;
         return nullptr;
     }
 

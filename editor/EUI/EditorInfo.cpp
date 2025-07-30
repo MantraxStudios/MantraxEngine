@@ -9,3 +9,5 @@ float EditorInfo::RenderPositionY = 0.0f;
 bool EditorInfo::IsHoveringScene = false;
 RenderPipeline* EditorInfo::pipeline = nullptr;
 std::string EditorInfo::currentScenePath;
+std::string EditorInfo::SelectedProject = "";
+std::string EditorInfo::SelectedProjectPath = "";
