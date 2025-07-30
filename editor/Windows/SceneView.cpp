@@ -45,7 +45,7 @@ void SceneView::OnRenderGUI() {
                         EventSystem::ViewportRenderPosition = glm::vec2(imagePos.x, imagePos.y);
                         WorldPoint = EventSystem::screen_to_viewport(camera);
 
-                        if (EventSystem::MouseCast2D(WorldPoint, data, camera) && !ImGuizmo::IsOver()) {
+                        if (EventSystem::MouseCast2D_Precise(WorldPoint, data, camera) && !ImGuizmo::IsOver()) {
                             if (Selection::GameObjectSelect != data->object) {
                                 Selection::GameObjectSelect = data->object;
                                 Selection::LightSelect = nullptr; // Deseleccionar luz si hay una seleccionada

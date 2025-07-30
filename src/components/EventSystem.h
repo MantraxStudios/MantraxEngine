@@ -69,6 +69,24 @@ public:
         return true;
     }
 
+    static bool RayIntersectsAABB_Extended(const glm::vec3& rayOrigin, const glm::vec3& rayDirection,
+        const glm::vec3& boxMin, const glm::vec3& boxMax,
+        float& t_near, float& t_far)
+    {
+        glm::vec3 invDir = 1.0f / rayDirection;
+        glm::vec3 t1 = (boxMin - rayOrigin) * invDir;
+        glm::vec3 t2 = (boxMax - rayOrigin) * invDir;
+
+        glm::vec3 tmin = glm::min(t1, t2);
+        glm::vec3 tmax = glm::max(t1, t2);
+
+        t_near = glm::max(glm::max(tmin.x, tmin.y), tmin.z);
+        t_far = glm::min(glm::min(tmax.x, tmax.y), tmax.z);
+
+        return t_far >= 0 && t_near <= t_far;
+    }
+
+
     static void ScreenToWorldRay(
         glm::vec2 mouseCoords,
         const glm::mat4 &viewMatrixInverse,
@@ -95,19 +113,21 @@ public:
         rayDirection = glm::normalize(glm::vec3(worldFar - worldNear));
     }
 
-    static bool RayIntersectsTriangle(const glm::vec3 &rayOrigin, const glm::vec3 &rayDir,
-                                      const glm::vec3 &v0, const glm::vec3 &v1, const glm::vec3 &v2, float &t)
+    static bool MouseCast2D_Precise(glm::vec2 mouseCoords, CastData* data, Camera* camera);
+
+    static bool RayIntersectsTriangle(const glm::vec3& rayOrigin, const glm::vec3& rayDirection,
+        const glm::vec3& v0, const glm::vec3& v1, const glm::vec3& v2,
+        float& t)
     {
-        const float EPSILON = 0.0001f;
+        const float EPSILON = 0.0000001f;
 
-        glm::vec3 e1 = v1 - v0;
-        glm::vec3 e2 = v2 - v0;
-
-        glm::vec3 h = glm::cross(rayDir, e2);
-        float a = glm::dot(e1, h);
+        glm::vec3 edge1 = v1 - v0;
+        glm::vec3 edge2 = v2 - v0;
+        glm::vec3 h = glm::cross(rayDirection, edge2);
+        float a = glm::dot(edge1, h);
 
         if (a > -EPSILON && a < EPSILON)
-            return false;
+            return false; // Rayo paralelo al triángulo
 
         float f = 1.0f / a;
         glm::vec3 s = rayOrigin - v0;
@@ -116,15 +136,15 @@ public:
         if (u < 0.0f || u > 1.0f)
             return false;
 
-        glm::vec3 q = glm::cross(s, e1);
-        float v = f * glm::dot(rayDir, q);
+        glm::vec3 q = glm::cross(s, edge1);
+        float v = f * glm::dot(rayDirection, q);
 
         if (v < 0.0f || u + v > 1.0f)
             return false;
 
-        t = f * glm::dot(e2, q);
+        t = f * glm::dot(edge2, q);
 
-        return t > EPSILON;
+        return t > EPSILON; // Intersección válida
     }
 
     static float min3(float a, float b, float c)

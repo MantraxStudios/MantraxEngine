@@ -103,7 +103,7 @@ glm::vec2 EventSystem::mouse_to_screen_pos(glm::vec2 WindowSize)
 }
 
 
-bool EventSystem::MouseCast2D(glm::vec2 mouseCoords, CastData *data, Camera *camera)
+bool EventSystem::MouseCast2D(glm::vec2 mouseCoords, CastData* data, Camera* camera)
 {
     if (std::isnan(mouseCoords.x) || std::isnan(mouseCoords.y) ||
         std::isinf(mouseCoords.x) || std::isinf(mouseCoords.y))
@@ -114,18 +114,95 @@ bool EventSystem::MouseCast2D(glm::vec2 mouseCoords, CastData *data, Camera *cam
     const float MIN_PICK_DISTANCE = 0.1f;
     const float MAX_PICK_DISTANCE = 1000.0f;
     const float EPSILON = 0.0001f;
+
     float closestDistance = MAX_PICK_DISTANCE;
-    GameObject *closestObject = nullptr;
+    GameObject* closestObject = nullptr;
 
     glm::mat4 viewMatrix = camera->getViewMatrix();
     glm::mat4 projectionMatrix = camera->getProjectionMatrix();
-
     glm::vec3 rayOrigin, rayDirection;
-    ScreenToWorldRay(mouseCoords, glm::inverse(viewMatrix), glm::inverse(projectionMatrix), rayOrigin, rayDirection, camera);
 
+    ScreenToWorldRay(mouseCoords, glm::inverse(viewMatrix), glm::inverse(projectionMatrix),
+        rayOrigin, rayDirection, camera);
     rayDirection = glm::normalize(rayDirection);
 
-    SceneManager *sceneM = &SceneManager::getInstance();
+    SceneManager* sceneM = &SceneManager::getInstance();
+
+    for (GameObject* objD : sceneM->getActiveScene()->getGameObjects())
+    {
+        if (!objD || !objD->hasGeometry()) {
+            continue;
+        }
+
+        // Obtener la matriz del modelo actualizada (importante para objetos que cambian de tamaño)
+        glm::mat4 modelMatrix = objD->getWorldModelMatrix();
+        glm::mat4 inverseModel = glm::inverse(modelMatrix);
+
+        // Transformar el rayo al espacio local del objeto
+        glm::vec3 localRayOrigin = glm::vec3(inverseModel * glm::vec4(rayOrigin, 1.0f));
+        glm::vec3 localRayDirection = glm::normalize(glm::vec3(inverseModel * glm::vec4(rayDirection, 0.0f)));
+
+        AssimpGeometry* geometry = objD->getGeometry();
+
+        // Obtener bounding box en espacio local
+        glm::vec3 boxMin = geometry->getBoundingBoxMin();
+        glm::vec3 boxMax = geometry->getBoundingBoxMax();
+
+        // Verificar intersección con AABB
+        float t_near, t_far;
+        if (RayIntersectsAABB_Extended(localRayOrigin, localRayDirection, boxMin, boxMax, t_near, t_far))
+        {
+            // Usar la distancia real de intersección, no la distancia al centro
+            float intersectionDistance = t_near > 0 ? t_near : t_far;
+
+            // Transformar la distancia de vuelta al espacio mundial
+            glm::vec3 localIntersectionPoint = localRayOrigin + localRayDirection * intersectionDistance;
+            glm::vec3 worldIntersectionPoint = glm::vec3(modelMatrix * glm::vec4(localIntersectionPoint, 1.0f));
+            float worldDistance = glm::length(worldIntersectionPoint - rayOrigin);
+
+            if (worldDistance >= MIN_PICK_DISTANCE && worldDistance <= MAX_PICK_DISTANCE &&
+                worldDistance < closestDistance - EPSILON)
+            {
+                closestDistance = worldDistance;
+                closestObject = objD;
+            }
+        }
+    }
+
+    if (closestObject != nullptr)
+    {
+        data->object = closestObject;
+        data->distance = closestDistance; // Opcional: guardar la distancia
+        return true;
+    }
+
+    return false;
+}
+
+bool EventSystem::MouseCast2D_Precise(glm::vec2 mouseCoords, CastData* data, Camera* camera)
+{
+    if (std::isnan(mouseCoords.x) || std::isnan(mouseCoords.y) ||
+        std::isinf(mouseCoords.x) || std::isinf(mouseCoords.y))
+    {
+        return false;
+    }
+
+    const float MIN_PICK_DISTANCE = 0.1f;
+    const float MAX_PICK_DISTANCE = 1000.0f;
+    const float EPSILON = 0.0001f;
+
+    float closestDistance = MAX_PICK_DISTANCE;
+    GameObject* closestObject = nullptr;
+
+    glm::mat4 viewMatrix = camera->getViewMatrix();
+    glm::mat4 projectionMatrix = camera->getProjectionMatrix();
+    glm::vec3 rayOrigin, rayDirection;
+
+    ScreenToWorldRay(mouseCoords, glm::inverse(viewMatrix), glm::inverse(projectionMatrix),
+        rayOrigin, rayDirection, camera);
+    rayDirection = glm::normalize(rayDirection);
+
+    SceneManager* sceneM = &SceneManager::getInstance();
 
     for (GameObject* objD : sceneM->getActiveScene()->getGameObjects())
     {
@@ -139,47 +216,76 @@ bool EventSystem::MouseCast2D(glm::vec2 mouseCoords, CastData *data, Camera *cam
         glm::vec3 localRayOrigin = glm::vec3(inverseModel * glm::vec4(rayOrigin, 1.0f));
         glm::vec3 localRayDirection = glm::normalize(glm::vec3(inverseModel * glm::vec4(rayDirection, 0.0f)));
 
-        		AssimpGeometry* geometry = objD->getGeometry();
-        
-        // Usar bounding box para detección rápida primero
+        AssimpGeometry* geometry = objD->getGeometry();
+
+        // Primero verificar AABB para optimización
         glm::vec3 boxMin = geometry->getBoundingBoxMin();
         glm::vec3 boxMax = geometry->getBoundingBoxMax();
-        
-        if (RayIntersectsAABB(localRayOrigin, localRayDirection, boxMin, boxMax))
+
+        float t_near, t_far;
+        if (!RayIntersectsAABB_Extended(localRayOrigin, localRayDirection, boxMin, boxMax, t_near, t_far))
         {
-            // Si es AssimpGeometry, hacer raycast con triángulos
-            AssimpGeometry* assimpGeo = dynamic_cast<AssimpGeometry*>(geometry);
-            if (assimpGeo && assimpGeo->isLoaded())
+            continue; // No intersecta el bounding box
+        }
+
+        float minTriangleDistance = MAX_PICK_DISTANCE;
+        bool hitTriangle = false;
+
+        // Si es AssimpGeometry y tiene datos de vértices disponibles
+        AssimpGeometry* assimpGeo = dynamic_cast<AssimpGeometry*>(geometry);
+        if (assimpGeo && assimpGeo->isLoaded())
+        {
+            // Aquí necesitarías acceso a los vértices e índices de la geometría
+            // Esto depende de cómo esté implementada tu clase AssimpGeometry
+
+            // Ejemplo conceptual (necesitarías adaptarlo a tu implementación):
+            /*
+            const std::vector<Vertex>& vertices = assimpGeo->getVertices();
+            const std::vector<unsigned int>& indices = assimpGeo->getIndices();
+
+            for (size_t i = 0; i < indices.size(); i += 3)
             {
-                // Para AssimpGeometry, usar bounding box como aproximación
-                // ya que no tenemos acceso directo a los vértices desde aquí
-                glm::vec3 boxCenter = (boxMin + boxMax) * 0.5f;
-                float distance = glm::length(boxCenter - localRayOrigin);
-                
-                if (distance < closestDistance - EPSILON)
+                glm::vec3 v0 = vertices[indices[i]].position;
+                glm::vec3 v1 = vertices[indices[i+1]].position;
+                glm::vec3 v2 = vertices[indices[i+2]].position;
+
+                float t;
+                if (RayIntersectsTriangle(localRayOrigin, localRayDirection, v0, v1, v2, t))
                 {
-                    closestDistance = distance;
-                    closestObject = objD;
+                    if (t > 0 && t < minTriangleDistance)
+                    {
+                        minTriangleDistance = t;
+                        hitTriangle = true;
+                    }
                 }
             }
-            else
+            */
+        }
+
+        // Si no encontramos intersección con triángulos o no están disponibles,
+        // usar la intersección con AABB
+        float intersectionDistance = hitTriangle ? minTriangleDistance :
+            (t_near > 0 ? t_near : t_far);
+
+        if (intersectionDistance > 0)
+        {
+            glm::vec3 localIntersectionPoint = localRayOrigin + localRayDirection * intersectionDistance;
+            glm::vec3 worldIntersectionPoint = glm::vec3(modelMatrix * glm::vec4(localIntersectionPoint, 1.0f));
+            float worldDistance = glm::length(worldIntersectionPoint - rayOrigin);
+
+            if (worldDistance >= MIN_PICK_DISTANCE && worldDistance <= MAX_PICK_DISTANCE &&
+                worldDistance < closestDistance - EPSILON)
             {
-                		// Para geometría simple, usar el centro del bounding box
-                glm::vec3 boxCenter = (boxMin + boxMax) * 0.5f;
-                float distance = glm::length(boxCenter - localRayOrigin);
-                
-                if (distance < closestDistance - EPSILON)
-                {
-                    closestDistance = distance;
-                    closestObject = objD;
-                }
+                closestDistance = worldDistance;
+                closestObject = objD;
             }
         }
     }
 
-    if (closestObject != nullptr && closestDistance >= MIN_PICK_DISTANCE && closestDistance <= MAX_PICK_DISTANCE)
+    if (closestObject != nullptr)
     {
         data->object = closestObject;
+        data->distance = closestDistance;
         return true;
     }
 

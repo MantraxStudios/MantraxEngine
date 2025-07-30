@@ -2,6 +2,7 @@
 #include "GameObject.h"
 #include "../render/AssimpGeometry.h"
 #include "../render/ModelLoader.h"
+#include "../core/FileSystem.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
@@ -72,6 +73,7 @@ void GameObject::cleanup() {
             child->destroy();
         }
     }
+
     children.clear();
 
     // Desvincularse del padre
@@ -423,7 +425,7 @@ bool GameObject::loadModelFromPath(const std::string& path) {
     
     // Usar el ModelLoader singleton para cargar el modelo
     auto& modelLoader = ModelLoader::getInstance();
-    auto loadedModel = modelLoader.loadModel(path);
+    auto loadedModel = modelLoader.loadModel(FileSystem::getProjectPath() + "\\" + path);
     
     if (loadedModel) {
         // Asignar la geometría cargada

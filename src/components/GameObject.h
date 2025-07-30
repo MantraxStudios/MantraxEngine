@@ -317,10 +317,10 @@ private:
     void removeFromParent();
     void addToParent(GameObject* newParent);
     void invalidateWorldTransform();
-    void cleanup(); // Método interno para limpieza
+    void cleanup(); 
 
     std::vector<std::unique_ptr<Component>> components;
     bool shouldRender{true};
     bool shouldUpdateTransform{true};
-    bool isDestroyed{false}; // Variable para tracking de estado
+    bool isDestroyed{false}; 
 };

@@ -13,6 +13,8 @@
 #include <cstring>
 #include <iostream>
 #include <filesystem>
+#include "FileExplorer.h"
+#include <core/FileSystem.h>
 
 // Helper function to calculate collision mask from checkboxes
 CollisionMask CalculateCollisionMask(bool staticObj, bool dynamicObj, bool trigger, bool player, bool enemy, bool projectile, bool sensor) {
@@ -105,6 +107,37 @@ void Inspector::RenderGameObjectInspector(GameObject* go) {
     else {
         ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "Transform updates disabled");
     }
+
+    ImGui::Separator();
+    ImGui::Text("Model");
+
+    // ===== ALTERNATIVA SIMPLE (sin modificar FileExplorer) =====
+
+    // Si no quieres modificar FileExplorer, puedes usar esto:
+    static bool openModelPicker = false;
+    static std::string selectedModelPath;
+
+    if (ImGui::Button("Choose Model...")) {
+        openModelPicker = true;
+    }
+
+    ImGui::Text("Current: %s", go->getModelPath().c_str());
+
+    // Llamar directamente al FileExplorer (sin popup adicional)
+    if (openModelPicker) {
+        ImGui::OpenPopup("File Explorer"); // Usar el nombre que espera FileExplorer
+        openModelPicker = false;
+    }
+
+    std::string modelDir = FileSystem::getProjectPath() + "\\Content";
+    std::string extension = ".fbx";
+
+    // Llamada directa - FileExplorer maneja su propio popup
+    if (FileExplorer::ShowPopup(modelDir, selectedModelPath, extension)) {
+        go->setModelPath(selectedModelPath);
+        go->loadModelFromPath();
+    }
+
 
     // Layer Configuration
     ImGui::Separator();

@@ -61,6 +61,9 @@
     <ClCompile Include="editor\Windows\ContentBrowser.cpp">
       <Filter>01_Main\Windows</Filter>
     </ClCompile>
+    <ClCompile Include="editor\Windows\FileExplorer.cpp">
+      <Filter>01_Main\Windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Vendors">
@@ -153,6 +156,9 @@
       <Filter>01_Main</Filter>
     </ClInclude>
     <ClInclude Include="editor\Windows\ContentBrowser.h">
+      <Filter>01_Main\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\Windows\FileExplorer.h">
       <Filter>01_Main\Windows</Filter>
     </ClInclude>
   </ItemGroup>
