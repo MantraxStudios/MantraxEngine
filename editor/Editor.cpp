@@ -414,36 +414,66 @@ int main() {
                     showStartupBanner = false;
                 }
                 else {
-                    // Configurar estilo para el banner
-                    ImGui::SetNextWindowBgAlpha(0.9f);
-                    ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x * 0.5f, ImGui::GetIO().DisplaySize.y * 0.3f), ImGuiCond_Always, ImVec2(0.5f, 0.5f));
-                    ImGui::SetNextWindowSize(ImVec2(400, 200), ImGuiCond_Always);
+                    ImGuiIO& io = ImGui::GetIO();
+                    ImVec2 display_size = io.DisplaySize;
 
-                    ImGui::Begin("MantraxEngine Banner", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar);
+                    // Forzar sin padding
+                    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 
-                    // Centrar el texto
-                    ImGui::SetCursorPosY(ImGui::GetWindowHeight() * 0.3f);
+                    ImGui::SetNextWindowBgAlpha(1.0f); // Fondo opaco
+                    ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Always);
+                    ImGui::SetNextWindowSize(display_size, ImGuiCond_Always);
 
-                    // Título principal
-                    ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[0]); // Usar la fuente más grande disponible
-                    ImGui::SetCursorPosX((ImGui::GetWindowWidth() - ImGui::CalcTextSize("MANTRAX ENGINE").x) * 0.5f);
-                    ImGui::TextColored(ImVec4(0.2f, 0.6f, 1.0f, 1.0f), "MANTRAX ENGINE");
+                    ImGuiWindowFlags flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove |
+                        ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar |
+                        ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoSavedSettings |
+                        ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoFocusOnAppearing;
+
+                    ImGui::Begin("MantraxEngine", nullptr, flags);
+
+                    // --- TEXTO GRANDE: MantraxEngine ---
+                    const char* title_text = "MantraxEngine";
+                    // Usa la fuente más grande que tengas, por ejemplo Fonts[1] o crea una a medida
+                    ImFont* bigFont = io.Fonts->Fonts.size() > 1 ? io.Fonts->Fonts[1] : io.FontDefault;
+                    ImGui::PushFont(bigFont);
+
+                    ImVec2 title_size = ImGui::CalcTextSize(title_text);
+                    ImGui::SetCursorPos(ImVec2(
+                        (display_size.x - title_size.x) * 0.5f,
+                        (display_size.y - title_size.y) * 0.33f // Un poco más arriba
+                    ));
+                    ImGui::TextColored(ImVec4(1, 1, 1, 1), title_text); // BLANCO
+
                     ImGui::PopFont();
 
-                    // Subtítulo
-                    ImGui::SetCursorPosY(ImGui::GetWindowHeight() * 0.6f);
-                    ImGui::SetCursorPosX((ImGui::GetWindowWidth() - ImGui::CalcTextSize("Game Engine & Editor").x) * 0.5f);
-                    ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.8f, 1.0f), "Game Engine & Editor");
+                    // --- TEXTO MEDIANO: Loading Project ---
+                    const char* loading_text = "Loading Project";
+                    ImVec2 text_size = ImGui::CalcTextSize(loading_text);
+                    ImGui::SetCursorPos(ImVec2(
+                        (display_size.x - text_size.x) * 0.5f,
+                        (display_size.y - text_size.y) * 0.45f
+                    ));
+                    ImGui::TextColored(ImVec4(0.2f, 0.6f, 1.0f, 1.0f), loading_text); // Azul claro
 
-                    // Barra de progreso
-                    ImGui::SetCursorPosY(ImGui::GetWindowHeight() * 0.8f);
-                    ImGui::SetCursorPosX(50);
-                    ImGui::ProgressBar(elapsedTime / bannerDuration, ImVec2(300, 20), "");
+                    // --- Barra de progreso ---
+                    float progress = elapsedTime / bannerDuration;
+                    if (progress > 1.0f) progress = 1.0f;
+                    if (progress < 0.0f) progress = 0.0f;
+
+                    float progress_width = display_size.x * 0.5f;
+                    ImVec2 progress_bar_size(progress_width, 24);
+
+                    ImGui::SetCursorPos(ImVec2(
+                        (display_size.x - progress_bar_size.x) * 0.5f,
+                        (display_size.y - progress_bar_size.y) * 0.55f
+                    ));
+                    ImGui::ProgressBar(progress, progress_bar_size, "");
 
                     ImGui::End();
+                    ImGui::PopStyleVar();
                 }
             }
-
+            
             //ImGui::Begin("Scene Info");
             //ImGui::Text("Objects: %zu", SceneManager::getInstance().getActiveScene()->getGameObjects().size());
             //ImGui::Text("Visible: %d/%d", pipeline.getVisibleObjectsCount(), pipeline.getTotalObjectsCount());

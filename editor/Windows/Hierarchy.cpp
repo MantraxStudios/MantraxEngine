@@ -7,7 +7,6 @@
 #include "render/Light.h"
 #include <imgui/imgui.h>
 
-// Comprueba si `possibleParent` es ancestro de `child` para evitar ciclos.
 bool Hierarchy::isChildOf(GameObject* possibleParent, GameObject* child) {
     if (!child) return false;
     auto* parent = child->getParent();

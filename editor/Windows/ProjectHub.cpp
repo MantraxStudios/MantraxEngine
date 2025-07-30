@@ -6,6 +6,8 @@
 #include "../EUI/EditorInfo.h"
 #include <core/FileSystem.h>
 
+#include "render/MaterialManager.h"
+
 namespace fs = std::filesystem;
 
 ProjectHub::ProjectHub(const std::string& baseDirectory)
@@ -52,6 +54,10 @@ void ProjectHub::render() {
 
             EditorInfo::SelectedProjectPath = fs::absolute(projects[i].path).string();
             FileSystem::projectPath = fs::absolute(projects[i].path).string();
+
+
+            MaterialManager::getInstance().clearMaterials();
+            MaterialManager::getInstance().loadMaterialsFromConfig("config/materials_config.json");
 
             std::cout << "Select Project: " << EditorInfo::SelectedProject << std::endl;
             std::cout << "Project Path: " << EditorInfo::SelectedProjectPath << std::endl;

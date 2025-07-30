@@ -5,6 +5,7 @@
 #include "render/RenderPipeline.h"
 #include "render/DefaultShaders.h"
 #include "render/Camera.h"
+#include <core/FileSystem.h>
 #include "../EUI/EditorInfo.h"
 #include "Selection.h"
 #include "RenderWindows.h"
@@ -264,6 +265,13 @@ void MainBar::OnRenderGUI() {
 			}
 		}
 
+		// MaterialEditor
+		if (auto* MaterialEditorWindow = windowManager.GetWindow<MaterialEditor>()) {
+			if (ImGui::MenuItem("Material Editor", nullptr, &MaterialEditorWindow->isOpen)) {
+				// El estado se actualiza automáticamente por ImGui
+			}
+		}
+
 		// Gizmos
 		if (auto* gizmosWindow = windowManager.GetWindow<Gizmos>()) {
 			if (ImGui::MenuItem("Gizmos", nullptr, &gizmosWindow->isOpen)) {
@@ -290,6 +298,13 @@ void MainBar::OnRenderGUI() {
 
 		ImGui::EndMenu();
 	}
-	
+
+	// ==== POPUP DE CREAR/EDITAR MATERIAL ====
+	static bool materialesCargados = false;
+	static std::vector<std::string> materialNames;
+	static int selectedMaterial = 0;
+	static nlohmann::json materialsConfigJson;
+	static std::string lastKey = "";
+
 	ImGui::EndMainMenuBar();
 }

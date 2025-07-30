@@ -2,6 +2,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 #include <iostream>
+#include "../core/FileSystem.h"
 
 Texture::Texture()
     : rendererID(0), localBuffer(nullptr), width(0), height(0), BPP(0) {
@@ -19,7 +20,7 @@ Texture::~Texture() {
 }
 
 bool Texture::loadFromFile(const std::string& filePath) {
-    this->filePath = filePath;
+    this->filePath = FileSystem::getProjectPath() + "\\Content\\" + filePath;
     
     // Flip verticalmente las imágenes (OpenGL espera el origen en la esquina inferior izquierda)
     stbi_set_flip_vertically_on_load(1);

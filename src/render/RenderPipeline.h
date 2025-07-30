@@ -73,6 +73,15 @@ public:
     void listLoadedModels() const;
     size_t getModelCacheSize() const;
 
+    static RenderPipeline& getInstance(Camera* camera = nullptr, DefaultShaders* shaders = nullptr) {
+        static std::unique_ptr<RenderPipeline> instance;
+        if (!instance) {
+            // Solo permite crear la instancia una vez (con argumentos)
+            instance = std::make_unique<RenderPipeline>(camera, shaders);
+        }
+        return *instance;
+    }
+
 private:
     std::vector<GameObject*> sceneObjects;
     std::vector<std::shared_ptr<Light>> lights;
@@ -111,4 +120,5 @@ private:
             return geometry < other.geometry;
         }
     };
+
 };

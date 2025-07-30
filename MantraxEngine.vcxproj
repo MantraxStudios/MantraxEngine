@@ -143,6 +143,7 @@
     <ClCompile Include="editor\Windows\Gizmos.cpp" />
     <ClCompile Include="editor\Windows\Hierarchy.cpp" />
     <ClCompile Include="editor\Windows\Inspector.cpp" />
+    <ClCompile Include="editor\Windows\MaterialEditor.cpp" />
     <ClCompile Include="editor\Windows\ProjectHub.cpp" />
     <ClCompile Include="editor\Windows\Selection.cpp" />
     <ClCompile Include="editor\Windows\MainBar.cpp" />
@@ -167,6 +168,7 @@
     <ClInclude Include="editor\Windows\Hierarchy.h" />
     <ClInclude Include="editor\Windows\Inspector.h" />
     <ClInclude Include="editor\Windows\MainBar.h" />
+    <ClInclude Include="editor\Windows\MaterialEditor.h" />
     <ClInclude Include="editor\Windows\ProjectHub.h" />
     <ClInclude Include="editor\Windows\RenderWindows.h" />
     <ClInclude Include="editor\Windows\SceneView.h" />
