@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream> 
 #include <string>
 #include <memory>
 #include <vector>
@@ -20,22 +21,29 @@ public:
     virtual void update(float deltaTime) {}
     void updateNative(float deltaTime);
     virtual void cleanup() {
-        // Delete all game objects
+        std::cout << "Scene: cleanup - start" << std::endl;
+
+        std::cout << "Scene: cleaning gameObjects..." << std::endl;
         gameObjects.clear();
-        
-        // Clear lights from RenderPipeline first
+
+        std::cout << "renderPipeline ptr: " << renderPipeline << std::endl;
         if (renderPipeline) {
+            std::cout << "renderPipeline is not nullptr" << std::endl;
             renderPipeline->clearLights();
         }
-        
-        // Clear lights
+        else {
+            std::cout << "renderPipeline IS nullptr!" << std::endl;
+        }
+
+
+        std::cout << "Scene: clearing lights..." << std::endl;
         lights.clear();
-        
-        // Clear camera
+
+        std::cout << "Scene: clearing camera..." << std::endl;
         camera.reset();
-        
-        // Reset initialization flag
+
         initialized = false;
+        std::cout << "Scene: cleanup - end" << std::endl;
     }
 
     const std::string& getName() const { return name; }

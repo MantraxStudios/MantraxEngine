@@ -32,7 +32,6 @@ public:
 
 private:
     SceneManager();
-    ~SceneManager();
     
     SceneManager(const SceneManager&) = delete;
     SceneManager& operator=(const SceneManager&) = delete;

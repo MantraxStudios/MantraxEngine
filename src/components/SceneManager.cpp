@@ -6,10 +6,6 @@
 SceneManager::SceneManager() : activeScene(nullptr), physicsInitialized(false) {
 }
 
-SceneManager::~SceneManager() {
-    cleanupPhysics();
-}
-
 bool SceneManager::initializePhysics() {
     if (physicsInitialized) {
         return true;

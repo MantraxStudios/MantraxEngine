@@ -466,9 +466,17 @@ int main() {
     }
 
     // Cleanup
-    audioManager.destroy();
-    ImGuiLoader::CleanEUI();
-    RenderConfig::destroy();
+    try
+    {
+        SceneManager::getInstance().cleanupPhysics();
+        ImGuiLoader::CleanEUI();          // 1. Primero ImGui (debe tener el contexto GL activo)
+        RenderConfig::destroy();          // 2. Luego la ventana y OpenGL/SDL
+        audioManager.destroy();           // 3. Luego audio y recursos propios
+    }
+    catch (const std::exception& e)
+    {
+        std::cerr << "Exception during cleanup: " << e.what() << std::endl;
+    }
 
     return 0;
 }
