@@ -108,7 +108,47 @@ public:
 
     // ===== HIERARCHY SYSTEM =====
     // Parent operations
+    // Agregar estas declaraciones en la sección public: de GameObject.h
+
+    /**
+     * Establece un nuevo padre preservando la transformación mundial del objeto
+     * @param newParent Nuevo objeto padre (nullptr para remover del padre actual)
+     */
     void setParent(GameObject* newParent);
+
+    /**
+     * Establece un nuevo padre SIN preservar la transformación mundial
+     * Las transformaciones locales se mantienen tal como están
+     * @param newParent Nuevo objeto padre (nullptr para remover del padre actual)
+     */
+    void setParentNoWorldPreserve(GameObject* newParent);
+
+    /**
+     * Establece un nuevo padre preservando SOLO la posición mundial
+     * La rotación y escala local se mantienen tal como están
+     * @param newParent Nuevo objeto padre (nullptr para remover del padre actual)
+     */
+    void setParentPreserveWorldPosition(GameObject* newParent);
+
+    void setParentPreserveWorldMatrix(GameObject* newParent);
+
+    // Alternativa simple que usa el método setParent existente
+    void setParentPreserveWorldMatrixSimple(GameObject* newParent);
+
+    // Agregar estas declaraciones en la sección private: de GameObject.h
+
+    /**
+     * Descompone una matriz 4x4 en posición, rotación y escala
+     * Método manual más básico
+     */
+    void decomposeMatrix(const glm::mat4& matrix, glm::vec3& position, glm::quat& rotation, glm::vec3& scale);
+
+    /**
+     * Descompone una matriz 4x4 en posición, rotación y escala
+     * Usa glm::decompose con fallback al método manual
+     */
+    void decomposeMatrixRobust(const glm::mat4& matrix, glm::vec3& position, glm::quat& rotation, glm::vec3& scale);
+
     GameObject* getParent() const { return parent; }
     bool hasParent() const { return parent != nullptr; }
     
@@ -187,7 +227,6 @@ public:
 
         return rawPtr;
     }
-
 
     // Añade esto en GameObject.h o como función auxiliar
     template<typename T>

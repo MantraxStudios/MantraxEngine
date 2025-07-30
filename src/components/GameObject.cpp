@@ -12,46 +12,46 @@
 
 // Constructor por defecto para objetos vacíos
 GameObject::GameObject()
-    : geometry(nullptr), sharedGeometry(nullptr), material(nullptr), 
-      localPosition(0.0f), localScale(1.0f), localRotation(1.0f, 0.0f, 0.0f, 0.0f), 
-      dirtyLocalTransform(true), dirtyWorldTransform(true), parent(nullptr),
-      localBoundingRadius(0.5f), worldBoundingSphereDirty(true), ModelPath(""),
-      isDestroyed(false) {
+    : geometry(nullptr), sharedGeometry(nullptr), material(nullptr),
+    localPosition(0.0f), localScale(1.0f), localRotation(1.0f, 0.0f, 0.0f, 0.0f),
+    dirtyLocalTransform(true), dirtyWorldTransform(true), parent(nullptr),
+    localBoundingRadius(0.5f), worldBoundingSphereDirty(true), ModelPath(""),
+    isDestroyed(false) {
     calculateBoundingVolumes();
 }
 
 // Constructor con path de modelo (carga automática)
 GameObject::GameObject(const std::string& modelPath)
-    : geometry(nullptr), sharedGeometry(nullptr), material(nullptr), 
-      localPosition(0.0f), localScale(1.0f), localRotation(1.0f, 0.0f, 0.0f, 0.0f), 
-      dirtyLocalTransform(true), dirtyWorldTransform(true), parent(nullptr),
-      localBoundingRadius(0.5f), worldBoundingSphereDirty(true), ModelPath(modelPath) {
+    : geometry(nullptr), sharedGeometry(nullptr), material(nullptr),
+    localPosition(0.0f), localScale(1.0f), localRotation(1.0f, 0.0f, 0.0f, 0.0f),
+    dirtyLocalTransform(true), dirtyWorldTransform(true), parent(nullptr),
+    localBoundingRadius(0.5f), worldBoundingSphereDirty(true), ModelPath(modelPath) {
     calculateBoundingVolumes();
     loadModelFromPath(); // Intentar cargar el modelo automáticamente
 }
 
 GameObject::GameObject(const std::string& modelPath, std::shared_ptr<Material> mat)
-    : geometry(nullptr), sharedGeometry(nullptr), material(mat), 
-      localPosition(0.0f), localScale(1.0f), localRotation(1.0f, 0.0f, 0.0f, 0.0f), 
-      dirtyLocalTransform(true), dirtyWorldTransform(true), parent(nullptr),
-      localBoundingRadius(0.5f), worldBoundingSphereDirty(true), ModelPath(modelPath) {
+    : geometry(nullptr), sharedGeometry(nullptr), material(mat),
+    localPosition(0.0f), localScale(1.0f), localRotation(1.0f, 0.0f, 0.0f, 0.0f),
+    dirtyLocalTransform(true), dirtyWorldTransform(true), parent(nullptr),
+    localBoundingRadius(0.5f), worldBoundingSphereDirty(true), ModelPath(modelPath) {
     calculateBoundingVolumes();
     loadModelFromPath(); // Intentar cargar el modelo automáticamente
 }
 
 GameObject::GameObject(std::shared_ptr<AssimpGeometry> geometry)
-    : geometry(geometry.get()), sharedGeometry(geometry), material(nullptr), 
-      localPosition(0.0f), localScale(1.0f), localRotation(1.0f, 0.0f, 0.0f, 0.0f), 
-      dirtyLocalTransform(true), dirtyWorldTransform(true), parent(nullptr),
-      localBoundingRadius(0.5f), worldBoundingSphereDirty(true), ModelPath("") {
+    : geometry(geometry.get()), sharedGeometry(geometry), material(nullptr),
+    localPosition(0.0f), localScale(1.0f), localRotation(1.0f, 0.0f, 0.0f, 0.0f),
+    dirtyLocalTransform(true), dirtyWorldTransform(true), parent(nullptr),
+    localBoundingRadius(0.5f), worldBoundingSphereDirty(true), ModelPath("") {
     calculateBoundingVolumes();
 }
 
 GameObject::GameObject(std::shared_ptr<AssimpGeometry> geometry, std::shared_ptr<Material> mat)
-    : geometry(geometry.get()), sharedGeometry(geometry), material(mat), 
-      localPosition(0.0f), localScale(1.0f), localRotation(1.0f, 0.0f, 0.0f, 0.0f), 
-      dirtyLocalTransform(true), dirtyWorldTransform(true), parent(nullptr),
-      localBoundingRadius(0.5f), worldBoundingSphereDirty(true), ModelPath("") {
+    : geometry(geometry.get()), sharedGeometry(geometry), material(mat),
+    localPosition(0.0f), localScale(1.0f), localRotation(1.0f, 0.0f, 0.0f, 0.0f),
+    dirtyLocalTransform(true), dirtyWorldTransform(true), parent(nullptr),
+    localBoundingRadius(0.5f), worldBoundingSphereDirty(true), ModelPath("") {
     calculateBoundingVolumes();
 }
 
@@ -88,25 +88,25 @@ void GameObject::cleanup() {
     material = nullptr;
 }
 
-void GameObject::setLocalPosition(const glm::vec3 &pos) {
+void GameObject::setLocalPosition(const glm::vec3& pos) {
     localPosition = pos;
     dirtyLocalTransform = true;
     invalidateWorldTransform();
 }
 
-void GameObject::setLocalScale(const glm::vec3 &scl) {
+void GameObject::setLocalScale(const glm::vec3& scl) {
     localScale = scl;
     dirtyLocalTransform = true;
     invalidateWorldTransform();
 }
 
-void GameObject::setLocalRotationEuler(const glm::vec3 &eulerDeg) {
+void GameObject::setLocalRotationEuler(const glm::vec3& eulerDeg) {
     localRotation = glm::quat(glm::radians(eulerDeg));
     dirtyLocalTransform = true;
     invalidateWorldTransform();
 }
 
-void GameObject::setLocalRotationQuat(const glm::quat &quat) {
+void GameObject::setLocalRotationQuat(const glm::quat& quat) {
     localRotation = quat;
     dirtyLocalTransform = true;
     invalidateWorldTransform();
@@ -128,38 +128,41 @@ glm::vec3 GameObject::getLocalRotationEuler() const {
     return glm::degrees(glm::eulerAngles(localRotation));
 }
 
-void GameObject::setWorldPosition(const glm::vec3 &pos) {
+void GameObject::setWorldPosition(const glm::vec3& pos) {
     if (parent) {
         glm::mat4 parentWorldMatrix = parent->getWorldModelMatrix();
         glm::mat4 parentWorldInverse = glm::inverse(parentWorldMatrix);
         glm::vec4 localPos = parentWorldInverse * glm::vec4(pos, 1.0f);
         setLocalPosition(glm::vec3(localPos));
-    } else {
+    }
+    else {
         setLocalPosition(pos);
     }
 }
 
-void GameObject::setWorldScale(const glm::vec3 &scl) {
+void GameObject::setWorldScale(const glm::vec3& scl) {
     if (parent) {
         glm::vec3 parentWorldScale = parent->getWorldScale();
         glm::vec3 localScl = scl / parentWorldScale;
         setLocalScale(localScl);
-    } else {
+    }
+    else {
         setLocalScale(scl);
     }
 }
 
-void GameObject::setWorldRotationEuler(const glm::vec3 &eulerDeg) {
+void GameObject::setWorldRotationEuler(const glm::vec3& eulerDeg) {
     glm::quat worldRot = glm::quat(glm::radians(eulerDeg));
     setWorldRotationQuat(worldRot);
 }
 
-void GameObject::setWorldRotationQuat(const glm::quat &quat) {
+void GameObject::setWorldRotationQuat(const glm::quat& quat) {
     if (parent) {
         glm::quat parentWorldRot = parent->getWorldRotationQuat();
         glm::quat localRot = glm::inverse(parentWorldRot) * quat;
         setLocalRotationQuat(localRot);
-    } else {
+    }
+    else {
         setLocalRotationQuat(quat);
     }
 }
@@ -175,16 +178,17 @@ glm::vec3 GameObject::getWorldScale() const {
     if (dirtyWorldTransform) {
         const_cast<GameObject*>(this)->updateWorldModelMatrix();
     }
-    
+
     glm::vec3 scale;
     glm::quat rotation;
     glm::vec3 translation;
     glm::vec3 skew;
     glm::vec4 perspective;
-    
+
     if (glm::decompose(worldModelMatrix, scale, rotation, translation, skew, perspective)) {
         return scale;
-    } else {
+    }
+    else {
         scale.x = glm::length(glm::vec3(worldModelMatrix[0]));
         scale.y = glm::length(glm::vec3(worldModelMatrix[1]));
         scale.z = glm::length(glm::vec3(worldModelMatrix[2]));
@@ -196,16 +200,17 @@ glm::quat GameObject::getWorldRotationQuat() const {
     if (dirtyWorldTransform) {
         const_cast<GameObject*>(this)->updateWorldModelMatrix();
     }
-    
+
     glm::vec3 scale;
     glm::quat rotation;
     glm::vec3 translation;
     glm::vec3 skew;
     glm::vec4 perspective;
-    
+
     if (glm::decompose(worldModelMatrix, scale, rotation, translation, skew, perspective)) {
         return rotation;
-    } else {
+    }
+    else {
         glm::mat3 rotationMatrix = glm::mat3(worldModelMatrix);
         for (int i = 0; i < 3; ++i) {
             rotationMatrix[i] = glm::normalize(rotationMatrix[i]);
@@ -242,10 +247,174 @@ glm::mat4 GameObject::getWorldToLocalMatrix() const {
 void GameObject::setParent(GameObject* newParent) {
     if (isDestroyed || (newParent && newParent->isDestroyed)) return;
     if (newParent == this || isChildOf(newParent)) return;
-    
+
+    // 1. Guardar la transformación mundial actual ANTES de hacer cualquier cambio
+    glm::vec3 worldPos = getWorldPosition();
+    glm::quat worldRot = getWorldRotationQuat();
+    glm::vec3 worldScale = getWorldScale();
+
+    // 2. Remover del padre actual y agregar al nuevo padre
+    removeFromParent();
+    addToParent(newParent);
+
+    // 3. Calcular la nueva transformación local para preservar la transformación mundial
+    if (newParent) {
+        // Obtener transformaciones del nuevo padre
+        glm::vec3 parentWorldPos = newParent->getWorldPosition();
+        glm::quat parentWorldRot = newParent->getWorldRotationQuat();
+        glm::vec3 parentWorldScale = newParent->getWorldScale();
+
+        // Calcular transformación local relativa al nuevo padre
+        // Local = Parent^-1 * World
+
+        // Posición: Local = InverseParentRotation * (WorldPos - ParentPos) / ParentScale
+        glm::vec3 relativePos = worldPos - parentWorldPos;
+        relativePos = glm::inverse(parentWorldRot) * relativePos;
+        localPosition = relativePos / parentWorldScale;
+
+        // Rotación: Local = InverseParentRotation * WorldRotation
+        localRotation = glm::inverse(parentWorldRot) * worldRot;
+
+        // Escala: Local = WorldScale / ParentScale
+        localScale = worldScale / parentWorldScale;
+    }
+    else {
+        // Si no hay padre, la transformación local es igual a la mundial
+        localPosition = worldPos;
+        localRotation = worldRot;
+        localScale = worldScale;
+    }
+
+    // 4. Normalizar quaternion y marcar las transformaciones como dirty
+    localRotation = glm::normalize(localRotation);
+    dirtyLocalTransform = true;
+    invalidateWorldTransform();
+}
+
+// Método que preserva completamente la matriz de transformación mundial
+void GameObject::setParentPreserveWorldMatrix(GameObject* newParent) {
+    if (isDestroyed || (newParent && newParent->isDestroyed)) return;
+    if (newParent == this || isChildOf(newParent)) return;
+
+    // 1. Guardar la matriz de transformación mundial completa ANTES del cambio
+    glm::mat4 currentWorldMatrix = getWorldModelMatrix();
+
+    // 2. Cambiar el padre sin preservar transformaciones
+    removeFromParent();
+    addToParent(newParent);
+
+    // 3. Calcular la nueva transformación local para mantener la misma matriz mundial
+    if (newParent) {
+        // LocalMatrix = ParentWorldMatrix^-1 * DesiredWorldMatrix
+        glm::mat4 parentWorldMatrix = newParent->getWorldModelMatrix();
+        glm::mat4 parentWorldInverse = glm::inverse(parentWorldMatrix);
+        glm::mat4 newLocalMatrix = parentWorldInverse * currentWorldMatrix;
+
+        // Descomponer la nueva matriz local en componentes
+        glm::vec3 newLocalPos, newLocalScale;
+        glm::quat newLocalRot;
+        decomposeMatrixRobust(newLocalMatrix, newLocalPos, newLocalRot, newLocalScale);
+
+        // Aplicar los nuevos valores locales
+        localPosition = newLocalPos;
+        localRotation = glm::normalize(newLocalRot);
+        localScale = newLocalScale;
+    }
+    else {
+        // Si no hay padre, descomponer la matriz mundial directamente
+        decomposeMatrixRobust(currentWorldMatrix, localPosition, localRotation, localScale);
+        localRotation = glm::normalize(localRotation);
+    }
+
+    // 4. Marcar las transformaciones como dirty
+    dirtyLocalTransform = true;
+    invalidateWorldTransform();
+}
+
+// Alternativa más simple que reutiliza el método setParent existente
+void GameObject::setParentPreserveWorldMatrixSimple(GameObject* newParent) {
+    // Tu método setParent() ya hace exactamente esto:
+    // preserva la transformación mundial completa
+    setParent(newParent);
+}
+
+void GameObject::setParentNoWorldPreserve(GameObject* newParent) {
+    if (isDestroyed || (newParent && newParent->isDestroyed)) return;
+    if (newParent == this || isChildOf(newParent)) return;
+
     removeFromParent();
     addToParent(newParent);
     invalidateWorldTransform();
+}
+
+void GameObject::setParentPreserveWorldPosition(GameObject* newParent) {
+    if (isDestroyed || (newParent && newParent->isDestroyed)) return;
+    if (newParent == this || isChildOf(newParent)) return;
+
+    glm::vec3 worldPos = getWorldPosition();
+
+    removeFromParent();
+    addToParent(newParent);
+
+    setWorldPosition(worldPos);
+}
+
+void GameObject::decomposeMatrix(const glm::mat4& matrix, glm::vec3& position, glm::quat& rotation, glm::vec3& scale) {
+    // Extraer posición (columna 3)
+    position = glm::vec3(matrix[3]);
+
+    // Extraer vectores de las columnas de rotación/escala
+    glm::vec3 col0 = glm::vec3(matrix[0]);
+    glm::vec3 col1 = glm::vec3(matrix[1]);
+    glm::vec3 col2 = glm::vec3(matrix[2]);
+
+    // Calcular escalas (longitud de cada columna)
+    scale.x = glm::length(col0);
+    scale.y = glm::length(col1);
+    scale.z = glm::length(col2);
+
+    // Verificar si hay escalado negativo (determinante negativo)
+    float det = glm::determinant(glm::mat3(matrix));
+    if (det < 0) {
+        scale.x = -scale.x;
+    }
+
+    // Normalizar las columnas para obtener la matriz de rotación pura
+    if (scale.x != 0.0f) col0 /= scale.x;
+    if (scale.y != 0.0f) col1 /= scale.y;
+    if (scale.z != 0.0f) col2 /= scale.z;
+
+    // Construir matriz de rotación 3x3
+    glm::mat3 rotationMatrix;
+    rotationMatrix[0] = col0;
+    rotationMatrix[1] = col1;
+    rotationMatrix[2] = col2;
+
+    // Asegurar que la matriz sea ortogonal (corregir errores de precisión)
+    // Método Gram-Schmidt simplificado
+    rotationMatrix[0] = glm::normalize(rotationMatrix[0]);
+    rotationMatrix[1] = glm::normalize(rotationMatrix[1] - glm::dot(rotationMatrix[1], rotationMatrix[0]) * rotationMatrix[0]);
+    rotationMatrix[2] = glm::cross(rotationMatrix[0], rotationMatrix[1]);
+
+    // Convertir matriz de rotación a quaternion
+    rotation = glm::quat_cast(rotationMatrix);
+
+    // Normalizar el quaternion para evitar errores de precisión
+    rotation = glm::normalize(rotation);
+}
+
+void GameObject::decomposeMatrixRobust(const glm::mat4& matrix, glm::vec3& position, glm::quat& rotation, glm::vec3& scale) {
+    glm::vec3 skew;
+    glm::vec4 perspective;
+
+    if (glm::decompose(matrix, scale, rotation, position, skew, perspective)) {
+        // glm::decompose fue exitoso
+        rotation = glm::normalize(rotation);
+    }
+    else {
+        // Fallback al método manual si glm::decompose falla
+        decomposeMatrix(matrix, position, rotation, scale);
+    }
 }
 
 void GameObject::addChild(GameObject* child) {
@@ -282,14 +451,14 @@ GameObject* GameObject::findChildRecursive(const std::string& name) const {
     if (result) {
         return result;
     }
-    
+
     for (GameObject* child : children) {
         result = child->findChildRecursive(name);
         if (result) {
             return result;
         }
     }
-    
+
     return nullptr;
 }
 
@@ -355,9 +524,12 @@ void GameObject::updateChildrenTransforms() {
 void GameObject::updateLocalModelMatrix() const {
     if (!shouldUpdateTransform) return;
 
-    localModelMatrix = glm::translate(glm::mat4(1.0f), localPosition) *
-                      glm::toMat4(localRotation) *
-                      glm::scale(glm::mat4(1.0f), localScale);
+    // Orden correcto: Translate * Rotate * Scale (TRS)
+    glm::mat4 T = glm::translate(glm::mat4(1.0f), localPosition);
+    glm::mat4 R = glm::toMat4(localRotation);
+    glm::mat4 S = glm::scale(glm::mat4(1.0f), localScale);
+
+    localModelMatrix = T * R * S;
     dirtyLocalTransform = false;
 }
 
@@ -367,13 +539,17 @@ void GameObject::updateWorldModelMatrix() const {
     if (dirtyLocalTransform) {
         updateLocalModelMatrix();
     }
-    
+
     if (parent) {
-        worldModelMatrix = parent->getWorldModelMatrix() * localModelMatrix;
-    } else {
+        // CRÍTICO: El orden correcto es ParentWorld * LocalModel
+        // Esto aplica primero la transformación local, luego la del padre
+        glm::mat4 parentWorldMatrix = parent->getWorldModelMatrix();
+        worldModelMatrix = parentWorldMatrix * localModelMatrix;
+    }
+    else {
         worldModelMatrix = localModelMatrix;
     }
-    
+
     dirtyWorldTransform = false;
 }
 
@@ -393,7 +569,7 @@ void GameObject::update(float deltaTime) {
     }
 }
 
-AssimpGeometry *GameObject::getGeometry() const {
+AssimpGeometry* GameObject::getGeometry() const {
     return geometry;
 }
 
@@ -422,18 +598,19 @@ bool GameObject::loadModelFromPath(const std::string& path) {
     }
 
     std::cout << "Loading model for GameObject '" << Name << "' from path: " << path << std::endl;
-    
+
     // Usar el ModelLoader singleton para cargar el modelo
     auto& modelLoader = ModelLoader::getInstance();
     auto loadedModel = modelLoader.loadModel(FileSystem::getProjectPath() + "\\" + path);
-    
+
     if (loadedModel) {
         // Asignar la geometría cargada
         setGeometry(loadedModel);
         ModelPath = path; // Actualizar el path guardado
         std::cout << "Successfully loaded model for GameObject '" << Name << "'" << std::endl;
         return true;
-    } else {
+    }
+    else {
         std::cerr << "Failed to load model for GameObject '" << Name << "' from path: " << path << std::endl;
         return false;
     }
@@ -453,12 +630,13 @@ void GameObject::calculateBoundingVolumes() {
         glm::vec3 min = geometry->getBoundingBoxMin();
         glm::vec3 max = geometry->getBoundingBoxMax();
         localBoundingBox = BoundingBox(min, max);
-        
+
         // Calcular radio basado en el bounding box
         glm::vec3 center = (min + max) * 0.5f;
         glm::vec3 halfSize = (max - min) * 0.5f;
         localBoundingRadius = glm::length(halfSize);
-    } else {
+    }
+    else {
         // Si no hay geometría, usar valores por defecto para un objeto vacío
         glm::vec3 halfSize = glm::vec3(0.1f); // Tamaño más pequeño para objetos vacíos
         localBoundingBox = BoundingBox(-halfSize, halfSize);
@@ -475,14 +653,14 @@ BoundingBox GameObject::getLocalBoundingBox() const {
 BoundingSphere GameObject::getWorldBoundingSphere() const {
     if (worldBoundingSphereDirty) {
         glm::vec3 worldCenter = getWorldPosition();
-        
+
         float maxScale = glm::max(glm::max(localScale.x, localScale.y), localScale.z);
         float worldRadius = localBoundingRadius * maxScale;
-        
+
         cachedWorldBoundingSphere = BoundingSphere(worldCenter, worldRadius);
         worldBoundingSphereDirty = false;
     }
-    
+
     return cachedWorldBoundingSphere;
 }
 
@@ -494,11 +672,11 @@ void GameObject::setBoundingRadius(float radius) {
 BoundingBox GameObject::getWorldBoundingBox() const {
     // Transformar el bounding box local al espacio de mundo
     glm::mat4 worldMatrix = getWorldModelMatrix();
-    
+
     // Obtener los 8 vértices del bounding box local
     glm::vec3 min = localBoundingBox.min;
     glm::vec3 max = localBoundingBox.max;
-    
+
     std::vector<glm::vec3> localVertices = {
         glm::vec3(min.x, min.y, min.z),
         glm::vec3(max.x, min.y, min.z),
@@ -509,19 +687,19 @@ BoundingBox GameObject::getWorldBoundingBox() const {
         glm::vec3(min.x, max.y, max.z),
         glm::vec3(max.x, max.y, max.z)
     };
-    
+
     // Transformar todos los vértices al espacio de mundo
     glm::vec3 worldMin = glm::vec3(std::numeric_limits<float>::max());
     glm::vec3 worldMax = glm::vec3(-std::numeric_limits<float>::max());
-    
+
     for (const auto& vertex : localVertices) {
         glm::vec4 worldVertex = worldMatrix * glm::vec4(vertex, 1.0f);
         glm::vec3 worldPos = glm::vec3(worldVertex);
-        
+
         worldMin = glm::min(worldMin, worldPos);
         worldMax = glm::max(worldMax, worldPos);
     }
-    
+
     return BoundingBox(worldMin, worldMax);
 }
 
@@ -532,7 +710,6 @@ glm::vec3 GameObject::getWorldBoundingBoxMin() const {
 glm::vec3 GameObject::getWorldBoundingBoxMax() const {
     return getWorldBoundingBox().max;
 }
-
 
 GameObject* GameObject::getSelfObject() {
     return this;
