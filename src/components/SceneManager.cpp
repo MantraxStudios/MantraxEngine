@@ -65,7 +65,8 @@ void SceneManager::addScene(std::unique_ptr<Scene> scene) {
     std::cout << "SceneManager::addScene() - Adding scene: " << sceneName << std::endl;
     
     if (scenes.find(sceneName) != scenes.end()) {
-        throw std::runtime_error("Scene with name '" + sceneName + "' already exists");
+        std::cout << ("Scene with name '" + sceneName + "' already exists") << std::endl;
+        return;
     }
 
     scenes[sceneName] = std::move(scene);

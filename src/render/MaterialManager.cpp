@@ -36,9 +36,7 @@ bool MaterialManager::loadMaterialsFromConfig(const std::string& configPath) {
             auto material = std::make_shared<Material>();
             
             // Set basic properties
-            if (materialData.contains("name")) {
-                material->setName(materialData["name"]);
-            }
+            material->setName(materialKey);
             
             if (materialData.contains("albedo")) {
                 auto albedo = materialData["albedo"];

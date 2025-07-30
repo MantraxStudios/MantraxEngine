@@ -8,4 +8,5 @@
 class SceneSaver {
 public:
     static bool SaveScene(const Scene* scene, const std::string& filepath);
+    static bool LoadScene(const std::string& filepath);
 }; 

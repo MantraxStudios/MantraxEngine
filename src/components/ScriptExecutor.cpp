@@ -9,41 +9,45 @@ void ScriptExecutor::setOwner(GameObject* owner) {
 }
 
 void ScriptExecutor::start() {
-    // Abrimos librerías de Lua
     lua.open_libraries(sol::lib::base, sol::lib::math, sol::lib::table, sol::lib::string);
 
     lua["ThisObject"] = sol::make_object(lua.lua_state(), getOwner());
     CoreWrapper coreWrapper;
     coreWrapper.Register(lua);
 
-    // Ruta final del script
     std::string fullPath = "x64/debug/Scripts/" + luaPath + ".lua";
 
+    // Revisa que el archivo exista ANTES de intentar cargarlo
+    if (!std::filesystem::exists(fullPath)) {
+        std::cerr << "[ScriptExecutor] Archivo LUA no existe: " << fullPath << std::endl;
+        return;
+    }
 
     try {
-        // Ejecutar el script
         lua.script_file(fullPath);
 
-        // Si el script devuelve una tabla global con el mismo nombre
         if (lua[luaPath].valid() && lua[luaPath].get_type() == sol::type::table) {
             scriptTable = lua[luaPath];
         }
         else {
-            // Si no hay tabla, usar el entorno global
             scriptTable = lua.globals();
         }
 
-        // Llamar a start() en Lua si existe
         sol::function startFunc = scriptTable["OnStart"];
         if (startFunc.valid()) {
-            startFunc();
+            try {
+                startFunc();
+            }
+            catch (const sol::error& e) {
+                std::cerr << "[ScriptExecutor] Error en OnStart() de " << luaPath << ": " << e.what() << std::endl;
+            }
         }
-
     }
     catch (const sol::error& e) {
-        std::cerr << "Error cargando script " << fullPath << ": " << e.what() << std::endl;
+        std::cerr << "[ScriptExecutor] Error cargando script " << fullPath << ">> " << e.what() << std::endl;
     }
 }
+
 
 void ScriptExecutor::update() {
     // Llamar a update() en Lua si existe
@@ -141,9 +145,32 @@ std::string ScriptExecutor::serializeComponent() const {
 
 
 void ScriptExecutor::deserialize(const std::string& data) {
-    json j = json::parse(data);
-    luaPath = j.value("luaPath", "ExampleScript");
+    try {
+        json j = json::parse(data);
 
-    // Puedes recargar automáticamente el script:
-    reloadScript();
+        // Solo asigna si existe y es string
+        if (j.contains("luaPath") && j["luaPath"].is_string()) {
+            luaPath = j["luaPath"];
+
+            // Verifica si el script existe antes de recargarlo
+            std::string scriptFile = "x64/debug/Scripts/" + luaPath + ".lua";
+            if (std::filesystem::exists(scriptFile)) {
+                reloadScript();
+            }
+            else {
+                std::cerr << "[ScriptExecutor] Archivo LUA no existe: " << scriptFile << std::endl;
+            }
+        }
+        else {
+            std::cerr << "[ScriptExecutor] Campo 'luaPath' faltante o inválido en el componente serializado. NO se recarga script.\n";
+        }
+
+        // Opcional: habilitado/disabled
+        if (j.contains("enabled")) {
+            isEnabled = j.value("enabled", true);
+        }
+    }
+    catch (const json::exception& e) {
+        std::cerr << "[ScriptExecutor] Error al deserializar JSON: " << e.what() << std::endl;
+    }
 }

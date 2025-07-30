@@ -215,12 +215,14 @@ int main() {
 
     // Initialize RenderPipeline with temporary camera
     RenderPipeline pipeline(tempCamera.get(), &shaders);
+
+    EditorInfo::pipeline = &pipeline;
     
     // Load materials from configuration file
     if (!pipeline.loadMaterialsFromConfig("config/materials_config.json")) {
-        std::cerr << "Warning: Failed to load materials configuration" << std::endl;
+        std::cerr << "Warning: Failed to load materials configurations" << std::endl;
     } else {
-        std::cout << "Materials loaded successfully from configuration" << std::endl;
+        std::cout << "Materials loaded successfully from configurations" << std::endl;
         pipeline.listMaterials();
     }
     

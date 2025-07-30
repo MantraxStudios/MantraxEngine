@@ -55,7 +55,7 @@ void MainBar::OnRenderGUI() {
 			auto& sceneManager = SceneManager::getInstance();
 			Scene* activeScene = sceneManager.getActiveScene();
 			if (activeScene) {
-				std::string filename = "scenes/" + activeScene->getName() + ".scene";
+				std::string filename = EditorInfo::currentScenePath;
 				if (SceneSaver::SaveScene(activeScene, filename)) {
 					std::cout << "Scene saved successfully!" << std::endl;
 				} else {

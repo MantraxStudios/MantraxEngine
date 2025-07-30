@@ -9,6 +9,8 @@
 #include <vector>
 #include <string>
 #include <map>
+#include "../SceneSaver.h"
+#include "../EUI/EditorInfo.h"
 
 namespace fs = std::filesystem;
 
@@ -425,7 +427,30 @@ void RenderTreeView() {
             if (s_selectedFile) {
                 *s_selectedFile = entry.path;
             }
-            
+
+            // --- Abrir escena si es .scene ---
+            if (!entry.isDirectory) {
+                std::string extension;
+                size_t dotPos = entry.name.find_last_of('.');
+                if (dotPos != std::string::npos) {
+                    extension = entry.name.substr(dotPos);
+                    std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
+                }
+
+                // Solo con click (NO doble click) -- o puedes usar doble click si prefieres
+                if (extension == ".scene") {
+                    // Puedes preguntar al usuario (popup), o simplemente abrir
+                    if (
+                        EditorInfo::currentScenePath = entry.path;
+                        SceneSaver::LoadScene(entry.path)) {
+                        std::cout << "Escena cargada: " << entry.name << std::endl;
+                    }
+                    else {
+                        std::cerr << "Error cargando escena: " << entry.path << std::endl;
+                    }
+                }
+            }
+
             // Doble click para navegar en carpetas
             if (ImGui::IsMouseDoubleClicked(0) && entry.isDirectory) {
                 *s_currentPath = entry.path;
@@ -433,6 +458,7 @@ void RenderTreeView() {
                 s_selectedFile->clear();
             }
         }
+
         
         // Mostrar información adicional en tooltip
         if (ImGui::IsItemHovered()) {

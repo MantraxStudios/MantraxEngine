@@ -1,0 +1,218 @@
+{
+    "objects": [
+        {
+            "Name": "RedCube",
+            "Tag": "Default",
+            "components": {
+                "Material": {
+                    "exists": true
+                },
+                "MaterialName": "red_material",
+                "component": [
+                    {
+                        "enabled": true,
+                        "luaPath": "aaaaaaacccnnn",
+                        "type": "ScriptExecutor"
+                    },
+                    {
+                        "airControl": 0.30000001192092896,
+                        "contactOffset": 0.009999999776482582,
+                        "controllerType": 0,
+                        "crouchSpeed": 20.0,
+                        "currentMovementMode": 0,
+                        "gravity": -9.8100004196167,
+                        "height": 0.5,
+                        "inputDirection": [
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "isCrouching": false,
+                        "isGrounded": false,
+                        "isJumping": false,
+                        "jumpForce": 8.0,
+                        "radius": 0.10000000149011612,
+                        "runSpeed": 0.0,
+                        "slopeLimit": 0.0,
+                        "stepOffset": 0.0,
+                        "type": "CharacterController",
+                        "velocity": [
+                            0.0,
+                            -20.0,
+                            0.0
+                        ],
+                        "walkSpeed": 0.0
+                    },
+                    {
+                        "bodyType": 0,
+                        "boxHalfExtents": [
+                            10.0,
+                            0.5,
+                            0.5
+                        ],
+                        "capsuleHalfHeight": 0.5,
+                        "capsuleRadius": 0.5,
+                        "csharpBridgeEnabled": false,
+                        "csharpObjectName": "Unknown",
+                        "currentLayer": 1,
+                        "currentLayerMask": 16777215,
+                        "damping": 0.0,
+                        "friction": 0.5,
+                        "gravityFactor": 1.0,
+                        "isTrigger": true,
+                        "mass": 1.0,
+                        "restitution": 0.10000000149011612,
+                        "shapeType": 0,
+                        "sphereRadius": 0.5,
+                        "type": "PhysicalObject"
+                    },
+                    {
+                        "is3D": true,
+                        "isLooping": false,
+                        "isStream": false,
+                        "maxDistance": 100.0,
+                        "minDistance": 5.0,
+                        "soundPath": "",
+                        "type": "AudioSource",
+                        "volume": 1.0
+                    }
+                ]
+            },
+            "position": [
+                -2.0,
+                -292.1195373535156,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                -0.0,
+                0.0
+            ],
+            "scale": [
+                1.0,
+                1.0,
+                1.0
+            ]
+        },
+        {
+            "Name": "BlueCube",
+            "Tag": "Default",
+            "components": {
+                "Material": {
+                    "exists": true
+                },
+                "MaterialName": "blue_material"
+            },
+            "position": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                -0.0,
+                0.0
+            ],
+            "scale": [
+                1.0,
+                1.0,
+                1.0
+            ]
+        },
+        {
+            "Name": "GreenCube",
+            "Tag": "Default",
+            "components": {
+                "Material": {
+                    "exists": true
+                },
+                "MaterialName": "green_material"
+            },
+            "position": [
+                2.0,
+                0.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                -0.0,
+                0.0
+            ],
+            "scale": [
+                1.0,
+                1.0,
+                1.0
+            ]
+        },
+        {
+            "Name": "EmptyObject",
+            "Tag": "Default",
+            "components": null,
+            "position": [
+                0.0,
+                3.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                -0.0,
+                0.0
+            ],
+            "scale": [
+                2.0,
+                2.0,
+                2.0
+            ]
+        },
+        {
+            "Name": "DelayedGeometryObject",
+            "Tag": "Default",
+            "components": {
+                "Material": {
+                    "exists": true
+                },
+                "MaterialName": "red_material"
+            },
+            "position": [
+                4.0,
+                0.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                -0.0,
+                0.0
+            ],
+            "scale": [
+                1.0,
+                1.0,
+                1.0
+            ]
+        },
+        {
+            "Name": "AutoLoadObject",
+            "Tag": "Default",
+            "components": {
+                "Material": {
+                    "exists": true
+                },
+                "MaterialName": "blue_material"
+            },
+            "position": [
+                6.0,
+                0.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                -0.0,
+                0.0
+            ],
+            "scale": [
+                1.0,
+                1.0,
+                1.0
+            ]
+        }
+    ]
+}
