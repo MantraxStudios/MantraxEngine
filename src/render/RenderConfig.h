@@ -4,7 +4,7 @@
 #include "../core/CoreExporter.h"
 
 // Forward declaration
-class RenderConfig;
+class MANTRAXCORE_API RenderConfig;
 
 // Friend function declarations
 void initializeRenderConfig(int width, int height, float fov);

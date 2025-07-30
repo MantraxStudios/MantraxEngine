@@ -3,18 +3,23 @@
 #include "../input/InputAction.h"
 #include "../input/InputSystem.h"
 #include "../core/InputConfigLoader.h"
-
-#include "CoreWrapper.h"
-#include "../components/SceneManager.h"
-#include "../input/InputAction.h"
-#include "../input/InputSystem.h"
-#include "../core/InputConfigLoader.h"
+#include "../components/CharacterController.h"
+#include "../components/PhysicalObject.h"
+#include "../components/LightComponent.h"
+#include "../components/AudioSource.h"
+#include "../components/ScriptExecutor.h"
+#include "../render/Light.h"
 
 void CoreWrapper::Register(sol::state& lua) {
     RegisterDebug(lua);
     RegisterMaths(lua);
     RegisterInput(lua);
     RegisterGameObject(lua);
+    RegisterCharacterController(lua);
+    RegisterPhysicalObject(lua);
+    RegisterLightComponent(lua);
+    RegisterAudioSource(lua);
+    RegisterScriptExecutor(lua);
 }
 
 void CoreWrapper::RegisterMaths(sol::state& lua) {
@@ -43,7 +48,7 @@ void CoreWrapper::RegisterMaths(sol::state& lua) {
             return "vec2(" + std::to_string(v.x) + ", " + std::to_string(v.y) + ")";
         },
 
-        // Métodos
+        // Mï¿½todos
         "length", [](const glm::vec2& v) { return glm::length(v); },
         "normalize", [](const glm::vec2& v) { return glm::normalize(v); },
         "dot", [](const glm::vec2& a, const glm::vec2& b) { return glm::dot(a, b); },
@@ -76,7 +81,7 @@ void CoreWrapper::RegisterMaths(sol::state& lua) {
             return "vec3(" + std::to_string(v.x) + ", " + std::to_string(v.y) + ", " + std::to_string(v.z) + ")";
         },
 
-        // Métodos
+        // Mï¿½todos
         "length", [](const glm::vec3& v) { return glm::length(v); },
         "normalize", [](const glm::vec3& v) { return glm::normalize(v); },
         "dot", [](const glm::vec3& a, const glm::vec3& b) { return glm::dot(a, b); },
@@ -105,7 +110,7 @@ void CoreWrapper::RegisterMaths(sol::state& lua) {
                 std::to_string(q.y) + ", " + std::to_string(q.z) + ")";
         },
 
-        // Métodos
+        // Mï¿½todos
         "length", [](const glm::quat& q) { return glm::length(q); },
         "normalize", [](const glm::quat& q) { return glm::normalize(q); },
         "conjugate", [](const glm::quat& q) { return glm::conjugate(q); },
@@ -130,7 +135,7 @@ void CoreWrapper::RegisterMaths(sol::state& lua) {
         sol::meta_function::addition, [](const glm::mat3& a, const glm::mat3& b) { return a + b; },
         sol::meta_function::subtraction, [](const glm::mat3& a, const glm::mat3& b) { return a - b; },
 
-        // Métodos
+        // Mï¿½todos
         "transpose", [](const glm::mat3& m) { return glm::transpose(m); },
         "inverse", [](const glm::mat3& m) { return glm::inverse(m); },
         "determinant", [](const glm::mat3& m) { return glm::determinant(m); }
@@ -149,7 +154,7 @@ void CoreWrapper::RegisterMaths(sol::state& lua) {
         sol::meta_function::addition, [](const glm::mat4& a, const glm::mat4& b) { return a + b; },
         sol::meta_function::subtraction, [](const glm::mat4& a, const glm::mat4& b) { return a - b; },
 
-        // Métodos
+        // Mï¿½todos
         "transpose", [](const glm::mat4& m) { return glm::transpose(m); },
         "inverse", [](const glm::mat4& m) { return glm::inverse(m); },
         "determinant", [](const glm::mat4& m) { return glm::determinant(m); }
@@ -183,15 +188,15 @@ void CoreWrapper::RegisterMaths(sol::state& lua) {
                 std::to_string(v.z) + ", " + std::to_string(v.w) + ")";
         },
 
-        // Métodos
+        // Mï¿½todos
         "length", [](const glm::vec4& v) { return glm::length(v); },
         "normalize", [](const glm::vec4& v) { return glm::normalize(v); },
         "dot", [](const glm::vec4& a, const glm::vec4& b) { return glm::dot(a, b); }
     );
 
-    // ===== FUNCIONES MATEMÁTICAS GLOBALES =====
+    // ===== FUNCIONES MATEMï¿½TICAS GLOBALES =====
 
-    // Funciones de creación de quaterniones
+    // Funciones de creaciï¿½n de quaterniones
     lua.set_function("quatFromAxisAngle", [](const glm::vec3& axis, float angle) {
         return glm::angleAxis(angle, axis);
         });
@@ -204,7 +209,7 @@ void CoreWrapper::RegisterMaths(sol::state& lua) {
         return glm::quatLookAt(glm::normalize(direction), up);
         });
 
-    // Funciones de transformación de matrices
+    // Funciones de transformaciï¿½n de matrices
     lua.set_function("translate", [](const glm::mat4& m, const glm::vec3& v) {
         return glm::translate(m, v);
         });
@@ -217,7 +222,7 @@ void CoreWrapper::RegisterMaths(sol::state& lua) {
         return glm::scale(m, v);
         });
 
-    // Funciones de proyección
+    // Funciones de proyecciï¿½n
     lua.set_function("perspective", [](float fovy, float aspect, float near, float far) {
         return glm::perspective(fovy, aspect, near, far);
         });
@@ -230,7 +235,7 @@ void CoreWrapper::RegisterMaths(sol::state& lua) {
         return glm::lookAt(eye, center, up);
         });
 
-    // Funciones matemáticas generales
+    // Funciones matemï¿½ticas generales
     lua.set_function("radians", [](float degrees) { return glm::radians(degrees); });
     lua.set_function("degrees", [](float radians) { return glm::degrees(radians); });
     lua.set_function("mix", sol::overload(
@@ -248,7 +253,7 @@ void CoreWrapper::RegisterMaths(sol::state& lua) {
         return glm::smoothstep(edge0, edge1, x);
         });
 
-    // Constantes matemáticas
+    // Constantes matemï¿½ticas
     lua["PI"] = glm::pi<float>();
     lua["TWO_PI"] = glm::two_pi<float>();
     lua["HALF_PI"] = glm::half_pi<float>();
@@ -477,8 +482,36 @@ void CoreWrapper::RegisterGameObject(sol::state& lua) {
                 return;
             }
             self->update(deltaTime);
+        },
+
+        "getComponent", [](GameObject* self, const std::string& typeName) -> Component* {
+            if (!self) {
+                std::cout << "[Lua Error] GameObject is null in getComponent" << std::endl;
+                return nullptr;
+            }
+
+            // ComparaciÃ³n por nombre del tipo
+            if (typeName == "CharacterController") {
+                return self->getComponent<CharacterController>();
+            }
+            if (typeName == "PhysicalObject") {
+                return self->getComponent<PhysicalObject>();
+            }
+            if (typeName == "LightComponent") {
+                return self->getComponent<LightComponent>();
+            }
+            if (typeName == "AudioSource") {
+                return self->getComponent<AudioSource>();
+            }
+            if (typeName == "ScriptExecutor") {
+                return self->getComponent<ScriptExecutor>();
+            }
+
+            std::cout << "[Lua Warning] getComponent: type not recognized -> " << typeName << std::endl;
+            return nullptr;
         }
     );
+
 
     // ===== GLOBAL HELPER FUNCTIONS =====
     lua.set_function("createGameObject", sol::overload(
@@ -496,7 +529,7 @@ void CoreWrapper::RegisterGameObject(sol::state& lua) {
     lua.set_function("destroyGameObject", [](GameObject* obj) {
         if (obj) {
             obj->destroy();
-            delete obj; // Note: En un sistema real, esto debería ser manejado por un manager
+            delete obj; // Note: En un sistema real, esto deberï¿½a ser manejado por un manager
         }
         });
 
@@ -528,36 +561,6 @@ void CoreWrapper::RegisterGameObject(sol::state& lua) {
     );
 
     std::cout << "[Lua] GameObject system registered successfully" << std::endl;
-}
-
-// Template component registration helper - call this for each component type
-template<typename T>
-void RegisterComponentType(sol::state& lua, const std::string& componentName) {
-    static_assert(std::is_base_of<Component, T>::value, "T must inherit from Component");
-
-    lua.set_function(("addComponent" + componentName).c_str(),
-        [](GameObject* obj) -> T* {
-            if (!obj) {
-                std::cout << "[Lua Error] GameObject is null when adding " << componentName << std::endl;
-                return nullptr;
-            }
-            return obj->addComponent<T>();
-        }
-    );
-
-    lua.set_function(("getComponent" + componentName).c_str(),
-        [](GameObject* obj) -> T* {
-            if (!obj) return nullptr;
-            return obj->getComponent<T>();
-        }
-    );
-
-    lua.set_function(("removeComponent" + componentName).c_str(),
-        [](GameObject* obj) -> bool {
-            if (!obj) return false;
-            return obj->removeComponent<T>();
-        }
-    );
 }
 
 void CoreWrapper::RegisterInput(sol::state& lua) {
@@ -710,4 +713,360 @@ void CoreWrapper::RegisterInput(sol::state& lua) {
         }
         return action;
         });
+}
+
+void CoreWrapper::RegisterCharacterController(sol::state& lua) {
+    // ===== CHARACTER CONTROLLER TYPE ENUM =====
+    lua.new_enum<CharacterControllerType>("CharacterControllerType", {
+        {"Capsule", CharacterControllerType::Capsule},
+        {"Box", CharacterControllerType::Box}
+    });
+
+    // ===== MOVEMENT MODE ENUM =====
+    lua.new_enum<MovementMode>("MovementMode", {
+        {"Walking", MovementMode::Walking},
+        {"Running", MovementMode::Running},
+        {"Crouching", MovementMode::Crouching},
+        {"Jumping", MovementMode::Jumping},
+        {"Flying", MovementMode::Flying}
+    });
+
+    // ===== CHARACTER CONTROLLER REGISTRATION =====
+    lua.new_usertype<CharacterController>("CharacterController",
+        sol::no_constructor,
+
+        // ===== INITIALIZATION =====
+        "initializeController", &CharacterController::initializeController,
+        "isInitialized", &CharacterController::isInitialized,
+
+        // ===== MOVEMENT METHODS =====
+        "move", [](CharacterController* self, const glm::vec3& direction) {
+            if (!self) {
+                std::cout << "[Lua Error] CharacterController is null in move" << std::endl;
+                return;
+            }
+            self->move(direction);
+        },
+        "jump", [](CharacterController* self) {
+            if (!self) {
+                std::cout << "[Lua Error] CharacterController is null in jump" << std::endl;
+                return;
+            }
+            self->jump();
+        },
+        "setMovementMode", [](CharacterController* self, MovementMode mode) {
+            if (!self) {
+                std::cout << "[Lua Error] CharacterController is null in setMovementMode" << std::endl;
+                return;
+            }
+            self->setMovementMode(mode);
+        },
+
+        // ===== CHARACTER CONTROLLER PROPERTIES =====
+        "setHeight", &CharacterController::setHeight,
+        "getHeight", &CharacterController::getHeight,
+        "setRadius", &CharacterController::setRadius,
+        "getRadius", &CharacterController::getRadius,
+        "setStepOffset", &CharacterController::setStepOffset,
+        "getStepOffset", &CharacterController::getStepOffset,
+        "setSlopeLimit", &CharacterController::setSlopeLimit,
+        "getSlopeLimit", &CharacterController::getSlopeLimit,
+        "setContactOffset", &CharacterController::setContactOffset,
+        "getContactOffset", &CharacterController::getContactOffset,
+
+        // ===== MOVEMENT PROPERTIES =====
+        "setWalkSpeed", &CharacterController::setWalkSpeed,
+        "getWalkSpeed", &CharacterController::getWalkSpeed,
+        "setRunSpeed", &CharacterController::setRunSpeed,
+        "getRunSpeed", &CharacterController::getRunSpeed,
+        "setCrouchSpeed", &CharacterController::setCrouchSpeed,
+        "getCrouchSpeed", &CharacterController::getCrouchSpeed,
+        "setJumpForce", &CharacterController::setJumpForce,
+        "getJumpForce", &CharacterController::getJumpForce,
+        "setGravity", &CharacterController::setGravity,
+        "getGravity", &CharacterController::getGravity,
+        "setAirControl", &CharacterController::setAirControl,
+        "getAirControl", &CharacterController::getAirControl,
+
+        // ===== STATE GETTERS =====
+        "isGroundedState", &CharacterController::isGroundedState,
+        "isCrouchingState", &CharacterController::isCrouchingState,
+        "isJumpingState", &CharacterController::isJumpingState,
+        "getMovementMode", &CharacterController::getMovementMode,
+        "getVelocity", &CharacterController::getVelocity,
+        "getInputDirection", &CharacterController::getInputDirection,
+
+        // ===== MANUAL MOVEMENT =====
+        "setVelocity", [](CharacterController* self, const glm::vec3& velocity) {
+            if (!self) {
+                std::cout << "[Lua Error] CharacterController is null in setVelocity" << std::endl;
+                return;
+            }
+            self->setVelocity(velocity);
+        },
+        "addForce", [](CharacterController* self, const glm::vec3& force) {
+            if (!self) {
+                std::cout << "[Lua Error] CharacterController is null in addForce" << std::endl;
+                return;
+            }
+            self->addForce(force);
+        },
+
+        // ===== COLLISION DETECTION =====
+        "isOnGround", &CharacterController::isOnGround,
+        "isOnSlope", &CharacterController::isOnSlope,
+        "getSlopeAngle", &CharacterController::getSlopeAngle,
+
+        // ===== TELEPORTATION =====
+        "teleport", sol::overload(
+            [](CharacterController* self, const glm::vec3& position) {
+                if (!self) {
+                    std::cout << "[Lua Error] CharacterController is null in teleport" << std::endl;
+                    return;
+                }
+                self->teleport(position);
+            },
+            [](CharacterController* self, const glm::vec3& position, const glm::quat& rotation) {
+                if (!self) {
+                    std::cout << "[Lua Error] CharacterController is null in teleport" << std::endl;
+                    return;
+                }
+                self->teleport(position, rotation);
+            }
+        ),
+
+        // ===== CALLBACK SETTERS =====
+        "setOnMoveCallback", [](CharacterController* self, sol::function callback) {
+            if (!self) {
+                std::cout << "[Lua Error] CharacterController is null in setOnMoveCallback" << std::endl;
+                return;
+            }
+            self->setOnMoveCallback([callback](const glm::vec3& direction) {
+                try {
+                    callback(direction);
+                } catch (const std::exception& e) {
+                    std::cout << "[Lua Error] Exception in move callback: " << e.what() << std::endl;
+                }
+            });
+        },
+        "setOnJumpCallback", [](CharacterController* self, sol::function callback) {
+            if (!self) {
+                std::cout << "[Lua Error] CharacterController is null in setOnJumpCallback" << std::endl;
+                return;
+            }
+            self->setOnJumpCallback([callback](bool jumping) {
+                try {
+                    callback(jumping);
+                } catch (const std::exception& e) {
+                    std::cout << "[Lua Error] Exception in jump callback: " << e.what() << std::endl;
+                }
+            });
+        },
+        "setOnRunCallback", [](CharacterController* self, sol::function callback) {
+            if (!self) {
+                std::cout << "[Lua Error] CharacterController is null in setOnRunCallback" << std::endl;
+                return;
+            }
+            self->setOnRunCallback([callback](bool running) {
+                try {
+                    callback(running);
+                } catch (const std::exception& e) {
+                    std::cout << "[Lua Error] Exception in run callback: " << e.what() << std::endl;
+                }
+            });
+        },
+        "setOnCrouchCallback", [](CharacterController* self, sol::function callback) {
+            if (!self) {
+                std::cout << "[Lua Error] CharacterController is null in setOnCrouchCallback" << std::endl;
+                return;
+            }
+            self->setOnCrouchCallback([callback](bool crouching) {
+                try {
+                    callback(crouching);
+                } catch (const std::exception& e) {
+                    std::cout << "[Lua Error] Exception in crouch callback: " << e.what() << std::endl;
+                }
+            });
+        },
+        "setOnGroundedCallback", [](CharacterController* self, sol::function callback) {
+            if (!self) {
+                std::cout << "[Lua Error] CharacterController is null in setOnGroundedCallback" << std::endl;
+                return;
+            }
+            self->setOnGroundedCallback([callback](bool grounded) {
+                try {
+                    callback(grounded);
+                } catch (const std::exception& e) {
+                    std::cout << "[Lua Error] Exception in grounded callback: " << e.what() << std::endl;
+                }
+            });
+        }
+    );
+
+    std::cout << "[Lua] CharacterController system registered successfully" << std::endl;
+}
+
+void CoreWrapper::RegisterPhysicalObject(sol::state& lua) {
+    // ===== BODY TYPE ENUM =====
+    lua.new_enum<BodyType>("BodyType", {
+        {"Static", BodyType::Static},
+        {"Dynamic", BodyType::Dynamic},
+        {"Kinematic", BodyType::Kinematic}
+    });
+
+    // ===== SHAPE TYPE ENUM =====
+    lua.new_enum<ShapeType>("ShapeType", {
+        {"Box", ShapeType::Box},
+        {"Sphere", ShapeType::Sphere},
+        {"Capsule", ShapeType::Capsule},
+        {"Plane", ShapeType::Plane}
+    });
+
+    // ===== PHYSICAL OBJECT REGISTRATION =====
+    lua.new_usertype<PhysicalObject>("PhysicalObject",
+        // ===== INITIALIZATION =====
+        "initializePhysics", &PhysicalObject::initializePhysics,
+        "isInitialized", &PhysicalObject::isInitialized,
+
+        // ===== PHYSICS PROPERTIES =====
+        "setMass", &PhysicalObject::setMass,
+        "getMass", &PhysicalObject::getMass,
+        "setVelocity", &PhysicalObject::setVelocity,
+        "getVelocity", &PhysicalObject::getVelocity,
+        "setDamping", &PhysicalObject::setDamping,
+        "getDamping", &PhysicalObject::getDamping,
+        "setFriction", &PhysicalObject::setFriction,
+        "getFriction", &PhysicalObject::getFriction,
+        "setRestitution", &PhysicalObject::setRestitution,
+        "getRestitution", &PhysicalObject::getRestitution,
+        "setGravityFactor", &PhysicalObject::setGravityFactor,
+        "getGravityFactor", &PhysicalObject::getGravityFactor,
+
+        // ===== BODY TYPE =====
+        "setBodyType", &PhysicalObject::setBodyType,
+        "getBodyType", &PhysicalObject::getBodyType,
+
+        // ===== SHAPE PROPERTIES =====
+        "setShapeType", &PhysicalObject::setShapeType,
+        "getShapeType", &PhysicalObject::getShapeType,
+        "setBoxHalfExtents", &PhysicalObject::setBoxHalfExtents,
+        "getBoxHalfExtents", &PhysicalObject::getBoxHalfExtents,
+        "setSphereRadius", &PhysicalObject::setSphereRadius,
+        "getSphereRadius", &PhysicalObject::getSphereRadius,
+        "setCapsuleRadius", &PhysicalObject::setCapsuleRadius,
+        "getCapsuleRadius", &PhysicalObject::getCapsuleRadius,
+        "setCapsuleHalfHeight", &PhysicalObject::setCapsuleHalfHeight,
+        "getCapsuleHalfHeight", &PhysicalObject::getCapsuleHalfHeight,
+
+        // ===== TRIGGER PROPERTIES =====
+        "setTrigger", &PhysicalObject::setTrigger,
+        "isTrigger", &PhysicalObject::isTrigger,
+
+        // ===== FORCES AND IMPULSES =====
+        "addForce", &PhysicalObject::addForce,
+        "addTorque", &PhysicalObject::addTorque,
+        "addImpulse", &PhysicalObject::addImpulse,
+
+        // ===== STATE =====
+        "wakeUp", &PhysicalObject::wakeUp,
+        "isAwake", &PhysicalObject::isAwake,
+
+        // ===== LAYER CONFIGURATION =====
+        "setLayer", &PhysicalObject::setLayer,
+        "getLayer", &PhysicalObject::getLayer,
+        "setLayerMask", &PhysicalObject::setLayerMask,
+        "getLayerMask", &PhysicalObject::getLayerMask
+    );
+
+    std::cout << "[Lua] PhysicalObject system registered successfully" << std::endl;
+}
+
+void CoreWrapper::RegisterLightComponent(sol::state& lua) {
+    // ===== LIGHT TYPE ENUM =====
+    lua.new_enum<LightType>("LightType", {
+        {"Point", LightType::Point},
+        {"Directional", LightType::Directional},
+        {"Spot", LightType::Spot}
+    });
+
+    // ===== LIGHT COMPONENT REGISTRATION =====
+    lua.new_usertype<LightComponent>("LightComponent",
+        // ===== BASIC PROPERTIES =====
+        "setColor", &LightComponent::setColor,
+        "getColor", &LightComponent::getColor,
+        "setIntensity", &LightComponent::setIntensity,
+        "getIntensity", &LightComponent::getIntensity,
+        "setEnabled", &LightComponent::setEnabled,
+        "isEnabled", &LightComponent::isEnabled,
+
+        // ===== ATTENUATION =====
+        "setAttenuation", &LightComponent::setAttenuation,
+        "getAttenuation", &LightComponent::getAttenuation,
+
+        // ===== RANGE =====
+        "setRange", &LightComponent::setRange,
+        "getMinDistance", &LightComponent::getMinDistance,
+        "getMaxDistance", &LightComponent::getMaxDistance,
+
+        // ===== SPOT LIGHT PROPERTIES =====
+        "setCutOffAngle", &LightComponent::setCutOffAngle,
+        "getCutOffAngle", &LightComponent::getCutOffAngle,
+        "setOuterCutOffAngle", &LightComponent::setOuterCutOffAngle,
+        "getOuterCutOffAngle", &LightComponent::getOuterCutOffAngle,
+        "setSpotRange", &LightComponent::setSpotRange,
+        "getSpotRange", &LightComponent::getSpotRange,
+
+        // ===== TYPE =====
+        "getType", &LightComponent::getType
+    );
+
+    std::cout << "[Lua] LightComponent system registered successfully" << std::endl;
+}
+
+void CoreWrapper::RegisterAudioSource(sol::state& lua) {
+    // ===== AUDIO SOURCE REGISTRATION =====
+    lua.new_usertype<AudioSource>("AudioSource",
+        // ===== SOUND CONFIGURATION =====
+        "setSound", &AudioSource::setSound,
+        "setVolume", &AudioSource::setVolume,
+        "getVolume", &AudioSource::getVolume,
+        "set3DAttributes", &AudioSource::set3DAttributes,
+        "is3DEnabled", &AudioSource::is3DEnabled,
+        "setMinDistance", &AudioSource::setMinDistance,
+        "getMinDistance", &AudioSource::getMinDistance,
+        "setMaxDistance", &AudioSource::setMaxDistance,
+        "getMaxDistance", &AudioSource::getMaxDistance,
+
+        // ===== PLAYBACK CONTROL =====
+        "play", &AudioSource::play,
+        "stop", &AudioSource::stop,
+        "pause", &AudioSource::pause,
+        "resume", &AudioSource::resume,
+
+        // ===== STATE =====
+        "isPlaying", &AudioSource::isPlaying,
+        "isPaused", &AudioSource::isPaused
+    );
+
+    std::cout << "[Lua] AudioSource system registered successfully" << std::endl;
+}
+
+void CoreWrapper::RegisterScriptExecutor(sol::state& lua) {
+    // ===== SCRIPT EXECUTOR REGISTRATION =====
+    lua.new_usertype<ScriptExecutor>("ScriptExecutor",
+        // ===== SCRIPT PROPERTIES =====
+        "luaPath", &ScriptExecutor::luaPath,
+
+        // ===== INSPECTOR HELPER METHODS =====
+        "isScriptLoaded", &ScriptExecutor::isScriptLoaded,
+        "getLastError", &ScriptExecutor::getLastError,
+        "reloadScript", &ScriptExecutor::reloadScript,
+        "hasFunction", &ScriptExecutor::hasFunction,
+
+        // ===== TRIGGER EVENTS =====
+        "onTriggerEnter", &ScriptExecutor::onTriggerEnter,
+        "onTriggerExit", &ScriptExecutor::onTriggerExit
+    );
+
+    std::cout << "[Lua] ScriptExecutor system registered successfully" << std::endl;
 }

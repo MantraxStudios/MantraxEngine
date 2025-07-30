@@ -6,6 +6,8 @@
 #include "../render/Camera.h"
 #include "SceneManager.h"
 
+using json = nlohmann::json;
+
 void AudioSource::setOwner(GameObject* owner) {
     Component::setOwner(owner);
     stop(); // Asegurarse de detener cualquier sonido si se cambia el owner
@@ -15,7 +17,7 @@ void AudioSource::setSound(const std::string& path, bool is3D, bool isLooping, b
     if (channel) {
         stop();
     }
-    
+
     soundPath = path;
     this->is3D = is3D;
     this->isLooping = isLooping;
@@ -56,7 +58,7 @@ void AudioSource::play() {
         stop(); // Detener reproducción anterior si existe
 
         auto& audioManager = AudioManager::getInstance();
-        
+
         // Cargar y reproducir el sonido
         FMOD::Sound* sound = audioManager.loadSound(soundPath, is3D, isLooping, isStream);
         if (sound) {
@@ -64,15 +66,16 @@ void AudioSource::play() {
                 // Obtener la posición del GameObject
                 glm::vec3 pos = owner->getWorldPosition();
                 FMOD_VECTOR position = { pos.x, pos.y, pos.z };
-                
+
                 // Reproducir en 3D
                 channel = audioManager.playSound(soundPath, position, volume);
                 if (channel) {
                     update3DAttributes();
                 }
-            } else {
+            }
+            else {
                 // Reproducir en 2D
-                channel = audioManager.playSound(soundPath, FMOD_VECTOR{0,0,0}, volume);
+                channel = audioManager.playSound(soundPath, FMOD_VECTOR{ 0,0,0 }, volume);
             }
         }
     }
@@ -154,4 +157,36 @@ void AudioSource::update3DAttributes() {
         channel->set3DMinMaxDistance(minDistance, maxDistance);
         FMOD_RESULT result = channel->set3DAttributes(&position, 0);
     }
-} 
+}
+
+
+std::string AudioSource::serializeComponent() const {
+    json j;
+    j["soundPath"] = soundPath;
+    j["volume"] = volume;
+    j["is3D"] = is3D;
+    j["isLooping"] = isLooping;
+    j["isStream"] = isStream;
+    j["minDistance"] = minDistance;
+    j["maxDistance"] = maxDistance;
+
+    return j.dump();
+}
+
+void AudioSource::deserialize(const std::string& data) {
+    json j = json::parse(data);
+
+    // Extrae y aplica todo usando setters
+    std::string path = j.value("soundPath", "");
+    bool _is3D = j.value("is3D", true);
+    bool _isLooping = j.value("isLooping", false);
+    bool _isStream = j.value("isStream", false);
+
+    setSound(path, _is3D, _isLooping, _isStream);
+    setVolume(j.value("volume", 1.0f));
+    setMinDistance(j.value("minDistance", 5.0f));
+    setMaxDistance(j.value("maxDistance", 100.0f));
+
+    // Opcional: restaurar reproducción
+    // if (j.value("isPlaying", false)) play();
+}

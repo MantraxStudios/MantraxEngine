@@ -4,6 +4,7 @@
 #include "../../src/components/LightComponent.h"
 #include "../../src/components/PhysicalObject.h"
 #include "../../src/components/ScriptExecutor.h"
+#include "../../src/components/CharacterController.h"
 #include "../../src/components/GameBehaviourFactory.h"
 #include "../../src/core/PhysicsManager.h"
 #include "../../src/render/RenderConfig.h"
@@ -1058,20 +1059,154 @@ void Inspector::RenderGameObjectInspector(GameObject* go) {
         }
     }
 
-    // Bot�n de agregar componente con men� desplegable
-    // ScriptExecutor Component
     if (auto scriptExecutor = go->getComponent<ScriptExecutor>()) {
         bool removeComponent = false;
         bool treeNodeOpen = ImGui::TreeNodeEx("[Script Executor]", ImGuiTreeNodeFlags_DefaultOpen);
 
         if (treeNodeOpen) {
-            
+            // Botón de opciones
+            float windowWidth = ImGui::GetContentRegionAvail().x;
+            ImGui::SameLine(windowWidth - 35);
+            if (ImGui::Button(" ... ##ScriptExecutor", ImVec2(30, 0))) {
+                ImGui::OpenPopup("ScriptExecutorOptions");
+            }
+
+            if (ImGui::BeginPopup("ScriptExecutorOptions")) {
+                if (ImGui::MenuItem("Remove Component")) {
+                    removeComponent = true;
+                }
+                ImGui::EndPopup();
+            }
+
+            if (!removeComponent && scriptExecutor != nullptr) {
+                // Campo de edición de ruta del script
+                static char scriptPathBuffer[256];
+                strncpy_s(scriptPathBuffer, sizeof(scriptPathBuffer), scriptExecutor->luaPath.c_str(), _TRUNCATE);
+                if (ImGui::InputText("Script Path", scriptPathBuffer, sizeof(scriptPathBuffer))) {
+                    scriptExecutor->luaPath = std::string(scriptPathBuffer);
+                }
+
+                // Botón para recargar script
+                if (ImGui::Button("Reload Script")) {
+                    scriptExecutor->reloadScript();
+                }
+
+                // Mostrar estado del script
+                ImGui::Text("Script Loaded: %s", scriptExecutor->isScriptLoaded() ? "Yes" : "No");
+
+                if (!scriptExecutor->isScriptLoaded()) {
+                    ImGui::TextColored(ImVec4(0.8f, 0.2f, 0.2f, 1.0f), "Error: %s", scriptExecutor->getLastError().c_str());
+                }
+            }
+
             ImGui::TreePop();
         }
         if (removeComponent) {
             go->removeComponent<ScriptExecutor>();
         }
     }
+
+    // CharacterController Component
+    if (auto cc = go->getComponent<CharacterController>()) {
+        bool removeComponent = false;
+        bool treeNodeOpen = ImGui::TreeNodeEx("[Character Controller]", ImGuiTreeNodeFlags_DefaultOpen);
+
+        if (treeNodeOpen) {
+            float windowWidth = ImGui::GetContentRegionAvail().x;
+            ImGui::SameLine(windowWidth - 35);
+            if (ImGui::Button(" ... ##CharacterController", ImVec2(30, 0))) {
+                ImGui::OpenPopup("CharacterControllerOptions");
+            }
+
+            // Popup
+            if (ImGui::BeginPopup("CharacterControllerOptions")) {
+                if (ImGui::MenuItem("Remove Component")) {
+                    removeComponent = true;
+                }
+                if (ImGui::MenuItem("Reset")) {
+                    // Reset de propiedades si quieres
+                }
+                ImGui::EndPopup();
+            }
+
+            if (!removeComponent) {
+
+                // Tipo de controller
+                const char* types[] = { "Capsule", "Box" };
+                int typeIndex = (cc->getController() && cc->getController()->getActor()->is<physx::PxRigidDynamic>())
+                    ? (cc->getController()->getActor()->is<physx::PxRigidDynamic>() ? 0 : 1)
+                    : 0;
+                if (ImGui::Combo("Controller Type", &typeIndex, types, 2)) {
+                    // Tendrías que recrear el controller si cambias tipo
+                }
+
+                // Propiedades básicas
+                float height = cc->getHeight();
+                if (ImGui::DragFloat("Height", &height, 0.05f, 0.5f, 3.0f)) {
+                    cc->setHeight(height);
+                }
+
+                float radius = cc->getRadius();
+                if (ImGui::DragFloat("Radius", &radius, 0.05f, 0.1f, 2.0f)) {
+                    cc->setRadius(radius);
+                }
+
+                float step = cc->getStepOffset();
+                if (ImGui::DragFloat("Step Offset", &step, 0.01f, 0.0f, 1.0f)) {
+                    cc->setStepOffset(step);
+                }
+
+                float slope = cc->getSlopeLimit();
+                if (ImGui::DragFloat("Slope Limit", &slope, 1.0f, 0.0f, 90.0f)) {
+                    cc->setSlopeLimit(slope);
+                }
+
+                // Propiedades de movimiento
+                float walk = cc->getWalkSpeed();
+                if (ImGui::DragFloat("Walk Speed", &walk, 0.1f, 0.0f, 20.0f)) cc->setWalkSpeed(walk);
+
+                float run = cc->getRunSpeed();
+                if (ImGui::DragFloat("Run Speed", &run, 0.1f, 0.0f, 20.0f)) cc->setRunSpeed(run);
+
+                float crouch = cc->getCrouchSpeed();
+                if (ImGui::DragFloat("Crouch Speed", &crouch, 0.1f, 0.0f, 20.0f)) cc->setCrouchSpeed(crouch);
+
+                float jump = cc->getJumpForce();
+                if (ImGui::DragFloat("Jump Force", &jump, 0.1f, 0.0f, 20.0f)) cc->setJumpForce(jump);
+
+                float grav = cc->getGravity();
+                if (ImGui::DragFloat("Gravity", &grav, 0.1f, -30.0f, 30.0f)) cc->setGravity(grav);
+
+                float air = cc->getAirControl();
+                if (ImGui::DragFloat("Air Control", &air, 0.01f, 0.0f, 1.0f)) cc->setAirControl(air);
+
+                ImGui::Separator();
+                ImGui::Text("State");
+                ImGui::Text("Grounded: %s", cc->isGroundedState() ? "Yes" : "No");
+                ImGui::Text("Jumping: %s", cc->isJumpingState() ? "Yes" : "No");
+
+                glm::vec3 vel = cc->getVelocity();
+                ImGui::Text("Velocity: %.2f %.2f %.2f", vel.x, vel.y, vel.z);
+
+                // Botones de control
+                if (ImGui::Button("Force Jump")) {
+                    cc->jump();
+                }
+                ImGui::SameLine();
+                if (ImGui::Button("Teleport to Origin")) {
+                    cc->teleport(glm::vec3(0, 2, 0));
+                }
+            }
+
+            ImGui::TreePop();
+        }
+
+        if (removeComponent) {
+            go->removeComponent<CharacterController>();
+        }
+    }
+
+
 
     if (ImGui::Button("Add Component", ImVec2(-1, 0))) {
         ImGui::OpenPopup("ComponentMenu");
@@ -1096,6 +1231,8 @@ void Inspector::RenderGameObjectInspector(GameObject* go) {
         ImGui::Separator();
         ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "RENDERING");
         ImGui::Separator();
+
+
 
         if (!go->hasGeometry()) {
             if (ImGui::MenuItem("[Mesh]", "Adds 3D geometry")) {
@@ -1135,6 +1272,17 @@ void Inspector::RenderGameObjectInspector(GameObject* go) {
             }
         }
 
+
+        if (!go->getComponent<CharacterController>()) {
+            if (ImGui::MenuItem("[Character Controller]", "Add a controllable character")) {
+                go->addComponent<CharacterController>(go);
+                ImGui::CloseCurrentPopup();
+            }
+            if (ImGui::IsItemHovered()) {
+                ImGui::SetTooltip("Adds a character controller for player or AI movement");
+            }
+        }
+
         ImGui::Separator();
         ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "SCRIPT");
         ImGui::Separator();
@@ -1149,9 +1297,11 @@ void Inspector::RenderGameObjectInspector(GameObject* go) {
             }
         }
 
+
         ImGui::Separator();
         ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "EFFECTS");
         ImGui::Separator();
+
 
         if (ImGui::MenuItem("[Particle System]", "Adds particle effects")) {
             // TODO: Implementar sistema de part�culas

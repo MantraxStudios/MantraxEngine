@@ -3,6 +3,8 @@
 #include "SceneManager.h"
 #include <iostream>
 
+using json = nlohmann::json;
+
 LightComponent::LightComponent(LightType type) {
     light = std::make_shared<Light>(type);
     
@@ -143,3 +145,58 @@ float LightComponent::getMinDistance() const {
 float LightComponent::getMaxDistance() const {
     return light ? light->getMaxDistance() : 50.0f;
 } 
+
+std::string LightComponent::serializeComponent() const {
+    json j;
+    if (!light) return "{ }";
+
+    j["type"] = static_cast<int>(light->getType());
+
+    glm::vec3 color = light->getColor();
+    j["color"] = { color.x, color.y, color.z };
+
+    j["intensity"] = light->getIntensity();
+    j["enabled"] = light->isEnabled();
+
+    glm::vec3 attenuation = light->getAttenuation();
+    j["attenuation"] = { attenuation.x, attenuation.y, attenuation.z };
+
+    j["minDistance"] = light->getMinDistance();
+    j["maxDistance"] = light->getMaxDistance();
+
+    if (light->getType() == LightType::Spot) {
+        j["cutOffAngle"] = light->getCutOffAngle();
+        j["outerCutOffAngle"] = light->getOuterCutOffAngle();
+        j["spotRange"] = light->getSpotRange();
+    }
+    
+    return j.dump();
+}
+
+void LightComponent::deserialize(const std::string& data) {
+    json j = json::parse(data);
+
+    LightType type = static_cast<LightType>(j.value("type", static_cast<int>(LightType::Point)));
+    if (!light || light->getType() != type) {
+        light = std::make_shared<Light>(type);
+    }
+
+    if (j.contains("color") && j["color"].is_array()) {
+        auto c = j["color"];
+        light->setColor(glm::vec3(c[0], c[1], c[2]));
+    }
+    light->setIntensity(j.value("intensity", 1.0f));
+    light->setEnabled(j.value("enabled", true));
+
+    if (j.contains("attenuation") && j["attenuation"].is_array()) {
+        auto a = j["attenuation"];
+        light->setAttenuation(a[0], a[1], a[2]);
+    }
+    light->setRange(j.value("minDistance", 0.1f), j.value("maxDistance", 50.0f));
+
+    if (type == LightType::Spot) {
+        light->setCutOffAngle(j.value("cutOffAngle", 12.5f));
+        light->setOuterCutOffAngle(j.value("outerCutOffAngle", 17.5f));
+        light->setSpotRange(j.value("spotRange", 50.0f));
+    }
+}

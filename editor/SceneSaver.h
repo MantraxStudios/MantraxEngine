@@ -5,7 +5,7 @@
 #include <components/SceneManager.h>
 #include <nlohmann/json.hpp>
 
-class MANTRAXCORE_API SceneSaver {
+class SceneSaver {
 public:
     static bool SaveScene(const Scene* scene, const std::string& filepath);
 }; 

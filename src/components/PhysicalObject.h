@@ -74,7 +74,9 @@ public:
     void start() override;
     void update() override;
     void destroy() override;
-    
+    void deserialize(const std::string& data) override;
+    std::string serializeComponent() const override;
+
     // Manual initialization
     void initializePhysics();
     

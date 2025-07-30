@@ -15,6 +15,8 @@ public:
     void update() override;
     void start() override;
     void destroy() override;
+    std::string serializeComponent() const override;
+    void deserialize(const std::string& data) override;
 
     // Inspector helper methods
     bool isScriptLoaded() const { return scriptTable.valid(); }

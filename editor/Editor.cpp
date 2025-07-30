@@ -18,6 +18,7 @@
 #include "render/RenderPipeline.h"
 #include "components/SceneManager.h"
 #include "components/TestScene.h"
+#include "components/ScriptExecutor.h"
 #include "components/TexturedScene.h"
 #include "components/ModelScene.h"
 #include "input/InputSystem.h"

@@ -7,6 +7,8 @@
 #include <functional>
 #include <algorithm>
 
+using json = nlohmann::json;
+
 // Helper function to get shape type as string
 std::string PhysicalObject::getShapeTypeString() const {
     switch (shapeType) {
@@ -980,4 +982,110 @@ void PhysicalObject::updateReferenceFromCollider() {
     } catch (const std::exception& e) {
         std::cerr << "Error updating reference from collider: " << e.what() << std::endl;
     }
+}
+
+std::string PhysicalObject::serializeComponent() const {
+    nlohmann::json j;
+
+    j["bodyType"] = static_cast<int>(bodyType);
+    j["shapeType"] = static_cast<int>(shapeType);
+    j["mass"] = mass;
+    j["friction"] = friction;
+    j["restitution"] = restitution;
+    j["damping"] = damping;
+    j["gravityFactor"] = gravityFactor;
+    j["isTrigger"] = isTriggerShape;
+
+    // Safe glm::vec3 to JSON
+    auto safeVec3 = [](const glm::vec3& v) -> std::vector<float> {
+        auto isSafe = [](float f) { return std::isfinite(f) ? f : 0.0f; };
+        return { isSafe(v.x), isSafe(v.y), isSafe(v.z) };
+        };
+
+    j["boxHalfExtents"] = safeVec3(boxHalfExtents);
+    j["sphereRadius"] = std::isfinite(sphereRadius) ? sphereRadius : 0.0f;
+    j["capsuleRadius"] = std::isfinite(capsuleRadius) ? capsuleRadius : 0.0f;
+    j["capsuleHalfHeight"] = std::isfinite(capsuleHalfHeight) ? capsuleHalfHeight : 0.0f;
+
+    j["currentLayer"] = currentLayer;
+    j["currentLayerMask"] = currentLayerMask;
+
+    j["csharpBridgeEnabled"] = csharpBridgeEnabled;
+    j["csharpObjectName"] = csharpObjectName;
+
+    try {
+        return j.dump();
+    }
+    catch (const std::exception& e) {
+        std::cerr << "PhysicalObject::serialize error: " << e.what() << std::endl;
+    }
+}
+
+
+void PhysicalObject::deserialize(const std::string& data) {
+    json j = json::parse(data);
+
+    // 1. Restaurar propiedades básicas
+    bodyType = static_cast<BodyType>(j.value("bodyType", static_cast<int>(BodyType::Static)));
+    shapeType = static_cast<ShapeType>(j.value("shapeType", static_cast<int>(ShapeType::Box)));
+    mass = j.value("mass", 1.0f);
+    friction = j.value("friction", 0.5f);
+    restitution = j.value("restitution", 0.0f);
+    damping = j.value("damping", 0.0f);
+    gravityFactor = j.value("gravityFactor", 1.0f);
+    isTriggerShape = j.value("isTrigger", false);
+
+    if (j.contains("boxHalfExtents") && j["boxHalfExtents"].is_array()) {
+        auto e = j["boxHalfExtents"];
+        boxHalfExtents = glm::vec3(e[0], e[1], e[2]);
+    }
+    sphereRadius = j.value("sphereRadius", 1.0f);
+    capsuleRadius = j.value("capsuleRadius", 0.5f);
+    capsuleHalfHeight = j.value("capsuleHalfHeight", 1.0f);
+
+    currentLayer = j.value("currentLayer", 0);
+    currentLayerMask = j.value("currentLayerMask", 0xFFFFFFFF);
+
+    csharpBridgeEnabled = j.value("csharpBridgeEnabled", false);
+    csharpObjectName = j.value("csharpObjectName", "Unknown");
+
+    // 2. Llama a los métodos de configuración en el orden correcto:
+    setBodyType(bodyType);            // Crea rigidActor de acuerdo al tipo
+    setShapeType(shapeType);          // Crea la forma (box, sphere, etc)
+
+    // Propiedades de shape
+    switch (shapeType) {
+    case ShapeType::Box:
+        setBoxHalfExtents(boxHalfExtents);
+        break;
+    case ShapeType::Sphere:
+        setSphereRadius(sphereRadius);
+        break;
+    case ShapeType::Capsule:
+        setCapsuleRadius(capsuleRadius);
+        setCapsuleHalfHeight(capsuleHalfHeight);
+        break;
+    default:
+        break;
+    }
+
+    // Propiedades físicas
+    setMass(mass);
+    setFriction(friction);
+    setRestitution(restitution);
+    setDamping(damping);
+    setGravityFactor(gravityFactor);
+
+    setTrigger(isTriggerShape);
+
+    // Configuración de colisión (si tienes métodos para los grupos/máscaras)
+    setLayer(currentLayer);
+    setLayerMask(currentLayerMask);
+
+    // Si tienes métodos específicos para eventos C#, aplícalos también
+    enableCSharpBridge(csharpBridgeEnabled);
+    setCSharpObjectName(csharpObjectName);
+
+    // 3. Si es necesario, sincroniza la transformación a PhysX
+    syncTransformToPhysX();
 }

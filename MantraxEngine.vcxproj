@@ -103,10 +103,10 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;BX_CONFIG_DEBUG=0;GLM_ENABLE_EXPERIMENTAL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)src/;$(SolutionDir)vendors/includes</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/Zc:__cplusplus /Zc:preprocessor
  %(AdditionalOptions)</AdditionalOptions>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -155,11 +155,6 @@
     <ClCompile Include="vendors\includes\imgui\imgui_widgets.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="MantraxCore\MantraxCore.vcxproj">
-      <Project>{66bfe5a0-11d1-4dab-a6d5-62fc2615f6a2}</Project>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="editor\EUI\EditorInfo.h" />
     <ClInclude Include="editor\EUI\ImGuiLoader.h" />
     <ClInclude Include="editor\EUI\ImGuiThemes.h" />
@@ -183,6 +178,11 @@
     <ClInclude Include="vendors\includes\imgui\imstb_rectpack.h" />
     <ClInclude Include="vendors\includes\imgui\imstb_textedit.h" />
     <ClInclude Include="vendors\includes\imgui\imstb_truetype.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="MantraxCore\MantraxCore.vcxproj">
+      <Project>{66bfe5a0-11d1-4dab-a6d5-62fc2615f6a2}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

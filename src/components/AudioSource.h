@@ -1,7 +1,7 @@
 #pragma once
 #include "Component.h"
 #include <fmod/fmod.hpp>
-#include <string>
+#include <iostream>
 #include "../core/CoreExporter.h"
 
 class MANTRAXCORE_API AudioSource : public Component {
@@ -19,6 +19,7 @@ public:
     void setMinDistance(float distance);
     void setMaxDistance(float distance);
 
+
     // Control de reproducción
     void play();
     void stop();
@@ -35,6 +36,8 @@ public:
 
     // Actualización del componente
     void update() override;
+    void deserialize(const std::string& data) override;
+    std::string serializeComponent() const override;
 
 private:
     std::string soundPath;
@@ -49,4 +52,4 @@ private:
 
     void updatePosition();
     void update3DAttributes();
-}; 
+};

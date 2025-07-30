@@ -1,9 +1,12 @@
-// SceneSaver.cpp - Version con debug para heap corruption
 #include "SceneSaver.h"
 #include <iostream>
 #include <core/FileSystem.h>
-#include "components/LightComponent.h"
-#include "components/AudioSource.h"
+#include <components/LightComponent.h>
+#include <components/AudioSource.h>
+#include <components/PhysicalObject.h>
+#include <components/CharacterController.h>
+#include <components/ScriptExecutor.h>
+#include "windows/Selection.h"
 
 using namespace nlohmann;
 
@@ -37,64 +40,29 @@ bool SceneSaver::SaveScene(const Scene* scene, const std::string& filepath) {
         subObject["rotation"] = { obj->getWorldRotationEuler().x, obj->getWorldRotationEuler().y, obj->getWorldRotationEuler().z };
         subObject["scale"] = { obj->getLocalScale().x, obj->getLocalScale().y, obj->getLocalScale().z };
 
-        // Guardar componentes
         json components;
 
-        // Light Component
-        const auto* lightComp = obj->getComponent<LightComponent>();
-        if (lightComp && lightComp->isValid()) {
-            try {
-                json lightData;
-                lightData["type"] = static_cast<int>(lightComp->getType());
-                lightData["enabled"] = lightComp->isEnabled();
-                
-                glm::vec3 color = lightComp->getColor();
-                lightData["color"] = { color.r, color.g, color.b };
-                lightData["intensity"] = lightComp->getIntensity();
 
-                switch (lightComp->getType()) {
-                    case LightType::Directional: {
-                        break;
-                    }
-                    case LightType::Point: {
-                        glm::vec3 attenuation = lightComp->getAttenuation();
-                        lightData["attenuation"] = { attenuation.x, attenuation.y, attenuation.z };
-                        lightData["minDistance"] = lightComp->getMinDistance();
-                        lightData["maxDistance"] = lightComp->getMaxDistance();
-                        break;
-                    }
-                    case LightType::Spot: {
-                        lightData["cutOffAngle"] = glm::degrees(lightComp->getCutOffAngle());
-                        lightData["outerCutOffAngle"] = glm::degrees(lightComp->getOuterCutOffAngle());
-                        lightData["spotRange"] = lightComp->getSpotRange();
-                        break;
-                    }
-                }
-                components["LightComponent"] = lightData;
-            }
-            catch (const std::exception& e) {
-                std::cerr << "Error saving light component: " << e.what() << std::endl;
-            }
-        }
+        auto saveComponent = [](const Component* comp, json& salida) {
+            if (!comp) return;
 
-        // Audio Source Component
-        const auto* audioComp = obj->getComponent<AudioSource>();
-        if (audioComp && audioComp->isValid()) {
+            std::string serialized = comp->serializeComponent();
+            if (serialized.find_first_not_of(" \t\n\r") == std::string::npos)
+                return; // string vacío o solo espacios
+
             try {
-                json audioData;
-                audioData["volume"] = audioComp->getVolume();
-                audioData["is3D"] = audioComp->is3DEnabled();
-                
-                if (audioComp->is3DEnabled()) {
-                    audioData["minDistance"] = audioComp->getMinDistance();
-                    audioData["maxDistance"] = audioComp->getMaxDistance();
-                }
-                
-                components["AudioSource"] = audioData;
+                json data = json::parse(serialized);
+                salida["component"].push_back(data);
             }
-            catch (const std::exception& e) {
-                std::cerr << "Error saving audio component: " << e.what() << std::endl;
+            catch (const json::parse_error& e) {
+                std::cerr << "Error al parsear JSON del componente (" << typeid(*comp).name() << "): " << e.what() << "\n";
             }
+        };
+
+
+        for (auto& get : obj->getAllComponents())
+        {
+            saveComponent(get, components);
         }
 
         // Mesh/Geometry
@@ -130,9 +98,10 @@ bool SceneSaver::SaveScene(const Scene* scene, const std::string& filepath) {
     bool success = FileSystem::writeString(filepath, MainJson.dump(4));
     if (success) {
         std::cout << "Scene saved successfully to: " << filepath << std::endl;
-    } else {
+    }
+    else {
         std::cerr << "Failed to save scene to: " << filepath << std::endl;
     }
-    
+
     return success;
 }

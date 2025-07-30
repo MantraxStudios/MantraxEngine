@@ -175,18 +175,52 @@ public:
     template<typename T, typename... Args>
     T* addComponent(Args&&... args) {
         static_assert(std::is_base_of<Component, T>::value, "T must inherit from Component");
-        
-        auto comp = std::make_unique<T>(std::forward<Args>(args)...);
+
+        std::unique_ptr<T> comp = std::make_unique<T>(std::forward<Args>(args)...);
         comp->setOwner(this);
         T* rawPtr = comp.get();
         components.push_back(std::move(comp));
-        
-        // Ejecutar start() automáticamente cuando se añade el componente
+
         if (rawPtr && rawPtr->isActive()) {
             rawPtr->start();
         }
-        
+
         return rawPtr;
+    }
+
+
+    // Añade esto en GameObject.h o como función auxiliar
+    template<typename T>
+    T* getComponentSafe() {
+        try {
+            // Verificar que el vector components no esté corrupto
+            if (components.empty()) {
+                return nullptr;
+            }
+
+            // Verificar que no estamos accediendo a memoria inválida
+            for (size_t i = 0; i < components.size(); ++i) {
+                if (!components[i]) {
+                    continue; // Skip null pointers
+                }
+
+                // Verificar que el puntero parece válido antes del dynamic_cast
+                try {
+                    T* casted = dynamic_cast<T*>(components[i].get());
+                    if (casted) {
+                        return casted;
+                    }
+                }
+                catch (...) {
+                    // Si dynamic_cast falla, continuar con el siguiente
+                    continue;
+                }
+            }
+        }
+        catch (...) {
+            return nullptr;
+        }
+        return nullptr;
     }
 
     template<typename T>
@@ -197,6 +231,16 @@ public:
             }
         }
         return nullptr;
+    }
+
+    template<typename T>
+    bool hasComponent() {
+        for (auto& comp : components) {
+            if (dynamic_cast<T*>(comp.get())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     template<typename T>

@@ -5,8 +5,6 @@ void ImGuiLoader::StartContext (SDL_Window* _Window, SDL_GLContext _Context) {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
     ImGuiThemes::setProfessionalTheme();

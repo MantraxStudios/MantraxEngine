@@ -1,5 +1,8 @@
 #include "ScriptExecutor.h"
 #include <filesystem>
+#include <nlohmann/json.hpp>
+
+using json = nlohmann::json;
 
 void ScriptExecutor::setOwner(GameObject* owner) {
     Component::setOwner(owner);
@@ -127,4 +130,20 @@ void ScriptExecutor::onTriggerExit(GameObject* other) {
             std::cerr << "Error en OnTriggerExit() del script " << luaPath << ": " << e.what() << std::endl;
         }
     }
+}
+
+std::string ScriptExecutor::serializeComponent() const {
+    json j;
+    j["luaPath"] = luaPath;
+    j["enabled"] = isEnabled;
+    return j.dump();
+}
+
+
+void ScriptExecutor::deserialize(const std::string& data) {
+    json j = json::parse(data);
+    luaPath = j.value("luaPath", "ExampleScript");
+
+    // Puedes recargar automáticamente el script:
+    reloadScript();
 }

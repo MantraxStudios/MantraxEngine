@@ -46,11 +46,11 @@
     <Filter Include="01_Natives\Physics">
       <UniqueIdentifier>{e09beec6-a1ca-46dd-b6fd-6670a71a4fc2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Vendors\MPhysics">
-      <UniqueIdentifier>{e33f40e8-66cb-4978-8263-fa85c0041b01}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01_Natives\LuaWrappers">
       <UniqueIdentifier>{f74021d3-cbd6-4f1d-8444-a4587d2f421c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Vendors\JSON">
+      <UniqueIdentifier>{e33f40e8-66cb-4978-8263-fa85c0041b01}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -170,6 +170,9 @@
     </ClCompile>
     <ClCompile Include="..\src\core\PhysicsEventCallback.cpp">
       <Filter>01_Natives\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\components\CharacterController.cpp">
+      <Filter>01_Natives\Components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -329,6 +332,9 @@
     </ClInclude>
     <ClInclude Include="..\src\wrapper\CoreWrapper.h">
       <Filter>01_Natives\LuaWrappers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\components\CharacterController.h">
+      <Filter>01_Natives\Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\components\AudioSource.cpp" />
+    <ClCompile Include="..\src\components\CharacterController.cpp" />
     <ClCompile Include="..\src\components\GameObject.cpp" />
     <ClCompile Include="..\src\components\LightComponent.cpp" />
     <ClCompile Include="..\src\components\ModelScene.cpp" />
@@ -61,6 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\components\AudioSource.h" />
+    <ClInclude Include="..\src\components\CharacterController.h" />
     <ClInclude Include="..\src\components\Component.h" />
     <ClInclude Include="..\src\components\GameObject.h" />
     <ClInclude Include="..\src\components\LightComponent.h" />
@@ -215,9 +217,10 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)vendors/includes;$(SolutionDir)vendors/includes/lua</AdditionalIncludeDirectories>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

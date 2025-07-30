@@ -9,6 +9,8 @@ public:
     LightComponent(LightType type = LightType::Point);
     void setOwner(GameObject* owner) override;
     void update() override;
+    std::string serializeComponent() const override;
+    void deserialize(const std::string& data) override;
 
     // Validación del componente
     bool isValid() const override { return Component::isValid() && light != nullptr; }
