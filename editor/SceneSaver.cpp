@@ -304,9 +304,9 @@ bool SceneSaver::LoadScene(const std::string& filepath) {
     }
 
     // CameraFov
-    if (settings.contains("FrustrumOn")) {
-        bool frustumOn = settings["FrustrumOn"];
-        RenderPipeline::getInstance().setFrustumCulling(frustumOn);
+    if (settings.contains("CameraFov")) {
+        bool cameraFovAmount = settings["CameraFov"];
+        newScene.get()->getCamera()->setOrthographicSize(cameraFovAmount);
     }
 
 
