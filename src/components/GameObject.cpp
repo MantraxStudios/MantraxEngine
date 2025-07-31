@@ -603,6 +603,8 @@ bool GameObject::loadModelFromPath(const std::string& path) {
     auto& modelLoader = ModelLoader::getInstance();
     auto loadedModel = modelLoader.loadModel(FileSystem::getProjectPath() + "\\" + path);
 
+    std::cout << "Model Path: " << loadedModel << std::endl;
+
     if (loadedModel) {
         // Asignar la geometría cargada
         setGeometry(loadedModel);

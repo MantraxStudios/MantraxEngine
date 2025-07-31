@@ -168,7 +168,7 @@ void Inspector::RenderGameObjectInspector(GameObject* go) {
 
     // Layer Configuration
     ImGui::Separator();
-    ImGui::Text("Layer Configuration");
+    ImGui::Text("Layer Configuration:");
     
     // Layer selection
     static int currentLayerIndex = 0;

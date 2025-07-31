@@ -412,7 +412,7 @@ void RenderImagePreview(const std::string& pathImage) {
         ImTextureID textureId = (ImTextureID)(intptr_t)texture->getID();
 
         // Renderizar la imagen con coordenadas UV invertidas en Y para corregir la orientación
-        ImGui::Image(textureId, previewSize, ImVec2(0, 1), ImVec2(1, 0));
+        ImGui::Image(textureId, previewSize, ImVec2(0, 0), ImVec2(1, 1)); // normal
 
         // Mostrar información adicional
         ImGui::Text("Size: %.0fx%.0f", textureSize.x, textureSize.y);
@@ -522,7 +522,6 @@ void RenderTreeView() {
 }
 
 void ContentBrowser::OnRenderGUI() {
-    // Inicializar de forma segura
     InitializeAssetsBrowser();
 
     if (!s_currentPath || !s_currentEntries || !s_selectedFile || !s_contentRootPath || !s_textureCache || !s_textureSizes) {
@@ -532,17 +531,14 @@ void ContentBrowser::OnRenderGUI() {
         return;
     }
 
-    // Configurar estilo moderno
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(8, 8));
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(6, 4));
     
     ImGui::Begin("Content Browser", nullptr, ImGuiWindowFlags_MenuBar);
 
-    // Inicializar la ruta si es necesario
     if (s_currentPath->empty()) {
         try {
             std::string projectPath = FileSystem::getProjectPath();
-            // Remover barra final si existe
             if (!projectPath.empty() && (projectPath.back() == '\\' || projectPath.back() == '/')) {
                 projectPath.pop_back();
             }

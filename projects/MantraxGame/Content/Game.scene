@@ -1,0 +1,140 @@
+{
+    "objects": [
+        {
+            "Name": "Bird",
+            "Tag": "Default",
+            "components": {
+                "Geometry": {
+                    "modelPath": "Content\\Plane.fbx"
+                },
+                "Material": {
+                    "exists": true
+                },
+                "MaterialName": "Bird"
+            },
+            "position": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                -0.0,
+                0.0
+            ],
+            "scale": [
+                1.0,
+                1.0,
+                1.0
+            ]
+        },
+        {
+            "Name": "bg",
+            "Tag": "Default",
+            "components": {
+                "Geometry": {
+                    "modelPath": "Content\\Plane.fbx"
+                },
+                "Material": {
+                    "exists": true
+                },
+                "MaterialName": "BG"
+            },
+            "position": [
+                0.0,
+                71.16899871826172,
+                -109.4000015258789
+            ],
+            "rotation": [
+                0.0,
+                -0.0,
+                0.0
+            ],
+            "scale": [
+                142.81805419921875,
+                171.0184326171875,
+                5.387920379638672
+            ]
+        },
+        {
+            "Name": "Base1",
+            "Tag": "Default",
+            "components": {
+                "Geometry": {
+                    "modelPath": "Content\\Plane.fbx"
+                },
+                "Material": {
+                    "exists": true
+                },
+                "MaterialName": "Base"
+            },
+            "position": [
+                0.0,
+                23.113000869750977,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                -0.0,
+                -180.0
+            ],
+            "scale": [
+                40.0,
+                5.0,
+                1.0
+            ]
+        },
+        {
+            "Name": "Base2",
+            "Tag": "Default",
+            "components": {
+                "Geometry": {
+                    "modelPath": "Content\\Plane.fbx"
+                },
+                "Material": {
+                    "exists": true
+                },
+                "MaterialName": "Base"
+            },
+            "position": [
+                0.0,
+                -16.292999267578125,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                -0.0,
+                0.0
+            ],
+            "scale": [
+                40.0,
+                5.0,
+                1.0
+            ]
+        },
+        {
+            "Name": "Sun",
+            "Tag": "Default",
+            "components": {
+                "Geometry": {
+                    "modelPath": "Content\\Plane.fbx"
+                }
+            },
+            "position": [
+                0.0,
+                0.0,
+                -269.8139953613281
+            ],
+            "rotation": [
+                0.0,
+                -0.0,
+                0.0
+            ],
+            "scale": [
+                1.0,
+                1.0,
+                1.0
+            ]
+        }
+    ]
+}

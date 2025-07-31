@@ -95,7 +95,7 @@ bool SceneSaver::SaveScene(const Scene* scene, const std::string& filepath) {
                     const std::string& modelPath = obj->getModelPath();
                     if (!modelPath.empty()) {
                         json geometryData;
-                        geometryData["modelPath"] = modelPath;
+                        geometryData["modelPath"] = FileSystem::GetPathAfterContent(modelPath);
                         components["Geometry"] = geometryData;
                     }
                 }
@@ -237,9 +237,13 @@ bool SceneSaver::LoadScene(const std::string& filepath) {
                     }
                 }
             }
-            if (components.contains("Geometry") && obj->hasGeometry()) {
+
+            if (components.contains("Geometry")) {
                 const std::string& modelPath = components["Geometry"]["modelPath"].get<std::string>();
                 obj->setModelPath(modelPath);
+                obj->loadModelFromPath();
+
+                std::cout << "Loading Model: " << modelPath << std::endl;
             }
 
             EditorInfo::pipeline->listMaterials();

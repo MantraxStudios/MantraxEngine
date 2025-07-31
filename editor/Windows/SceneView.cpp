@@ -6,7 +6,7 @@
 #include "Selection.h"
 #include <imgui/ImGuizmo.h>
 #include "components/EventSystem.h"
-#include <SDL.h> // Added for SDL_SetRelativeMouseMode
+#include <SDL.h>
 
 using namespace ImGuizmo;
 static MODE currentGizmoMode = LOCAL;

@@ -119,49 +119,49 @@ void setupInputSystem(Scene* activeScene) {
             });
     }
 
-    auto switchToScene1 = inputSystem.getAction("SwitchToScene1");
-    if (switchToScene1) {
-        switchToScene1->bindButtonCallback([](bool pressed) {
-            if (pressed) {
-                Selection::GameObjectSelect = nullptr;
-                auto& sceneManager = SceneManager::getInstance();
-                //sceneManager.setActiveScene("TestScene");
-            }
-            });
-    }
+    //auto switchToScene1 = inputSystem.getAction("SwitchToScene1");
+    //if (switchToScene1) {
+    //    switchToScene1->bindButtonCallback([](bool pressed) {
+    //        if (pressed) {
+    //            Selection::GameObjectSelect = nullptr;
+    //            auto& sceneManager = SceneManager::getInstance();
+    //            //sceneManager.setActiveScene("TestScene");
+    //        }
+    //        });
+    //}
 
-    auto switchToScene2 = inputSystem.getAction("SwitchToScene2");
-    if (switchToScene2) {
-        switchToScene2->bindButtonCallback([](bool pressed) {
-            if (pressed) {
-                Selection::GameObjectSelect = nullptr;
-                auto& sceneManager = SceneManager::getInstance();
-                sceneManager.setActiveScene("TexturedScene");
-            }
-            });
-    }
+    //auto switchToScene2 = inputSystem.getAction("SwitchToScene2");
+    //if (switchToScene2) {
+    //    switchToScene2->bindButtonCallback([](bool pressed) {
+    //        if (pressed) {
+    //            Selection::GameObjectSelect = nullptr;
+    //            auto& sceneManager = SceneManager::getInstance();
+    //            sceneManager.setActiveScene("TexturedScene");
+    //        }
+    //        });
+    //}
 
-    auto switchToScene3 = inputSystem.getAction("SwitchToScene3");
-    if (switchToScene3) {
-        switchToScene3->bindButtonCallback([](bool pressed) {
-            if (pressed) {
-                Selection::GameObjectSelect = nullptr;
-                auto& sceneManager = SceneManager::getInstance();
-                sceneManager.setActiveScene("ModelScene");
-            }
-            });
-    }
+    //auto switchToScene3 = inputSystem.getAction("SwitchToScene3");
+    //if (switchToScene3) {
+    //    switchToScene3->bindButtonCallback([](bool pressed) {
+    //        if (pressed) {
+    //            Selection::GameObjectSelect = nullptr;
+    //            auto& sceneManager = SceneManager::getInstance();
+    //            sceneManager.setActiveScene("ModelScene");
+    //        }
+    //        });
+    //}
 
-    auto switchToScene4 = inputSystem.getAction("SwitchToScene4");
-    if (switchToScene4) {
-        switchToScene4->bindButtonCallback([](bool pressed) {
-            if (pressed) {
-                Selection::GameObjectSelect = nullptr;
-                auto& sceneManager = SceneManager::getInstance();
-                sceneManager.setActiveScene("Physics Test Scene");
-            }
-            });
-    }
+    //auto switchToScene4 = inputSystem.getAction("SwitchToScene4");
+    //if (switchToScene4) {
+    //    switchToScene4->bindButtonCallback([](bool pressed) {
+    //        if (pressed) {
+    //            Selection::GameObjectSelect = nullptr;
+    //            auto& sceneManager = SceneManager::getInstance();
+    //            sceneManager.setActiveScene("Physics Test Scene");
+    //        }
+    //        });
+    //}
 }
 
 int main() {
@@ -306,13 +306,13 @@ int main() {
                 continue;
             }
 
-            // Show startup banner with 'B' key
-            if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_b) {
-                showStartupBanner = true;
-                bannerStartTime = 0.0f; // Reset timer
-                std::cout << "Startup banner triggered" << std::endl;
-                continue;
-            }
+            //// Show startup banner with 'B' key
+            //if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_b) {
+            //    showStartupBanner = true;
+            //    bannerStartTime = 0.0f; // Reset timer
+            //    std::cout << "Startup banner triggered" << std::endl;
+            //    continue;
+            //}
 
             // Handle mouse capture toggle
             if (event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_RIGHT && EditorInfo::IsHoveringScene) {

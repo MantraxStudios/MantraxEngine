@@ -52,6 +52,9 @@
     <Filter Include="Vendors\JSON">
       <UniqueIdentifier>{e33f40e8-66cb-4978-8263-fa85c0041b01}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MantraxCorePack">
+      <UniqueIdentifier>{20599279-c4b8-4a22-8fd0-0c77c1d8a3a9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\main\MantraxEngine.cpp">
@@ -173,6 +176,12 @@
     </ClCompile>
     <ClCompile Include="..\src\components\CharacterController.cpp">
       <Filter>01_Natives\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\mpak\MantraxCorePackBuilder.cpp">
+      <Filter>MantraxCorePack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\mpak\MantraxCorePackReader.cpp">
+      <Filter>MantraxCorePack</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -335,6 +344,12 @@
     </ClInclude>
     <ClInclude Include="..\src\components\CharacterController.h">
       <Filter>01_Natives\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\mpak\MantraxCorePackBuilder.h">
+      <Filter>MantraxCorePack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\mpak\MantraxCorePackReader.h">
+      <Filter>MantraxCorePack</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

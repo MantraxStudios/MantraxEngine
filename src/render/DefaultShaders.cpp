@@ -210,12 +210,17 @@ vec3 CalculateBlinnPhongLighting(vec3 albedo, float shininess, vec3 N, vec3 V, v
 
 void main() {
     vec2 texCoord = TexCoord * uTiling;
+
     
     // Sample material properties
+    float alpha = 1.0;
     vec3 albedo = uAlbedo;
     if (uHasAlbedoTexture) {
-        albedo *= texture(uAlbedoTexture, texCoord).rgb;
+        vec4 albedoSample = texture(uAlbedoTexture, texCoord);
+        albedo *= albedoSample.rgb;
+        alpha = albedoSample.a;
     }
+
     
     float metallic = uMetallic;
     float roughness = uRoughness;
@@ -384,6 +389,9 @@ void main() {
     
     // Gamma correction
     color = pow(color, vec3(1.0/2.2)); 
+
+    if (alpha < 0.1)
+        discard;
     
     FragColor = vec4(color, 1.0);
 }

@@ -12,6 +12,7 @@
 #include "../SceneSaver.h"
 #include <iostream>
 #include "../Windows/FileExplorer.h"
+#include <mpak/MantraxCorePackBuilder.h>
 
 // Declaración de la variable externa
 extern volatile bool g_running;
@@ -200,6 +201,23 @@ void MainBar::OnRenderGUI() {
 			if (ImGui::MenuItem("Toggle PBR/Phong", nullptr, &usePBR)) {
 				pipeline->setUsePBR(usePBR);
 				std::cout << "Switched to " << (usePBR ? "PBR" : "Blinn-Phong") << " lighting" << std::endl;
+			}
+
+			if (ImGui::MenuItem("Toggle Ortho/Pov Camera", nullptr, &usePBR)) {
+				if (sceneManager.getActiveScene()->getCamera()->getProjectionType() == ProjectionType::Perspective)
+				{
+					sceneManager.getActiveScene()->getCamera()->setProjectionType(ProjectionType::Orthographic, true);
+
+				}
+				else 
+				{
+					sceneManager.getActiveScene()->getCamera()->setProjectionType(ProjectionType::Perspective, true);
+				}
+			}
+
+			static float fovCamera = sceneManager.getActiveScene()->getCamera()->getOrthographicSize();
+			if (ImGui::SliderFloat("Camera Fov", &fovCamera, 0.0f, 200.0f, "%.2f")) {
+				sceneManager.getActiveScene()->getCamera()->setOrthographicSize(fovCamera);
 			}
 			
 			bool lowAmbient = pipeline->getLowAmbient();
