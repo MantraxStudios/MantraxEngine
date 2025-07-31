@@ -22,19 +22,18 @@ Texture::~Texture() {
 bool Texture::loadFromFile(const std::string& filePath) {
     this->filePath = FileSystem::getProjectPath() + "\\Content\\" + filePath;
     
-    // Flip verticalmente las imágenes (OpenGL espera el origen en la esquina inferior izquierda)
     stbi_set_flip_vertically_on_load(1);
     
     // Determinar si es una textura de datos o color
-    bool isDataTexture = (filePath.find("Normal") != std::string::npos ||
-                         filePath.find("Metalness") != std::string::npos ||
-                         filePath.find("Roughness") != std::string::npos ||
-                         filePath.find("AO") != std::string::npos ||
-                         filePath.find("Height") != std::string::npos);
+    bool isDataTexture = (this->filePath.find("Normal") != std::string::npos ||
+                          this->filePath.find("Metalness") != std::string::npos ||
+                          this->filePath.find("Roughness") != std::string::npos ||
+                          this->filePath.find("AO") != std::string::npos ||
+                          this->filePath.find("Height") != std::string::npos);
     
-    localBuffer = stbi_load(filePath.c_str(), &width, &height, &BPP, 4);
+    localBuffer = stbi_load(this->filePath.c_str(), &width, &height, &BPP, 4);
     if (!localBuffer) {
-        std::cerr << "Error: No se pudo cargar la textura: " << filePath << std::endl;
+        std::cerr << "Error: No se pudo cargar la textura: " << this->filePath << std::endl;
         std::cerr << "STB Error: " << stbi_failure_reason() << std::endl;
         return false;
     }

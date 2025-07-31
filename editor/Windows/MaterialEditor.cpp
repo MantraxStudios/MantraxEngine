@@ -1,10 +1,12 @@
 #include "MaterialEditor.h"
 #include "core/FileSystem.h"
+#include <render/MaterialManager.h>
 #include "render/RenderPipeline.h"
 #include <map>
 #include <memory>
 #include <cstring>
 #include <iostream>
+#include "../EUI/UIBuilder.h"
 
 void MaterialEditor::OnRenderGUI() {
     ImGui::Begin("Material Editor", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize);
@@ -125,18 +127,33 @@ void MaterialEditor::OnRenderGUI() {
 
         if (ImGui::CollapsingHeader("Basic", ImGuiTreeNodeFlags_DefaultOpen)) {
             ImGui::ColorEdit3("Albedo", albedo);
-            if (ImGui::InputText("Albedo Texture", albedoTexture, sizeof(albedoTexture))) {
-                previewAlbedo = GetTexturePreview(albedoTexture);
+
+            ImGui::InputText("Albedo Texture", albedoTexture, sizeof(albedoTexture));
+            // Drag & drop fuera del if:
+            {
+                auto result = UIBuilder::Drag_Objetive("TextureClass");
+                if (result.has_value()) {
+                    strncpy_s(albedoTexture, sizeof(albedoTexture), result.value().c_str(), _TRUNCATE);
+                    previewAlbedo = GetTexturePreview(albedoTexture); // recarga el preview al arrastrar
+                }
             }
             if (previewAlbedo) {
                 ImGui::SameLine();
                 ImGui::Image(previewAlbedo, ImVec2(64, 64));
             }
         }
+
+
         if (ImGui::CollapsingHeader("PBR Properties", ImGuiTreeNodeFlags_DefaultOpen)) {
             ImGui::SliderFloat("Metallic", &metallic, 0.0f, 1.0f);
-            if (ImGui::InputText("Metallic Texture", metallicTexture, sizeof(metallicTexture))) {
-                previewMetallic = GetTexturePreview(metallicTexture);
+
+            ImGui::InputText("Metallic Texture", metallicTexture, sizeof(metallicTexture));
+            {
+                auto result = UIBuilder::Drag_Objetive("TextureClass");
+                if (result.has_value()) {
+                    strncpy_s(metallicTexture, sizeof(metallicTexture), result.value().c_str(), _TRUNCATE);
+                    previewMetallic = GetTexturePreview(metallicTexture);
+                }
             }
             if (previewMetallic) {
                 ImGui::SameLine();
@@ -144,23 +161,36 @@ void MaterialEditor::OnRenderGUI() {
             }
 
             ImGui::SliderFloat("Roughness", &roughness, 0.0f, 1.0f);
-            if (ImGui::InputText("Roughness Texture", roughnessTexture, sizeof(roughnessTexture))) {
-                previewRoughness = GetTexturePreview(roughnessTexture);
+
+            ImGui::InputText("Roughness Texture", roughnessTexture, sizeof(roughnessTexture));
+            {
+                auto result = UIBuilder::Drag_Objetive("TextureClass");
+                if (result.has_value()) {
+                    strncpy_s(roughnessTexture, sizeof(roughnessTexture), result.value().c_str(), _TRUNCATE);
+                    previewRoughness = GetTexturePreview(roughnessTexture);
+                }
             }
             if (previewRoughness) {
                 ImGui::SameLine();
                 ImGui::Image(previewRoughness, ImVec2(64, 64));
             }
 
-            if (ImGui::InputText("Normal Texture", normalTexture, sizeof(normalTexture))) {
-                previewNormal = GetTexturePreview(normalTexture);
+            ImGui::InputText("Normal Texture", normalTexture, sizeof(normalTexture));
+            {
+                auto result = UIBuilder::Drag_Objetive("TextureClass");
+                if (result.has_value()) {
+                    strncpy_s(normalTexture, sizeof(normalTexture), result.value().c_str(), _TRUNCATE);
+                    previewNormal = GetTexturePreview(normalTexture);
+                }
             }
             if (previewNormal) {
                 ImGui::SameLine();
                 ImGui::Image(previewNormal, ImVec2(64, 64));
             }
+
             ImGui::SliderFloat("Normal Strength", &normalStrength, 0.0f, 8.0f);
         }
+
         if (ImGui::CollapsingHeader("Advanced", ImGuiTreeNodeFlags_DefaultOpen)) {
             ImGui::ColorEdit3("Emissive", emissive);
             if (ImGui::InputText("Emissive Texture", emissiveTexture, sizeof(emissiveTexture))) {
@@ -213,12 +243,18 @@ void MaterialEditor::OnRenderGUI() {
             feedbackMsg = "Material saved!";
             feedbackTime = ImGui::GetTime();
             materialesCargados = false;
+
+            MaterialManager::getInstance().clearMaterials();
+            MaterialManager::getInstance().loadMaterialsFromConfig("config/materials_config.json");
         }
         ImGui::SameLine();
         if (ImGui::Button("Reload")) {
             materialesCargados = false;
             feedbackMsg = "Reloaded materials";
             feedbackTime = ImGui::GetTime();
+
+            MaterialManager::getInstance().clearMaterials();
+            MaterialManager::getInstance().loadMaterialsFromConfig("config/materials_config.json");
         }
     }
 

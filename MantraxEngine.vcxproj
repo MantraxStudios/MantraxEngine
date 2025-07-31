@@ -161,6 +161,7 @@
     <ClInclude Include="editor\EUI\EditorInfo.h" />
     <ClInclude Include="editor\EUI\ImGuiLoader.h" />
     <ClInclude Include="editor\EUI\ImGuiThemes.h" />
+    <ClInclude Include="editor\EUI\UIBuilder.h" />
     <ClInclude Include="editor\SceneSaver.h" />
     <ClInclude Include="editor\Windows\ContentBrowser.h" />
     <ClInclude Include="editor\Windows\FileExplorer.h" />

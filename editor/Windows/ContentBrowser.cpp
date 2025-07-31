@@ -11,6 +11,7 @@
 #include <map>
 #include "../SceneSaver.h"
 #include "../EUI/EditorInfo.h"
+#include "../EUI/UIBuilder.h"
 
 namespace fs = std::filesystem;
 
@@ -225,6 +226,21 @@ void RefreshDirectory() {
 
     s_needsRefresh = false;
 }
+
+void FileDragInfo(const FileEntry& entry) {
+    size_t dotPos = entry.name.find_last_of('.');
+    std::string extension;
+    if (dotPos != std::string::npos) {
+        extension = entry.name.substr(dotPos);
+        std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
+
+        if (extension == ".png" || extension == ".jpg") {
+            UIBuilder::Drag("TextureClass", FileSystem::GetPathAfterContent(entry.path));
+        }
+    }
+    // Si no tiene extensión, simplemente no hace nada
+}
+
 
 // Función para obtener el icono según el tipo de archivo
 const char* GetFileIcon(const FileEntry& entry) {
@@ -458,6 +474,8 @@ void RenderTreeView() {
                 s_selectedFile->clear();
             }
         }
+
+        FileDragInfo(entry);
 
         
         // Mostrar información adicional en tooltip

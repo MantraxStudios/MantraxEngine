@@ -173,5 +173,8 @@
     <ClInclude Include="editor\Windows\MaterialEditor.h">
       <Filter>01_Main\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="editor\EUI\UIBuilder.h">
+      <Filter>01_Main\EUI</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

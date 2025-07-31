@@ -216,6 +216,23 @@ std::string FileSystem::getProjectPath() {
     }
 }
 
+std::string FileSystem::GetPathAfterContent(const std::string& fullPath) {
+    // Buscar "Content\" (Windows)
+    std::string key = "Content\\";
+    size_t pos = fullPath.find(key);
+    if (pos == std::string::npos) {
+        // Buscar también "Content/" (por si es slash normal)
+        key = "Content/";
+        pos = fullPath.find(key);
+    }
+    if (pos != std::string::npos) {
+        return fullPath.substr(pos + key.length());
+    }
+    // No se encontró "Content", devuelve vacío o el string completo si prefieres
+    return "";
+}
+
+
 // Función auxiliar para normalizar rutas
 std::string FileSystem::normalizePath(const std::string& path) {
     std::string normalized = path;

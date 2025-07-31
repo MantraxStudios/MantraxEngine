@@ -64,7 +64,7 @@
             "normal_strength": 0.0,
             "roughness": 0.30000001192092896,
             "textures": {
-                "albedo": "textures/DiamondPlate008C_1K-PNG_Color.png",
+                "albedo": "textures\\DiamondPlate008C_1K-PNG_Color.png",
                 "ao": "",
                 "emissive": "",
                 "metallic": "",

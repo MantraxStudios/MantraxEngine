@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <algorithm>
 #include "CoreExporter.h"
 
 class MANTRAXCORE_API FileSystem {
@@ -35,6 +36,7 @@ public:
     static std::string getRelativePath(const std::string& absolutePath, const std::string& basePath);
     static std::string getProjectPath();
     static std::filesystem::path workDirectory();
+    static std::string GetPathAfterContent(const std::string& fullPath);
 
 private:
     static bool ensureDirectoryExists(const std::string& filePath);
