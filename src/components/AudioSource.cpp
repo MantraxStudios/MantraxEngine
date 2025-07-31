@@ -160,6 +160,10 @@ void AudioSource::update3DAttributes() {
     }
 }
 
+void AudioSource::destroy() {
+    stop();
+}
+
 
 std::string AudioSource::serializeComponent() const {
     json j;

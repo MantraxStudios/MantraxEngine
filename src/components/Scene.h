@@ -47,6 +47,7 @@ public:
     }
 
     const std::string& getName() const { return name; }
+    void setName(std::string newName) { name = newName; }
     bool isInitialized() const { return initialized; }
     void setInitialized(bool value) { initialized = value; }
 

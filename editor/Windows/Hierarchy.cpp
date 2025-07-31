@@ -92,21 +92,40 @@ void Hierarchy::OnRenderGUI() {
 
     ImGui::Begin("Hierarchy", &isOpen);
 
-    // Object Service TreeNode (Jerarquía de objetos)
-    if (ImGui::TreeNode("Object Service")) {
-        if (ImGui::BeginPopupContextItem("ObjectServiceContext")) {
-            if (ImGui::MenuItem("Create Empty Object")) {
-                // TODO: Implementar creación de objeto vacío
-            }
-            ImGui::EndPopup();
+    // Obtener la escena activa
+    auto* activeScene = SceneManager::getInstance().getActiveScene();
+    if (!activeScene) {
+        ImGui::Text("No active scene");
+        ImGui::End();
+        return;
+    }
+
+    // --- Edición de nombre de la escena ---
+    static bool renamingScene = false;
+    static char sceneNameBuffer[128] = "";
+
+    std::string sceneName = activeScene->getName();
+
+    if (!renamingScene) {
+        // TreeNode con el nombre de la escena
+        bool open = ImGui::TreeNode(sceneName.c_str());
+
+        // Doble click activa edición
+        if (ImGui::IsMouseDoubleClicked(0) && ImGui::IsItemHovered()) {
+            renamingScene = true;
+            strncpy_s(sceneNameBuffer, sceneName.c_str(), sizeof(sceneNameBuffer));
+            sceneNameBuffer[sizeof(sceneNameBuffer) - 1] = 0;
         }
 
-        // Obtener la escena activa
-        auto* activeScene = SceneManager::getInstance().getActiveScene();
-        if (!activeScene) {
-            ImGui::Text("No active scene");
-        }
-        else {
+        if (open) {
+            // Popup de crear objeto vacío
+            if (ImGui::BeginPopupContextItem("SceneContext")) {
+                if (ImGui::MenuItem("Create Empty Object")) {
+                    // TODO: Implementar creación de objeto vacío
+                }
+                ImGui::EndPopup();
+            }
+
             // Mostrar selección actual
             if (Selection::GameObjectSelect) {
                 ImGui::TextColored(ImVec4(0.2f, 0.6f, 1.0f, 1.0f), "Selected: %s", Selection::GameObjectSelect->Name.c_str());
@@ -116,7 +135,7 @@ void Hierarchy::OnRenderGUI() {
             }
             ImGui::Separator();
 
-            // Renderizar sólo objetos root (sin padre)
+            // Renderizar objetos raíz
             const auto& gameObjects = activeScene->getGameObjects();
             bool anyRoot = false;
             for (GameObject* gameObject : gameObjects) {
@@ -129,11 +148,26 @@ void Hierarchy::OnRenderGUI() {
             if (!anyRoot) {
                 ImGui::Text("No GameObjects in scene");
             }
+
+            ImGui::TreePop();
         }
-        ImGui::TreePop();
+    }
+    else {
+        ImGui::SetNextItemWidth(-1);
+        ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0.15f, 0.2f, 0.28f, 1.0f));
+        if (ImGui::InputText("##SceneRename", sceneNameBuffer, sizeof(sceneNameBuffer),
+            ImGuiInputTextFlags_AutoSelectAll | ImGuiInputTextFlags_EnterReturnsTrue)) {
+            std::string newName = sceneNameBuffer;
+            if (!newName.empty() && newName != sceneName) {
+                activeScene->setName(newName);
+
+                renamingScene = false;
+            }
+        }
+        ImGui::PopStyleColor();
     }
 
-    // Light Service TreeNode (igual que antes)
+    // ----------- Light Service (igual que antes) -----------
     if (ImGui::TreeNode("Light Service")) {
         if (ImGui::BeginPopupContextItem("LightServiceContext")) {
             auto* activeScene = SceneManager::getInstance().getActiveScene();

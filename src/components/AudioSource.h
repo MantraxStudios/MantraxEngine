@@ -36,6 +36,7 @@ public:
 
     // Actualización del componente
     void update() override;
+    void destroy() override;
     void deserialize(const std::string& data) override;
     std::string serializeComponent() const override;
 

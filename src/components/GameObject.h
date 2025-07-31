@@ -299,13 +299,19 @@ public:
             [](const std::unique_ptr<Component>& comp) {
                 return dynamic_cast<T*>(comp.get()) != nullptr;
             });
-        
+
         if (it != components.end()) {
+            // Llama a destroy() ANTES de borrar el componente
+            if (it->get()) {
+                it->get()->destroy();
+            }
+            // Ahora sí borra el componente del vector
             components.erase(it);
             return true;
         }
         return false;
     }
+
 
     // Obtener todos los componentes
     std::vector<const Component*> getAllComponents() const {
