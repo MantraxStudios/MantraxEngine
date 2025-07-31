@@ -359,58 +359,69 @@ void RenderBreadcrumbs() {
 }
 
 // Función para renderizar preview de imagen
-void RenderImagePreview(const std::string& imagePath) {
+// Función para renderizar preview de imagen - CORREGIDA
+void RenderImagePreview(const std::string& pathImage) {
     if (!s_textureCache || !s_textureSizes) return;
-    
+
+    std::string imagePath = FileSystem::GetPathAfterContent(pathImage);
+
     // Verificar si la textura ya está en cache
     auto it = s_textureCache->find(imagePath);
     Texture* texture = nullptr;
     ImVec2 textureSize;
-    
+
     if (it == s_textureCache->end()) {
         // Cargar la textura si no está en cache
         texture = LoadImageTexture(imagePath);
         if (texture) {
             (*s_textureCache)[imagePath] = texture;
-            (*s_textureSizes)[imagePath] = ImVec2(static_cast<float>(texture->getWidth()), 
-                                                  static_cast<float>(texture->getHeight()));
+            textureSize = ImVec2(static_cast<float>(texture->getWidth()),
+                static_cast<float>(texture->getHeight()));
+            (*s_textureSizes)[imagePath] = textureSize;
         }
-    } else {
+    }
+    else {
         texture = it->second;
+        // CORREGIDO: Usar el tamaño del cache en lugar de recalcularlo
         textureSize = (*s_textureSizes)[imagePath];
     }
-    
+
     if (texture) {
-        // Obtener el tamaño real de la textura
-        textureSize = ImVec2(static_cast<float>(texture->getWidth()), 
-                           static_cast<float>(texture->getHeight()));
-        
-        // Calcular tamaño del preview (máximo 128x128)
-        float maxSize = 128.0f;
+        // Calcular tamaño del preview (puedes ajustar este valor)
+        float maxSize = 256.0f; // CAMBIADO: de 512.0f a 256.0f para mejor visibilidad
         ImVec2 previewSize = textureSize;
-        
+
         if (previewSize.x > maxSize || previewSize.y > maxSize) {
             float scale = maxSize / std::max(previewSize.x, previewSize.y);
             previewSize.x *= scale;
             previewSize.y *= scale;
         }
-        
+
+        // Asegurar un tamaño mínimo
+        float minSize = 128.0f;
+        if (previewSize.x < minSize && previewSize.y < minSize) {
+            float scale = minSize / std::max(previewSize.x, previewSize.y);
+            previewSize.x *= scale;
+            previewSize.y *= scale;
+        }
+
         // Convertir el ID de OpenGL a ImTextureID para ImGui
         ImTextureID textureId = (ImTextureID)(intptr_t)texture->getID();
-        
+
         // Renderizar la imagen con coordenadas UV invertidas en Y para corregir la orientación
         ImGui::Image(textureId, previewSize, ImVec2(0, 1), ImVec2(1, 0));
-        
+
         // Mostrar información adicional
         ImGui::Text("Size: %.0fx%.0f", textureSize.x, textureSize.y);
+        ImGui::Text("Preview: %.0fx%.0f", previewSize.x, previewSize.y); // DEBUG: mostrar tamaño del preview
         ImGui::Text("File: %s", fs::path(imagePath).filename().string().c_str());
-    } else {
+    }
+    else {
         // Si no se puede cargar la textura, mostrar un placeholder
         ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "[Preview not available]");
         ImGui::Text("File: %s", fs::path(imagePath).filename().string().c_str());
     }
 }
-
 // Función para renderizar el TreeView
 void RenderTreeView() {
     if (!s_currentEntries || s_currentEntries->empty()) {

@@ -24,6 +24,7 @@ void SceneView::OnRenderGUI() {
 
     if (camera && camera->isFramebufferEnabled()) {
         Framebuffer* fb = camera->getFramebuffer();
+
         ImVec2 avail = ImGui::GetContentRegionAvail();
         if (avail.x > 0 && avail.y > 0) {
             camera->setFramebufferSize((int)avail.x, (int)avail.y);

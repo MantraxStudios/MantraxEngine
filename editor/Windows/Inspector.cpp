@@ -6,6 +6,7 @@
 #include "../../src/components/ScriptExecutor.h"
 #include "../../src/components/CharacterController.h"
 #include "../../src/components/GameBehaviourFactory.h"
+#include "../../src/render/MaterialManager.h"
 #include "../../src/core/PhysicsManager.h"
 #include "../../src/render/RenderConfig.h"
 #include "Selection.h"
@@ -115,10 +116,35 @@ void Inspector::RenderGameObjectInspector(GameObject* go) {
 
     // Si no quieres modificar FileExplorer, puedes usar esto:
     static bool openModelPicker = false;
+    static bool openMaterialPicker = false;
     static std::string selectedModelPath;
 
     if (ImGui::Button("Choose Model...")) {
         openModelPicker = true;
+    }
+
+    // Variable necesaria (agregar como miembro de clase o variable estática)
+    ImGui::SameLine();
+    // Código del popup de selección de materiales
+    if (ImGui::Button("Choose Material...")) {
+        openMaterialPicker = true;
+    }
+
+    if (openMaterialPicker) {
+        ImGui::OpenPopup("Materials");
+        openMaterialPicker = false;
+    }
+
+    if (ImGui::BeginPopup("Materials")) {
+        const auto& allMaterials = MaterialManager::getInstance().getAllMaterials();
+
+        for (const auto& [materialName, materialPtr] : allMaterials) {
+            if (materialPtr && ImGui::MenuItem(materialName.c_str())) {
+                go->setMaterial(MaterialManager::getInstance().getMaterial(materialName));
+            }
+        }
+
+        ImGui::EndPopup();
     }
 
     ImGui::Text("Currents : %s", go->getModelPath().c_str());

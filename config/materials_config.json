@@ -64,7 +64,7 @@
             "normal_strength": 0.0,
             "roughness": 0.30000001192092896,
             "textures": {
-                "albedo": "textures\\DiamondPlate008C_1K-PNG_Color.png",
+                "albedo": "Sprites\\Characters\\Default\\character_beige_idle.png",
                 "ao": "",
                 "emissive": "",
                 "metallic": "",
@@ -146,8 +146,8 @@
         "red_material": {
             "albedo": [
                 1.0,
-                1.0,
-                1.0
+                0.0,
+                0.0
             ],
             "emissive": [
                 0.0,
@@ -158,6 +158,14 @@
             "name": "Red Material",
             "normal_strength": 1.0,
             "roughness": 1.5,
+            "textures": {
+                "albedo": "",
+                "ao": "",
+                "emissive": "",
+                "metallic": "",
+                "normal": "",
+                "roughness": ""
+            },
             "tiling": [
                 1.0,
                 1.0

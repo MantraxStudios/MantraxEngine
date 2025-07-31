@@ -6,6 +6,7 @@ void ImGuiLoader::StartContext (SDL_Window* _Window, SDL_GLContext _Context) {
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+    ImFont* myFont = io.Fonts->AddFontFromFileTTF("x64/debug/engine/fonts/Ubuntu-Regular.ttf", 16.0f);
 
     ImGuiThemes::setProfessionalTheme();
     

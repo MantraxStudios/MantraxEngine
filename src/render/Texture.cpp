@@ -22,7 +22,7 @@ Texture::~Texture() {
 bool Texture::loadFromFile(const std::string& filePath) {
     this->filePath = FileSystem::getProjectPath() + "\\Content\\" + filePath;
     
-    stbi_set_flip_vertically_on_load(1);
+    //stbi_set_flip_vertically_on_load(1);
     
     // Determinar si es una textura de datos o color
     bool isDataTexture = (this->filePath.find("Normal") != std::string::npos ||
@@ -44,12 +44,12 @@ bool Texture::loadFromFile(const std::string& filePath) {
     // Configurar parámetros de textura optimizados para PBR
     if (isDataTexture) {
         // Para texturas de datos (normal, metallic, roughness, etc.)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     } else {
         // Para texturas de color (albedo, emissive)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     }
     
     // Wrapping para texturas que se repiten (como Diamond Plate)
