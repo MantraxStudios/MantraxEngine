@@ -47,13 +47,12 @@ void MainBar::OnRenderGUI() {
 		}
 
 		if (ImGui::MenuItem("Save As...")) {
-			// TODO: Implementar diálogo de selección de archivo
+			boolOpenedPopup = true;
 		}
 
 		ImGui::Separator();
 
 		if (ImGui::MenuItem("Exit")) {
-			// Señalizar cierre seguro
 			g_running = false;
 		}
 		ImGui::EndMenu();
@@ -65,14 +64,14 @@ void MainBar::OnRenderGUI() {
 	}
 
 	std::string selectedPath;
-	if (FileExplorer::ShowSavePopup(FileSystem::getProjectPath(), selectedPath, ".scene")) {
+	if (FileExplorer::ShowSavePopup(FileSystem::getProjectPath() + "\\Content\\", selectedPath, ".scene")) {
 		auto& sceneManager = SceneManager::getInstance();
 		Scene* activeScene = sceneManager.getActiveScene();
 		if (activeScene) {
 			EditorInfo::currentScenePath = FileSystem::getProjectPath() + "\\Content\\" + selectedPath;
 			std::string filename = EditorInfo::currentScenePath;
 			if (SceneSaver::SaveScene(activeScene, filename)) {
-				activeScene->setName(filename);
+				activeScene->setName(FileSystem::getFileNameWithoutExtension(filename));
 				std::cout << "Scene saved successfully! " << EditorInfo::currentScenePath << std::endl;
 				std::cout << "Scene Current Path! " << EditorInfo::currentScenePath << std::endl;
 			}
