@@ -597,11 +597,10 @@ bool GameObject::loadModelFromPath(const std::string& path) {
         return false;
     }
 
-    std::cout << "Loading model for GameObject '" << Name << "' from path: " << path << std::endl;
 
     // Usar el ModelLoader singleton para cargar el modelo
     auto& modelLoader = ModelLoader::getInstance();
-    auto loadedModel = modelLoader.loadModel(FileSystem::getProjectPath() + "\\" + path);
+    auto loadedModel = modelLoader.loadModel(FileSystem::getProjectPath() + "\\Content\\" + path);
 
     std::cout << "Model Path: " << loadedModel << std::endl;
 

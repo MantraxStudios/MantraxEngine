@@ -161,7 +161,7 @@ void Inspector::RenderGameObjectInspector(GameObject* go) {
 
     // Llamada directa - FileExplorer maneja su propio popup
     if (FileExplorer::ShowPopup(modelDir, selectedModelPath, extension)) {
-        go->setModelPath(selectedModelPath);
+        go->setModelPath(FileSystem::GetPathAfterContent(selectedModelPath));
         go->loadModelFromPath();
     }
 

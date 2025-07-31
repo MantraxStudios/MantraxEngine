@@ -987,6 +987,7 @@ void PhysicalObject::updateReferenceFromCollider() {
 std::string PhysicalObject::serializeComponent() const {
     nlohmann::json j;
 
+    // Propiedades básicas del cuerpo
     j["bodyType"] = static_cast<int>(bodyType);
     j["shapeType"] = static_cast<int>(shapeType);
     j["mass"] = mass;
@@ -995,6 +996,7 @@ std::string PhysicalObject::serializeComponent() const {
     j["damping"] = damping;
     j["gravityFactor"] = gravityFactor;
     j["isTrigger"] = isTriggerShape;
+    j["initialized"] = initialized;
 
     // Safe glm::vec3 to JSON
     auto safeVec3 = [](const glm::vec3& v) -> std::vector<float> {
@@ -1002,90 +1004,263 @@ std::string PhysicalObject::serializeComponent() const {
         return { isSafe(v.x), isSafe(v.y), isSafe(v.z) };
         };
 
+    // Propiedades de formas geométricas
     j["boxHalfExtents"] = safeVec3(boxHalfExtents);
-    j["sphereRadius"] = std::isfinite(sphereRadius) ? sphereRadius : 0.0f;
-    j["capsuleRadius"] = std::isfinite(capsuleRadius) ? capsuleRadius : 0.0f;
-    j["capsuleHalfHeight"] = std::isfinite(capsuleHalfHeight) ? capsuleHalfHeight : 0.0f;
+    j["sphereRadius"] = std::isfinite(sphereRadius) ? sphereRadius : 0.5f;
+    j["capsuleRadius"] = std::isfinite(capsuleRadius) ? capsuleRadius : 0.5f;
+    j["capsuleHalfHeight"] = std::isfinite(capsuleHalfHeight) ? capsuleHalfHeight : 0.5f;
 
+    // Configuración de capas y colisiones
     j["currentLayer"] = currentLayer;
     j["currentLayerMask"] = currentLayerMask;
 
+    // Propiedades C# Bridge
     j["csharpBridgeEnabled"] = csharpBridgeEnabled;
     j["csharpObjectName"] = csharpObjectName;
+
+    // Velocidad actual (si el objeto está inicializado)
+    if (initialized && dynamicActor) {
+        glm::vec3 velocity = getVelocity();
+        j["velocity"] = safeVec3(velocity);
+
+        // Velocidad angular
+        physx::PxVec3 angVel = dynamicActor->getAngularVelocity();
+        j["angularVelocity"] = safeVec3(glm::vec3(angVel.x, angVel.y, angVel.z));
+
+        // Estado de activación
+        j["isAwake"] = !dynamicActor->isSleeping();
+
+        // Flags del actor
+        j["gravityDisabled"] = dynamicActor->getActorFlags().isSet(physx::PxActorFlag::eDISABLE_GRAVITY);
+        j["simulationDisabled"] = dynamicActor->getActorFlags().isSet(physx::PxActorFlag::eDISABLE_SIMULATION);
+
+        // Configuración de kinematic
+        j["isKinematic"] = dynamicActor->getRigidBodyFlags().isSet(physx::PxRigidBodyFlag::eKINEMATIC);
+    }
+    else {
+        // Valores por defecto si no está inicializado
+        j["velocity"] = safeVec3(glm::vec3(0.0f));
+        j["angularVelocity"] = safeVec3(glm::vec3(0.0f));
+        j["isAwake"] = true;
+        j["gravityDisabled"] = (gravityFactor == 0.0f);
+        j["simulationDisabled"] = false;
+        j["isKinematic"] = false;
+    }
+
+    // Información de la forma (si existe)
+    if (shape) {
+        physx::PxShapeFlags flags = shape->getFlags();
+        j["shapeFlags"] = {
+            {"isTrigger", flags.isSet(physx::PxShapeFlag::eTRIGGER_SHAPE)},
+            {"isSimulation", flags.isSet(physx::PxShapeFlag::eSIMULATION_SHAPE)},
+            {"isSceneQuery", flags.isSet(physx::PxShapeFlag::eSCENE_QUERY_SHAPE)},
+            {"isVisualization", flags.isSet(physx::PxShapeFlag::eVISUALIZATION)}
+        };
+
+        // Filter data
+        physx::PxFilterData filterData = shape->getSimulationFilterData();
+        j["filterData"] = {
+            {"word0", filterData.word0},
+            {"word1", filterData.word1},
+            {"word2", filterData.word2},
+            {"word3", filterData.word3}
+        };
+    }
+
+    // Estado de callbacks (si están configurados)
+    j["hasTriggerCallback"] = (triggerCallback != nullptr);
+    j["hasContactCallback"] = (contactCallback != nullptr);
 
     try {
         return j.dump();
     }
     catch (const std::exception& e) {
-        std::cerr << "PhysicalObject::serialize error: " << e.what() << std::endl;
+        std::cerr << "PhysicalObject::serializeComponent error: " << e.what() << std::endl;
+        return "{}";
     }
 }
 
-
 void PhysicalObject::deserialize(const std::string& data) {
-    json j = json::parse(data);
+    try {
+        json j = json::parse(data);
 
-    // 1. Restaurar propiedades básicas
-    bodyType = static_cast<BodyType>(j.value("bodyType", static_cast<int>(BodyType::Static)));
-    shapeType = static_cast<ShapeType>(j.value("shapeType", static_cast<int>(ShapeType::Box)));
-    mass = j.value("mass", 1.0f);
-    friction = j.value("friction", 0.5f);
-    restitution = j.value("restitution", 0.0f);
-    damping = j.value("damping", 0.0f);
-    gravityFactor = j.value("gravityFactor", 1.0f);
-    isTriggerShape = j.value("isTrigger", false);
+        // 1. Restaurar propiedades básicas ANTES de inicializar
+        bodyType = static_cast<BodyType>(j.value("bodyType", static_cast<int>(BodyType::Static)));
+        shapeType = static_cast<ShapeType>(j.value("shapeType", static_cast<int>(ShapeType::Box)));
+        mass = j.value("mass", 1.0f);
+        friction = j.value("friction", 0.5f);
+        restitution = j.value("restitution", 0.1f);
+        damping = j.value("damping", 0.0f);
+        gravityFactor = j.value("gravityFactor", 1.0f);
+        isTriggerShape = j.value("isTrigger", false);
 
-    if (j.contains("boxHalfExtents") && j["boxHalfExtents"].is_array()) {
-        auto e = j["boxHalfExtents"];
-        boxHalfExtents = glm::vec3(e[0], e[1], e[2]);
+        // Propiedades de formas geométricas
+        if (j.contains("boxHalfExtents") && j["boxHalfExtents"].is_array()) {
+            auto e = j["boxHalfExtents"];
+            if (e.size() >= 3) {
+                boxHalfExtents = glm::vec3(e[0], e[1], e[2]);
+            }
+        }
+        sphereRadius = j.value("sphereRadius", 0.5f);
+        capsuleRadius = j.value("capsuleRadius", 0.5f);
+        capsuleHalfHeight = j.value("capsuleHalfHeight", 0.5f);
+
+        // Configuración de capas
+        currentLayer = j.value("currentLayer", static_cast<physx::PxU32>(0));
+        currentLayerMask = j.value("currentLayerMask", static_cast<physx::PxU32>(0xFFFFFFFF));
+
+        // Propiedades C# Bridge
+        csharpBridgeEnabled = j.value("csharpBridgeEnabled", false);
+        csharpObjectName = j.value("csharpObjectName", "Unknown");
+
+        // 2. Si ya estaba inicializado, destruir primero para recrear correctamente
+        bool wasInitialized = initialized;
+        if (wasInitialized) {
+            destroy();
+        }
+
+        // 3. Inicializar física con las nuevas propiedades
+        initializePhysics();
+
+        // 4. Aplicar propiedades específicas después de la inicialización
+        if (initialized) {
+            // Aplicar propiedades físicas
+            setMass(mass);
+            setFriction(friction);
+            setRestitution(restitution);
+            setDamping(damping);
+            setGravityFactor(gravityFactor);
+
+            // Configurar como trigger si es necesario
+            if (isTriggerShape) {
+                setTrigger(true);
+            }
+
+            // Configurar capas
+            setLayer(currentLayer);
+            setLayerMask(currentLayerMask);
+
+            // Restaurar velocidades (solo para objetos dinámicos)
+            if (dynamicActor) {
+                // Velocidad lineal
+                if (j.contains("velocity") && j["velocity"].is_array()) {
+                    auto vel = j["velocity"];
+                    if (vel.size() >= 3) {
+                        glm::vec3 velocity(vel[0], vel[1], vel[2]);
+                        setVelocity(velocity);
+                    }
+                }
+
+                // Velocidad angular
+                if (j.contains("angularVelocity") && j["angularVelocity"].is_array()) {
+                    auto angVel = j["angularVelocity"];
+                    if (angVel.size() >= 3) {
+                        dynamicActor->setAngularVelocity(physx::PxVec3(angVel[0], angVel[1], angVel[2]));
+                    }
+                }
+
+                // Estado de activación
+                bool shouldBeAwake = j.value("isAwake", true);
+                if (shouldBeAwake) {
+                    wakeUp();
+                }
+                else {
+                    dynamicActor->putToSleep();
+                }
+
+                // Flags del actor
+                bool gravityDisabled = j.value("gravityDisabled", false);
+                dynamicActor->setActorFlag(physx::PxActorFlag::eDISABLE_GRAVITY, gravityDisabled);
+
+                bool simulationDisabled = j.value("simulationDisabled", false);
+                dynamicActor->setActorFlag(physx::PxActorFlag::eDISABLE_SIMULATION, simulationDisabled);
+
+                // Configuración kinematic
+                bool isKinematic = j.value("isKinematic", false);
+                dynamicActor->setRigidBodyFlag(physx::PxRigidBodyFlag::eKINEMATIC, isKinematic);
+            }
+
+            // Restaurar filter data específico si existe
+            if (j.contains("filterData") && shape) {
+                auto filterJson = j["filterData"];
+                physx::PxFilterData filterData;
+                filterData.word0 = filterJson.value("word0", currentLayer);
+                filterData.word1 = filterJson.value("word1", currentLayerMask);
+                filterData.word2 = filterJson.value("word2", isTriggerShape ? 0x1 : 0x0);
+                filterData.word3 = filterJson.value("word3", 0);
+
+                shape->setSimulationFilterData(filterData);
+                shape->setQueryFilterData(filterData);
+            }
+
+            // Configurar flags específicos de la forma si existen
+            if (j.contains("shapeFlags") && shape) {
+                auto shapeFlags = j["shapeFlags"];
+
+                shape->setFlag(physx::PxShapeFlag::eTRIGGER_SHAPE,
+                    shapeFlags.value("isTrigger", isTriggerShape));
+                shape->setFlag(physx::PxShapeFlag::eSIMULATION_SHAPE,
+                    shapeFlags.value("isSimulation", !isTriggerShape));
+                shape->setFlag(physx::PxShapeFlag::eSCENE_QUERY_SHAPE,
+                    shapeFlags.value("isSceneQuery", true));
+                shape->setFlag(physx::PxShapeFlag::eVISUALIZATION,
+                    shapeFlags.value("isVisualization", true));
+            }
+
+            // 5. Aplicar configuración C# Bridge
+            if (csharpBridgeEnabled) {
+                enableCSharpBridge(true);
+                setCSharpObjectName(csharpObjectName);
+            }
+
+            // 6. Sincronizar transformación
+            syncTransformToPhysX();
+
+            // 7. Configurar callbacks por defecto si se indicó que existían
+            bool hadTriggerCallback = j.value("hasTriggerCallback", false);
+            bool hadContactCallback = j.value("hasContactCallback", false);
+
+            if (hadTriggerCallback && isTriggerShape && !triggerCallback) {
+                // Configurar callback por defecto para triggers
+                setTriggerCallback([](PhysicalObject* trigger, PhysicalObject* other) {
+                    // Callback por defecto - puede ser sobrescrito después
+                    });
+            }
+
+            if (hadContactCallback && !contactCallback) {
+                // Configurar callback por defecto para contactos
+                setContactCallback([](PhysicalObject* obj1, PhysicalObject* obj2,
+                    const glm::vec3& contactPoint, const glm::vec3& contactNormal, float contactForce) {
+                        // Callback por defecto - puede ser sobrescrito después
+                    });
+            }
+        }
+
     }
-    sphereRadius = j.value("sphereRadius", 1.0f);
-    capsuleRadius = j.value("capsuleRadius", 0.5f);
-    capsuleHalfHeight = j.value("capsuleHalfHeight", 1.0f);
+    catch (const std::exception& e) {
+        std::cerr << "PhysicalObject::deserialize error: " << e.what() << std::endl;
 
-    currentLayer = j.value("currentLayer", 0);
-    currentLayerMask = j.value("currentLayerMask", 0xFFFFFFFF);
+        // En caso de error, establecer valores por defecto seguros
+        bodyType = BodyType::Static;
+        shapeType = ShapeType::Box;
+        mass = 1.0f;
+        friction = 0.5f;
+        restitution = 0.1f;
+        damping = 0.0f;
+        gravityFactor = 1.0f;
+        boxHalfExtents = glm::vec3(0.5f);
+        sphereRadius = 0.5f;
+        capsuleRadius = 0.5f;
+        capsuleHalfHeight = 0.5f;
+        isTriggerShape = false;
+        currentLayer = 0;
+        currentLayerMask = 0xFFFFFFFF;
+        csharpBridgeEnabled = false;
+        csharpObjectName = "Unknown";
 
-    csharpBridgeEnabled = j.value("csharpBridgeEnabled", false);
-    csharpObjectName = j.value("csharpObjectName", "Unknown");
-
-    // 2. Llama a los métodos de configuración en el orden correcto:
-    setBodyType(bodyType);            // Crea rigidActor de acuerdo al tipo
-    setShapeType(shapeType);          // Crea la forma (box, sphere, etc)
-
-    // Propiedades de shape
-    switch (shapeType) {
-    case ShapeType::Box:
-        setBoxHalfExtents(boxHalfExtents);
-        break;
-    case ShapeType::Sphere:
-        setSphereRadius(sphereRadius);
-        break;
-    case ShapeType::Capsule:
-        setCapsuleRadius(capsuleRadius);
-        setCapsuleHalfHeight(capsuleHalfHeight);
-        break;
-    default:
-        break;
+        // Intentar inicializar con valores por defecto
+        if (!initialized) {
+            initializePhysics();
+        }
     }
-
-    // Propiedades físicas
-    setMass(mass);
-    setFriction(friction);
-    setRestitution(restitution);
-    setDamping(damping);
-    setGravityFactor(gravityFactor);
-
-    setTrigger(isTriggerShape);
-
-    // Configuración de colisión (si tienes métodos para los grupos/máscaras)
-    setLayer(currentLayer);
-    setLayerMask(currentLayerMask);
-
-    // Si tienes métodos específicos para eventos C#, aplícalos también
-    enableCSharpBridge(csharpBridgeEnabled);
-    setCSharpObjectName(csharpObjectName);
-
-    // 3. Si es necesario, sincroniza la transformación a PhysX
-    syncTransformToPhysX();
 }

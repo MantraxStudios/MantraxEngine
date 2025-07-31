@@ -24,7 +24,16 @@ bool SceneSaver::SaveScene(const Scene* scene, const std::string& filepath) {
 
     json MainJson;
 
-    auto* activeScene = SceneManager::getInstance().getActiveScene();
+    Scene* activeScene = SceneManager::getInstance().getActiveScene();
+    RenderPipeline* pipeline = activeScene->getRenderPipeline();
+
+    MainJson["Settings"]["CameraType"] = scene->getCamera()->getProjectionType() == ProjectionType::Orthographic ? 1 : 0;
+    MainJson["Settings"]["CameraFov"] = scene->getCamera()->getOrthographicSize();
+    MainJson["Settings"]["AmbientIntensity"] = pipeline->getAmbientIntensity();
+    MainJson["Settings"]["LowAmbient"] = pipeline->getLowAmbient();
+    MainJson["Settings"]["LightType"] = pipeline->getUsePBR();
+    MainJson["Settings"]["FrustrumOn"] = pipeline->getFrustumCulling();
+
     if (!activeScene) {
         std::cerr << "Error: No active scene" << std::endl;
         return false;
@@ -95,7 +104,7 @@ bool SceneSaver::SaveScene(const Scene* scene, const std::string& filepath) {
                     const std::string& modelPath = obj->getModelPath();
                     if (!modelPath.empty()) {
                         json geometryData;
-                        geometryData["modelPath"] = FileSystem::GetPathAfterContent(modelPath);
+                        geometryData["modelPath"] = modelPath;
                         components["Geometry"] = geometryData;
                     }
                 }
@@ -173,10 +182,8 @@ bool SceneSaver::LoadScene(const std::string& filepath) {
             std::cout << "Materials Loaded" << std::endl;
         }
         newScene->setRenderPipeline(pipeline.get());
-        // Si necesitas ownership del pipeline, guárdalo donde corresponda
     }
 
-    // 5. Cargar GameObjects desde el JSON (igual que antes)
     if (!MainJson.contains("objects")) {
         std::cerr << "No hay 'objects' en el archivo de escena." << std::endl;
         return false;
@@ -199,14 +206,13 @@ bool SceneSaver::LoadScene(const std::string& filepath) {
             obj->setLocalScale(glm::vec3(scl[0], scl[1], scl[2]));
         }
 
-        // Cargar componentes...
         if (subObject.contains("components")) {
             const json& components = subObject["components"];
             if (components.contains("component")) {
                 for (const auto& compData : components["component"]) {
                     if (compData.contains("type")) {
                         try {
-                            std::string type = compData.at("type").get<std::string>(); // Usa .at() para throw si no existe
+                            std::string type = compData.at("type").get<std::string>(); 
 
                             if (type == "ScriptExecutor") {
                                 auto* scriptComp = obj->addComponent<ScriptExecutor>();
@@ -228,7 +234,6 @@ bool SceneSaver::LoadScene(const std::string& filepath) {
                                 auto* ccComp = obj->addComponent<CharacterController>();
                                 ccComp->deserialize(compData.dump());
                             }
-                            // ...otros tipos
                         }
                         catch (const nlohmann::json::exception& e) {
                             std::cerr << "Error al cargar componente: " << e.what() << std::endl;
@@ -262,9 +267,48 @@ bool SceneSaver::LoadScene(const std::string& filepath) {
         newScene->addGameObject(obj);
     }
 
-    // 6. Inicializar la escena
     newScene->initialize();
     newScene->setInitialized(true);
+
+    auto& settings = MainJson["Settings"];
+
+    // CameraType: setear el tipo de proyección
+    if (settings.contains("CameraType")) {
+        int cameraType = settings["CameraType"];
+        ProjectionType type = (cameraType == 1) ? ProjectionType::Orthographic : ProjectionType::Perspective;
+        newScene->getCamera()->setProjectionType(type);
+    }
+
+    // AmbientIntensity
+    if (settings.contains("AmbientIntensity")) {
+        float ambientIntensity = settings["AmbientIntensity"];
+        RenderPipeline::getInstance().setAmbientIntensity(ambientIntensity);
+    }
+
+    // LowAmbient
+    if (settings.contains("LowAmbient")) {
+        float lowAmbient = settings["LowAmbient"];
+        RenderPipeline::getInstance().setLowAmbient(lowAmbient);
+    }
+
+    // LightType
+    if (settings.contains("LightType")) {
+        bool usePBR = settings["LightType"];
+        RenderPipeline::getInstance().setUsePBR(usePBR);
+    }
+
+    // FrustrumOn
+    if (settings.contains("CameraFov")) {
+        bool cameraFovAmount = settings["CameraFov"];
+        newScene.get()->getCamera()->setOrthographicSize(cameraFovAmount);
+    }
+
+    // CameraFov
+    if (settings.contains("FrustrumOn")) {
+        bool frustumOn = settings["FrustrumOn"];
+        RenderPipeline::getInstance().setFrustumCulling(frustumOn);
+    }
+
 
     // 7. Agregar la escena al manager y activar
     sceneManager.addScene(std::move(newScene));
