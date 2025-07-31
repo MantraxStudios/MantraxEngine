@@ -8,6 +8,5 @@
 class FileExplorer {
 public:
     static bool ShowPopup(const std::string& root, std::string& outSelected, const std::string& extension);
-
-    static bool ShowInline(const std::string& root, std::string& outSelected, const std::string& extension);
+    static bool ShowSavePopup(const std::string& root, std::string& outSelected, const std::string& extension);
 };

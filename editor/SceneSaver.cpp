@@ -10,10 +10,13 @@
 #include <render/RenderPipeline.h>
 #include "EUI/EditorInfo.h"
 #include "render/DefaultShaders.h"
+#include "EUI/EditorInfo.h"
+#include "Windows/FileExplorer.h" 
 
 using namespace nlohmann;
 
 bool SceneSaver::SaveScene(const Scene* scene, const std::string& filepath) {
+
     if (!scene) {
         std::cerr << "Error: Null scene pointer" << std::endl;
         return false;
