@@ -237,6 +237,9 @@ void FileDragInfo(const FileEntry& entry) {
         if (extension == ".png" || extension == ".jpg") {
             UIBuilder::Drag("TextureClass", FileSystem::GetPathAfterContent(entry.path));
         }
+        else if (extension == ".mp3" || extension == ".wav" || extension == ".ogg") {
+            UIBuilder::Drag("AudioClass", FileSystem::GetPathAfterContent(entry.path));
+        }
     }
     // Si no tiene extensión, simplemente no hace nada
 }

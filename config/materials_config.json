@@ -51,8 +51,8 @@
         "diamond_plate_material": {
             "albedo": [
                 1.0,
-                0.0,
-                0.0
+                1.0,
+                1.0
             ],
             "emissive": [
                 0.0,

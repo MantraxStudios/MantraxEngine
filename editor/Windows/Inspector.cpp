@@ -10,6 +10,7 @@
 #include "../../src/core/PhysicsManager.h"
 #include "../../src/render/RenderConfig.h"
 #include "Selection.h"
+#include "../EUI/UIBuilder.h"
 #include <glm/gtc/type_ptr.hpp>
 #include <cstring>
 #include <iostream>
@@ -244,6 +245,14 @@ void Inspector::RenderGameObjectInspector(GameObject* go) {
                         audioSource->setSound(soundPath, audioSource->is3DEnabled());
                     }
                 }
+
+                auto result = UIBuilder::Drag_Objetive("AudioClass");
+                if (result.has_value()) {
+                    strncpy_s(soundPath, sizeof(soundPath), result.value().c_str(), _TRUNCATE);
+
+                    audioSource->setSound(soundPath, audioSource->is3DEnabled());
+                }
+
 
                 // Control de volumen
                 float volume = audioSource->getVolume();
