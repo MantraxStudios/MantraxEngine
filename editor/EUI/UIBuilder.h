@@ -38,16 +38,13 @@ public:
             target_flags |= ImGuiDragDropFlags_AcceptBeforeDelivery;
             target_flags |= ImGuiDragDropFlags_AcceptNoDrawDefaultRect;
 
-            if (ImGui::IsMouseReleased(ImGuiMouseButton_Left))
+            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DRAG_NAME.c_str(), target_flags))
             {
-                if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DRAG_NAME.c_str(), target_flags))
-                {
-                    const char* receivedString = static_cast<const char*>(payload->Data);
-                    std::string convertedPath = receivedString;
+                const char* receivedString = static_cast<const char*>(payload->Data);
+                std::string convertedPath = receivedString;
 
-                    ImGui::EndDragDropTarget();
-                    return convertedPath;
-                }
+                ImGui::EndDragDropTarget();
+                return convertedPath;
             }
 
             ImGui::EndDragDropTarget();

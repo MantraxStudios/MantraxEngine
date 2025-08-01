@@ -94,6 +94,11 @@ public:
 	std::string serializeComponent() const override;
 	void deserialize(const std::string& data) override;
 
+	// Métodos para cargar configuraciones desde archivos .animator
+	bool loadFromAnimatorFile(const std::string& filePath);
+	bool loadFromAnimatorData(const nlohmann::json& animatorData);
+	std::string getAnimatorFilePath() const;
+
 	void start() override;
 	void update() override;
 };

@@ -18,6 +18,8 @@
 #include <cstring>
 #include <iostream>
 #include <filesystem>
+#include <fstream>
+#include <nlohmann/json.hpp>
 #include "FileExplorer.h"
 #include <core/FileSystem.h>
 
@@ -530,6 +532,184 @@ void Inspector::RenderGameObjectInspector(GameObject* go) {
                     }
                 }
                 
+                // Animator Configuration File
+                ImGui::Separator();
+                ImGui::Text("Animator Configuration");
+                
+                // Display current animator file path
+                std::string currentAnimatorPath = spriteAnimator->getAnimatorFilePath();
+                if (!currentAnimatorPath.empty()) {
+                    ImGui::Text("Current File: %s", currentAnimatorPath.c_str());
+                } else {
+                    ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "No animator file assigned");
+                }
+                
+                // Load animator file button
+                static bool showFileDialog = false;
+                if (ImGui::Button("Load Animator File")) {
+                    showFileDialog = true;
+                }
+                
+                                    // File dialog for .animator files
+                    if (showFileDialog) {
+                        std::string projectPath = FileSystem::getProjectPath();
+                        std::string contentPath = FileSystem::combinePath(projectPath, "Content");
+                        std::string animatorsPath = FileSystem::combinePath(contentPath, "Animators");
+                        
+                        // Ensure the Animators directory exists
+                        if (!std::filesystem::exists(animatorsPath)) {
+                            std::filesystem::create_directories(animatorsPath);
+                        }
+                        
+                        std::string selectedFile;
+                        if (FileExplorer::ShowPopup(animatorsPath, selectedFile, ".animator")) {
+                            // Convert relative path to absolute path
+                            std::string absolutePath = FileSystem::combinePath(FileSystem::getProjectPath(), selectedFile);
+                        
+                        if (spriteAnimator->loadFromAnimatorFile(absolutePath)) {
+                            ImGui::OpenPopup("AnimatorLoaded");
+                        } else {
+                            ImGui::OpenPopup("AnimatorLoadError");
+                        }
+                        showFileDialog = false;
+                    }
+                }
+                
+                // Load from specific path input
+                static char animatorFilePath[256] = "";
+                ImGui::InputText("Animator File Path", animatorFilePath, sizeof(animatorFilePath));
+                
+                // Add drag-and-drop functionality for .animator files
+                static std::string lastDroppedAnimatorFile = "";
+                auto animatorResult = UIBuilder::Drag_Objetive("AnimatorClass");
+                if (animatorResult.has_value()) {
+                    std::string droppedAnimatorPath = animatorResult.value();
+                    // Only process if this is a new file (not the same as last frame)
+                    if (droppedAnimatorPath != lastDroppedAnimatorFile) {
+                        std::cout << "DEBUG: Animator file dropped! Path: " << droppedAnimatorPath << std::endl;
+                        
+                        // Clean up the path using FileSystem::GetPathAfterContent
+                        std::string cleanedPath = FileSystem::GetPathAfterContent(droppedAnimatorPath);
+                        if (cleanedPath.empty()) {
+                            // If GetPathAfterContent returns empty, use the original path
+                            cleanedPath = droppedAnimatorPath;
+                        }
+                        
+                        std::cout << "DEBUG: Cleaned animator path: " << cleanedPath << std::endl;
+                        
+                        // Update the input field with the dropped file path
+                        strncpy_s(animatorFilePath, sizeof(animatorFilePath), cleanedPath.c_str(), _TRUNCATE);
+                        
+                        // Load the animator file
+                        // Construct the full path using getProjectPath + Content
+                        std::string fullAnimatorPath = FileSystem::getProjectPath() + "\\Content\\" + cleanedPath;
+                        std::cout << "DEBUG: Full animator path: " << fullAnimatorPath << std::endl;
+                        
+                        if (spriteAnimator->loadFromAnimatorFile(fullAnimatorPath)) {
+                            ImGui::OpenPopup("AnimatorLoaded");
+                            std::cout << "DEBUG: Animator file loaded successfully" << std::endl;
+                        } else {
+                            ImGui::OpenPopup("AnimatorLoadError");
+                            std::cout << "DEBUG: Failed to load animator file" << std::endl;
+                        }
+                        
+                        lastDroppedAnimatorFile = droppedAnimatorPath;
+                    }
+                } else {
+                    // Reset the last dropped file when no file is being dragged
+                    lastDroppedAnimatorFile = "";
+                }
+                
+                ImGui::SameLine();
+                if (ImGui::Button("Load")) {
+                    if (strlen(animatorFilePath) > 0) {
+                        std::string filePath = animatorFilePath;
+                        // If it's a relative path, make it absolute
+                        if (!std::filesystem::path(filePath).is_absolute()) {
+                            filePath = FileSystem::combinePath(FileSystem::getProjectPath(), filePath);
+                        }
+                        
+                        if (spriteAnimator->loadFromAnimatorFile(filePath)) {
+                            ImGui::OpenPopup("AnimatorLoaded");
+                        } else {
+                            ImGui::OpenPopup("AnimatorLoadError");
+                        }
+                    }
+                }
+                
+                // Save current configuration
+                ImGui::SameLine();
+                if (ImGui::Button("Save Current")) {
+                    // Get the GameObject name for the default filename
+                    std::string objectName = go->Name;
+                    std::string defaultFileName = objectName + ".animator";
+                    
+                    // Create the animators directory if it doesn't exist
+                    std::string projectPath = FileSystem::getProjectPath();
+                    std::string animatorsPath = projectPath + "\\Content\\Animators";
+                    if (!std::filesystem::exists(animatorsPath)) {
+                        std::filesystem::create_directories(animatorsPath);
+                    }
+                    
+                    // Save to the default location
+                    std::string savePath = animatorsPath + "\\" + defaultFileName;
+                    
+                    // Serialize the current animator state
+                    nlohmann::json animatorData = spriteAnimator->serializeComponent();
+                    std::ofstream file(savePath);
+                    if (file.is_open()) {
+                        file << animatorData.dump(4);
+                        file.close();
+                        ImGui::OpenPopup("AnimatorSaved");
+                    } else {
+                        ImGui::OpenPopup("AnimatorSaveError");
+                    }
+                }
+                
+                // Popup messages
+                if (ImGui::BeginPopupModal("AnimatorLoaded", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+                    ImGui::Text("Animator configuration loaded successfully!");
+                    if (ImGui::Button("OK", ImVec2(120, 0))) {
+                        ImGui::CloseCurrentPopup();
+                    }
+                    ImGui::EndPopup();
+                }
+                
+                if (ImGui::BeginPopupModal("AnimatorLoadError", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+                    ImGui::Text("Error loading animator configuration!");
+                    ImGui::Text("Make sure the file exists and is a valid .animator file.");
+                    if (ImGui::Button("OK", ImVec2(120, 0))) {
+                        ImGui::CloseCurrentPopup();
+                    }
+                    ImGui::EndPopup();
+                }
+                
+                if (ImGui::BeginPopupModal("AnimatorFileNotFound", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+                    ImGui::Text("No animator file found at default location!");
+                    ImGui::Text("Use the Animator Editor to create and save animator files.");
+                    if (ImGui::Button("OK", ImVec2(120, 0))) {
+                        ImGui::CloseCurrentPopup();
+                    }
+                    ImGui::EndPopup();
+                }
+                
+                if (ImGui::BeginPopupModal("AnimatorSaved", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+                    ImGui::Text("Animator configuration saved successfully!");
+                    if (ImGui::Button("OK", ImVec2(120, 0))) {
+                        ImGui::CloseCurrentPopup();
+                    }
+                    ImGui::EndPopup();
+                }
+                
+                if (ImGui::BeginPopupModal("AnimatorSaveError", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+                    ImGui::Text("Error saving animator configuration!");
+                    ImGui::Text("Make sure you have write permissions to the Content/Animators directory.");
+                    if (ImGui::Button("OK", ImVec2(120, 0))) {
+                        ImGui::CloseCurrentPopup();
+                    }
+                    ImGui::EndPopup();
+                }
+                
                 // Preview section
                 if (spriteAnimator->getMaterial()) {
                     ImGui::Separator();
@@ -665,82 +845,52 @@ void Inspector::RenderGameObjectInspector(GameObject* go) {
                     
                     if (currentStateIt != spriteAnimator->SpriteStates.end()) {
                         ImGui::Text("Current State: %s", spriteAnimator->currentState.c_str());
-                        // Create a visible drag and drop area
-                        ImGui::BeginGroup();
                         
-                        // Draw a bordered box for drag and drop
-                        ImVec2 dropAreaSize(200, 80);
-                        ImVec2 dropAreaPos = ImGui::GetCursorScreenPos();
-                        ImVec2 dropAreaEnd = ImVec2(dropAreaPos.x + dropAreaSize.x, dropAreaPos.y + dropAreaSize.y);
+                        // Texture input field with drag-and-drop support
+                        static char texturePath[256] = "";
                         
-                        // Draw the drop area with a border
-                        ImGui::GetWindowDrawList()->AddRect(
-                            dropAreaPos, 
-                            dropAreaEnd, 
-                            IM_COL32(100, 150, 255, 255), // Blue border
-                            5.0f, // Corner radius
-                            0, // Flags
-                            2.0f // Thickness
-                        );
+                        // Create the InputText field
+                        if (ImGui::InputText("Texture Path", texturePath, sizeof(texturePath))) {
+                            // Path input updated
+                        }
                         
-                        // Fill with a subtle background
-                        ImGui::GetWindowDrawList()->AddRectFilled(
-                            dropAreaPos, 
-                            dropAreaEnd, 
-                            IM_COL32(100, 150, 255, 30), // Light blue background
-                            5.0f // Corner radius
-                        );
-                        
-                        // Add text inside the drop area
-                        ImVec2 textPos = ImVec2(dropAreaPos.x + 10, dropAreaPos.y + 25);
-                        ImGui::GetWindowDrawList()->AddText(
-                            textPos,
-                            IM_COL32(255, 255, 255, 255), // White text
-                            "Arrastra texturas aquí"
-                        );
-                        
-                        ImVec2 iconTextPos = ImVec2(dropAreaPos.x + 10, dropAreaPos.y + 45);
-                        ImGui::GetWindowDrawList()->AddText(
-                            iconTextPos,
-                            IM_COL32(200, 200, 200, 255), // Gray text
-                            "PNG, JPG, etc."
-                        );
-                        
-                        // Set cursor position to cover the drop area
-                        ImGui::SetCursorScreenPos(dropAreaPos);
-                        ImGui::InvisibleButton("##TextureDropArea", dropAreaSize);
-                        
-                        // Drag and drop target for textures
-                        auto result = UIBuilder::Drag_Objetive("TextureClass");
-                        if (result.has_value()) {
+                        // Add drag-and-drop functionality directly to the InputText field
+                        auto textureResult = UIBuilder::Drag_Objetive("TextureClass");
+                        if (textureResult.has_value()) {
+                            std::string droppedTexturePath = textureResult.value();
+                            std::cout << "DEBUG: Texture dropped! Path: " << droppedTexturePath << std::endl;
+
                             // Clean up the path using FileSystem::GetPathAfterContent
-                            std::string cleanedPath = FileSystem::GetPathAfterContent(result.value());
+                            std::string cleanedPath = FileSystem::GetPathAfterContent(droppedTexturePath);
                             if (cleanedPath.empty()) {
                                 // If GetPathAfterContent returns empty, use the original path
-                                cleanedPath = result.value();
+                                cleanedPath = droppedTexturePath;
                             }
-                            
+
+                            std::cout << "DEBUG: Cleaned path: " << cleanedPath << std::endl;
+
+                            // Update the input field with the dropped texture path
+                            strncpy_s(texturePath, sizeof(texturePath), cleanedPath.c_str(), _TRUNCATE);
+
                             // Load texture and add to current state
                             currentStateIt->texturePaths.push_back(cleanedPath);
                             spriteAnimator->loadTexture(cleanedPath);
                             // Update material texture
                             spriteAnimator->updateMaterialTexture();
+
+                            std::cout << "DEBUG: Texture added to state successfully" << std::endl;
                         }
-                        
-                        ImGui::EndGroup();
-                        
-                        // Manual texture input and buttons
-                        ImGui::Separator();
-                        ImGui::Text("Manual Texture Management");
-                        
-                        static char texturePath[256] = "";
-                        if (ImGui::InputText("Texture Path", texturePath, sizeof(texturePath))) {
-                            // Path input updated
+                        else {
+                            // Visual feedback: Show when drag target is active
+                            ImGui::SameLine();
+                            ImGui::TextColored(ImVec4(0.5f, 0.5f, 0.5f, 0.5f), "Drop zone");
                         }
                         
                         ImGui::SameLine();
                         if (ImGui::Button("Add Texture")) {
                             if (strlen(texturePath) > 0) {
+                                std::cout << "DEBUG: Manual texture addition - Path: " << texturePath << std::endl;
+                                
                                 // Clean up the path using FileSystem::GetPathAfterContent
                                 std::string cleanedPath = FileSystem::GetPathAfterContent(texturePath);
                                 if (cleanedPath.empty()) {
@@ -748,12 +898,26 @@ void Inspector::RenderGameObjectInspector(GameObject* go) {
                                     cleanedPath = texturePath;
                                 }
                                 
+                                std::cout << "DEBUG: Manual texture - Cleaned path: " << cleanedPath << std::endl;
+                                
                                 currentStateIt->texturePaths.push_back(cleanedPath);
                                 spriteAnimator->loadTexture(cleanedPath);
                                 spriteAnimator->updateMaterialTexture();
                                 // Clear the input field after successful addition
                                 memset(texturePath, 0, sizeof(texturePath));
+                                
+                                std::cout << "DEBUG: Manual texture added successfully" << std::endl;
                             }
+                        }
+                        
+                        // Quick texture path examples
+                        ImGui::Text("Quick paths (click to copy):");
+                        if (ImGui::Button("Sprites/Characters/player.png")) {
+                            strncpy_s(texturePath, sizeof(texturePath), "Sprites/Characters/player.png", _TRUNCATE);
+                        }
+                        ImGui::SameLine();
+                        if (ImGui::Button("Sprites/Backgrounds/background.png")) {
+                            strncpy_s(texturePath, sizeof(texturePath), "Sprites/Backgrounds/background.png", _TRUNCATE);
                         }
                         
                         // Error popup for failed texture loading

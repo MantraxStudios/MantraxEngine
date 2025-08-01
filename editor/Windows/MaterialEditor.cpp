@@ -131,10 +131,19 @@ void MaterialEditor::OnRenderGUI() {
             ImGui::InputText("Albedo Texture", albedoTexture, sizeof(albedoTexture));
             // Drag & drop fuera del if:
             {
+                static std::string lastDroppedAlbedoTexture = "";
                 auto result = UIBuilder::Drag_Objetive("TextureClass");
                 if (result.has_value()) {
-                    strncpy_s(albedoTexture, sizeof(albedoTexture), result.value().c_str(), _TRUNCATE);
-                    previewAlbedo = GetTexturePreview(albedoTexture); // recarga el preview al arrastrar
+                    std::string droppedTexturePath = result.value();
+                    // Only process if this is a new texture (not the same as last frame)
+                    if (droppedTexturePath != lastDroppedAlbedoTexture) {
+                        strncpy_s(albedoTexture, sizeof(albedoTexture), droppedTexturePath.c_str(), _TRUNCATE);
+                        previewAlbedo = GetTexturePreview(albedoTexture); // recarga el preview al arrastrar
+                        lastDroppedAlbedoTexture = droppedTexturePath;
+                    }
+                } else {
+                    // Reset the last dropped texture when no texture is being dragged
+                    lastDroppedAlbedoTexture = "";
                 }
             }
             if (previewAlbedo) {
@@ -149,10 +158,19 @@ void MaterialEditor::OnRenderGUI() {
 
             ImGui::InputText("Metallic Texture", metallicTexture, sizeof(metallicTexture));
             {
+                static std::string lastDroppedMetallicTexture = "";
                 auto result = UIBuilder::Drag_Objetive("TextureClass");
                 if (result.has_value()) {
-                    strncpy_s(metallicTexture, sizeof(metallicTexture), result.value().c_str(), _TRUNCATE);
-                    previewMetallic = GetTexturePreview(metallicTexture);
+                    std::string droppedTexturePath = result.value();
+                    // Only process if this is a new texture (not the same as last frame)
+                    if (droppedTexturePath != lastDroppedMetallicTexture) {
+                        strncpy_s(metallicTexture, sizeof(metallicTexture), droppedTexturePath.c_str(), _TRUNCATE);
+                        previewMetallic = GetTexturePreview(metallicTexture);
+                        lastDroppedMetallicTexture = droppedTexturePath;
+                    }
+                } else {
+                    // Reset the last dropped texture when no texture is being dragged
+                    lastDroppedMetallicTexture = "";
                 }
             }
             if (previewMetallic) {
@@ -164,10 +182,19 @@ void MaterialEditor::OnRenderGUI() {
 
             ImGui::InputText("Roughness Texture", roughnessTexture, sizeof(roughnessTexture));
             {
+                static std::string lastDroppedRoughnessTexture = "";
                 auto result = UIBuilder::Drag_Objetive("TextureClass");
                 if (result.has_value()) {
-                    strncpy_s(roughnessTexture, sizeof(roughnessTexture), result.value().c_str(), _TRUNCATE);
-                    previewRoughness = GetTexturePreview(roughnessTexture);
+                    std::string droppedTexturePath = result.value();
+                    // Only process if this is a new texture (not the same as last frame)
+                    if (droppedTexturePath != lastDroppedRoughnessTexture) {
+                        strncpy_s(roughnessTexture, sizeof(roughnessTexture), droppedTexturePath.c_str(), _TRUNCATE);
+                        previewRoughness = GetTexturePreview(roughnessTexture);
+                        lastDroppedRoughnessTexture = droppedTexturePath;
+                    }
+                } else {
+                    // Reset the last dropped texture when no texture is being dragged
+                    lastDroppedRoughnessTexture = "";
                 }
             }
             if (previewRoughness) {
@@ -177,10 +204,19 @@ void MaterialEditor::OnRenderGUI() {
 
             ImGui::InputText("Normal Texture", normalTexture, sizeof(normalTexture));
             {
+                static std::string lastDroppedNormalTexture = "";
                 auto result = UIBuilder::Drag_Objetive("TextureClass");
                 if (result.has_value()) {
-                    strncpy_s(normalTexture, sizeof(normalTexture), result.value().c_str(), _TRUNCATE);
-                    previewNormal = GetTexturePreview(normalTexture);
+                    std::string droppedTexturePath = result.value();
+                    // Only process if this is a new texture (not the same as last frame)
+                    if (droppedTexturePath != lastDroppedNormalTexture) {
+                        strncpy_s(normalTexture, sizeof(normalTexture), droppedTexturePath.c_str(), _TRUNCATE);
+                        previewNormal = GetTexturePreview(normalTexture);
+                        lastDroppedNormalTexture = droppedTexturePath;
+                    }
+                } else {
+                    // Reset the last dropped texture when no texture is being dragged
+                    lastDroppedNormalTexture = "";
                 }
             }
             if (previewNormal) {
@@ -193,16 +229,44 @@ void MaterialEditor::OnRenderGUI() {
 
         if (ImGui::CollapsingHeader("Advanced", ImGuiTreeNodeFlags_DefaultOpen)) {
             ImGui::ColorEdit3("Emissive", emissive);
-            if (ImGui::InputText("Emissive Texture", emissiveTexture, sizeof(emissiveTexture))) {
-                previewEmissive = GetTexturePreview(emissiveTexture);
+            ImGui::InputText("Emissive Texture", emissiveTexture, sizeof(emissiveTexture));
+            {
+                static std::string lastDroppedEmissiveTexture = "";
+                auto result = UIBuilder::Drag_Objetive("TextureClass");
+                if (result.has_value()) {
+                    std::string droppedTexturePath = result.value();
+                    // Only process if this is a new texture (not the same as last frame)
+                    if (droppedTexturePath != lastDroppedEmissiveTexture) {
+                        strncpy_s(emissiveTexture, sizeof(emissiveTexture), droppedTexturePath.c_str(), _TRUNCATE);
+                        previewEmissive = GetTexturePreview(emissiveTexture);
+                        lastDroppedEmissiveTexture = droppedTexturePath;
+                    }
+                } else {
+                    // Reset the last dropped texture when no texture is being dragged
+                    lastDroppedEmissiveTexture = "";
+                }
             }
             if (previewEmissive) {
                 ImGui::SameLine();
                 ImGui::Image(previewEmissive, ImVec2(64, 64));
             }
             ImGui::InputFloat2("Tiling", tiling);
-            if (ImGui::InputText("AO Texture", aoTexture, sizeof(aoTexture))) {
-                previewAO = GetTexturePreview(aoTexture);
+            ImGui::InputText("AO Texture", aoTexture, sizeof(aoTexture));
+            {
+                static std::string lastDroppedAOTexture = "";
+                auto result = UIBuilder::Drag_Objetive("TextureClass");
+                if (result.has_value()) {
+                    std::string droppedTexturePath = result.value();
+                    // Only process if this is a new texture (not the same as last frame)
+                    if (droppedTexturePath != lastDroppedAOTexture) {
+                        strncpy_s(aoTexture, sizeof(aoTexture), droppedTexturePath.c_str(), _TRUNCATE);
+                        previewAO = GetTexturePreview(aoTexture);
+                        lastDroppedAOTexture = droppedTexturePath;
+                    }
+                } else {
+                    // Reset the last dropped texture when no texture is being dragged
+                    lastDroppedAOTexture = "";
+                }
             }
             if (previewAO) {
                 ImGui::SameLine();

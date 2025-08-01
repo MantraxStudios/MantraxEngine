@@ -240,6 +240,9 @@ void FileDragInfo(const FileEntry& entry) {
         else if (extension == ".mp3" || extension == ".wav" || extension == ".ogg") {
             UIBuilder::Drag("AudioClass", FileSystem::GetPathAfterContent(entry.path));
         }
+        else if (extension == ".animator") {
+            UIBuilder::Drag("AnimatorClass", FileSystem::GetPathAfterContent(entry.path));
+        }
     }
     // Si no tiene extensión, simplemente no hace nada
 }
@@ -277,6 +280,9 @@ const char* GetFileIcon(const FileEntry& entry) {
     }
     else if (extension == ".shader" || extension == ".glsl") {
         return "[SHDR]";
+    }
+    else if (extension == ".animator") {
+        return "[ANIM]";
     }
 
     return "[FILE]";

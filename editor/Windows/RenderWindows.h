@@ -8,6 +8,7 @@
 #include "MainBar.h"
 #include "ContentBrowser.h"
 #include "MaterialEditor.h"
+#include "AnimatorEditor.h"
 
 
 class RenderWindows {
@@ -23,6 +24,7 @@ public:
         m_windows.push_back(std::make_unique<MainBar>());
         m_windows.push_back(std::make_unique<ContentBrowser>());
         m_windows.push_back(std::make_unique<MaterialEditor>());
+        m_windows.push_back(std::make_unique<AnimatorEditor>());
 
     }
     

@@ -1,6 +1,9 @@
 #include "SpriteAnimator.h"
 #include <glm/glm.hpp>
 #include <nlohmann/json.hpp>
+#include "../core/Time.h"
+#include "../core/FileSystem.h"
+#include <fstream>
 
 using json = nlohmann::json;
 
@@ -585,4 +588,96 @@ void SpriteAnimator::clearTextureCache() {
         std::cout << "Clearing texture cache (" << persistentTextures.size() << " textures)" << std::endl;
     }
     persistentTextures.clear();
+}
+
+bool SpriteAnimator::loadFromAnimatorFile(const std::string& filePath) {
+    try {
+        std::ifstream file(filePath);
+        if (!file.is_open()) {
+            std::cerr << "Failed to open animator file: " << filePath << std::endl;
+            return false;
+        }
+        
+        nlohmann::json animatorData;
+        file >> animatorData;
+        file.close();
+        
+        return loadFromAnimatorData(animatorData);
+    }
+    catch (const std::exception& e) {
+        std::cerr << "Error loading animator file " << filePath << ": " << e.what() << std::endl;
+        return false;
+    }
+}
+
+bool SpriteAnimator::loadFromAnimatorData(const nlohmann::json& animatorData) {
+    try {
+        // Limpiar estados existentes
+        SpriteStates.clear();
+        
+        // Cargar propiedades básicas
+        if (animatorData.contains("animationSpeed")) {
+            animationSpeed = animatorData["animationSpeed"];
+        }
+        
+        if (animatorData.contains("isPlaying")) {
+            isPlaying = animatorData["isPlaying"];
+        }
+        
+        if (animatorData.contains("currentFrame")) {
+            currentFrame = animatorData["currentFrame"];
+        }
+        
+        if (animatorData.contains("currentState")) {
+            currentState = animatorData["currentState"];
+        }
+        
+        if (animatorData.contains("playbackState")) {
+            playbackState = animatorData["playbackState"];
+        }
+        
+        // Cargar estados
+        if (animatorData.contains("states") && animatorData["states"].is_array()) {
+            for (const auto& stateData : animatorData["states"]) {
+                SpriteArray state;
+                
+                if (stateData.contains("name")) {
+                    state.state_name = stateData["name"];
+                }
+                
+                if (stateData.contains("texturePaths") && stateData["texturePaths"].is_array()) {
+                    state.texturePaths = stateData["texturePaths"].get<std::vector<std::string>>();
+                }
+                
+                SpriteStates.push_back(state);
+            }
+        }
+        
+        // Preload todas las texturas
+        preloadAllTextures();
+        
+        // Crear material si no existe
+        if (!spriteMaterial) {
+            createMaterial();
+        }
+        
+        // Actualizar la textura del material
+        updateMaterialTexture();
+        
+        return true;
+    }
+    catch (const std::exception& e) {
+        std::cerr << "Error loading animator data: " << e.what() << std::endl;
+        return false;
+    }
+}
+
+std::string SpriteAnimator::getAnimatorFilePath() const {
+    // Obtener el GameObject al que pertenece este componente
+    if (auto owner = getOwner()) {
+        std::string objectName = owner->Name;
+        std::string animatorFileName = objectName + ".animator";
+        return FileSystem::getProjectPath() + "\\Content\\Animators\\" + animatorFileName;
+    }
+    return "";
 }

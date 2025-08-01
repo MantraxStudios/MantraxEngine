@@ -1,0 +1,14 @@
+{
+    "animationSpeed": 1.0,
+    "currentFrame": 0,
+    "currentState": "None",
+    "isPlaying": false,
+    "name": "Player",
+    "playbackState": "None",
+    "states": [
+        {
+            "name": "Walk",
+            "texturePaths": []
+        }
+    ]
+}

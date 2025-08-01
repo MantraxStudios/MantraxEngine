@@ -1149,6 +1149,9 @@ void CoreWrapper::RegisterSpriteAnimator(sol::state& lua) {
         "addSpriteState", &SpriteAnimator::addSpriteState,
         "setCurrentState", &SpriteAnimator::setCurrentState,
         "addTextureToState", &SpriteAnimator::addTextureToState,
+        "loadFromAnimatorFile", &SpriteAnimator::loadFromAnimatorFile,
+        "loadFromAnimatorData", &SpriteAnimator::loadFromAnimatorData,
+        "getAnimatorFilePath", &SpriteAnimator::getAnimatorFilePath,
 
         // ===== DEBUGGING METHODS =====
         "enableDebugMode", &SpriteAnimator::enableDebugMode,
