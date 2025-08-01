@@ -5,6 +5,7 @@
 #include <components/AudioSource.h>
 #include <components/PhysicalObject.h>
 #include <components/CharacterController.h>
+#include <components/SpriteAnimator.h>
 #include <components/ScriptExecutor.h>
 #include "windows/Selection.h"
 #include <render/RenderPipeline.h>
@@ -234,6 +235,10 @@ bool SceneSaver::LoadScene(const std::string& filepath) {
                             else if (type == "CharacterController") {
                                 auto* ccComp = obj->addComponent<CharacterController>();
                                 ccComp->deserialize(compData.dump());
+                            }
+                            else if (type == "SpriteAnimator") {
+                                auto* spaComp = obj->addComponent<SpriteAnimator>();
+                                spaComp->deserialize(compData.dump());
                             }
                         }
                         catch (const nlohmann::json::exception& e) {

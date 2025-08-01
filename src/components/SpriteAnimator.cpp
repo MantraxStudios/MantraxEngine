@@ -384,21 +384,14 @@ std::string SpriteAnimator::serializeComponent() const {
     j["frameTimer"] = frameTimer;
     j["playbackState"] = playbackState;
     
+    // Serializar estados de sprite
     json statesArray = json::array();
     for (const auto& state : SpriteStates) {
         json stateObj;
         stateObj["state_name"] = state.state_name;
         
-        // Serializar texturas (solo los paths por ahora)
-        json texturesArray = json::array();
-        for (const auto& texturePath : state.texturePaths) {
-            // Asumiendo que Texture tiene un método getPath() o similar
-            // Por ahora serializamos información básica
-            json textureObj;
-            textureObj["path"] = texturePath; // Placeholder
-            texturesArray.push_back(textureObj);
-        }
-        stateObj["textures"] = texturesArray;
+        // Serializar rutas de texturas directamente como array de strings
+        stateObj["texturePaths"] = state.texturePaths;
         statesArray.push_back(stateObj);
     }
     j["spriteStates"] = statesArray;
@@ -415,11 +408,15 @@ std::string SpriteAnimator::serializeComponent() const {
         j["material"] = materialObj;
     }
     
+    // Serializar información de debugging
+    j["debugMode"] = debugMode;
+    j["forceMaterialUpdate"] = forceMaterialUpdate;
+    
     // Estado del componente
     j["enabled"] = isEnabled;
     
     try {
-        return j.dump();
+        return j.dump(4); // Pretty print with 4 spaces indentation
     }
     catch (const std::exception& e) {
         std::cerr << "SpriteAnimator::serializeComponent error: " << e.what() << std::endl;
@@ -453,7 +450,7 @@ void SpriteAnimator::deserialize(const std::string& data) {
             playbackState = j["playbackState"];
         }
         
-        // Deserializar estados de animación
+        // Deserializar estados de sprite
         if (j.contains("spriteStates") && j["spriteStates"].is_array()) {
             SpriteStates.clear();
             for (const auto& stateJson : j["spriteStates"]) {
@@ -462,15 +459,9 @@ void SpriteAnimator::deserialize(const std::string& data) {
                     state.state_name = stateJson["state_name"];
                 }
                 
-                // Deserializar texturas (implementación básica)
-                if (stateJson.contains("textures") && stateJson["textures"].is_array()) {
-                    // Por ahora solo creamos texturas vacías
-                    // En una implementación completa, cargarías las texturas desde los paths
-                    for (const auto& textureJson : stateJson["textures"]) {
-                        if (textureJson.contains("path") && textureJson["path"].is_string()) {
-                            state.texturePaths.push_back(textureJson["path"]);
-                        }
-                    }
+                // Deserializar rutas de texturas directamente desde el array
+                if (stateJson.contains("texturePaths") && stateJson["texturePaths"].is_array()) {
+                    state.texturePaths = stateJson["texturePaths"].get<std::vector<std::string>>();
                 }
                 
                 SpriteStates.push_back(state);
@@ -517,13 +508,31 @@ void SpriteAnimator::deserialize(const std::string& data) {
             }
         }
         
+        // Deserializar información de debugging
+        if (j.contains("debugMode")) {
+            debugMode = j["debugMode"];
+        }
+        if (j.contains("forceMaterialUpdate")) {
+            forceMaterialUpdate = j["forceMaterialUpdate"];
+        }
+        
         // Estado del componente
         if (j.contains("enabled")) {
             isEnabled = j.value("enabled", true);
         }
         
+        // Precargar todas las texturas después de deserializar
+        preloadAllTextures();
+        
         // Actualizar la textura del material después de deserializar
         updateMaterialTexture();
+        
+        if (debugMode) {
+            std::cout << "SpriteAnimator deserialized successfully" << std::endl;
+            std::cout << "- States loaded: " << SpriteStates.size() << std::endl;
+            std::cout << "- Current state: " << currentState << std::endl;
+            std::cout << "- Is playing: " << (isPlaying ? "true" : "false") << std::endl;
+        }
         
     }
     catch (const json::exception& e) {
@@ -680,4 +689,51 @@ std::string SpriteAnimator::getAnimatorFilePath() const {
         return FileSystem::getProjectPath() + "\\Content\\Animators\\" + animatorFileName;
     }
     return "";
+}
+
+bool SpriteAnimator::saveToFile(const std::string& filePath) const {
+    try {
+        std::string serializedData = serializeComponent();
+        std::ofstream file(filePath);
+        if (file.is_open()) {
+            file << serializedData;
+            file.close();
+            if (debugMode) {
+                std::cout << "SpriteAnimator saved to: " << filePath << std::endl;
+            }
+            return true;
+        } else {
+            std::cerr << "Failed to open file for writing: " << filePath << std::endl;
+            return false;
+        }
+    }
+    catch (const std::exception& e) {
+        std::cerr << "Error saving SpriteAnimator to file: " << e.what() << std::endl;
+        return false;
+    }
+}
+
+bool SpriteAnimator::loadFromFile(const std::string& filePath) {
+    try {
+        std::ifstream file(filePath);
+        if (!file.is_open()) {
+            std::cerr << "Failed to open file for reading: " << filePath << std::endl;
+            return false;
+        }
+        
+        std::string data((std::istreambuf_iterator<char>(file)),
+                         std::istreambuf_iterator<char>());
+        file.close();
+        
+        deserialize(data);
+        
+        if (debugMode) {
+            std::cout << "SpriteAnimator loaded from: " << filePath << std::endl;
+        }
+        return true;
+    }
+    catch (const std::exception& e) {
+        std::cerr << "Error loading SpriteAnimator from file: " << e.what() << std::endl;
+        return false;
+    }
 }

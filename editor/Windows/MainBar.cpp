@@ -65,7 +65,7 @@ void MainBar::OnRenderGUI() {
 	}
 
 	std::string selectedPath;
-	if (boolOpenedPopup && FileExplorer::ShowSavePopup(FileSystem::getProjectPath() + "\\Content\\", selectedPath, ".scene")) {
+	if (FileExplorer::ShowSavePopup(FileSystem::getProjectPath() + "\\Content\\", selectedPath, ".scene")) {
 		auto& sceneManager = SceneManager::getInstance();
 		Scene* activeScene = sceneManager.getActiveScene();
 		if (activeScene) {

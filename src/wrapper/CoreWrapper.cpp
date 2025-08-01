@@ -1176,6 +1176,8 @@ void CoreWrapper::RegisterSpriteAnimator(sol::state& lua) {
         // ===== INSPECTOR HELPER METHODS =====
         "serializeComponent", &SpriteAnimator::serializeComponent,
         "deserialize", &SpriteAnimator::deserialize,
+        "saveToFile", &SpriteAnimator::saveToFile,
+        "loadFromFile", &SpriteAnimator::loadFromFile,
 
         // ===== COMPONENT LIFECYCLE =====
         "start", &SpriteAnimator::start,

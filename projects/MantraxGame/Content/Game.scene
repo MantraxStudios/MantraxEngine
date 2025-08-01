@@ -1,0 +1,82 @@
+{
+    "Settings": {
+        "AmbientIntensity": 1.0,
+        "CameraFov": 5.0,
+        "CameraType": 0,
+        "FrustrumOn": true,
+        "LightType": true,
+        "LowAmbient": false
+    },
+    "objects": [
+        {
+            "Name": "Player",
+            "Tag": "Default",
+            "components": {
+                "Geometry": {
+                    "modelPath": "Plane.fbx"
+                },
+                "Material": {
+                    "exists": true
+                },
+                "MaterialName": "SpriteMaterial",
+                "component": [
+                    {
+                        "animationSpeed": 3.5230000019073486,
+                        "currentFrame": 1,
+                        "currentState": "Walk",
+                        "debugMode": false,
+                        "enabled": true,
+                        "forceMaterialUpdate": false,
+                        "frameTimer": 0.2818400263786316,
+                        "isPlaying": true,
+                        "material": {
+                            "albedo": [
+                                0.800000011920929,
+                                0.800000011920929,
+                                0.800000011920929
+                            ],
+                            "emissive": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ],
+                            "metallic": 0.0,
+                            "name": "SpriteMaterial",
+                            "roughness": 0.5,
+                            "tiling": [
+                                1.0,
+                                1.0
+                            ]
+                        },
+                        "playbackState": "Walk",
+                        "spriteStates": [
+                            {
+                                "state_name": "Walk",
+                                "texturePaths": [
+                                    "Sprites\\Characters\\tile_0000.png",
+                                    "Sprites\\Characters\\tile_0001.png"
+                                ]
+                            }
+                        ],
+                        "type": "SpriteAnimator"
+                    }
+                ]
+            },
+            "position": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                -0.0,
+                0.0
+            ],
+            "scale": [
+                1.0,
+                1.0,
+                1.0
+            ]
+        }
+    ]
+}

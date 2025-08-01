@@ -98,6 +98,10 @@ public:
 	bool loadFromAnimatorFile(const std::string& filePath);
 	bool loadFromAnimatorData(const nlohmann::json& animatorData);
 	std::string getAnimatorFilePath() const;
+	
+	// Métodos para guardar y cargar el componente completo
+	bool saveToFile(const std::string& filePath) const;
+	bool loadFromFile(const std::string& filePath);
 
 	void start() override;
 	void update() override;

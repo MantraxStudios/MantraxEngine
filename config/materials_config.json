@@ -80,6 +80,33 @@
                 1.0,
                 1.0
             ]
+        },
+        "Floor": {
+            "albedo": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "emissive": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "metallic": 0.0,
+            "normal_strength": 1.0,
+            "roughness": 1.0,
+            "textures": {
+                "albedo": "Sprites\\tile_0000.png",
+                "ao": "",
+                "emissive": "",
+                "metallic": "",
+                "normal": "",
+                "roughness": ""
+            },
+            "tiling": [
+                1.0,
+                1.0
+            ]
         }
     }
 }

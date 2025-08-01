@@ -332,43 +332,44 @@ void AnimatorEditor::RenderTextureList() {
     const auto& state = currentAnimator->SpriteStates[selectedState];
     
     // Add texture with UIBuilder drag and drop
-    ImGui::InputText("Texture Path", texturePathBuffer, sizeof(texturePathBuffer));
-    
-    // Add drag-and-drop functionality using UIBuilder
-    static std::string lastDroppedTexture = "";
-    auto textureResult = UIBuilder::Drag_Objetive("TextureClass");
-    if (textureResult.has_value()) {
-        std::string droppedTexturePath = textureResult.value();
-        
-        // Only process if this is a new texture (not the same as last frame)
-        if (droppedTexturePath != lastDroppedTexture) {
-            std::cout << "DEBUG: Texture dropped in AnimatorEditor! Path: " << droppedTexturePath << std::endl;
+    if (ImGui::InputText("Texture Path", texturePathBuffer, sizeof(texturePathBuffer))) {
+        // Add drag-and-drop functionality using UIBuilder
+        static std::string lastDroppedTexture = "";
+        auto textureResult = UIBuilder::Drag_Objetive("TextureClass");
+        if (textureResult.has_value()) {
+            std::string droppedTexturePath = textureResult.value();
 
-            // Clean up the path using FileSystem::GetPathAfterContent
-            std::string cleanedPath = FileSystem::GetPathAfterContent(droppedTexturePath);
-            if (cleanedPath.empty()) {
-                // If GetPathAfterContent returns empty, use the original path
-                cleanedPath = droppedTexturePath;
+            // Only process if this is a new texture (not the same as last frame)
+            if (droppedTexturePath != lastDroppedTexture) {
+                std::cout << "DEBUG: Texture dropped in AnimatorEditor! Path: " << droppedTexturePath << std::endl;
+
+                // Clean up the path using FileSystem::GetPathAfterContent
+                std::string cleanedPath = FileSystem::GetPathAfterContent(droppedTexturePath);
+                if (cleanedPath.empty()) {
+                    // If GetPathAfterContent returns empty, use the original path
+                    cleanedPath = droppedTexturePath;
+                }
+
+                std::cout << "DEBUG: Cleaned path: " << cleanedPath << std::endl;
+
+                // Update the input field with the dropped texture path
+                strncpy_s(texturePathBuffer, sizeof(texturePathBuffer), cleanedPath.c_str(), _TRUNCATE);
+
+                // Add texture to current state
+                currentAnimator->addTextureToState(state.state_name, cleanedPath);
+                currentAnimator->loadTexture(cleanedPath);
+
+                std::cout << "DEBUG: Texture added to state successfully" << std::endl;
+                ShowFeedback("Texture added: " + cleanedPath, 2.0f);
+
+                // Store this texture as the last dropped one
+                lastDroppedTexture = droppedTexturePath;
             }
-
-            std::cout << "DEBUG: Cleaned path: " << cleanedPath << std::endl;
-
-            // Update the input field with the dropped texture path
-            strncpy_s(texturePathBuffer, sizeof(texturePathBuffer), cleanedPath.c_str(), _TRUNCATE);
-
-            // Add texture to current state
-            currentAnimator->addTextureToState(state.state_name, cleanedPath);
-            currentAnimator->loadTexture(cleanedPath);
-            
-            std::cout << "DEBUG: Texture added to state successfully" << std::endl;
-            ShowFeedback("Texture added: " + cleanedPath, 2.0f);
-            
-            // Store this texture as the last dropped one
-            lastDroppedTexture = droppedTexturePath;
         }
-    } else {
-        // Reset the last dropped texture when no texture is being dragged
-        lastDroppedTexture = "";
+        else {
+            // Reset the last dropped texture when no texture is being dragged
+            lastDroppedTexture = "";
+        }
     }
     
     ImGui::SameLine();

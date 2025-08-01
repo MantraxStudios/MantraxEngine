@@ -9,6 +9,7 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <fstream>
 #include "../SceneSaver.h"
 #include "../EUI/EditorInfo.h"
 #include "../EUI/UIBuilder.h"
@@ -40,6 +41,23 @@ static std::string* s_contentRootPath = nullptr;
 // Cache para texturas de preview usando la clase Texture del core
 static std::map<std::string, Texture*>* s_textureCache = nullptr;
 static std::map<std::string, ImVec2>* s_textureSizes = nullptr;
+
+// Variables para el menú contextual
+static bool s_showContextMenu = false;
+static std::string s_contextMenuPath = "";
+static std::string s_contextMenuName = "";
+static bool s_isContextMenuDirectory = false;
+static ImVec2 s_contextMenuPos;
+
+// Variables para renombrar archivos
+static bool s_showRenamePopup = false;
+static char s_renameBuffer[256] = "";
+static std::string s_renameOriginalPath = "";
+static std::string s_renameOriginalName = "";
+
+// Variables para crear scripts Lua
+static bool s_showCreateScriptPopup = false;
+static char s_scriptNameBuffer[256] = "";
 
 // Función para inicializar de forma segura
 void InitializeAssetsBrowser() {
@@ -227,6 +245,224 @@ void RefreshDirectory() {
     s_needsRefresh = false;
 }
 
+// Función para crear un script Lua
+bool CreateLuaScript(const std::string& scriptPath, const std::string& scriptName) {
+    try {
+        std::ofstream file(scriptPath);
+        if (file.is_open()) {
+            file << "-- " << scriptName << "\n";
+            file << "-- Created by MantraxEngine ContentBrowser\n\n";
+            file << "function start()\n";
+            file << "    -- Initialize your script here\n";
+            file << "    print(\"Script started: " << scriptName << "\")\n";
+            file << "end\n\n";
+            file << "function update()\n";
+            file << "    -- Update your script here\n";
+            file << "end\n\n";
+            file << "function onDestroy()\n";
+            file << "    -- Cleanup your script here\n";
+            file << "end\n";
+            file.close();
+            return true;
+        }
+    }
+    catch (const std::exception& e) {
+        std::cerr << "Error creating Lua script: " << e.what() << std::endl;
+    }
+    return false;
+}
+
+// Función para renombrar archivo o directorio
+bool RenameFile(const std::string& oldPath, const std::string& newName) {
+    try {
+        fs::path oldPathObj(oldPath);
+        fs::path newPathObj = oldPathObj.parent_path() / newName;
+        
+        if (fs::exists(newPathObj)) {
+            return false; // Ya existe un archivo con ese nombre
+        }
+        
+        fs::rename(oldPathObj, newPathObj);
+        return true;
+    }
+    catch (const std::exception& e) {
+        std::cerr << "Error renaming file: " << e.what() << std::endl;
+        return false;
+    }
+}
+
+// Función para eliminar archivo o directorio
+bool DeleteFile(const std::string& path) {
+    try {
+        fs::path pathObj(path);
+        
+        if (fs::is_directory(pathObj)) {
+            fs::remove_all(pathObj);
+        } else {
+            fs::remove(pathObj);
+        }
+        return true;
+    }
+    catch (const std::exception& e) {
+        std::cerr << "Error deleting file: " << e.what() << std::endl;
+        return false;
+    }
+}
+
+// Función para mostrar el menú contextual
+void ShowContextMenu() {
+    if (!s_showContextMenu) return;
+    
+    std::cout << "DEBUG: Opening context menu for: " << s_contextMenuName << std::endl;
+    
+    // Abrir el popup y marcar que ya se procesó
+    ImGui::OpenPopup("ContextMenu");
+    s_showContextMenu = false;
+    
+    // El popup se abrirá en el siguiente frame
+}
+
+// Función para renderizar el menú contextual (se llama en cada frame)
+void RenderContextMenu() {
+    if (ImGui::BeginPopup("ContextMenu", ImGuiWindowFlags_AlwaysAutoResize)) {
+        std::cout << "DEBUG: Context menu popup is rendering" << std::endl;
+        
+        // Opciones para directorios
+        if (s_isContextMenuDirectory) {
+            if (ImGui::MenuItem("Create Lua Script")) {
+                s_showCreateScriptPopup = true;
+                strncpy_s(s_scriptNameBuffer, sizeof(s_scriptNameBuffer), "NewScript.lua", _TRUNCATE);
+            }
+            
+            if (ImGui::MenuItem("Rename")) {
+                s_showRenamePopup = true;
+                strncpy_s(s_renameBuffer, sizeof(s_renameBuffer), s_contextMenuName.c_str(), _TRUNCATE);
+                s_renameOriginalPath = s_contextMenuPath;
+                s_renameOriginalName = s_contextMenuName;
+            }
+            
+            if (ImGui::MenuItem("Delete")) {
+                if (DeleteFile(s_contextMenuPath)) {
+                    s_needsRefresh = true;
+                    s_selectedFile->clear();
+                }
+            }
+        }
+        // Opciones para archivos
+        else {
+            if (ImGui::MenuItem("Rename")) {
+                s_showRenamePopup = true;
+                strncpy_s(s_renameBuffer, sizeof(s_renameBuffer), s_contextMenuName.c_str(), _TRUNCATE);
+                s_renameOriginalPath = s_contextMenuPath;
+                s_renameOriginalName = s_contextMenuName;
+            }
+            
+            if (ImGui::MenuItem("Delete")) {
+                if (DeleteFile(s_contextMenuPath)) {
+                    s_needsRefresh = true;
+                    s_selectedFile->clear();
+                }
+            }
+        }
+        
+        ImGui::EndPopup();
+    }
+}
+
+// Función para mostrar el popup de renombrar
+void ShowRenamePopup() {
+    if (!s_showRenamePopup) return;
+    
+    ImGui::OpenPopup("RenamePopup");
+    s_showRenamePopup = false;
+    
+    if (ImGui::BeginPopupModal("RenamePopup", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+        ImGui::Text("Rename: %s", s_renameOriginalName.c_str());
+        ImGui::Separator();
+        
+        if (ImGui::InputText("New Name", s_renameBuffer, sizeof(s_renameBuffer), ImGuiInputTextFlags_EnterReturnsTrue)) {
+            std::string newName = s_renameBuffer;
+            if (!newName.empty() && newName != s_renameOriginalName) {
+                if (RenameFile(s_renameOriginalPath, newName)) {
+                    s_needsRefresh = true;
+                    s_selectedFile->clear();
+                }
+            }
+            ImGui::CloseCurrentPopup();
+        }
+        
+        if (ImGui::Button("OK") || ImGui::IsKeyPressed(ImGuiKey_Enter)) {
+            std::string newName = s_renameBuffer;
+            if (!newName.empty() && newName != s_renameOriginalName) {
+                if (RenameFile(s_renameOriginalPath, newName)) {
+                    s_needsRefresh = true;
+                    s_selectedFile->clear();
+                }
+            }
+            ImGui::CloseCurrentPopup();
+        }
+        
+        ImGui::SameLine();
+        if (ImGui::Button("Cancel") || ImGui::IsKeyPressed(ImGuiKey_Escape)) {
+            ImGui::CloseCurrentPopup();
+        }
+        
+        ImGui::EndPopup();
+    }
+}
+
+// Función para mostrar el popup de crear script
+void ShowCreateScriptPopup() {
+    if (!s_showCreateScriptPopup) return;
+    
+    ImGui::OpenPopup("CreateScriptPopup");
+    s_showCreateScriptPopup = false;
+    
+    if (ImGui::BeginPopupModal("CreateScriptPopup", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+        ImGui::Text("Create Lua Script");
+        ImGui::Separator();
+        
+        if (ImGui::InputText("Script Name", s_scriptNameBuffer, sizeof(s_scriptNameBuffer), ImGuiInputTextFlags_EnterReturnsTrue)) {
+            std::string scriptName = s_scriptNameBuffer;
+            if (!scriptName.empty()) {
+                // Asegurar que tenga extensión .lua
+                if (scriptName.find(".lua") == std::string::npos) {
+                    scriptName += ".lua";
+                }
+                
+                std::string scriptPath = s_contextMenuPath + "\\" + scriptName;
+                if (CreateLuaScript(scriptPath, scriptName)) {
+                    s_needsRefresh = true;
+                }
+            }
+            ImGui::CloseCurrentPopup();
+        }
+        
+        if (ImGui::Button("Create") || ImGui::IsKeyPressed(ImGuiKey_Enter)) {
+            std::string scriptName = s_scriptNameBuffer;
+            if (!scriptName.empty()) {
+                // Asegurar que tenga extensión .lua
+                if (scriptName.find(".lua") == std::string::npos) {
+                    scriptName += ".lua";
+                }
+                
+                std::string scriptPath = s_contextMenuPath + "\\" + scriptName;
+                if (CreateLuaScript(scriptPath, scriptName)) {
+                    s_needsRefresh = true;
+                }
+            }
+            ImGui::CloseCurrentPopup();
+        }
+        
+        ImGui::SameLine();
+        if (ImGui::Button("Cancel") || ImGui::IsKeyPressed(ImGuiKey_Escape)) {
+            ImGui::CloseCurrentPopup();
+        }
+        
+        ImGui::EndPopup();
+    }
+}
+
 void FileDragInfo(const FileEntry& entry) {
     size_t dotPos = entry.name.find_last_of('.');
     std::string extension;
@@ -283,6 +519,9 @@ const char* GetFileIcon(const FileEntry& entry) {
     }
     else if (extension == ".animator") {
         return "[ANIM]";
+    }
+    else if (extension == ".lua") {
+        return "[LUA]";
     }
 
     return "[FILE]";
@@ -495,6 +734,16 @@ void RenderTreeView() {
             }
         }
 
+        // Manejar clic derecho para menú contextual
+        if (ImGui::IsItemClicked(1) || (ImGui::IsItemHovered() && ImGui::IsMouseClicked(1))) { // Clic derecho
+            s_showContextMenu = true;
+            s_contextMenuPath = entry.path;
+            s_contextMenuName = entry.name;
+            s_isContextMenuDirectory = entry.isDirectory;
+            s_contextMenuPos = ImGui::GetMousePos();
+            std::cout << "DEBUG: Right-click detected on: " << entry.name << std::endl;
+        }
+
         FileDragInfo(entry);
 
         
@@ -566,6 +815,21 @@ void ContentBrowser::OnRenderGUI() {
         if (ImGui::Button("Refresh")) {
             s_needsRefresh = true;
         }
+        
+        ImGui::SameLine();
+        
+        // Test button for popup
+        if (ImGui::Button("Test Popup")) {
+            ImGui::OpenPopup("TestPopup");
+        }
+        
+        if (ImGui::BeginPopup("TestPopup")) {
+            ImGui::Text("Test popup works!");
+            if (ImGui::MenuItem("Test Item")) {
+                std::cout << "Test item clicked!" << std::endl;
+            }
+            ImGui::EndPopup();
+        }
 
         ImGui::SameLine();
         
@@ -622,6 +886,12 @@ void ContentBrowser::OnRenderGUI() {
 
     // Renderizar TreeView
     RenderTreeView();
+    
+    // Mostrar menús contextuales - FUERA del TreeView
+    ShowContextMenu();
+    RenderContextMenu(); // Renderizar el popup en cada frame
+    ShowRenamePopup();
+    ShowCreateScriptPopup();
 
     // Panel de información del archivo seleccionado mejorado
     if (s_selectedFile && !s_selectedFile->empty()) {

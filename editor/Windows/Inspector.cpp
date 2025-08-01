@@ -655,10 +655,10 @@ void Inspector::RenderGameObjectInspector(GameObject* go) {
                     std::string savePath = animatorsPath + "\\" + defaultFileName;
                     
                     // Serialize the current animator state
-                    nlohmann::json animatorData = spriteAnimator->serializeComponent();
+                    std::string serializedData = spriteAnimator->serializeComponent();
                     std::ofstream file(savePath);
                     if (file.is_open()) {
-                        file << animatorData.dump(4);
+                        file << serializedData;
                         file.close();
                         ImGui::OpenPopup("AnimatorSaved");
                     } else {

@@ -26,7 +26,7 @@ public:
 
         // === FONDOS PRINCIPALES ===
         colors[ImGuiCol_WindowBg] = darkBg;
-        colors[ImGuiCol_ChildBg] = ImVec4(0.20f, 0.21f, 0.22f, 1.00f);     // Más oscuro para contraste
+        colors[ImGuiCol_ChildBg] = ImVec4(0.20f, 0.21f, 0.22f, 1.00f);     // Mï¿½s oscuro para contraste
         colors[ImGuiCol_PopupBg] = ImVec4(0.25f, 0.26f, 0.27f, 0.98f);
         colors[ImGuiCol_MenuBarBg] = ImVec4(0.19f, 0.20f, 0.21f, 1.00f);
 
@@ -34,7 +34,7 @@ public:
         colors[ImGuiCol_Border] = ImVec4(0.15f, 0.15f, 0.15f, 1.00f);
         colors[ImGuiCol_BorderShadow] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
 
-        // === TÍTULOS DE VENTANA ===
+        // === Tï¿½TULOS DE VENTANA ===
         colors[ImGuiCol_TitleBg] = ImVec4(0.19f, 0.20f, 0.21f, 1.00f);
         colors[ImGuiCol_TitleBgActive] = ImVec4(0.22f, 0.23f, 0.24f, 1.00f);
         colors[ImGuiCol_TitleBgCollapsed] = ImVec4(0.17f, 0.18f, 0.19f, 0.75f);
@@ -108,7 +108,7 @@ public:
         colors[ImGuiCol_NavWindowingDimBg] = ImVec4(0.80f, 0.80f, 0.80f, 0.20f);
         colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.20f, 0.20f, 0.20f, 0.35f);
 
-        // === CONFIGURACIÓN DE ESTILO PROFESIONAL ===
+        // === CONFIGURACIï¿½N DE ESTILO PROFESIONAL ===
         // Bordes redondeados suaves
         style.WindowRounding = 8.0f;
         style.ChildRounding = 6.0f;
@@ -118,7 +118,7 @@ public:
         style.GrabRounding = 4.0f;
         style.TabRounding = 4.0f;
 
-        // Tamaños y espacio
+        // Tamaï¿½os y espacio
         style.WindowBorderSize = 1.0f;
         style.ChildBorderSize = 1.0f;
         style.PopupBorderSize = 1.0f;
@@ -127,7 +127,7 @@ public:
         style.ScrollbarSize = 14.0f;
         style.GrabMinSize = 14.0f;
 
-        // Padding y espaciado más generoso
+        // Padding y espaciado mï¿½s generoso
         style.WindowPadding = ImVec2(16.0f, 16.0f);
         style.FramePadding = ImVec2(12.0f, 6.0f);
         style.CellPadding = ImVec2(8.0f, 4.0f);
@@ -137,7 +137,7 @@ public:
         style.IndentSpacing = 24.0f;
         style.ColumnsMinSpacing = 8.0f;
 
-        // Configuración de ventana
+        // Configuraciï¿½n de ventana
         style.WindowMenuButtonPosition = ImGuiDir_Left;
         style.ColorButtonPosition = ImGuiDir_Right;
         style.ButtonTextAlign = ImVec2(0.5f, 0.5f);
@@ -149,7 +149,7 @@ public:
         style.SeparatorTextPadding = ImVec2(24.0f, 4.0f);
         style.DockingSeparatorSize = 2.0f;
 
-        // Configuración de transparencia (Alpha)
+        // Configuraciï¿½n de transparencia (Alpha)
         style.Alpha = 1.0f;
         style.DisabledAlpha = 0.6f;
     }
