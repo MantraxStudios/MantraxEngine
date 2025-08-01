@@ -70,6 +70,10 @@
     <ClCompile Include="editor\Windows\MaterialEditor.cpp">
       <Filter>01_Main\Windows</Filter>
     </ClCompile>
+
+    <ClCompile Include="editor\Windows\FileSaveUtils.cpp">
+      <Filter>01_Main\Windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Vendors">
@@ -175,6 +179,10 @@
     </ClInclude>
     <ClInclude Include="editor\EUI\UIBuilder.h">
       <Filter>01_Main\EUI</Filter>
+    </ClInclude>
+
+    <ClInclude Include="editor\Windows\FileSaveUtils.h">
+      <Filter>01_Main\Windows</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

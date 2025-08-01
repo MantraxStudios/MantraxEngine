@@ -65,7 +65,7 @@ void MainBar::OnRenderGUI() {
 	}
 
 	std::string selectedPath;
-	if (FileExplorer::ShowSavePopup(FileSystem::getProjectPath() + "\\Content\\", selectedPath, ".scene")) {
+	if (boolOpenedPopup && FileExplorer::ShowSavePopup(FileSystem::getProjectPath() + "\\Content\\", selectedPath, ".scene")) {
 		auto& sceneManager = SceneManager::getInstance();
 		Scene* activeScene = sceneManager.getActiveScene();
 		if (activeScene) {
@@ -321,6 +321,8 @@ void MainBar::OnRenderGUI() {
 				// El estado se actualiza automáticamente por ImGui
 			}
 		}
+
+
 
 		// Gizmos
 		if (auto* gizmosWindow = windowManager.GetWindow<Gizmos>()) {

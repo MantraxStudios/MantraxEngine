@@ -28,6 +28,7 @@
     <ClCompile Include="..\src\components\SceneManager.cpp" />
     <ClCompile Include="..\src\components\Scene.cpp" />
     <ClCompile Include="..\src\components\ScriptExecutor.cpp" />
+    <ClCompile Include="..\src\components\SpriteAnimator.cpp" />
     <ClCompile Include="..\src\components\TestScene.cpp" />
     <ClCompile Include="..\src\components\TexturedScene.cpp" />
     <ClCompile Include="..\src\components\EventSystem.cpp" />
@@ -73,6 +74,7 @@
     <ClInclude Include="..\src\components\Scene.h" />
     <ClInclude Include="..\src\components\SceneManager.h" />
     <ClInclude Include="..\src\components\ScriptExecutor.h" />
+    <ClInclude Include="..\src\components\SpriteAnimator.h" />
     <ClInclude Include="..\src\components\TestScene.h" />
     <ClInclude Include="..\src\components\TexturedScene.h" />
     <ClInclude Include="..\src\components\EventSystem.h" />

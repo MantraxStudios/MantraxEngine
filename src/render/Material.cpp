@@ -113,6 +113,55 @@ void Material::setAOTexture(const std::string& filePath) {
     }
 }
 
+// Métodos para establecer texturas directamente desde objetos Texture
+void Material::setAlbedoTexture(std::shared_ptr<Texture> texture) {
+    albedoTexture = texture;
+    if (albedoTexture && albedoTexture->getID()) {
+        std::cout << "Albedo texture establecida directamente para material '" << name << "'" << std::endl;
+        autoConfigureMaterial();
+    }
+}
+
+void Material::setNormalTexture(std::shared_ptr<Texture> texture) {
+    normalTexture = texture;
+    if (normalTexture && normalTexture->getID()) {
+        std::cout << "Normal texture establecida directamente para material '" << name << "'" << std::endl;
+        autoConfigureMaterial();
+    }
+}
+
+void Material::setMetallicTexture(std::shared_ptr<Texture> texture) {
+    metallicTexture = texture;
+    if (metallicTexture && metallicTexture->getID()) {
+        std::cout << "Metallic texture establecida directamente para material '" << name << "'" << std::endl;
+        autoConfigureMaterial();
+    }
+}
+
+void Material::setRoughnessTexture(std::shared_ptr<Texture> texture) {
+    roughnessTexture = texture;
+    if (roughnessTexture && roughnessTexture->getID()) {
+        std::cout << "Roughness texture establecida directamente para material '" << name << "'" << std::endl;
+        autoConfigureMaterial();
+    }
+}
+
+void Material::setEmissiveTexture(std::shared_ptr<Texture> texture) {
+    emissiveTexture = texture;
+    if (emissiveTexture && emissiveTexture->getID()) {
+        std::cout << "Emissive texture establecida directamente para material '" << name << "'" << std::endl;
+        autoConfigureMaterial();
+    }
+}
+
+void Material::setAOTexture(std::shared_ptr<Texture> texture) {
+    aoTexture = texture;
+    if (aoTexture && aoTexture->getID()) {
+        std::cout << "AO texture establecida directamente para material '" << name << "'" << std::endl;
+        autoConfigureMaterial();
+    }
+}
+
 // Configuración automática basada en las texturas cargadas
 void Material::autoConfigureMaterial() {
     std::string materialType = detectMaterialType();

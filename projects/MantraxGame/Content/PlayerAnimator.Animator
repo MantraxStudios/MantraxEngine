@@ -1,0 +1,44 @@
+{
+    "animationSpeed": 1.0,
+    "animationType": 1,
+    "animations": [
+        {
+            "frames": [
+                {
+                    "duration": 0.10000000149011612,
+                    "flipX": false,
+                    "x": 0,
+                    "y": 0
+                },
+                {
+                    "duration": 0.10000000149011612,
+                    "flipX": false,
+                    "x": 1,
+                    "y": 0
+                },
+                {
+                    "duration": 0.10000000149011612,
+                    "flipX": false,
+                    "x": 2,
+                    "y": 0
+                }
+            ],
+            "loop": true,
+            "name": "Fly",
+            "speed": 1.0
+        }
+    ],
+    "gridSize": [
+        1.0,
+        1.0
+    ],
+    "individualTextures": [
+        "FlappyBird\\Game Objects\\yellowbird-downflap.png",
+        "FlappyBird\\Game Objects\\yellowbird-midflap.png",
+        "FlappyBird\\Game Objects\\yellowbird-upflap.png"
+    ],
+    "tileSize": [
+        32.0,
+        32.0
+    ]
+}

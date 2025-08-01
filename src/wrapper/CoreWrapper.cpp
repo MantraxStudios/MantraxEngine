@@ -1,5 +1,6 @@
 #include "CoreWrapper.h"
 #include "../components/SceneManager.h"
+#include "../components/SpriteAnimator.h"
 #include "../input/InputAction.h"
 #include "../input/InputSystem.h"
 #include "../core/InputConfigLoader.h"
@@ -20,6 +21,7 @@ void CoreWrapper::Register(sol::state& lua) {
     RegisterLightComponent(lua);
     RegisterAudioSource(lua);
     RegisterScriptExecutor(lua);
+    RegisterSpriteAnimator(lua);
 }
 
 void CoreWrapper::RegisterMaths(sol::state& lua) {
@@ -475,6 +477,37 @@ void CoreWrapper::RegisterGameObject(sol::state& lua) {
         // need to be registered separately for each specific component type
         // This would be done in a separate function or with specific bindings
 
+        // ===== ADD COMPONENT METHODS =====
+        "addComponent", [](GameObject* self, const std::string& typeName) -> Component* {
+            if (!self) {
+                std::cout << "[Lua Error] GameObject is null in addComponent" << std::endl;
+                return nullptr;
+            }
+
+            // Add components by type name
+            if (typeName == "CharacterController") {
+                return self->addComponent<CharacterController>();
+            }
+            if (typeName == "PhysicalObject") {
+                return self->addComponent<PhysicalObject>(self);
+            }
+            if (typeName == "LightComponent") {
+                return self->addComponent<LightComponent>();
+            }
+            if (typeName == "AudioSource") {
+                return self->addComponent<AudioSource>();
+            }
+            if (typeName == "ScriptExecutor") {
+                return self->addComponent<ScriptExecutor>();
+            }
+            if (typeName == "SpriteAnimator") {
+                return self->addComponent<SpriteAnimator>();
+            }
+
+            std::cout << "[Lua Warning] addComponent: type not recognized -> " << typeName << std::endl;
+            return nullptr;
+        },
+
         // ===== UPDATE =====
         "update", [](GameObject* self, float deltaTime) {
             if (!self) {
@@ -505,6 +538,9 @@ void CoreWrapper::RegisterGameObject(sol::state& lua) {
             }
             if (typeName == "ScriptExecutor") {
                 return self->getComponent<ScriptExecutor>();
+            }
+            if (typeName == "SpriteAnimator") {
+                return self->getComponent<SpriteAnimator>();
             }
 
             std::cout << "[Lua Warning] getComponent: type not recognized -> " << typeName << std::endl;
@@ -1069,4 +1105,79 @@ void CoreWrapper::RegisterScriptExecutor(sol::state& lua) {
     );
 
     std::cout << "[Lua] ScriptExecutor system registered successfully" << std::endl;
+}
+
+void CoreWrapper::RegisterSpriteAnimator(sol::state& lua) {
+    // ===== SPRITE ARRAY STRUCT REGISTRATION =====
+    lua.new_usertype<SpriteArray>("SpriteArray",
+        // ===== BASIC PROPERTIES =====
+        "state_name", &SpriteArray::state_name
+    );
+
+    // ===== SPRITE ANIMATOR REGISTRATION =====
+    lua.new_usertype<SpriteAnimator>("SpriteAnimator",
+        // ===== ANIMATION STATES =====
+        "SpriteStates", &SpriteAnimator::SpriteStates,
+        "currentState", &SpriteAnimator::currentState,
+
+        // ===== MATERIAL MANAGEMENT =====
+        "createMaterial", &SpriteAnimator::createMaterial,
+        "setMaterial", &SpriteAnimator::setMaterial,
+        "getMaterial", &SpriteAnimator::getMaterial,
+
+        // ===== MATERIAL PROPERTIES =====
+        "setSpriteAlbedo", &SpriteAnimator::setSpriteAlbedo,
+        "setSpriteMetallic", &SpriteAnimator::setSpriteMetallic,
+        "setSpriteRoughness", &SpriteAnimator::setSpriteRoughness,
+        "setSpriteEmissive", &SpriteAnimator::setSpriteEmissive,
+        "setSpriteTiling", &SpriteAnimator::setSpriteTiling,
+
+        // ===== ANIMATION CONTROL =====
+        "updateMaterialTexture", &SpriteAnimator::updateMaterialTexture,
+        
+        // ===== ANIMATION PLAYBACK =====
+        "playAnimation", &SpriteAnimator::playAnimation,
+        "stopAnimation", &SpriteAnimator::stopAnimation,
+        "pauseAnimation", &SpriteAnimator::pauseAnimation,
+        "setAnimationSpeed", &SpriteAnimator::setAnimationSpeed,
+        "setCurrentFrame", &SpriteAnimator::setCurrentFrame,
+        "getCurrentFrame", &SpriteAnimator::getCurrentFrame,
+        "getIsPlaying", &SpriteAnimator::getIsPlaying,
+        "getPlaybackState", &SpriteAnimator::getPlaybackState,
+        
+        // ===== STATE MANAGEMENT METHODS =====
+        "addSpriteState", &SpriteAnimator::addSpriteState,
+        "setCurrentState", &SpriteAnimator::setCurrentState,
+        "addTextureToState", &SpriteAnimator::addTextureToState,
+
+        // ===== DEBUGGING METHODS =====
+        "enableDebugMode", &SpriteAnimator::enableDebugMode,
+        "isDebugModeEnabled", &SpriteAnimator::isDebugModeEnabled,
+        "forceUpdate", &SpriteAnimator::forceUpdate,
+        
+        // ===== VALIDATION METHODS =====
+        "isValidState", &SpriteAnimator::isValidState,
+        "hasValidTextures", &SpriteAnimator::hasValidTextures,
+        "isMaterialValid", &SpriteAnimator::isMaterialValid,
+        
+        // ===== DEBUG INFO METHODS =====
+        "getDebugInfo", &SpriteAnimator::getDebugInfo,
+        "printDebugInfo", &SpriteAnimator::printDebugInfo,
+        
+        // ===== TEXTURE MANAGEMENT METHODS =====
+        "loadTexture", &SpriteAnimator::loadTexture,
+        "getTexture", &SpriteAnimator::getTexture,
+        "preloadAllTextures", &SpriteAnimator::preloadAllTextures,
+        "clearTextureCache", &SpriteAnimator::clearTextureCache,
+
+        // ===== INSPECTOR HELPER METHODS =====
+        "serializeComponent", &SpriteAnimator::serializeComponent,
+        "deserialize", &SpriteAnimator::deserialize,
+
+        // ===== COMPONENT LIFECYCLE =====
+        "start", &SpriteAnimator::start,
+        "update", &SpriteAnimator::update
+    );
+
+    std::cout << "[Lua] SpriteAnimator system registered successfully" << std::endl;
 }

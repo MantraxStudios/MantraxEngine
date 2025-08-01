@@ -1,0 +1,10 @@
+{
+    "Settings": {
+        "AmbientIntensity": 1.0,
+        "CameraFov": 5.0,
+        "CameraType": 0,
+        "FrustrumOn": true,
+        "LightType": true,
+        "LowAmbient": false
+    }
+}

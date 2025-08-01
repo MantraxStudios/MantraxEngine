@@ -9,6 +9,7 @@
 #include "ContentBrowser.h"
 #include "MaterialEditor.h"
 
+
 class RenderWindows {
 private:
     std::vector<std::unique_ptr<WindowBehaviour>> m_windows;
@@ -22,6 +23,7 @@ public:
         m_windows.push_back(std::make_unique<MainBar>());
         m_windows.push_back(std::make_unique<ContentBrowser>());
         m_windows.push_back(std::make_unique<MaterialEditor>());
+
     }
     
     // Delete copy constructor and assignment operator

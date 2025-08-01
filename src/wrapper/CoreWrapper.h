@@ -16,4 +16,5 @@ public:
 	void RegisterLightComponent(sol::state& lua);
 	void RegisterAudioSource(sol::state& lua);
 	void RegisterScriptExecutor(sol::state& lua);
+	void RegisterSpriteAnimator(sol::state& lua);
 };

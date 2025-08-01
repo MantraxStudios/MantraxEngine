@@ -11,8 +11,10 @@ class GameObject;
 
 class MANTRAXCORE_API Component {
 public:
+    Component() : owner(nullptr), isDestroyed(false), isEnabled(true) {}
+    
     virtual ~Component() {
-        std::cout << "DESTRUCTOR Component ejecutándose - Tipo: " << typeid(*this).name() << std::endl;
+        std::cout << "DESTRUCTOR Component ejecutÃ¡ndose - Tipo: " << typeid(*this).name() << std::endl;
         destroy();
     }
 
@@ -27,7 +29,7 @@ public:
     // Sistema de estado del componente
     virtual bool isValid() const { return !isDestroyed && owner != nullptr; }
     virtual void destroy() {
-        std::cout << "DESTROY ejecutándose - isDestroyed: " << isDestroyed << std::endl;
+        std::cout << "DESTROY ejecutï¿½ndose - isDestroyed: " << isDestroyed << std::endl;
         isDestroyed = true;
         owner = nullptr;
     }

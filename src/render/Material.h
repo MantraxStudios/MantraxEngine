@@ -31,6 +31,14 @@ public:
     void setEmissiveTexture(const std::string& filePath);
     void setAOTexture(const std::string& filePath);
     
+    // Métodos para establecer texturas directamente desde objetos Texture
+    void setAlbedoTexture(std::shared_ptr<Texture> texture);
+    void setNormalTexture(std::shared_ptr<Texture> texture);
+    void setMetallicTexture(std::shared_ptr<Texture> texture);
+    void setRoughnessTexture(std::shared_ptr<Texture> texture);
+    void setEmissiveTexture(std::shared_ptr<Texture> texture);
+    void setAOTexture(std::shared_ptr<Texture> texture);
+    
     // Configuración automática basada en las texturas cargadas
     void autoConfigureMaterial();
 

@@ -4,6 +4,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include "Component.h"
+#include "GameObject.h"
 #include "../core/CoreExporter.h"
 #include "../core/PhysicsManager.h"
 #include "../core/PhysicsEvents.h"

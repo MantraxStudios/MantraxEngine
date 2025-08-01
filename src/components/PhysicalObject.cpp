@@ -1084,100 +1084,164 @@ void PhysicalObject::deserialize(const std::string& data) {
     try {
         json j = json::parse(data);
 
-        // 1. Restaurar propiedades básicas ANTES de inicializar
-        bodyType = static_cast<BodyType>(j.value("bodyType", static_cast<int>(BodyType::Static)));
-        shapeType = static_cast<ShapeType>(j.value("shapeType", static_cast<int>(ShapeType::Box)));
-        mass = j.value("mass", 1.0f);
-        friction = j.value("friction", 0.5f);
-        restitution = j.value("restitution", 0.1f);
-        damping = j.value("damping", 0.0f);
-        gravityFactor = j.value("gravityFactor", 1.0f);
-        isTriggerShape = j.value("isTrigger", false);
+        // 2. Restaurar propiedades básicas (como variables locales, igual que en ImGui)
+        BodyType deserializedBodyType = static_cast<BodyType>(j.value("bodyType", static_cast<int>(BodyType::Static)));
+        ShapeType deserializedShapeType = static_cast<ShapeType>(j.value("shapeType", static_cast<int>(ShapeType::Box)));
+        float deserializedMass = j.value("mass", 1.0f);
+        float deserializedFriction = j.value("friction", 0.5f);
+        float deserializedRestitution = j.value("restitution", 0.1f);
+        float deserializedDamping = j.value("damping", 0.0f);
+        float deserializedGravityFactor = j.value("gravityFactor", 1.0f);
+        bool deserializedIsTrigger = j.value("isTrigger", false);
 
         // Propiedades de formas geométricas
+        glm::vec3 deserializedBoxExtents = boxHalfExtents; // valor por defecto
         if (j.contains("boxHalfExtents") && j["boxHalfExtents"].is_array()) {
             auto e = j["boxHalfExtents"];
             if (e.size() >= 3) {
-                boxHalfExtents = glm::vec3(e[0], e[1], e[2]);
+                deserializedBoxExtents = glm::vec3(e[0], e[1], e[2]);
             }
         }
-        sphereRadius = j.value("sphereRadius", 0.5f);
-        capsuleRadius = j.value("capsuleRadius", 0.5f);
-        capsuleHalfHeight = j.value("capsuleHalfHeight", 0.5f);
+        float deserializedSphereRadius = j.value("sphereRadius", 0.5f);
+        float deserializedCapsuleRadius = j.value("capsuleRadius", 0.5f);
+        float deserializedCapsuleHalfHeight = j.value("capsuleHalfHeight", 0.5f);
 
         // Configuración de capas
-        currentLayer = j.value("currentLayer", static_cast<physx::PxU32>(0));
-        currentLayerMask = j.value("currentLayerMask", static_cast<physx::PxU32>(0xFFFFFFFF));
+        physx::PxU32 deserializedCurrentLayer = j.value("currentLayer", static_cast<physx::PxU32>(0));
+        physx::PxU32 deserializedCurrentLayerMask = j.value("currentLayerMask", static_cast<physx::PxU32>(0xFFFFFFFF));
 
         // Propiedades C# Bridge
-        csharpBridgeEnabled = j.value("csharpBridgeEnabled", false);
-        csharpObjectName = j.value("csharpObjectName", "Unknown");
+        bool deserializedCsharpBridgeEnabled = j.value("csharpBridgeEnabled", false);
+        std::string deserializedCsharpObjectName = j.value("csharpObjectName", "Unknown");
 
-        // 2. Si ya estaba inicializado, destruir primero para recrear correctamente
-        bool wasInitialized = initialized;
-        if (wasInitialized) {
-            destroy();
+        // Velocidades para restaurar después
+        glm::vec3 deserializedVelocity(0.0f);
+        if (j.contains("velocity") && j["velocity"].is_array()) {
+            auto vel = j["velocity"];
+            if (vel.size() >= 3) {
+                deserializedVelocity = glm::vec3(vel[0], vel[1], vel[2]);
+            }
         }
 
-        // 3. Inicializar física con las nuevas propiedades
-        initializePhysics();
+        glm::vec3 deserializedAngularVelocity(0.0f);
+        if (j.contains("angularVelocity") && j["angularVelocity"].is_array()) {
+            auto angVel = j["angularVelocity"];
+            if (angVel.size() >= 3) {
+                deserializedAngularVelocity = glm::vec3(angVel[0], angVel[1], angVel[2]);
+            }
+        }
 
-        // 4. Aplicar propiedades específicas después de la inicialización
+        // Estados del actor
+        bool deserializedShouldBeAwake = j.value("isAwake", true);
+        bool deserializedGravityDisabled = j.value("gravityDisabled", false);
+        bool deserializedSimulationDisabled = j.value("simulationDisabled", false);
+        bool deserializedIsKinematic = j.value("isKinematic", false);
+
+
+        // 4. Si la inicialización fue exitosa, aplicar todas las propiedades
+        // usando los mismos métodos que usa ImGui
         if (initialized) {
-            // Aplicar propiedades físicas
-            setMass(mass);
-            setFriction(friction);
-            setRestitution(restitution);
-            setDamping(damping);
-            setGravityFactor(gravityFactor);
 
-            // Configurar como trigger si es necesario
-            if (isTriggerShape) {
-                setTrigger(true);
+            // Aplicar Body Type (igual que en ImGui)
+            if (bodyType != deserializedBodyType) {
+                setBodyType(deserializedBodyType);
             }
 
-            // Configurar capas
-            setLayer(currentLayer);
-            setLayerMask(currentLayerMask);
+            // Aplicar Shape Type (igual que en ImGui)
+            if (shapeType != deserializedShapeType) {
+                setShapeType(deserializedShapeType);
+            }
 
-            // Restaurar velocidades (solo para objetos dinámicos)
+            // Aplicar propiedades de formas específicas (igual que en ImGui)
+            switch (deserializedShapeType) {
+            case ShapeType::Box:
+                if (boxHalfExtents != deserializedBoxExtents) {
+                    setBoxHalfExtents(deserializedBoxExtents);
+                }
+                break;
+            case ShapeType::Sphere:
+                if (sphereRadius != deserializedSphereRadius) {
+                    setSphereRadius(deserializedSphereRadius);
+                }
+                break;
+            case ShapeType::Capsule:
+                if (capsuleRadius != deserializedCapsuleRadius) {
+                    setCapsuleRadius(deserializedCapsuleRadius);
+                }
+                if (capsuleHalfHeight != deserializedCapsuleHalfHeight) {
+                    setCapsuleHalfHeight(deserializedCapsuleHalfHeight);
+                }
+                break;
+            default:
+                break;
+            }
+
+            // Aplicar propiedades físicas (igual que en ImGui)
+            if (mass != deserializedMass) {
+                setMass(deserializedMass);
+            }
+            if (friction != deserializedFriction) {
+                setFriction(deserializedFriction);
+            }
+            if (restitution != deserializedRestitution) {
+                setRestitution(deserializedRestitution);
+            }
+            if (damping != deserializedDamping) {
+                setDamping(deserializedDamping);
+            }
+            if (gravityFactor != deserializedGravityFactor) {
+                setGravityFactor(deserializedGravityFactor);
+            }
+
+            // Aplicar configuración de trigger (igual que en ImGui)
+            if (isTriggerShape != deserializedIsTrigger) {
+                setTrigger(deserializedIsTrigger);
+            }
+
+            // Aplicar configuración de capas (igual que en ImGui)
+            if (currentLayer != deserializedCurrentLayer) {
+                setLayer(deserializedCurrentLayer);
+            }
+            if (currentLayerMask != deserializedCurrentLayerMask) {
+                setLayerMask(deserializedCurrentLayerMask);
+            }
+
+            // Aplicar velocidades (solo para objetos dinámicos)
             if (dynamicActor) {
                 // Velocidad lineal
-                if (j.contains("velocity") && j["velocity"].is_array()) {
-                    auto vel = j["velocity"];
-                    if (vel.size() >= 3) {
-                        glm::vec3 velocity(vel[0], vel[1], vel[2]);
-                        setVelocity(velocity);
-                    }
+                if (deserializedVelocity != glm::vec3(0.0f)) {
+                    setVelocity(deserializedVelocity);
                 }
 
                 // Velocidad angular
-                if (j.contains("angularVelocity") && j["angularVelocity"].is_array()) {
-                    auto angVel = j["angularVelocity"];
-                    if (angVel.size() >= 3) {
-                        dynamicActor->setAngularVelocity(physx::PxVec3(angVel[0], angVel[1], angVel[2]));
-                    }
+                if (deserializedAngularVelocity != glm::vec3(0.0f)) {
+                    dynamicActor->setAngularVelocity(physx::PxVec3(
+                        deserializedAngularVelocity.x,
+                        deserializedAngularVelocity.y,
+                        deserializedAngularVelocity.z
+                    ));
                 }
 
-                // Estado de activación
-                bool shouldBeAwake = j.value("isAwake", true);
-                if (shouldBeAwake) {
+                // Flags del actor
+                dynamicActor->setActorFlag(physx::PxActorFlag::eDISABLE_GRAVITY, deserializedGravityDisabled);
+                dynamicActor->setActorFlag(physx::PxActorFlag::eDISABLE_SIMULATION, deserializedSimulationDisabled);
+
+                // Configuración kinematic
+                dynamicActor->setRigidBodyFlag(physx::PxRigidBodyFlag::eKINEMATIC, deserializedIsKinematic);
+
+                // Estado de activación (hacer esto al final)
+                if (deserializedShouldBeAwake) {
                     wakeUp();
                 }
                 else {
                     dynamicActor->putToSleep();
                 }
+            }
 
-                // Flags del actor
-                bool gravityDisabled = j.value("gravityDisabled", false);
-                dynamicActor->setActorFlag(physx::PxActorFlag::eDISABLE_GRAVITY, gravityDisabled);
-
-                bool simulationDisabled = j.value("simulationDisabled", false);
-                dynamicActor->setActorFlag(physx::PxActorFlag::eDISABLE_SIMULATION, simulationDisabled);
-
-                // Configuración kinematic
-                bool isKinematic = j.value("isKinematic", false);
-                dynamicActor->setRigidBodyFlag(physx::PxRigidBodyFlag::eKINEMATIC, isKinematic);
+            // Aplicar configuración C# Bridge
+            if (deserializedCsharpBridgeEnabled) {
+                enableCSharpBridge(true);
+                setCSharpObjectName(deserializedCsharpObjectName);
             }
 
             // Restaurar filter data específico si existe
@@ -1207,33 +1271,28 @@ void PhysicalObject::deserialize(const std::string& data) {
                     shapeFlags.value("isVisualization", true));
             }
 
-            // 5. Aplicar configuración C# Bridge
-            if (csharpBridgeEnabled) {
-                enableCSharpBridge(true);
-                setCSharpObjectName(csharpObjectName);
-            }
-
-            // 6. Sincronizar transformación
+            // Sincronizar transformación final
             syncTransformToPhysX();
 
-            // 7. Configurar callbacks por defecto si se indicó que existían
+            // Configurar callbacks por defecto si se indicó que existían
             bool hadTriggerCallback = j.value("hasTriggerCallback", false);
             bool hadContactCallback = j.value("hasContactCallback", false);
 
             if (hadTriggerCallback && isTriggerShape && !triggerCallback) {
-                // Configurar callback por defecto para triggers
                 setTriggerCallback([](PhysicalObject* trigger, PhysicalObject* other) {
-                    // Callback por defecto - puede ser sobrescrito después
+                    // Callback por defecto para triggers
                     });
             }
 
             if (hadContactCallback && !contactCallback) {
-                // Configurar callback por defecto para contactos
                 setContactCallback([](PhysicalObject* obj1, PhysicalObject* obj2,
                     const glm::vec3& contactPoint, const glm::vec3& contactNormal, float contactForce) {
-                        // Callback por defecto - puede ser sobrescrito después
+                        // Callback por defecto para contactos
                     });
             }
+
+            // Debug final
+            debugCollisionFilters();
         }
 
     }
@@ -1260,7 +1319,12 @@ void PhysicalObject::deserialize(const std::string& data) {
 
         // Intentar inicializar con valores por defecto
         if (!initialized) {
-            initializePhysics();
+            try {
+                initializePhysics();
+            }
+            catch (...) {
+                std::cerr << "Failed to initialize physics with default values" << std::endl;
+            }
         }
     }
 }

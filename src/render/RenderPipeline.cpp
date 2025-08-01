@@ -499,3 +499,7 @@ bool RenderPipeline::hasMaterial(const std::string& materialName) const {
 void RenderPipeline::listMaterials() const {
     MaterialManager::getInstance().listMaterials();
 }
+
+Camera* RenderPipeline::getCamera() const {
+    return camera;
+}

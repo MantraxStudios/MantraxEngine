@@ -1,7 +1,7 @@
 {
     "Settings": {
-        "AmbientIntensity": 2.0,
-        "CameraFov": 21.010000228881836,
+        "AmbientIntensity": 1.0,
+        "CameraFov": 20.170000076293945,
         "CameraType": 1,
         "FrustrumOn": true,
         "LightType": true,
@@ -74,11 +74,65 @@
                 "Material": {
                     "exists": true
                 },
-                "MaterialName": "Base"
+                "MaterialName": "Base",
+                "component": [
+                    {
+                        "angularVelocity": [
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "bodyType": 0,
+                        "boxHalfExtents": [
+                            10.0,
+                            5.0,
+                            10.0
+                        ],
+                        "capsuleHalfHeight": 0.5,
+                        "capsuleRadius": 0.5,
+                        "csharpBridgeEnabled": false,
+                        "csharpObjectName": "Unknown",
+                        "currentLayer": 1,
+                        "currentLayerMask": 33554431,
+                        "damping": 0.0,
+                        "filterData": {
+                            "word0": 1,
+                            "word1": 33554431,
+                            "word2": 1,
+                            "word3": 0
+                        },
+                        "friction": 0.5,
+                        "gravityDisabled": false,
+                        "gravityFactor": 1.0,
+                        "hasContactCallback": true,
+                        "hasTriggerCallback": false,
+                        "initialized": true,
+                        "isAwake": true,
+                        "isKinematic": false,
+                        "isTrigger": true,
+                        "mass": 1.0,
+                        "restitution": 0.10000000149011612,
+                        "shapeFlags": {
+                            "isSceneQuery": true,
+                            "isSimulation": false,
+                            "isTrigger": true,
+                            "isVisualization": true
+                        },
+                        "shapeType": 0,
+                        "simulationDisabled": false,
+                        "sphereRadius": 0.5,
+                        "type": "PhysicalObject",
+                        "velocity": [
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    }
+                ]
             },
             "position": [
                 0.0,
-                23.113000869750977,
+                22.290830612182617,
                 0.0
             ],
             "rotation": [
@@ -102,11 +156,65 @@
                 "Material": {
                     "exists": true
                 },
-                "MaterialName": "Base"
+                "MaterialName": "Base",
+                "component": [
+                    {
+                        "angularVelocity": [
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "bodyType": 0,
+                        "boxHalfExtents": [
+                            10.0,
+                            5.0,
+                            10.0
+                        ],
+                        "capsuleHalfHeight": 0.5,
+                        "capsuleRadius": 0.5,
+                        "csharpBridgeEnabled": false,
+                        "csharpObjectName": "Unknown",
+                        "currentLayer": 1,
+                        "currentLayerMask": 33554431,
+                        "damping": 0.0,
+                        "filterData": {
+                            "word0": 2,
+                            "word1": 35,
+                            "word2": 0,
+                            "word3": 0
+                        },
+                        "friction": 0.5,
+                        "gravityDisabled": false,
+                        "gravityFactor": 1.0,
+                        "hasContactCallback": true,
+                        "hasTriggerCallback": false,
+                        "initialized": true,
+                        "isAwake": true,
+                        "isKinematic": false,
+                        "isTrigger": false,
+                        "mass": 1.0,
+                        "restitution": 0.10000000149011612,
+                        "shapeFlags": {
+                            "isSceneQuery": true,
+                            "isSimulation": true,
+                            "isTrigger": false,
+                            "isVisualization": true
+                        },
+                        "shapeType": 0,
+                        "simulationDisabled": false,
+                        "sphereRadius": 0.5,
+                        "type": "PhysicalObject",
+                        "velocity": [
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    }
+                ]
             },
             "position": [
                 0.0,
-                -16.292999267578125,
+                -17.164264678955078,
                 0.0
             ],
             "rotation": [

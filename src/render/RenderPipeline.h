@@ -36,6 +36,7 @@ public:
     void clearGameObjects();
     void clearLights();
     void setCamera(Camera* newCamera) { camera = newCamera; }
+    Camera* getCamera() const;
     void setTargetFramebuffer(Framebuffer* framebuffer) { targetFramebuffer = framebuffer; }
     
     // PBR/Blinn-Phong toggle

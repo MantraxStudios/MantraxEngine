@@ -5,6 +5,9 @@
 #include "../../src/components/PhysicalObject.h"
 #include "../../src/components/ScriptExecutor.h"
 #include "../../src/components/CharacterController.h"
+#include "../../src/components/SpriteAnimator.h"
+#include "../../src/render/Texture.h"
+
 #include "../../src/components/GameBehaviourFactory.h"
 #include "../../src/render/MaterialManager.h"
 #include "../../src/core/PhysicsManager.h"
@@ -446,6 +449,358 @@ void Inspector::RenderGameObjectInspector(GameObject* go) {
         }
         if (removeComponent) {
             go->removeComponent<LightComponent>();
+        }
+    }
+
+    // SpriteAnimator Component
+    if (auto spriteAnimator = go->getComponent<SpriteAnimator>()) {
+        bool removeComponent = false;
+        bool treeNodeOpen = ImGui::TreeNode("[Sprite Animator]");
+
+        if (treeNodeOpen) {
+            // Botón de opciones alineado a la derecha pero dentro de la ventana
+            float windowWidth = ImGui::GetContentRegionAvail().x;
+            ImGui::SameLine(windowWidth - 35);
+            if (ImGui::Button(" ... ##SpriteAnimator", ImVec2(30, 0))) {
+                ImGui::OpenPopup("SpriteAnimatorOptions");
+            }
+
+            // Popup de opciones
+            if (ImGui::BeginPopup("SpriteAnimatorOptions")) {
+                if (ImGui::MenuItem("Remove Component")) {
+                    removeComponent = true;
+                }
+                if (ImGui::MenuItem("Reset")) {
+                    // TODO: Implementar reset de valores
+                }
+                if (ImGui::MenuItem("Copy Settings")) {
+                    // TODO: Implementar copia de configuración
+                }
+                ImGui::EndPopup();
+            }
+
+            if (!removeComponent && spriteAnimator != nullptr) {
+                // Material section
+                ImGui::Separator();
+                ImGui::Text("Material Settings");
+                
+                // Material name input
+                static char materialName[128] = "SpriteMaterial";
+                if (ImGui::InputText("Material Name", materialName, sizeof(materialName))) {
+                    // Update material name if needed
+                }
+                
+                if (ImGui::Button("Create Material")) {
+                    spriteAnimator->createMaterial(materialName);
+                }
+                
+                // Material properties
+                if (spriteAnimator->getMaterial()) {
+                    ImGui::Separator();
+                    ImGui::Text("Material Properties");
+                    
+                    // Albedo color
+                    static glm::vec3 albedoColor(1.0f, 1.0f, 1.0f);
+                    if (ImGui::ColorEdit3("Albedo", glm::value_ptr(albedoColor))) {
+                        spriteAnimator->setSpriteAlbedo(albedoColor);
+                    }
+                    
+                    // Metallic
+                    static float metallic = 0.0f;
+                    if (ImGui::SliderFloat("Metallic", &metallic, 0.0f, 1.0f)) {
+                        spriteAnimator->setSpriteMetallic(metallic);
+                    }
+                    
+                    // Roughness
+                    static float roughness = 0.3f;
+                    if (ImGui::SliderFloat("Roughness", &roughness, 0.0f, 1.0f)) {
+                        spriteAnimator->setSpriteRoughness(roughness);
+                    }
+                    
+                    // Emissive
+                    static glm::vec3 emissiveColor(0.1f, 0.1f, 0.1f);
+                    if (ImGui::ColorEdit3("Emissive", glm::value_ptr(emissiveColor))) {
+                        spriteAnimator->setSpriteEmissive(emissiveColor);
+                    }
+                    
+                    // Tiling
+                    static glm::vec2 tiling(1.0f, 1.0f);
+                    if (ImGui::DragFloat2("Tiling", glm::value_ptr(tiling), 0.1f)) {
+                        spriteAnimator->setSpriteTiling(tiling);
+                    }
+                }
+                
+                // Preview section
+                if (spriteAnimator->getMaterial()) {
+                    ImGui::Separator();
+                    ImGui::Text("Material Preview");
+                    
+                    // Show material info
+                    auto material = spriteAnimator->getMaterial();
+                    ImGui::Text("Material: %s", material->getName().c_str());
+                    
+                    // Show current texture info if available
+                    if (!spriteAnimator->SpriteStates.empty()) {
+                        auto currentStateIt = std::find_if(spriteAnimator->SpriteStates.begin(), 
+                                                         spriteAnimator->SpriteStates.end(),
+                                                         [&](const SpriteArray& state) {
+                                                             return state.state_name == spriteAnimator->currentState;
+                                                         });
+                        
+                        if (currentStateIt != spriteAnimator->SpriteStates.end() && !currentStateIt->texturePaths.empty()) {
+                            // Get the texture from the persistent cache
+                            auto texture = spriteAnimator->getTexture(currentStateIt->texturePaths[0]);
+                            if (texture && texture->getID() != 0) {
+                                ImGui::Text("Current Texture: %s", currentStateIt->texturePaths[0].c_str());
+                                ImGui::Text("Size: %dx%d", texture->getWidth(), texture->getHeight());
+                            } else {
+                                ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "Texture not loaded: %s", currentStateIt->texturePaths[0].c_str());
+                            }
+                        }
+                    }
+                }
+                
+                // Sprite States section
+                ImGui::Separator();
+                ImGui::Text("Sprite States");
+                
+                // Current state selector
+                if (!spriteAnimator->SpriteStates.empty()) {
+                    // Check if current state exists, if not, set to first state
+                    bool currentStateExists = false;
+                    for (const auto& state : spriteAnimator->SpriteStates) {
+                        if (state.state_name == spriteAnimator->currentState) {
+                            currentStateExists = true;
+                            break;
+                        }
+                    }
+                    if (!currentStateExists) {
+                        spriteAnimator->currentState = spriteAnimator->SpriteStates[0].state_name;
+                    }
+                    
+                    const char* currentState = spriteAnimator->currentState.c_str();
+                    if (ImGui::BeginCombo("Current State", currentState)) {
+                        for (const auto& state : spriteAnimator->SpriteStates) {
+                            bool isSelected = (spriteAnimator->currentState == state.state_name);
+                            if (ImGui::Selectable(state.state_name.c_str(), isSelected)) {
+                                spriteAnimator->currentState = state.state_name;
+                            }
+                            if (isSelected) {
+                                ImGui::SetItemDefaultFocus();
+                            }
+                        }
+                        ImGui::EndCombo();
+                    }
+                } else {
+                    ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "No states available. Add a state first.");
+                }
+                
+                // Add new state
+                static char newStateName[64] = "New State";
+                ImGui::InputText("New State Name", newStateName, sizeof(newStateName));
+                if (ImGui::Button("Add State")) {
+                    SpriteArray newState;
+                    newState.state_name = newStateName;
+                    spriteAnimator->SpriteStates.push_back(newState);
+                    // Set as current state if it's the first one or if no current state is selected
+                    if (spriteAnimator->currentState == "None" || spriteAnimator->currentState.empty()) {
+                        spriteAnimator->currentState = newStateName;
+                    }
+                    strcpy_s(newStateName, "New State");
+                }
+                
+                // Animation controls
+                if (!spriteAnimator->SpriteStates.empty()) {
+                    ImGui::Separator();
+                    ImGui::Text("Animation Controls");
+                    
+                    // Animation playback state selector
+                    static char playbackStateName[64] = "";
+                    if (ImGui::InputText("Animation State", playbackStateName, sizeof(playbackStateName))) {
+                        // State name input updated
+                    }
+                    
+                    // Play button and controls
+                    ImGui::SameLine();
+                    if (ImGui::Button(spriteAnimator->getIsPlaying() ? "Stop" : "Play")) {
+                        if (spriteAnimator->getIsPlaying()) {
+                            spriteAnimator->stopAnimation();
+                        } else {
+                            std::string stateToPlay = strlen(playbackStateName) > 0 ? playbackStateName : spriteAnimator->currentState;
+                            spriteAnimator->playAnimation(stateToPlay);
+                        }
+                    }
+                    
+                    // Animation speed control
+                    float animationSpeed = spriteAnimator->animationSpeed;
+                    if (ImGui::SliderFloat("Animation Speed", &animationSpeed, 0.1f, 5.0f)) {
+                        spriteAnimator->setAnimationSpeed(animationSpeed);
+                    }
+                    
+                    // Current frame display and control
+                    int currentFrame = spriteAnimator->getCurrentFrame();
+                    if (ImGui::DragInt("Current Frame", &currentFrame, 1, 0, 100)) {
+                        spriteAnimator->setCurrentFrame(currentFrame);
+                    }
+                    
+                    // Animation status display
+                    if (spriteAnimator->getIsPlaying()) {
+                        ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "Playing: %s", spriteAnimator->getPlaybackState().c_str());
+                    } else {
+                        ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "Stopped");
+                    }
+                }
+                
+                // Texture drag and drop for current state
+                if (!spriteAnimator->SpriteStates.empty()) {
+                    ImGui::Separator();
+                    ImGui::Text("Add Textures to Current State");
+                    
+                    // Find current state
+                    auto currentStateIt = std::find_if(spriteAnimator->SpriteStates.begin(), 
+                                                     spriteAnimator->SpriteStates.end(),
+                                                     [&](const SpriteArray& state) {
+                                                         return state.state_name == spriteAnimator->currentState;
+                                                     });
+                    
+                    if (currentStateIt != spriteAnimator->SpriteStates.end()) {
+                        ImGui::Text("Current State: %s", spriteAnimator->currentState.c_str());
+                        // Create a visible drag and drop area
+                        ImGui::BeginGroup();
+                        
+                        // Draw a bordered box for drag and drop
+                        ImVec2 dropAreaSize(200, 80);
+                        ImVec2 dropAreaPos = ImGui::GetCursorScreenPos();
+                        ImVec2 dropAreaEnd = ImVec2(dropAreaPos.x + dropAreaSize.x, dropAreaPos.y + dropAreaSize.y);
+                        
+                        // Draw the drop area with a border
+                        ImGui::GetWindowDrawList()->AddRect(
+                            dropAreaPos, 
+                            dropAreaEnd, 
+                            IM_COL32(100, 150, 255, 255), // Blue border
+                            5.0f, // Corner radius
+                            0, // Flags
+                            2.0f // Thickness
+                        );
+                        
+                        // Fill with a subtle background
+                        ImGui::GetWindowDrawList()->AddRectFilled(
+                            dropAreaPos, 
+                            dropAreaEnd, 
+                            IM_COL32(100, 150, 255, 30), // Light blue background
+                            5.0f // Corner radius
+                        );
+                        
+                        // Add text inside the drop area
+                        ImVec2 textPos = ImVec2(dropAreaPos.x + 10, dropAreaPos.y + 25);
+                        ImGui::GetWindowDrawList()->AddText(
+                            textPos,
+                            IM_COL32(255, 255, 255, 255), // White text
+                            "Arrastra texturas aquí"
+                        );
+                        
+                        ImVec2 iconTextPos = ImVec2(dropAreaPos.x + 10, dropAreaPos.y + 45);
+                        ImGui::GetWindowDrawList()->AddText(
+                            iconTextPos,
+                            IM_COL32(200, 200, 200, 255), // Gray text
+                            "PNG, JPG, etc."
+                        );
+                        
+                        // Set cursor position to cover the drop area
+                        ImGui::SetCursorScreenPos(dropAreaPos);
+                        ImGui::InvisibleButton("##TextureDropArea", dropAreaSize);
+                        
+                        // Drag and drop target for textures
+                        auto result = UIBuilder::Drag_Objetive("TextureClass");
+                        if (result.has_value()) {
+                            // Clean up the path using FileSystem::GetPathAfterContent
+                            std::string cleanedPath = FileSystem::GetPathAfterContent(result.value());
+                            if (cleanedPath.empty()) {
+                                // If GetPathAfterContent returns empty, use the original path
+                                cleanedPath = result.value();
+                            }
+                            
+                            // Load texture and add to current state
+                            currentStateIt->texturePaths.push_back(cleanedPath);
+                            spriteAnimator->loadTexture(cleanedPath);
+                            // Update material texture
+                            spriteAnimator->updateMaterialTexture();
+                        }
+                        
+                        ImGui::EndGroup();
+                        
+                        // Manual texture input and buttons
+                        ImGui::Separator();
+                        ImGui::Text("Manual Texture Management");
+                        
+                        static char texturePath[256] = "";
+                        if (ImGui::InputText("Texture Path", texturePath, sizeof(texturePath))) {
+                            // Path input updated
+                        }
+                        
+                        ImGui::SameLine();
+                        if (ImGui::Button("Add Texture")) {
+                            if (strlen(texturePath) > 0) {
+                                // Clean up the path using FileSystem::GetPathAfterContent
+                                std::string cleanedPath = FileSystem::GetPathAfterContent(texturePath);
+                                if (cleanedPath.empty()) {
+                                    // If GetPathAfterContent returns empty, use the original path
+                                    cleanedPath = texturePath;
+                                }
+                                
+                                currentStateIt->texturePaths.push_back(cleanedPath);
+                                spriteAnimator->loadTexture(cleanedPath);
+                                spriteAnimator->updateMaterialTexture();
+                                // Clear the input field after successful addition
+                                memset(texturePath, 0, sizeof(texturePath));
+                            }
+                        }
+                        
+                        // Error popup for failed texture loading
+                        if (ImGui::BeginPopupModal("TextureLoadError", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+                            ImGui::Text("Error: Could not load texture from path:");
+                            ImGui::Text("%s", texturePath);
+                            ImGui::Separator();
+                            if (ImGui::Button("OK", ImVec2(120, 0))) {
+                                ImGui::CloseCurrentPopup();
+                            }
+                            ImGui::EndPopup();
+                        }
+                        
+                        // Display current textures in this state
+                        if (!currentStateIt->texturePaths.empty()) {
+                            ImGui::Text("Textures in %s:", currentStateIt->state_name.c_str());
+                            for (size_t i = 0; i < currentStateIt->texturePaths.size(); ++i) {
+                                const std::string& texturePath = currentStateIt->texturePaths[i];
+                                auto texture = spriteAnimator->getTexture(texturePath);
+                                std::string textureInfo = std::to_string(i + 1) + ": " + texturePath;
+                                if (texture && texture->getID() != 0) {
+                                    textureInfo += " (" + std::to_string(texture->getWidth()) + 
+                                                 "x" + std::to_string(texture->getHeight()) + ")";
+                                    ImGui::Text("  %s", textureInfo.c_str());
+                                } else {
+                                    textureInfo += " (NOT LOADED)";
+                                    ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "  %s", textureInfo.c_str());
+                                }
+                                
+                                // Remove texture button
+                                ImGui::SameLine();
+                                if (ImGui::Button(("X##" + std::to_string(i)).c_str())) {
+                                    currentStateIt->texturePaths.erase(currentStateIt->texturePaths.begin() + i);
+                                    spriteAnimator->updateMaterialTexture();
+                                    break;
+                                }
+                            }
+                        }
+                    } else {
+                        ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "No valid current state found. Please select a state.");
+                    }
+                }
+            }
+            ImGui::TreePop();
+        }
+        if (removeComponent) {
+            go->removeComponent<SpriteAnimator>();
         }
     }
 
@@ -1317,6 +1672,16 @@ void Inspector::RenderGameObjectInspector(GameObject* go) {
             }
             if (ImGui::IsItemHovered()) {
                 ImGui::SetTooltip("Add material properties for rendering");
+            }
+        }
+
+        if (!go->getComponent<SpriteAnimator>()) {
+            if (ImGui::MenuItem("[Sprite Animator]", "Adds sprite animation capability")) {
+                go->addComponent<SpriteAnimator>();
+                ImGui::CloseCurrentPopup();
+            }
+            if (ImGui::IsItemHovered()) {
+                ImGui::SetTooltip("Add sprite animation capabilities with texture support");
             }
         }
 

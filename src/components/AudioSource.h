@@ -33,6 +33,7 @@ public:
     bool is3DEnabled() const { return is3D; }
     float getMinDistance() const { return minDistance; }
     float getMaxDistance() const { return maxDistance; }
+    const std::string& getSoundPath() const { return soundPath; }
 
     // Actualización del componente
     void update() override;

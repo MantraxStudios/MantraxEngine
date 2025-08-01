@@ -228,6 +228,7 @@ bool SceneSaver::LoadScene(const std::string& filepath) {
                             }
                             else if (type == "PhysicalObject") {
                                 auto* physComp = obj->addComponent<PhysicalObject>(obj);
+                                physComp->initializePhysics();
                                 physComp->deserialize(compData.dump());
                             }
                             else if (type == "CharacterController") {
@@ -276,7 +277,7 @@ bool SceneSaver::LoadScene(const std::string& filepath) {
     if (settings.contains("CameraType")) {
         int cameraType = settings["CameraType"];
         ProjectionType type = (cameraType == 1) ? ProjectionType::Orthographic : ProjectionType::Perspective;
-        newScene->getCamera()->setProjectionType(type);
+        newScene->getCamera()->setProjectionType(type, true);
     }
 
     // AmbientIntensity
@@ -297,16 +298,16 @@ bool SceneSaver::LoadScene(const std::string& filepath) {
         RenderPipeline::getInstance().setUsePBR(usePBR);
     }
 
-    // FrustrumOn
+    // CameraFov
     if (settings.contains("CameraFov")) {
-        bool cameraFovAmount = settings["CameraFov"];
+        float cameraFovAmount = settings["CameraFov"];
         newScene.get()->getCamera()->setOrthographicSize(cameraFovAmount);
     }
 
-    // CameraFov
-    if (settings.contains("CameraFov")) {
-        bool cameraFovAmount = settings["CameraFov"];
-        newScene.get()->getCamera()->setOrthographicSize(cameraFovAmount);
+    // FrustrumOn
+    if (settings.contains("FrustrumOn")) {
+        bool frustumOn = settings["FrustrumOn"];
+        RenderPipeline::getInstance().setFrustumCulling(frustumOn);
     }
 
 
