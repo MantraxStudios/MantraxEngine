@@ -16,9 +16,13 @@ struct MANTRAXCORE_API SpriteArray {
 
 class MANTRAXCORE_API SpriteAnimator : public Component {
 public:
+	std::string animator_file = "";
 	std::vector<SpriteArray> SpriteStates = std::vector<SpriteArray>();
 	std::string currentState = "None";
-	
+	std::string getComponentName() const override {
+		return "Sprite Animator";
+	}
+
 	// Animation playback properties
 	bool isPlaying = false;
 	float animationSpeed = 1.0f;
@@ -103,6 +107,7 @@ public:
 	bool saveToFile(const std::string& filePath) const;
 	bool loadFromFile(const std::string& filePath);
 
+	void defines() override;
 	void start() override;
 	void update() override;
 };

@@ -58,113 +58,73 @@ void ProjectHub::render() {
     
     ImGui::Begin("Project Hub", nullptr, flags);
     
-    // === DISEÑO MEJORADO DEL PROJECT HUB ===
+    // === DISEÑO LIMPIO Y PROFESIONAL ===
     
-    // Fondo con gradiente usando colores del tema ImGui
+    // Fondo simple y limpio
     ImDrawList* draw_list = ImGui::GetWindowDrawList();
     ImVec2 window_pos = ImGui::GetWindowPos();
     ImVec2 window_size = ImGui::GetWindowSize();
     
-    // Gradiente de fondo usando colores del tema ImGui
-    ImVec2 gradient_start = window_pos;
-    ImVec2 gradient_end = ImVec2(window_pos.x + window_size.x, window_pos.y + window_size.y);
-    draw_list->AddRectFilledMultiColor(
-        gradient_start, gradient_end,
-        IM_COL32(59, 61, 64, 255),   // Top-left: darkBg (0.23f, 0.24f, 0.25f)
-        IM_COL32(71, 74, 77, 255),   // Top-right: mediumBg (0.28f, 0.29f, 0.30f)
-        IM_COL32(82, 84, 87, 255),   // Bottom-right: lightBg (0.32f, 0.33f, 0.34f)
-        IM_COL32(66, 68, 71, 255)    // Bottom-left: mezcla de colores
+    // Fondo principal
+    draw_list->AddRectFilled(
+        window_pos,
+        ImVec2(window_pos.x + window_size.x, window_pos.y + window_size.y),
+        IM_COL32(30, 30, 30, 255)  // Fondo oscuro simple
     );
     
-    // Líneas decorativas animadas
-    float time = ImGui::GetTime();
-    float line_alpha = 0.3f + 0.2f * sinf(time * 2.0f);
+    // Header simple
+    float header_height = 60.0f;
+    draw_list->AddRectFilled(
+        window_pos,
+        ImVec2(window_pos.x + window_size.x, window_pos.y + header_height),
+        IM_COL32(45, 45, 45, 255)  // Header más claro
+    );
     
-    // Líneas horizontales decorativas usando accentBlue del tema
-    for (int i = 0; i < 3; i++) {
-        float y_pos = window_pos.y + (window_size.y * 0.1f) + (i * 120.0f);
-        float line_width = window_size.x * 0.6f;
-        float x_offset = sinf(time * 1.5f + i) * 30.0f;
-        
-        draw_list->AddLine(
-            ImVec2(window_pos.x + (window_size.x - line_width) * 0.5f + x_offset, y_pos),
-            ImVec2(window_pos.x + (window_size.x + line_width) * 0.5f + x_offset, y_pos),
-            IM_COL32(66, 150, 250, (int)(255 * line_alpha))  // accentBlue del tema
-        );
-    }
+    // Línea separadora
+    draw_list->AddLine(
+        ImVec2(window_pos.x, window_pos.y + header_height),
+        ImVec2(window_pos.x + window_size.x, window_pos.y + header_height),
+        IM_COL32(60, 60, 60, 255),
+        1.0f
+    );
     
-    // Título principal con efecto de sombra
-    const char* title_text = "MANTRAX ENGINE";
-    ImFont* bigFont = io.Fonts->Fonts.size() > 1 ? io.Fonts->Fonts[1] : io.FontDefault;
-    ImGui::PushFont(bigFont);
-    
+    // Título simple
+    const char* title_text = "Mantrax Engine";
     ImVec2 title_size = ImGui::CalcTextSize(title_text);
     ImVec2 title_pos(
-        (display_size.x - title_size.x) * 0.5f,
-        (display_size.y - title_size.y) * 0.15f
+        window_pos.x + 20.0f,
+        window_pos.y + (header_height - title_size.y) * 0.5f
     );
     
-    // Sombra del texto
-    ImGui::SetCursorPos(ImVec2(title_pos.x + 3, title_pos.y + 3));
-    ImGui::TextColored(ImVec4(0, 0, 0, 0.5f), title_text);
-    
-    // Texto principal usando textWhite del tema
-    ImGui::SetCursorPos(title_pos);
-    ImGui::TextColored(ImVec4(0.95f, 0.95f, 0.95f, 1.0f), title_text);  // textWhite del tema
-    
-    ImGui::PopFont();
-    
-    // Subtítulo con animación
-    const char* subtitle_text = "Project Hub";
-    ImVec2 subtitle_size = ImGui::CalcTextSize(subtitle_text);
-    ImVec2 subtitle_pos(
-        (display_size.x - subtitle_size.x) * 0.5f,
-        title_pos.y + title_size.y + 20.0f
+    draw_list->AddText(
+        title_pos,
+        IM_COL32(255, 255, 255, 255),
+        title_text
     );
     
-    float subtitle_alpha = 0.7f + 0.3f * sinf(time * 3.0f);
-    ImGui::SetCursorPos(subtitle_pos);
-    ImGui::TextColored(ImVec4(0.75f, 0.75f, 0.75f, subtitle_alpha), subtitle_text);  // textGray del tema
+    // Área principal
+    float content_y = window_pos.y + header_height + 20.0f;
+    float content_height = window_size.y - header_height - 40.0f;
     
-    // Contenedor principal para los proyectos
-    float container_width = display_size.x * 0.6f;
-    float container_height = display_size.y * 0.4f;
-    ImVec2 container_pos(
-        (display_size.x - container_width) * 0.5f,
-        subtitle_pos.y + subtitle_size.y + 40.0f
-    );
+    // === PANEL IZQUIERDO - Proyectos ===
+    float left_panel_width = 350.0f;
+    ImGui::SetCursorPos(ImVec2(20.0f, header_height + 20.0f));
+    ImGui::BeginChild("ProjectsPanel", ImVec2(left_panel_width, content_height), true);
     
-    // Fondo del contenedor de proyectos
-    draw_list->AddRectFilled(
-        ImVec2(container_pos.x, container_pos.y),
-        ImVec2(container_pos.x + container_width, container_pos.y + container_height),
-        IM_COL32(41, 43, 46, 200),  // FrameBg del tema con transparencia
-        8.0f
-    );
-    
-    // Borde del contenedor
-    draw_list->AddRect(
-        ImVec2(container_pos.x, container_pos.y),
-        ImVec2(container_pos.x + container_width, container_pos.y + container_height),
-        IM_COL32(66, 150, 250, 100),  // accentBlue del tema
-        8.0f, 0, 2.0f
-    );
+    // Título del panel
+    ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "Projects");
+    ImGui::Separator();
+    ImGui::Spacing();
     
     // Lista de proyectos
-    ImGui::SetCursorPos(ImVec2(container_pos.x + 20, container_pos.y + 20));
-    ImGui::TextColored(ImVec4(0.95f, 0.95f, 0.95f, 1.0f), "Projects in: %s", basePath.c_str());
-    
-    ImGui::SetCursorPos(ImVec2(container_pos.x + 20, container_pos.y + 50));
-    ImGui::BeginChild("ProjectsList", ImVec2(container_width - 40, container_height - 120), true);
-    
     for (size_t i = 0; i < projects.size(); ++i) {
         char label[256];
         snprintf(label, sizeof(label), "%s##%zu", projects[i].name.c_str(), i);
         
-        // Estilo personalizado para los proyectos
-        ImGui::PushStyleColor(ImGuiCol_Header, IM_COL32(71, 74, 77, 255));  // mediumBg
-        ImGui::PushStyleColor(ImGuiCol_HeaderHovered, IM_COL32(82, 84, 87, 255));  // lightBg
-        ImGui::PushStyleColor(ImGuiCol_HeaderActive, IM_COL32(66, 150, 250, 255));  // accentBlue
+        // Estilo simple para los proyectos
+        ImGui::PushStyleColor(ImGuiCol_Header, IM_COL32(50, 50, 50, 255));
+        ImGui::PushStyleColor(ImGuiCol_HeaderHovered, IM_COL32(70, 70, 70, 255));
+        ImGui::PushStyleColor(ImGuiCol_HeaderActive, IM_COL32(0, 120, 215, 255));
         
         if (ImGui::Selectable(label, selected == static_cast<int>(i), ImGuiSelectableFlags_AllowDoubleClick)) {
             selected = static_cast<int>(i);
@@ -181,32 +141,46 @@ void ProjectHub::render() {
         }
         
         ImGui::PopStyleColor(3);
+        
+        // Mostrar ruta si está seleccionado
+        if (selected == static_cast<int>(i)) {
+            ImGui::SameLine();
+            ImGui::TextColored(ImVec4(0.6f, 0.6f, 0.6f, 1.0f), "  %s", projects[i].path.c_str());
+        }
     }
     
     ImGui::EndChild();
     
-    // Controles en la parte inferior
-    float controls_y = container_pos.y + container_height + 20.0f;
+    // === PANEL DERECHO - Crear Proyecto ===
+    float right_panel_x = left_panel_width + 40.0f;
+    float right_panel_width = window_size.x - right_panel_x - 20.0f;
     
-    // Input para nuevo proyecto
-    ImGui::SetCursorPos(ImVec2(container_pos.x, controls_y));
-    ImGui::PushItemWidth(container_width * 0.4f);
-    ImGui::PushStyleColor(ImGuiCol_FrameBg, IM_COL32(41, 43, 46, 255));  // FrameBg del tema
-    ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, IM_COL32(51, 53, 56, 255));  // FrameBgHovered del tema
-    ImGui::PushStyleColor(ImGuiCol_FrameBgActive, IM_COL32(66, 150, 250, 100));  // accentBlue con transparencia
-    ImGui::InputText("New Project", newProjectName, IM_ARRAYSIZE(newProjectName));
-    ImGui::PopStyleColor(3);
+    ImGui::SetCursorPos(ImVec2(right_panel_x, header_height + 20.0f));
+    ImGui::BeginChild("CreatePanel", ImVec2(right_panel_width, content_height), true);
+    
+    // Título del panel derecho
+    ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "Create New Project");
+    ImGui::Separator();
+    ImGui::Spacing();
+    
+    // Formulario simple
+    ImGui::TextColored(ImVec4(0.9f, 0.9f, 0.9f, 1.0f), "Project Name:");
+    ImGui::PushItemWidth(right_panel_width - 40.0f);
+    ImGui::InputText("##ProjectName", newProjectName, IM_ARRAYSIZE(newProjectName));
     ImGui::PopItemWidth();
     
+    ImGui::Spacing();
+    
+    ImGui::TextColored(ImVec4(0.9f, 0.9f, 0.9f, 1.0f), "Location:");
+    ImGui::PushItemWidth(right_panel_width - 40.0f);
+    ImGui::InputText("##ProjectLocation", (char*)basePath.c_str(), basePath.length(), ImGuiInputTextFlags_ReadOnly);
+    ImGui::PopItemWidth();
+    
+    ImGui::Spacing();
+    ImGui::Spacing();
+    
     // Botones
-    ImGui::SameLine();
-    ImGui::SetCursorPosX(container_pos.x + container_width * 0.45f);
-    
-    ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(71, 74, 77, 255));  // mediumBg
-    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, IM_COL32(82, 84, 87, 255));  // lightBg
-    ImGui::PushStyleColor(ImGuiCol_ButtonActive, IM_COL32(66, 150, 250, 255));  // accentBlue
-    
-    if (ImGui::Button("Add Project", ImVec2(120, 0))) {
+    if (ImGui::Button("Create Project", ImVec2(120, 30))) {
         if (std::strlen(newProjectName) > 0) {
             std::string newPath = basePath + "/" + newProjectName;
             if (!fs::exists(newPath)) {
@@ -218,26 +192,21 @@ void ProjectHub::render() {
     }
     
     ImGui::SameLine();
-    if (ImGui::Button("Delete Selected", ImVec2(120, 0)) && selected >= 0 && selected < static_cast<int>(projects.size())) {
-        fs::remove_all(projects[selected].path);
-        projects.erase(projects.begin() + selected);
-        selected = -1;
+    if (ImGui::Button("Browse", ImVec2(80, 30))) {
+        // TODO: Implementar diálogo de selección de carpeta
     }
     
-    ImGui::PopStyleColor(3);
-    
-    // Efecto de partículas flotantes usando accentOrange del tema
-    for (int i = 0; i < 10; i++) {
-        float particle_x = fmodf(sinf(time * 0.5f + i * 0.7f) * window_size.x * 0.8f + window_size.x * 0.1f, window_size.x);
-        float particle_y = fmodf(cosf(time * 0.3f + i * 0.5f) * window_size.y * 0.6f + window_size.y * 0.2f, window_size.y);
-        float particle_alpha = 0.3f + 0.4f * sinf(time * 2.0f + i);
-        
-        draw_list->AddCircleFilled(
-            ImVec2(window_pos.x + particle_x, window_pos.y + particle_y),
-            2.0f,
-            IM_COL32(255, 161, 0, (int)(255 * particle_alpha))  // accentOrange del tema
-        );
+    // Botón de eliminar
+    if (selected >= 0 && selected < static_cast<int>(projects.size())) {
+        ImGui::SameLine();
+        if (ImGui::Button("Delete Selected", ImVec2(100, 30))) {
+            fs::remove_all(projects[selected].path);
+            projects.erase(projects.begin() + selected);
+            selected = -1;
+        }
     }
+    
+    ImGui::EndChild();
     
     ImGui::End();
 }

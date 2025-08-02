@@ -9,6 +9,53 @@
 
 using json = nlohmann::json;
 
+
+void PhysicalObject::defines() {
+//    set_var("Body Type", &bodyType);                      // int* o BodyType*
+//    set_var("Shape Type", &shapeType);                    // int* o ShapeType*
+//    set_var("Mass", &mass);                               // float*
+//    set_var("Friction", &friction);                       // float*
+//    set_var("Restitution", &restitution);                 // float*
+//    set_var("Damping", &damping);                         // float*
+//    set_var("Gravity Factor", &gravityFactor);            // float*
+//    set_var("Is Trigger", &isTriggerShape);               // bool*
+//    set_var("Initialized", &initialized);                 // bool*
+//
+//    set_var("Box Half Extents", &boxHalfExtents);         // glm::vec3*
+//    set_var("Sphere Radius", &sphereRadius);              // float*
+//    set_var("Capsule Radius", &capsuleRadius);            // float*
+//    set_var("Capsule Half Height", &capsuleHalfHeight);   // float*
+//
+//    set_var("Current Layer", &currentLayer);              // int*
+//    set_var("Current Layer Mask", &currentLayerMask);     // int*
+//
+//    set_var("CSharp Bridge Enabled", &csharpBridgeEnabled); // bool*
+//    set_var("CSharp Object Name", &csharpObjectName);       // std::string*
+//
+//    set_var("Velocity", &velocity);                       // glm::vec3* (debes exponer esta variable temporalmente)
+//    set_var("Angular Velocity", &angularVelocity);        // glm::vec3* (idem arriba)
+//    set_var("Is Awake", &isAwake);                        // bool*
+//    set_var("Gravity Disabled", &gravityDisabled);        // bool*
+//    set_var("Simulation Disabled", &simulationDisabled);  // bool*
+//    set_var("Is Kinematic", &isKinematic);                // bool*
+//
+//    // Shape flags (pueden ser variables bool temporales para edición)
+//    set_var("Shape Is Trigger", &shapeIsTrigger);           // bool*
+//    set_var("Shape Is Simulation", &shapeIsSimulation);     // bool*
+//    set_var("Shape Is Scene Query", &shapeIsSceneQuery);    // bool*
+//    set_var("Shape Is Visualization", &shapeIsVisualization);// bool*
+//
+//    // Filter data (puedes editarlos como enteros sueltos)
+//    set_var("Filter Word 0", &filterWord0);               // uint32_t*
+//    set_var("Filter Word 1", &filterWord1);               // uint32_t*
+//    set_var("Filter Word 2", &filterWord2);               // uint32_t*
+//    set_var("Filter Word 3", &filterWord3);               // uint32_t*
+//
+//    set_var("Has Trigger Callback", &hasTriggerCallback); // bool*
+//    set_var("Has Contact Callback", &hasContactCallback); // bool*
+//
+}
+
 // Helper function to get shape type as string
 std::string PhysicalObject::getShapeTypeString() const {
     switch (shapeType) {

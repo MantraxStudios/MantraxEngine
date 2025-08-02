@@ -9,12 +9,16 @@
 class MANTRAXCORE_API ScriptExecutor : public Component
 {
 public:
+    std::string getComponentName() const override {
+        return "Script Executor";
+    }
     std::string luaPath = "ExampleScript";
 
-    void setOwner(GameObject* owner) override;
+    void defines() override;
     void update() override;
     void start() override;
     void destroy() override;
+    void setOwner(GameObject* owner) override;
     std::string serializeComponent() const override;
     void deserialize(const std::string& data) override;
 

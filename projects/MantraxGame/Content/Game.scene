@@ -1,8 +1,8 @@
 {
     "Settings": {
-        "AmbientIntensity": 1.0,
+        "AmbientIntensity": 2.0,
         "CameraFov": 5.0,
-        "CameraType": 0,
+        "CameraType": 1,
         "FrustrumOn": true,
         "LightType": true,
         "LowAmbient": false
@@ -22,12 +22,13 @@
                 "component": [
                     {
                         "animationSpeed": 3.5230000019073486,
+                        "animator": "",
                         "currentFrame": 1,
                         "currentState": "Walk",
                         "debugMode": false,
                         "enabled": true,
                         "forceMaterialUpdate": false,
-                        "frameTimer": 0.2818400263786316,
+                        "frameTimer": 0.8455199599266052,
                         "isPlaying": true,
                         "material": {
                             "albedo": [

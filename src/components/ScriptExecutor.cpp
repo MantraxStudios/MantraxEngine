@@ -4,6 +4,10 @@
 
 using json = nlohmann::json;
 
+void ScriptExecutor::defines() {
+    set_var("LuaPath", &luaPath);
+}
+
 void ScriptExecutor::setOwner(GameObject* owner) {
     Component::setOwner(owner);
 }

@@ -76,6 +76,9 @@
     <ClCompile Include="editor\Windows\AnimatorEditor.cpp">
       <Filter>01_Main\Windows</Filter>
     </ClCompile>
+    <ClCompile Include="editor\EUI\ComponentSerializer.cpp">
+      <Filter>01_Main\EUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Vendors">
@@ -187,6 +190,9 @@
     </ClInclude>
     <ClInclude Include="editor\Windows\AnimatorEditor.h">
       <Filter>01_Main\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\EUI\ComponentSerializer.h">
+      <Filter>01_Main\EUI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

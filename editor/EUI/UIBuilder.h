@@ -52,4 +52,68 @@ public:
 
         return std::nullopt;
     }
+
+    static std::string InputText(const std::string& Name, const std::string& value, ImVec2 size = ImVec2(-1, 20))
+    {
+        char GetName[128];
+        strcpy_s(GetName, value.c_str());
+
+        ImGui::SetNextItemWidth(size.x);
+
+        ImGui::InputTextMultiline(
+            Name.c_str(),
+            GetName, sizeof(GetName),
+            ImVec2(size.x, size.y),
+            ImGuiInputTextFlags_AutoSelectAll);
+
+        return std::string(GetName);
+    }
+
+    static int Int(const std::string& name, int value)
+    {
+        ImGui::DragInt(name.c_str(), &value);
+        return value;
+    }
+
+    static glm::vec2 Vector2(string Name, glm::vec2 vector)
+    {
+        float v[2] = {
+            vector.x,
+            vector.y };
+
+        ImGui::DragFloat2(Name.c_str(), v);
+
+        return glm::vec2(v[0], v[1]);
+    }
+
+    static bool Toggle(string Name, bool valueB)
+    {
+        ImGui::Checkbox(Name.c_str(), &valueB);
+        return valueB;
+    }
+
+    static glm::vec3 Vector3(string Name, glm::vec3 vector)
+    {
+        float v[3] = {
+            vector.x,
+            vector.y,
+            vector.z };
+
+        ImGui::DragFloat3(Name.c_str(), v, 0.01f);
+
+        return glm::vec3(v[0], v[1], v[2]);
+    }
+
+    static float Slider(string name, float value, float min, float max)
+    {
+        ImGui::SliderFloat(name.c_str(), &value, min, max);
+        return value;
+    }
+
+    static float Float(const std::string& name, float value, ImVec2 size = ImVec2(-1, 20))
+    {
+        ImGui::DragFloat(name.c_str(), &value);
+        return value;
+    }
+
 };

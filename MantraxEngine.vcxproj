@@ -135,10 +135,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="editor\Editor.cpp" />
+    <ClCompile Include="editor\EUI\ComponentSerializer.cpp" />
     <ClCompile Include="editor\EUI\EditorInfo.cpp" />
     <ClCompile Include="editor\EUI\ImGuiLoader.cpp" />
     <ClCompile Include="editor\SceneSaver.cpp" />
-
     <ClCompile Include="editor\Windows\ContentBrowser.cpp" />
     <ClCompile Include="editor\Windows\FileExplorer.cpp" />
     <ClCompile Include="editor\Windows\FileSaveUtils.cpp" />
@@ -161,12 +161,12 @@
     <ClCompile Include="vendors\includes\imgui\imgui_widgets.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="editor\EUI\ComponentSerializer.h" />
     <ClInclude Include="editor\EUI\EditorInfo.h" />
     <ClInclude Include="editor\EUI\ImGuiLoader.h" />
     <ClInclude Include="editor\EUI\ImGuiThemes.h" />
     <ClInclude Include="editor\EUI\UIBuilder.h" />
     <ClInclude Include="editor\SceneSaver.h" />
-
     <ClInclude Include="editor\Windows\ContentBrowser.h" />
     <ClInclude Include="editor\Windows\FileExplorer.h" />
     <ClInclude Include="editor\Windows\FileSaveUtils.h" />

@@ -70,8 +70,13 @@ private:
 public:
     PhysicalObject(GameObject* obj);
     ~PhysicalObject();
+
+    std::string getComponentName() const override {
+        return "Physical Object";
+    }
     
     // Component overrides
+    void defines() override;
     void start() override;
     void update() override;
     void destroy() override;

@@ -7,6 +7,9 @@
 class MANTRAXCORE_API AudioSource : public Component {
 public:
     AudioSource() = default;
+    std::string getComponentName() const override {
+        return "Audio Source";
+    }
     void setOwner(GameObject* owner) override;
 
     // Validación del componente
@@ -36,6 +39,7 @@ public:
     const std::string& getSoundPath() const { return soundPath; }
 
     // Actualización del componente
+    void defines() override;
     void update() override;
     void destroy() override;
     void deserialize(const std::string& data) override;

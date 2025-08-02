@@ -7,10 +7,16 @@
 class MANTRAXCORE_API LightComponent : public Component {
 public:
     LightComponent(LightType type = LightType::Point);
-    void setOwner(GameObject* owner) override;
+
+    std::string getComponentName() const override {
+        return "Light Component";
+    }
+
+    void defines() override;
     void update() override;
     std::string serializeComponent() const override;
     void deserialize(const std::string& data) override;
+    void setOwner(GameObject* owner) override;
 
     // Validación del componente
     bool isValid() const override { return Component::isValid() && light != nullptr; }
@@ -43,4 +49,21 @@ public:
 private:
     std::shared_ptr<Light> light;
     void updateTransform();
+
+    glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f);
+    float intensity = 1.0f;
+    bool enabled = true;
+
+    float attenuationConstant = 1.0f;
+    float attenuationLinear = 0.09f;
+    float attenuationQuadratic = 0.032f;
+
+    float minDistance = 0.1f;
+    float maxDistance = 100.0f;
+
+    float cutOffAngle = 12.5f;        // grados
+    float outerCutOffAngle = 17.5f;   // grados
+
+    float spotMaxDistance = 50.0f;
+
 }; 

@@ -5,6 +5,24 @@
 
 using json = nlohmann::json;
 
+void LightComponent::defines() {
+    set_var("Color", &color);                     // glm::vec3*
+    set_var("Intensity", &intensity);             // float*
+    set_var("Enabled", &enabled);                 // bool*
+
+    set_var("Attenuation Constant", &attenuationConstant);   // float*
+    set_var("Attenuation Linear", &attenuationLinear);       // float*
+    set_var("Attenuation Quadratic", &attenuationQuadratic); // float*
+
+    set_var("Min Distance", &minDistance);         // float*
+    set_var("Max Distance", &maxDistance);         // float*
+
+    set_var("CutOff Angle", &cutOffAngle);         // float*
+    set_var("Outer CutOff Angle", &outerCutOffAngle); // float*
+
+    set_var("Spot Max Distance", &spotMaxDistance); // float*
+}
+
 LightComponent::LightComponent(LightType type) {
     light = std::make_shared<Light>(type);
     
@@ -53,6 +71,18 @@ void LightComponent::setOwner(GameObject* owner) {
 
 void LightComponent::update() {
     if (owner && light) {
+        //setColor(color);
+        //setIntensity(intensity);
+        //setEnabled(enabled);
+
+        //setAttenuation(attenuationConstant, attenuationLinear, attenuationQuadratic);
+        //setRange(minDistance, maxDistance);
+
+        //setCutOffAngle(cutOffAngle);
+        //setOuterCutOffAngle(outerCutOffAngle);
+
+        //setSpotRange(spotMaxDistance);
+
         updateTransform();
     }
 }

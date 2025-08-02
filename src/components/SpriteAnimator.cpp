@@ -7,6 +7,12 @@
 
 using json = nlohmann::json;
 
+
+void SpriteAnimator::defines() {
+    set_var("Animator", &animator_file);
+    set_var("DefaultState", &currentState);
+}
+
 // Constructor
 SpriteAnimator::SpriteAnimator() {
     // Crear material por defecto
@@ -414,6 +420,7 @@ std::string SpriteAnimator::serializeComponent() const {
     
     // Estado del componente
     j["enabled"] = isEnabled;
+    j["animator"] = animator_file;
     
     try {
         return j.dump(4); // Pretty print with 4 spaces indentation
@@ -431,6 +438,10 @@ void SpriteAnimator::deserialize(const std::string& data) {
         // Deserializar estado actual
         if (j.contains("currentState") && j["currentState"].is_string()) {
             currentState = j["currentState"];
+        }
+
+        if (j.contains("animator")) {
+            animator_file = j["animator"];
         }
         
         // Deserializar propiedades de animación
@@ -534,6 +545,7 @@ void SpriteAnimator::deserialize(const std::string& data) {
             std::cout << "- Is playing: " << (isPlaying ? "true" : "false") << std::endl;
         }
         
+        loadFromAnimatorFile(FileSystem::getProjectPath() + "\\Content\\" + animator_file);
     }
     catch (const json::exception& e) {
         std::cerr << "SpriteAnimator::deserialize error: " << e.what() << std::endl;
@@ -623,7 +635,7 @@ bool SpriteAnimator::loadFromAnimatorData(const nlohmann::json& animatorData) {
     try {
         // Limpiar estados existentes
         SpriteStates.clear();
-        
+
         // Cargar propiedades básicas
         if (animatorData.contains("animationSpeed")) {
             animationSpeed = animatorData["animationSpeed"];

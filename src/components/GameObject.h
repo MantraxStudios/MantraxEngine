@@ -223,6 +223,7 @@ public:
         components.push_back(std::move(comp));
 
         if (rawPtr && rawPtr->isActive()) {
+            rawPtr->defines();
             rawPtr->start();
         }
 
@@ -293,6 +294,28 @@ public:
         return nullptr;
     }
 
+    void removeComponent(const Component* componentPtr) {
+        components.erase(
+            std::remove_if(components.begin(), components.end(),
+                [componentPtr](const std::unique_ptr<Component>& ptr) {
+                    return ptr.get() == componentPtr;
+                }),
+            components.end()
+        );
+    }
+
+    bool removeComponentSafe(const Component* componentPtr) {
+        auto initialSize = components.size();
+        components.erase(
+            std::remove_if(components.begin(), components.end(),
+                [componentPtr](const std::unique_ptr<Component>& ptr) {
+                    return ptr.get() == componentPtr;
+                }),
+            components.end()
+        );
+        return components.size() < initialSize;
+    }
+
     template <typename T>
     bool removeComponent() {
         static_assert(std::is_base_of<Component, T>::value, "T must inherit from Component");
@@ -302,11 +325,9 @@ public:
             });
 
         if (it != components.end()) {
-            // Llama a destroy() ANTES de borrar el componente
             if (it->get()) {
                 it->get()->destroy();
             }
-            // Ahora sí borra el componente del vector
             components.erase(it);
             return true;
         }

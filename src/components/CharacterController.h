@@ -28,6 +28,10 @@ class MANTRAXCORE_API GameObject;
 
 class MANTRAXCORE_API CharacterController : public Component {
 private:
+    std::string getComponentName() const override {
+        return "Character Controller";
+    }
+
     // PhysX Character Controller
     physx::PxController* controller;
     physx::PxCapsuleController* capsuleController;
