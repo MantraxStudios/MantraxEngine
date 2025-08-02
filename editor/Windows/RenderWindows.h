@@ -9,6 +9,7 @@
 #include "ContentBrowser.h"
 #include "MaterialEditor.h"
 #include "AnimatorEditor.h"
+#include "TileEditor.h"
 
 
 class RenderWindows {
@@ -25,6 +26,7 @@ public:
         m_windows.push_back(std::make_unique<ContentBrowser>());
         m_windows.push_back(std::make_unique<MaterialEditor>());
         m_windows.push_back(std::make_unique<AnimatorEditor>());
+        m_windows.push_back(std::make_unique<TileEditor>());
 
     }
     

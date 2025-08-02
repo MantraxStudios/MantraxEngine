@@ -15,7 +15,7 @@
             "normal_strength": 1.0,
             "roughness": 1.0,
             "textures": {
-                "albedo": "FlappyBird\\Game Objects\\background-day.png",
+                "albedo": "Sprites\\Backgrounds\\tile_0009.png",
                 "ao": "",
                 "emissive": "",
                 "metallic": "",

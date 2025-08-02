@@ -91,7 +91,7 @@ void MainBar::OnRenderGUI() {
 			
 			if (pipeline) {
 				// Crear el objeto
-				GameObject* NewObject = new GameObject();
+				GameObject* NewObject = new GameObject("Plane.fbx");
 				NewObject->Name = "New Object";
 				NewObject->setLocalPosition({ 0.0f, 0.0f, 0.0f });
 				NewObject->setMaterial(pipeline->getMaterial("red_material"));
@@ -322,7 +322,12 @@ void MainBar::OnRenderGUI() {
 			}
 		}
 
-
+		// Tile Editor
+		if (auto* tileWindow = windowManager.GetWindow<TileEditor>()) {
+			if (ImGui::MenuItem("Tile Editor", nullptr, &tileWindow->isOpen)) {
+				// El estado se actualiza automáticamente por ImGui
+			}
+		}
 
 		// Gizmos
 		if (auto* gizmosWindow = windowManager.GetWindow<Gizmos>()) {

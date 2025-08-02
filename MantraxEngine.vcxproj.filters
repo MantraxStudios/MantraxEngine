@@ -79,6 +79,9 @@
     <ClCompile Include="editor\EUI\ComponentSerializer.cpp">
       <Filter>01_Main\EUI</Filter>
     </ClCompile>
+    <ClCompile Include="editor\Windows\TileEditor.cpp">
+      <Filter>01_Main\Windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Vendors">
@@ -193,6 +196,9 @@
     </ClInclude>
     <ClInclude Include="editor\EUI\ComponentSerializer.h">
       <Filter>01_Main\EUI</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\Windows\TileEditor.h">
+      <Filter>01_Main\Windows</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

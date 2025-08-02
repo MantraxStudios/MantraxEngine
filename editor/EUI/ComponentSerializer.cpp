@@ -29,50 +29,33 @@ void ComponentSerializer::RenderAudioSourceComponent(GameObject* go) {
             }
 
             if (!removeComponent && audioSource != nullptr) {
-                // Path del sonido
-                static char soundPath[256] = "";
-                if (ImGui::InputText("Sound Path", soundPath, sizeof(soundPath))) {
-                    if (strlen(soundPath) > 0) {
-                        audioSource->setSound(soundPath, audioSource->is3DEnabled());
-                    }
-                }
-
+                // Sound path input using UIBuilder
+                audioSource->setSound(UIBuilder::InputText("Sound", audioSource->getSoundPath()), audioSource->is3DEnabled());
+                
+                // Drag and drop target for audio files
                 auto result = UIBuilder::Drag_Objetive("AudioClass");
                 if (result.has_value()) {
-                    strncpy_s(soundPath, sizeof(soundPath), result.value().c_str(), _TRUNCATE);
-                    audioSource->setSound(soundPath, audioSource->is3DEnabled());
+                    audioSource->setSound(result.value(), audioSource->is3DEnabled());
                 }
 
-                // Control de volumen
-                float volume = audioSource->getVolume();
-                if (ImGui::SliderFloat("Volume", &volume, 0.0f, 1.0f)) {
-                    audioSource->setVolume(volume);
-                }
+                // Volume slider using UIBuilder
+                audioSource->setVolume(UIBuilder::Slider("Volumen", audioSource->getVolume(), 0.0f, 1.0f));
 
+                // 3D sound toggle using UIBuilder
+                audioSource->set3DAttributes(UIBuilder::Toggle("Spatial Sound", audioSource->is3DEnabled()));
 
-                // Toggle 3D
-                bool is3D = audioSource->is3DEnabled();
-                if (ImGui::Checkbox("3D Sound", &is3D)) {
-                    audioSource->set3DAttributes(is3D);
-                }
-
-                // Controles 3D
-                if (is3D) {
+                if (audioSource->is3DEnabled()) {
                     ImGui::Separator();
-                    ImGui::Text("3D Settings");
+                    ImGui::Text("3D Settings+");
 
-                    float minDist = audioSource->getMinDistance();
-                    if (ImGui::DragFloat("Min Distance", &minDist, 0.1f, 0.1f, audioSource->getMaxDistance())) {
-                        audioSource->setMinDistance(minDist);
-                    }
+                    // Min distance using UIBuilder Float method
+                    audioSource->setMinDistance(UIBuilder::Float("Min Distance", audioSource->getMinDistance()));
                     if (ImGui::IsItemHovered()) {
                         ImGui::SetTooltip("Minimum distance before sound starts to attenuate");
                     }
 
-                    float maxDist = audioSource->getMaxDistance();
-                    if (ImGui::DragFloat("Max Distance", &maxDist, 1.0f, minDist + 0.1f, 10000.0f)) {
-                        audioSource->setMaxDistance(maxDist);
-                    }
+                    // Max distance using UIBuilder Float method
+                    audioSource->setMaxDistance(UIBuilder::Float("Max Distance", audioSource->getMaxDistance()));
                     if (ImGui::IsItemHovered()) {
                         ImGui::SetTooltip("Maximum distance at which the sound can be heard");
                     }
@@ -140,23 +123,14 @@ void ComponentSerializer::RenderLightComponent(GameObject* go) {
                 ImGui::TextColored(ImVec4(1.0f, 0.8f, 0.0f, 1.0f), "%s", lightType);
                 ImGui::Separator();
 
-                // Enabled/Disabled
-                bool enabled = lightComp->isEnabled();
-                if (ImGui::Checkbox("Enabled", &enabled)) {
-                    lightComp->setEnabled(enabled);
-                }
+                // Enabled/Disabled using UIBuilder
+                lightComp->setEnabled(UIBuilder::Toggle("Enabled", lightComp->isEnabled()));
 
-                // Color
-                glm::vec3 color = lightComp->getColor();
-                if (ImGui::ColorEdit3("Color", glm::value_ptr(color))) {
-                    lightComp->setColor(color);
-                }
+                // Color using UIBuilder Vector3
+                lightComp->setColor(UIBuilder::Vector3("Color", lightComp->getColor()));
 
-                // Intensidad
-                float intensity = lightComp->getIntensity();
-                if (ImGui::DragFloat("Intensity", &intensity, 0.1f, 0.0f, 10.0f)) {
-                    lightComp->setIntensity(intensity);
-                }
+                // Intensidad using UIBuilder Float
+                lightComp->setIntensity(UIBuilder::Float("Intensity", lightComp->getIntensity()));
 
                 // Propiedades específicas según el tipo de luz
                 switch (lightComp->getType()) {

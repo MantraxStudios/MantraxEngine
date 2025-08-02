@@ -1,7 +1,7 @@
 {
     "Settings": {
         "AmbientIntensity": 2.0,
-        "CameraFov": 5.0,
+        "CameraFov": 17.600000381469727,
         "CameraType": 1,
         "FrustrumOn": true,
         "LightType": true,
@@ -28,7 +28,7 @@
                         "debugMode": false,
                         "enabled": true,
                         "forceMaterialUpdate": false,
-                        "frameTimer": 0.8455199599266052,
+                        "frameTimer": 0.5636799931526184,
                         "isPlaying": true,
                         "material": {
                             "albedo": [
@@ -76,6 +76,34 @@
             "scale": [
                 1.0,
                 1.0,
+                1.0
+            ]
+        },
+        {
+            "Name": "New Object",
+            "Tag": "Default",
+            "components": {
+                "Geometry": {
+                    "modelPath": "Plane.fbx"
+                },
+                "Material": {
+                    "exists": true
+                },
+                "MaterialName": "BG"
+            },
+            "position": [
+                0.0,
+                0.699999988079071,
+                -9.600000381469727
+            ],
+            "rotation": [
+                0.0,
+                -0.0,
+                0.0
+            ],
+            "scale": [
+                25.0,
+                25.0,
                 1.0
             ]
         }
