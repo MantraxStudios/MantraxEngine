@@ -57,4 +57,10 @@ public:
     // Variables para grid system
     float gridSize = 1.0f;
     bool gridSnapEnabled = true;
+    
+    // Cache de texturas para ImageButtons
+    std::unordered_map<std::string, GLuint> textureCache;
+    
+    // Helper para obtener textura del cache
+    GLuint getCachedTexture(const std::string& texturePath);
 };
