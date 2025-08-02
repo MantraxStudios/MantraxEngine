@@ -31,7 +31,7 @@ void SpriteAnimator::createMaterial(const std::string& materialName) {
     // Configuración por defecto para sprites
     spriteMaterial->setAlbedo(glm::vec3(1.0f, 1.0f, 1.0f)); // Color blanco
     spriteMaterial->setMetallic(0.0f); // No metálico
-    spriteMaterial->setRoughness(0.5f); // Semi-rugoso
+    spriteMaterial->setRoughness(0.0f); // Semi-rugoso
     spriteMaterial->setEmissive(glm::vec3(0.0f, 0.0f, 0.0f)); // Sin emisión
     spriteMaterial->setTiling(glm::vec2(1.0f, 1.0f)); // Sin tiling
 }

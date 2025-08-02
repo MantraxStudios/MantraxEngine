@@ -49,7 +49,7 @@ void SceneView::OnRenderGUI() {
                         if (EventSystem::MouseCast2D_Precise(WorldPoint, data, camera) && !ImGuizmo::IsOver()) {
                             if (Selection::GameObjectSelect != data->object) {
                                 Selection::GameObjectSelect = data->object;
-                                Selection::LightSelect = nullptr; // Deseleccionar luz si hay una seleccionada
+                                Selection::LightSelect = nullptr; 
                             }
                         }
                         else {
@@ -70,25 +70,21 @@ void SceneView::OnRenderGUI() {
                 ImGuizmo::SetOrthographic(false);
                 ImGuizmo::SetRect(imagePos.x, imagePos.y, (float)w, (float)h);
 
-                // Manejar manipulación de objetos o luces
                 if (Selection::GameObjectSelect || Selection::LightSelect) {
                     glm::mat4 view = camera->getViewMatrix();
                     glm::mat4 proj = camera->getProjectionMatrix();
                     glm::mat4 model;
 
-                    // Preparar matriz de modelo según si es un objeto o una luz
                     if (Selection::GameObjectSelect) {
                         model = Selection::GameObjectSelect->getWorldModelMatrix();
                     }
                     else if (Selection::LightSelect) {
-                        // Para luces, crear matriz de modelo basada en su posición
                         glm::vec3 position;
-                        glm::vec3 scale(0.5f); // Tamaño del gizmo para luces
+                        glm::vec3 scale(0.5f);
 
                         if (Selection::LightSelect->getType() == LightType::Directional) {
-                            // Para luces direccionales, usar una posición fija y mostrar solo rotación
                             position = camera->getPosition() + camera->getForward() * 5.0f;
-                            currentGizmoOperation = ROTATE; // Forzar modo rotación para luces direccionales
+                            currentGizmoOperation = ROTATE;
                         }
                         else {
                             position = Selection::LightSelect->getPosition();

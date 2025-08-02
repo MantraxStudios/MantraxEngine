@@ -42,13 +42,74 @@ glm::vec2 EventSystem::get_mouse_position_in_viewport(glm::vec2 WindowSize, glm:
     int mouseX, mouseY;
     SDL_GetMouseState(&mouseX, &mouseY);
 
+    // Obtener la posición del mouse relativa al viewport
     double windowMousePosX = mouseX - ViewportRenderPosition.x;
     double windowMousePosY = mouseY - ViewportRenderPosition.y;
 
-    double NormalMousePosX = windowMousePosX / WindowSize.x;
-    double NormalMousePosY = -windowMousePosY / WindowSize.y;
+    // Dimensiones del viewport
+    float viewportWidth = static_cast<float>(SceneManager::getInstance().getActiveScene()->getCamera()->getFramebuffer()->getWidth());
+    float viewportHeight = static_cast<float>(SceneManager::getInstance().getActiveScene()->getCamera()->getFramebuffer()->getHeight());
 
-    return glm::vec2(NormalMousePosX, NormalMousePosY);
+    // Verificar que el mouse esté dentro del viewport
+    if (windowMousePosX < 0 || windowMousePosX > viewportWidth ||
+        windowMousePosY < 0 || windowMousePosY > viewportHeight) {
+        return glm::vec2(0, 0);
+    }
+
+    // Normalizar coordenadas del mouse a rango [0, 1]
+    double normalizedX = windowMousePosX / viewportWidth;
+    double normalizedY = windowMousePosY / viewportHeight;
+
+    // Convertir a NDC (Normalized Device Coordinates) [-1, 1]
+    double ndcX = normalizedX * 2.0 - 1.0;
+    double ndcY = 1.0 - normalizedY * 2.0; // Invertir Y para que +Y sea hacia arriba
+
+    // Obtener datos de la cámara
+    auto camera = SceneManager::getInstance().getActiveScene()->getCamera();
+    glm::vec3 cameraPos = camera->getPosition();
+
+    if (camera->getProjectionType() == ProjectionType::Orthographic) {
+        // Para proyección ortográfica
+        float orthoSize = camera->getOrthographicSize();
+        float aspect = camera->getAspectRatio();
+
+        // Calcular dimensiones del mundo visible
+        float worldHeight = orthoSize * 2.0f;
+        float worldWidth = worldHeight * aspect;
+
+        // Convertir NDC a coordenadas de mundo
+        double worldX = (ndcX * worldWidth * 0.5) + cameraPos.x;
+        double worldY = (ndcY * worldHeight * 0.5) + cameraPos.y;
+
+        return glm::vec2(worldX, worldY);
+    }
+    else { // ProjectionType::Perspective
+        // Para proyección perspectiva - proyectar al plano Z de la cámara
+        float fov = camera->getFOV();
+        float aspect = camera->getAspectRatio();
+
+        // Distancia de proyección (puedes ajustar esto según tu necesidad)
+        // Por ejemplo, si quieres proyectar al plano z=0:
+        float projectionDistance = abs(cameraPos.z);
+
+        // Si la cámara está en z=0, usar una distancia por defecto
+        if (projectionDistance < 0.01f) {
+            projectionDistance = 10.0f; // Distancia por defecto
+        }
+
+        // Convertir FOV de grados a radianes
+        float fovRadians = glm::radians(fov);
+
+        // Calcular el tamaño del plano de proyección
+        float halfHeight = tan(fovRadians * 0.5f) * projectionDistance;
+        float halfWidth = halfHeight * aspect;
+
+        // Convertir NDC a coordenadas de mundo
+        double worldX = (ndcX * halfWidth) + cameraPos.x;
+        double worldY = (ndcY * halfHeight) + cameraPos.y;
+
+        return glm::vec2(worldX, worldY);
+    }
 }
 
 glm::vec2 EventSystem::mouse_to_view_port_position(glm::vec2 WindowSize)

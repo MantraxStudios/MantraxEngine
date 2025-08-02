@@ -53,7 +53,7 @@ public:
         return std::nullopt;
     }
 
-    static std::string InputText(const std::string& Name, const std::string& value, ImVec2 size = ImVec2(-1, 20))
+    static std::string InputText(const std::string& Name, const std::string& value, ImVec2 size = ImVec2(-1, 30))
     {
         char GetName[128];
         strcpy_s(GetName, value.c_str());
@@ -110,7 +110,7 @@ public:
         return value;
     }
 
-    static float Float(const std::string& name, float value, ImVec2 size = ImVec2(-1, 20))
+    static float Float(const std::string& name, float value, ImVec2 size = ImVec2(-1, 30))
     {
         ImGui::DragFloat(name.c_str(), &value);
         return value;

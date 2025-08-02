@@ -130,22 +130,24 @@ void MaterialEditor::OnRenderGUI() {
 
             if (ImGui::InputText("Albedo Texture", albedoTexture, sizeof(albedoTexture))) {
                 // Drag & drop fuera del if:
-                {
-                    static std::string lastDroppedAlbedoTexture = "";
-                    auto result = UIBuilder::Drag_Objetive("TextureClass");
-                    if (result.has_value()) {
-                        std::string droppedTexturePath = result.value();
-                        // Only process if this is a new texture (not the same as last frame)
-                        if (droppedTexturePath != lastDroppedAlbedoTexture) {
-                            strncpy_s(albedoTexture, sizeof(albedoTexture), droppedTexturePath.c_str(), _TRUNCATE);
-                            previewAlbedo = GetTexturePreview(albedoTexture); // recarga el preview al arrastrar
-                            lastDroppedAlbedoTexture = droppedTexturePath;
-                        }
+               
+            }
+
+            {
+                static std::string lastDroppedAlbedoTexture = "";
+                auto result = UIBuilder::Drag_Objetive("TextureClass");
+                if (result.has_value()) {
+                    std::string droppedTexturePath = result.value();
+                    // Only process if this is a new texture (not the same as last frame)
+                    if (droppedTexturePath != lastDroppedAlbedoTexture) {
+                        strncpy_s(albedoTexture, sizeof(albedoTexture), droppedTexturePath.c_str(), _TRUNCATE);
+                        previewAlbedo = GetTexturePreview(albedoTexture); // recarga el preview al arrastrar
+                        lastDroppedAlbedoTexture = droppedTexturePath;
                     }
-                    else {
-                        // Reset the last dropped texture when no texture is being dragged
-                        lastDroppedAlbedoTexture = "";
-                    }
+                }
+                else {
+                    // Reset the last dropped texture when no texture is being dragged
+                    lastDroppedAlbedoTexture = "";
                 }
             }
           
