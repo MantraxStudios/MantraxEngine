@@ -25,45 +25,39 @@
 #include "../EUI/ComponentSerializer.h"
 
 
-// Helper function to render styled separators
 void RenderStyledSeparator() {
-    ImGui::PushStyleColor(ImGuiCol_Separator, IM_COL32(66, 150, 250, 100));  // accentBlue with transparency
+    ImGui::PushStyleColor(ImGuiCol_Separator, IM_COL32(66, 150, 250, 100));  
     ImGui::Separator();
     ImGui::PopStyleColor();
 }
 
 // Helper function to render section titles
 void RenderSectionTitle(const char* title) {
-    ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(255, 161, 0, 255));  // accentOrange
+    ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(255, 161, 0, 255)); 
     ImGui::Text("%s", title);
     ImGui::PopStyleColor();
 }
 
-// Helper function to render styled buttons
 void RenderStyledButton(const char* label, const ImVec2& size = ImVec2(0, 0)) {
-    ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(71, 74, 77, 255));  // mediumBg
-    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, IM_COL32(82, 84, 87, 255));  // lightBg
-    ImGui::PushStyleColor(ImGuiCol_ButtonActive, IM_COL32(66, 150, 250, 255));  // accentBlue
+    ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(71, 74, 77, 255)); 
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, IM_COL32(82, 84, 87, 255)); 
+    ImGui::PushStyleColor(ImGuiCol_ButtonActive, IM_COL32(66, 150, 250, 255)); 
     
     ImGui::Button(label, size);
     
     ImGui::PopStyleColor(3);
 }
 
-// Helper function to render styled input fields
 void RenderStyledInputs() {
-    ImGui::PushStyleColor(ImGuiCol_FrameBg, IM_COL32(41, 43, 46, 255));  // FrameBg
-    ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, IM_COL32(51, 53, 56, 255));  // FrameBgHovered
-    ImGui::PushStyleColor(ImGuiCol_FrameBgActive, IM_COL32(66, 150, 250, 100));  // accentBlue with transparency
+    ImGui::PushStyleColor(ImGuiCol_FrameBg, IM_COL32(41, 43, 46, 255)); 
+    ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, IM_COL32(51, 53, 56, 255)); 
+    ImGui::PushStyleColor(ImGuiCol_FrameBgActive, IM_COL32(66, 150, 250, 100)); 
 }
 
 void PopStyledInputs() {
     ImGui::PopStyleColor(3);
 }
 
-// ============================================================================
-// COMPONENT INSPECTOR FUNCTIONS
-// ============================================================================
 
 void Inspector::RenderTransformSection(GameObject* go) {
     RenderStyledSeparator();
@@ -313,7 +307,6 @@ void Inspector::RenderComponentsSection(GameObject* go) {
 //                        }
 //                        continue;
 //                    }
-//
 //                    std::cout << "Unsupported type for " << name << std::endl;
 //                }
 //                catch (const std::bad_any_cast& e) {
@@ -322,17 +315,14 @@ void Inspector::RenderComponentsSection(GameObject* go) {
 //                    std::cout << "Got: " << anyPtr.type().name() << std::endl;
 //                }
 //            }
-//
 //            ImGui::TreePop();
 //        }
-//
 //        if (removeComponent)
 //        {
 //            go->removeComponentSafe(_CPM);
 //        }
 //    }
 
-    // Render individual component inspectors
     ComponentSerializer::RenderAudioSourceComponent(go);
     ComponentSerializer::RenderLightComponent(go);
     ComponentSerializer::RenderSpriteAnimatorComponent(go);
@@ -376,7 +366,6 @@ void Inspector::RenderGameObjectInspector(GameObject* go) {
         go->Name = std::string(nameBuffer);
     }
 
-    // Render different sections
     RenderRenderingOptions(go);
     RenderTransformSection(go);
     RenderModelSection(go);

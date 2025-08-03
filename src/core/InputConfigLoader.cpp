@@ -69,7 +69,7 @@ SDL_Keycode InputConfigLoader::stringToKeycode(const std::string& keyString) {
     if (keyString == "SDLK_RALT") return SDLK_RALT;
     if (keyString == "SDLK_LGUI") return SDLK_LGUI;
     if (keyString == "SDLK_RGUI") return SDLK_RGUI;
-    if (keyString == "SDLK_ENTER") return SDLK_RETURN;
+
     if (keyString == "SDLK_RETURN") return SDLK_RETURN;
     if (keyString == "SDLK_BACKSPACE") return SDLK_BACKSPACE;
     if (keyString == "SDLK_DELETE") return SDLK_DELETE;
@@ -355,5 +355,140 @@ void InputConfigLoader::loadInputConfigFromJSON(const std::string& configPath) {
         
     } catch (const std::exception& e) {
         std::cerr << "Error parsing input config JSON: " << e.what() << std::endl;
+    }
+}
+
+void InputConfigLoader::saveInputConfigToJSON(const std::string& configPath) {
+    auto& inputSystem = InputSystem::getInstance();
+    
+    nlohmann::json config;
+    nlohmann::json actionsArray = nlohmann::json::array();
+    
+    // Iterate through all registered actions
+    for (const auto& [name, action] : inputSystem.getAllActions()) {
+        nlohmann::json actionConfig;
+        actionConfig["name"] = name;
+        
+        // Convert InputType to string
+        std::string typeStr;
+        switch (action->getType()) {
+            case InputType::Button: typeStr = "Button"; break;
+            case InputType::Value: typeStr = "Value"; break;
+            case InputType::Vector2D: typeStr = "Vector2D"; break;
+            case InputType::MouseButton: typeStr = "MouseButton"; break;
+            case InputType::MouseAxis: typeStr = "MouseAxis"; break;
+        }
+        actionConfig["type"] = typeStr;
+        
+        // Save key bindings
+        nlohmann::json keyBindingsArray = nlohmann::json::array();
+        for (const auto& binding : action->getBindings()) {
+            if (binding.isKeyboard) {
+                nlohmann::json keyBinding;
+                keyBinding["key"] = keycodeToString(binding.key);
+                keyBinding["positive"] = binding.isPositive;
+                keyBinding["axis"] = binding.axis;
+                keyBindingsArray.push_back(keyBinding);
+            }
+        }
+        if (!keyBindingsArray.empty()) {
+            actionConfig["key_bindings"] = keyBindingsArray;
+        }
+        
+        // Save mouse bindings
+        for (const auto& binding : action->getBindings()) {
+            if (!binding.isKeyboard) {
+                if (binding.mouseAxis != MouseAxisType::X) { // Assuming X is default
+                    actionConfig["mouse_axis"] = mouseAxisToString(binding.mouseAxis);
+                } else {
+                    actionConfig["mouse_button"] = mouseButtonToString(binding.mouseButton);
+                }
+            }
+        }
+        
+        actionsArray.push_back(actionConfig);
+    }
+    
+    config["input_actions"] = actionsArray;
+    
+    std::ofstream file(configPath);
+    if (file.is_open()) {
+        file << config.dump(2);
+        file.close();
+        std::cout << "Input configuration saved to JSON: " << configPath << std::endl;
+    } else {
+        std::cerr << "Failed to save input configuration to: " << configPath << std::endl;
+    }
+}
+
+std::string InputConfigLoader::keycodeToString(SDL_Keycode keycode) {
+    // This is a simplified implementation - you'd want a comprehensive mapping
+    switch (keycode) {
+        case SDLK_a: return "SDLK_a";
+        case SDLK_b: return "SDLK_b";
+        case SDLK_c: return "SDLK_c";
+        case SDLK_d: return "SDLK_d";
+        case SDLK_e: return "SDLK_e";
+        case SDLK_f: return "SDLK_f";
+        case SDLK_g: return "SDLK_g";
+        case SDLK_h: return "SDLK_h";
+        case SDLK_i: return "SDLK_i";
+        case SDLK_j: return "SDLK_j";
+        case SDLK_k: return "SDLK_k";
+        case SDLK_l: return "SDLK_l";
+        case SDLK_m: return "SDLK_m";
+        case SDLK_n: return "SDLK_n";
+        case SDLK_o: return "SDLK_o";
+        case SDLK_p: return "SDLK_p";
+        case SDLK_q: return "SDLK_q";
+        case SDLK_r: return "SDLK_r";
+        case SDLK_s: return "SDLK_s";
+        case SDLK_t: return "SDLK_t";
+        case SDLK_u: return "SDLK_u";
+        case SDLK_v: return "SDLK_v";
+        case SDLK_w: return "SDLK_w";
+        case SDLK_x: return "SDLK_x";
+        case SDLK_y: return "SDLK_y";
+        case SDLK_z: return "SDLK_z";
+        case SDLK_0: return "SDLK_0";
+        case SDLK_1: return "SDLK_1";
+        case SDLK_2: return "SDLK_2";
+        case SDLK_3: return "SDLK_3";
+        case SDLK_4: return "SDLK_4";
+        case SDLK_5: return "SDLK_5";
+        case SDLK_6: return "SDLK_6";
+        case SDLK_7: return "SDLK_7";
+        case SDLK_8: return "SDLK_8";
+        case SDLK_9: return "SDLK_9";
+        case SDLK_SPACE: return "SDLK_SPACE";
+        case SDLK_LSHIFT: return "SDLK_LSHIFT";
+        case SDLK_ESCAPE: return "SDLK_ESCAPE";
+        case SDLK_TAB: return "SDLK_TAB";
+        case SDLK_RETURN: return "SDLK_RETURN";
+        case SDLK_BACKSPACE: return "SDLK_BACKSPACE";
+        case SDLK_DELETE: return "SDLK_DELETE";
+        case SDLK_UP: return "SDLK_UP";
+        case SDLK_DOWN: return "SDLK_DOWN";
+        case SDLK_LEFT: return "SDLK_LEFT";
+        case SDLK_RIGHT: return "SDLK_RIGHT";
+        default: return "SDLK_UNKNOWN";
+    }
+}
+
+std::string InputConfigLoader::mouseAxisToString(MouseAxisType axis) {
+    switch (axis) {
+        case MouseAxisType::X: return "X";
+        case MouseAxisType::Y: return "Y";
+        case MouseAxisType::ScrollWheel: return "ScrollWheel";
+        default: return "X";
+    }
+}
+
+std::string InputConfigLoader::mouseButtonToString(Uint8 button) {
+    switch (button) {
+        case SDL_BUTTON_LEFT: return "SDL_BUTTON_LEFT";
+        case SDL_BUTTON_RIGHT: return "SDL_BUTTON_RIGHT";
+        case SDL_BUTTON_MIDDLE: return "SDL_BUTTON_MIDDLE";
+        default: return "SDL_BUTTON_LEFT";
     }
 } 

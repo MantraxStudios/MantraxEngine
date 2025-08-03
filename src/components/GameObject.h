@@ -353,9 +353,9 @@ public:
     std::string Name = "New Object";
     std::string Tag = "Default";
     std::string ObjectID = std::to_string(UIDGenerator::Generate());
-    std::string ModelPath = ""; // Path del modelo a cargar automáticamente
+    std::string ModelPath = "";
     AssimpGeometry *geometry;
-    std::shared_ptr<AssimpGeometry> sharedGeometry; // Para mantener referencia de modelos cargados
+    std::shared_ptr<AssimpGeometry> sharedGeometry; 
     std::shared_ptr<Material> material;
     
     // Transform data

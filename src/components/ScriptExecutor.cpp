@@ -5,8 +5,14 @@
 
 using json = nlohmann::json;
 
+// Initialize static member
+std::vector<ScriptExecutor*> ScriptExecutor::s_instances;
+
 void ScriptExecutor::defines() {
     set_var("LuaPath", &luaPath);
+    
+    // Register this instance
+    s_instances.push_back(this);
 }
 
 void ScriptExecutor::setOwner(GameObject* owner) {
@@ -14,17 +20,31 @@ void ScriptExecutor::setOwner(GameObject* owner) {
 }
 
 void ScriptExecutor::start() {
+    // Clear state at the beginning
+    scriptTable = sol::table();
+    scriptLoaded = false;
+    lastError.clear();
+    
     lua.open_libraries(sol::lib::base, sol::lib::math, sol::lib::table, sol::lib::string);
 
-    lua["ThisObject"] = sol::make_object(lua.lua_state(), getOwner());
+    // Register the self() function to return the owner GameObject
+    lua.set_function("self", [this]() { 
+        GameObject* owner = getOwner();
+        if (!owner) {
+            std::cerr << "[ScriptExecutor] Warning: Owner GameObject is null in self() function" << std::endl;
+        }
+        return owner; 
+    });
+    
     CoreWrapper coreWrapper;
     coreWrapper.Register(lua);
 
     std::string fullPath = FileSystem::getProjectPath() + "\\Content\\" + luaPath + ".lua";
 
-    // Revisa que el archivo exista ANTES de intentar cargarlo
+    // Check if file exists before trying to load it
     if (!std::filesystem::exists(fullPath)) {
-        std::cerr << "[ScriptExecutor] Archivo LUA no existe: " << fullPath << std::endl;
+        std::cerr << "[ScriptExecutor] LUA file does not exist: " << fullPath << std::endl;
+        lastError = "Script file not found: " + fullPath;
         return;
     }
 
@@ -38,23 +58,42 @@ void ScriptExecutor::start() {
             scriptTable = lua.globals();
         }
 
+        // Set script as loaded if we got here successfully
+        scriptLoaded = true;
+        lastError.clear();
+
         sol::function startFunc = scriptTable["OnStart"];
         if (startFunc.valid()) {
             try {
                 startFunc();
             }
             catch (const sol::error& e) {
-                std::cerr << "[ScriptExecutor] Error en OnStart() de " << luaPath << ": " << e.what() << std::endl;
+                lastError = e.what();
+                std::cerr << "[ScriptExecutor] Error in OnStart() of " << luaPath << ": " << e.what() << std::endl;
+            }
+            catch (const std::exception& e) {
+                lastError = e.what();
+                std::cerr << "[ScriptExecutor] Exception in OnStart() of " << luaPath << ": " << e.what() << std::endl;
             }
         }
     }
     catch (const sol::error& e) {
-        std::cerr << "[ScriptExecutor] Error cargando script " << fullPath << ">> " << e.what() << std::endl;
+        lastError = e.what();
+        std::cerr << "[ScriptExecutor] Error loading script " << fullPath << ": " << e.what() << std::endl;
+    }
+    catch (const std::exception& e) {
+        lastError = e.what();
+        std::cerr << "[ScriptExecutor] Exception loading script " << fullPath << ": " << e.what() << std::endl;
     }
 }
 
-
 void ScriptExecutor::update() {
+    // Don't execute if script is not loaded or file doesn't exist
+    if (!scriptLoaded || !isScriptValid()) {
+        return;
+    }
+
+    // Check if script table is valid
     if (!scriptTable.valid()) {
         return;
     }
@@ -67,18 +106,24 @@ void ScriptExecutor::update() {
         }
         catch (const sol::error& e) {
             lastError = e.what();
-            std::cerr << "Error en update() del script " << luaPath << ": " << e.what() << std::endl;
+            std::cerr << "Error in update() of script " << luaPath << ": " << e.what() << std::endl;
         }
     }
 }
 
 void ScriptExecutor::destroy() {
+    // Don't execute if script is not loaded or file doesn't exist
+    if (!scriptLoaded || !isScriptValid()) {
+        return;
+    }
+
+    // Check if script table is valid
     if (!scriptTable.valid()) {
         return;
     }
 
-    // Llamar a onDestroy() en Lua si existe
-    sol::function destroyFunc = scriptTable["onDestroy"];
+    // Call onDestroy() in Lua if it exists
+    sol::function destroyFunc = scriptTable["OnDestroy"];
     if (destroyFunc.valid()) {
         try {
             destroyFunc();
@@ -86,24 +131,41 @@ void ScriptExecutor::destroy() {
         }
         catch (const sol::error& e) {
             lastError = e.what();
-            std::cerr << "Error en onDestroy() del script " << luaPath << ": " << e.what() << std::endl;
+            std::cerr << "Error in OnDestroy() of script " << luaPath << ": " << e.what() << std::endl;
         }
     }
+    
+    // Clear script table and set as not loaded
+    scriptTable = sol::table();
+    scriptLoaded = false;
 }
 
 void ScriptExecutor::reloadScript() {
-    // Clear current state
-    scriptTable = sol::table();
-    scriptLoaded = false;
-    lastError.clear();
-
+    // Call destroy for proper cleanup
     destroy();
+    
+    // Clear lua state completely
+    lua = sol::state();
     
     // Restart the script
     start();
 }
 
+bool ScriptExecutor::isScriptValid() const {
+    if (!scriptLoaded) {
+        return false;
+    }
+    
+    // Check if script file still exists on disk
+    std::string fullPath = FileSystem::getProjectPath() + "\\Content\\" + luaPath + ".lua";
+    return std::filesystem::exists(fullPath);
+}
+
 bool ScriptExecutor::hasFunction(const std::string& functionName) const {
+    if (!isScriptValid()) {
+        return false;
+    }
+    
     if (!scriptTable.valid()) {
         return false;
     }
@@ -113,11 +175,15 @@ bool ScriptExecutor::hasFunction(const std::string& functionName) const {
 }
 
 void ScriptExecutor::onTriggerEnter(GameObject* other) {
-    if (!scriptTable.valid() || !other) {
+    if (!scriptLoaded || !isScriptValid() || !scriptTable.valid()) {
         return;
     }
 
-    // Llamar a OnTriggerEnter() en Lua si existe
+    if (!other) {
+        return;
+    }
+
+    // Call OnTriggerEnter() in Lua if it exists
     sol::function triggerEnterFunc = scriptTable["OnTriggerEnter"];
     if (triggerEnterFunc.valid()) {
         try {
@@ -126,17 +192,21 @@ void ScriptExecutor::onTriggerEnter(GameObject* other) {
         }
         catch (const sol::error& e) {
             lastError = e.what();
-            std::cerr << "Error en OnTriggerEnter() del script " << luaPath << ": " << e.what() << std::endl;
+            std::cerr << "Error in OnTriggerEnter() of script " << luaPath << ": " << e.what() << std::endl;
         }
     }
 }
 
 void ScriptExecutor::onTriggerExit(GameObject* other) {
-    if (!scriptTable.valid() || !other) {
+    if (!scriptLoaded || !isScriptValid() || !scriptTable.valid()) {
         return;
     }
 
-    // Llamar a OnTriggerExit() en Lua si existe
+    if (!other) {
+        return;
+    }
+
+    // Call OnTriggerExit() in Lua if it exists
     sol::function triggerExitFunc = scriptTable["OnTriggerExit"];
     if (triggerExitFunc.valid()) {
         try {
@@ -145,7 +215,31 @@ void ScriptExecutor::onTriggerExit(GameObject* other) {
         }
         catch (const sol::error& e) {
             lastError = e.what();
-            std::cerr << "Error en OnTriggerExit() del script " << luaPath << ": " << e.what() << std::endl;
+            std::cerr << "Error in OnTriggerExit() of script " << luaPath << ": " << e.what() << std::endl;
+        }
+    }
+}
+
+void ScriptExecutor::notifyScriptDeleted(const std::string& scriptName) {
+    std::cout << "[ScriptExecutor] Notifying all instances about deleted script: " << scriptName << std::endl;
+    
+    for (auto* instance : s_instances) {
+        if (instance && instance->luaPath == scriptName) {
+            std::cout << "[ScriptExecutor] Stopping execution for script: " << scriptName << std::endl;
+            instance->destroy();
+            instance->lastError = "Script file was deleted";
+            instance->scriptLoaded = false;
+        }
+    }
+}
+
+void ScriptExecutor::notifyScriptModified(const std::string& scriptName) {
+    std::cout << "[ScriptExecutor] Notifying all instances about modified script: " << scriptName << std::endl;
+    
+    for (auto* instance : s_instances) {
+        if (instance && instance->luaPath == scriptName) {
+            std::cout << "[ScriptExecutor] Reloading script: " << scriptName << std::endl;
+            instance->reloadScript();
         }
     }
 }
@@ -157,34 +251,35 @@ std::string ScriptExecutor::serializeComponent() const {
     return j.dump();
 }
 
-
 void ScriptExecutor::deserialize(const std::string& data) {
     try {
         json j = json::parse(data);
 
-        // Solo asigna si existe y es string
+        // Only assign if it exists and is string
         if (j.contains("luaPath") && j["luaPath"].is_string()) {
             luaPath = j["luaPath"];
-
-            // Verifica si el script existe antes de recargarlo
-            std::string scriptFile = "x64/debug/Scripts/" + luaPath + ".lua";
-            if (std::filesystem::exists(scriptFile)) {
+            
+            // Check if script exists before reloading
+            std::string fullPath = FileSystem::getProjectPath() + "\\Content\\" + luaPath + ".lua";
+            if (std::filesystem::exists(fullPath)) {
                 reloadScript();
             }
             else {
-                std::cerr << "[ScriptExecutor] Archivo LUA no existe: " << scriptFile << std::endl;
+                std::cerr << "[ScriptExecutor] LUA file does not exist: " << fullPath << std::endl;
+                lastError = "Script file not found: " + fullPath;
+                scriptLoaded = false;
             }
         }
         else {
-            std::cerr << "[ScriptExecutor] Campo 'luaPath' faltante o inválido en el componente serializado. NO se recarga script.\n";
+            std::cerr << "[ScriptExecutor] Missing or invalid 'luaPath' field in serialized component. Script will not be reloaded." << std::endl;
         }
 
-        // Opcional: habilitado/disabled
+        // Optional: enabled/disabled
         if (j.contains("enabled")) {
             isEnabled = j.value("enabled", true);
         }
     }
     catch (const json::exception& e) {
-        std::cerr << "[ScriptExecutor] Error al deserializar JSON: " << e.what() << std::endl;
+        std::cerr << "[ScriptExecutor] Error deserializing JSON: " << e.what() << std::endl;
     }
 }

@@ -1,15 +1,13 @@
--- Test.lua
--- Created by MantraxEngine ContentBrowser
+function OnTick ()
+    local pos = self():getPosition()
+    pos.x = pos.x + 0.001
 
-function OnStart()
-    -- Initialize your script here
-    print("Script started: Test.lua")
-end
+    self():setPosition(pos)
 
-function OnTick()
-    print("Script started: Test.lua")
-end
+    local pb = self():getPhysicalObject()
 
-function OnDestroy()
-    -- Cleanup your script here
+    if pb ~= nil and self():getPosition().y <= -10 then
+        pb:addForce(vector3.new(0, 1000, 0), ForceMode.Force)
+        print("pb found")
+    end
 end

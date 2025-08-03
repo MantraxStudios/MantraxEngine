@@ -10,6 +10,7 @@
 #include "MaterialEditor.h"
 #include "AnimatorEditor.h"
 #include "TileEditor.h"
+#include "InputEditor.h"
 
 
 class RenderWindows {
@@ -27,6 +28,7 @@ public:
         m_windows.push_back(std::make_unique<MaterialEditor>());
         m_windows.push_back(std::make_unique<AnimatorEditor>());
         m_windows.push_back(std::make_unique<TileEditor>());
+        m_windows.push_back(std::make_unique<InputEditor>());
 
     }
     

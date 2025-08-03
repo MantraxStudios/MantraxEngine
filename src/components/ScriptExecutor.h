@@ -23,18 +23,26 @@ public:
     void deserialize(const std::string& data) override;
 
     // Inspector helper methods
-    bool isScriptLoaded() const { return scriptTable.valid(); }
+    bool isScriptLoaded() const { return scriptLoaded; }
     std::string getLastError() const { return lastError; }
     void reloadScript();
     bool hasFunction(const std::string& functionName) const;
+    bool isScriptValid() const; // New method to check if script file exists
 
     // Trigger event methods
     void onTriggerEnter(GameObject* other);
     void onTriggerExit(GameObject* other);
+
+    // Static methods for managing script instances
+    static void notifyScriptDeleted(const std::string& scriptName);
+    static void notifyScriptModified(const std::string& scriptName);
 
 private:
     sol::state lua;
     sol::table scriptTable;
     std::string lastError;
     bool scriptLoaded = false;
+    
+    // Static tracking of all instances
+    static std::vector<ScriptExecutor*> s_instances;
 };

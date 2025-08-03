@@ -394,12 +394,18 @@ void PhysicalObject::createBody() {
         physx::PxQuat(rotation.x, rotation.y, rotation.z, rotation.w)
     );
     
+    std::cout << "[PhysicalObject] Creating body with type: " << static_cast<int>(bodyType) << std::endl;
+    
     if (bodyType == BodyType::Dynamic) {
+        std::cout << "[PhysicalObject] Creating Dynamic body" << std::endl;
         dynamicActor = physicsManager.createDynamicBody(transform, mass);
         rigidActor = dynamicActor;
+        std::cout << "[PhysicalObject] Dynamic actor created: " << (dynamicActor ? "SUCCESS" : "FAILED") << std::endl;
     } else {
+        std::cout << "[PhysicalObject] Creating Static body" << std::endl;
         staticActor = physicsManager.createStaticBody(transform);
         rigidActor = staticActor;
+        std::cout << "[PhysicalObject] Static actor created: " << (staticActor ? "SUCCESS" : "FAILED") << std::endl;
     }
 }
 
@@ -688,7 +694,24 @@ void PhysicalObject::setupCollisionFilters(CollisionGroup group, CollisionMask m
 
 void PhysicalObject::addForce(const glm::vec3& force, physx::PxForceMode::Enum mode) {
     if (dynamicActor) {
+        std::cout << "[PhysicalObject] Adding force: (" << force.x << ", " << force.y << ", " << force.z << ")" << std::endl;
+        std::cout << "[PhysicalObject] Force mode: " << (mode == physx::PxForceMode::eFORCE ? "FORCE" : "IMPULSE") << std::endl;
+        std::cout << "[PhysicalObject] Actor is sleeping: " << (dynamicActor->isSleeping() ? "YES" : "NO") << std::endl;
+        
+        // Get current velocity before applying force
+        physx::PxVec3 currentVel = dynamicActor->getLinearVelocity();
+        std::cout << "[PhysicalObject] Current velocity: (" << currentVel.x << ", " << currentVel.y << ", " << currentVel.z << ")" << std::endl;
+        
         dynamicActor->addForce(physx::PxVec3(force.x, force.y, force.z), mode);
+        
+        // Get velocity after applying force
+        physx::PxVec3 newVel = dynamicActor->getLinearVelocity();
+        std::cout << "[PhysicalObject] New velocity: (" << newVel.x << ", " << newVel.y << ", " << newVel.z << ")" << std::endl;
+        
+    } else {
+        std::cout << "[PhysicalObject] ERROR: dynamicActor is null! Cannot add force." << std::endl;
+        std::cout << "[PhysicalObject] Body type: " << static_cast<int>(bodyType) << std::endl;
+        std::cout << "[PhysicalObject] Initialized: " << (initialized ? "true" : "false") << std::endl;
     }
 }
 
@@ -700,7 +723,24 @@ void PhysicalObject::addTorque(const glm::vec3& torque, physx::PxForceMode::Enum
 
 void PhysicalObject::addImpulse(const glm::vec3& impulse, physx::PxForceMode::Enum mode) {
     if (dynamicActor) {
+        std::cout << "[PhysicalObject] Adding impulse: (" << impulse.x << ", " << impulse.y << ", " << impulse.z << ")" << std::endl;
+        std::cout << "[PhysicalObject] Impulse mode: " << (mode == physx::PxForceMode::eIMPULSE ? "IMPULSE" : "FORCE") << std::endl;
+        std::cout << "[PhysicalObject] Actor is sleeping: " << (dynamicActor->isSleeping() ? "YES" : "NO") << std::endl;
+        
+        // Get current velocity before applying impulse
+        physx::PxVec3 currentVel = dynamicActor->getLinearVelocity();
+        std::cout << "[PhysicalObject] Current velocity: (" << currentVel.x << ", " << currentVel.y << ", " << currentVel.z << ")" << std::endl;
+        
         dynamicActor->addForce(physx::PxVec3(impulse.x, impulse.y, impulse.z), mode);
+        
+        // Get velocity after applying impulse
+        physx::PxVec3 newVel = dynamicActor->getLinearVelocity();
+        std::cout << "[PhysicalObject] New velocity: (" << newVel.x << ", " << newVel.y << ", " << newVel.z << ")" << std::endl;
+        
+    } else {
+        std::cout << "[PhysicalObject] ERROR: dynamicActor is null! Cannot add impulse." << std::endl;
+        std::cout << "[PhysicalObject] Body type: " << static_cast<int>(bodyType) << std::endl;
+        std::cout << "[PhysicalObject] Initialized: " << (initialized ? "true" : "false") << std::endl;
     }
 }
 

@@ -25,6 +25,46 @@ public:
         return (it != actions.end()) ? it->second : nullptr;
     }
 
+    // Obtener todas las acciones registradas
+    const std::unordered_map<std::string, std::shared_ptr<InputAction>>& getAllActions() const {
+        return actions;
+    }
+
+    // Obtener una acción por índice (para iteración)
+    std::shared_ptr<InputAction> getActionByIndex(int index) {
+        int i = 0;
+        for (const auto& [name, action] : actions) {
+            if (i == index) return action;
+            i++;
+        }
+        return nullptr;
+    }
+
+    // Obtener el nombre de una acción por índice
+    std::string getActionNameByIndex(int index) {
+        int i = 0;
+        for (const auto& [name, action] : actions) {
+            if (i == index) return name;
+            i++;
+        }
+        return "";
+    }
+
+    // Obtener el número total de acciones
+    size_t getActionCount() const {
+        return actions.size();
+    }
+
+    // Eliminar una acción
+    bool removeAction(const std::string& name) {
+        auto it = actions.find(name);
+        if (it != actions.end()) {
+            actions.erase(it);
+            return true;
+        }
+        return false;
+    }
+
     // Limpiar todas las acciones
     void clearActions() {
         actions.clear();

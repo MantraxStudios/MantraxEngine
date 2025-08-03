@@ -147,6 +147,7 @@
     <ClCompile Include="editor\Windows\FileSaveUtils.cpp" />
     <ClCompile Include="editor\Windows\Gizmos.cpp" />
     <ClCompile Include="editor\Windows\Hierarchy.cpp" />
+    <ClCompile Include="editor\Windows\InputEditor.cpp" />
     <ClCompile Include="editor\Windows\Inspector.cpp" />
     <ClCompile Include="editor\Windows\MaterialEditor.cpp" />
     <ClCompile Include="editor\Windows\AnimatorEditor.cpp" />
@@ -176,6 +177,7 @@
     <ClInclude Include="editor\Windows\FileSaveUtils.h" />
     <ClInclude Include="editor\Windows\Gizmos.h" />
     <ClInclude Include="editor\Windows\Hierarchy.h" />
+    <ClInclude Include="editor\Windows\InputEditor.h" />
     <ClInclude Include="editor\Windows\Inspector.h" />
     <ClInclude Include="editor\Windows\MainBar.h" />
     <ClInclude Include="editor\Windows\MaterialEditor.h" />

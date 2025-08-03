@@ -322,7 +322,20 @@ void PhysicsManager::update(float deltaTime)
 {
     if (scene)
     {
-        scene->simulate(deltaTime);
+        // Debug deltaTime to see if it's reasonable
+        static float lastDebugTime = 0.0f;
+        static float debugAccumulator = 0.0f;
+        debugAccumulator += deltaTime;
+        
+        if (debugAccumulator - lastDebugTime > 1.0f) { // Print every second
+            std::cout << "[PhysicsManager] Average deltaTime: " << (debugAccumulator / 60.0f) << " seconds" << std::endl;
+            lastDebugTime = debugAccumulator;
+        }
+        
+        // Clamp deltaTime to prevent huge physics steps
+        float clampedDeltaTime = std::min(deltaTime, 0.033f); // Max 30 FPS equivalent
+        
+        scene->simulate(clampedDeltaTime);
         scene->fetchResults(true);
     }
 }

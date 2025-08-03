@@ -80,6 +80,37 @@ public:
         bindings.push_back(InputBinding::ForMouseAxis(axisType));
     }
 
+    // Modificar bindings existentes
+    void updateKeyBinding(int index, SDL_Keycode key, bool isPositive = true, int axis = 0) {
+        if (index >= 0 && index < static_cast<int>(bindings.size())) {
+            bindings[index] = InputBinding::ForKeyboard(key, isPositive, axis);
+        }
+    }
+
+    void updateMouseButtonBinding(int index, Uint8 button) {
+        if (index >= 0 && index < static_cast<int>(bindings.size())) {
+            bindings[index] = InputBinding::ForMouseButton(button);
+        }
+    }
+
+    void updateMouseAxisBinding(int index, MouseAxisType axisType) {
+        if (index >= 0 && index < static_cast<int>(bindings.size())) {
+            bindings[index] = InputBinding::ForMouseAxis(axisType);
+        }
+    }
+
+    // Eliminar bindings
+    void removeBinding(int index) {
+        if (index >= 0 && index < static_cast<int>(bindings.size())) {
+            bindings.erase(bindings.begin() + index);
+        }
+    }
+
+    // Limpiar todos los bindings
+    void clearBindings() {
+        bindings.clear();
+    }
+
     // Callbacks
     void bindButtonCallback(std::function<void(bool)> callback) {
         buttonCallback = callback;
