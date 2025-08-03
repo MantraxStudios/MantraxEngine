@@ -34,6 +34,22 @@ bool SceneSaver::SaveScene(const Scene* scene, const std::string& filepath) {
     MainJson["Settings"]["LowAmbient"] = pipeline->getLowAmbient();
     MainJson["Settings"]["LightType"] = pipeline->getUsePBR();
     MainJson["Settings"]["FrustrumOn"] = pipeline->getFrustumCulling();
+    
+    // Post-processing settings
+    DefaultShaders* shaders = pipeline->getShaders();
+    if (shaders) {
+        float exposure = shaders->getExposure();
+        float saturation = shaders->getSaturation();
+        float smoothness = shaders->getSmoothness();
+        
+        MainJson["Settings"]["PostProcessing"]["Exposure"] = exposure;
+        MainJson["Settings"]["PostProcessing"]["Saturation"] = saturation;
+        MainJson["Settings"]["PostProcessing"]["Smoothness"] = smoothness;
+        
+        std::cout << "Saving Post-Processing - Exposure: " << exposure 
+                  << ", Saturation: " << saturation 
+                  << ", Smoothness: " << smoothness << std::endl;
+    }
 
     if (!activeScene) {
         std::cerr << "Error: No active scene" << std::endl;
@@ -315,10 +331,40 @@ bool SceneSaver::LoadScene(const std::string& filepath) {
         RenderPipeline::getInstance().setFrustumCulling(frustumOn);
     }
 
-
     // 7. Agregar la escena al manager y activar
     sceneManager.addScene(std::move(newScene));
     sceneManager.setActiveScene(sceneName);
+    
+    // Post-processing settings - CARGAR DESPUÉS DE CONFIGURAR LA ESCENA
+    if (settings.contains("PostProcessing")) {
+        const json& postProcessing = settings["PostProcessing"];
+        Scene* loadedScene = sceneManager.getActiveScene();
+        if (loadedScene) {
+            RenderPipeline* loadedPipeline = loadedScene->getRenderPipeline();
+            if (loadedPipeline) {
+                DefaultShaders* shaders = loadedPipeline->getShaders();
+                if (shaders) {
+                    if (postProcessing.contains("Exposure")) {
+                        float exposure = postProcessing["Exposure"];
+                        shaders->setExposure(exposure);
+                        std::cout << "Loaded Exposure: " << exposure << std::endl;
+                    }
+                    
+                    if (postProcessing.contains("Saturation")) {
+                        float saturation = postProcessing["Saturation"];
+                        shaders->setSaturation(saturation);
+                        std::cout << "Loaded Saturation: " << saturation << std::endl;
+                    }
+                    
+                    if (postProcessing.contains("Smoothness")) {
+                        float smoothness = postProcessing["Smoothness"];
+                        shaders->setSmoothness(smoothness);
+                        std::cout << "Loaded Smoothness: " << smoothness << std::endl;
+                    }
+                }
+            }
+        }
+    }
 
     std::cout << "Scene loaded successfully from: " << filepath << std::endl;
     return true;

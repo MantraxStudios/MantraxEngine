@@ -238,6 +238,67 @@ void MainBar::OnRenderGUI() {
 				pipeline->setFrustumCulling(frustumCulling);
 				std::cout << (frustumCulling ? "Enabled" : "Disabled") << " frustum culling" << std::endl;
 			}
+			
+			// Post-processing controls
+			ImGui::Separator();
+			ImGui::Text("Post-Processing:");
+			
+			DefaultShaders* shaders = pipeline->getShaders();
+			if (shaders) {
+				static float exposure = 1.0f;
+				static float saturation = 1.0f;
+				static float smoothness = 1.0f;
+				static std::string lastSceneName = "";
+				
+				// Check if scene changed
+				std::string currentSceneName = activeScene->getName();
+				if (currentSceneName != lastSceneName) {
+					// Scene changed, reinitialize values
+					exposure = shaders->getExposure();
+					saturation = shaders->getSaturation();
+					smoothness = shaders->getSmoothness();
+					lastSceneName = currentSceneName;
+					
+					std::cout << "Scene changed to: " << currentSceneName << std::endl;
+					std::cout << "Loaded Post-Processing - Exposure: " << exposure 
+							  << ", Saturation: " << saturation 
+							  << ", Smoothness: " << smoothness << std::endl;
+				}
+				
+				if (ImGui::SliderFloat("Exposure", &exposure, 0.1f, 3.0f, "%.2f")) {
+					shaders->setExposure(exposure);
+				}
+				
+				if (ImGui::SliderFloat("Saturation", &saturation, 0.0f, 2.0f, "%.2f")) {
+					shaders->setSaturation(saturation);
+				}
+				
+				if (ImGui::SliderFloat("Smoothness (Gamma)", &smoothness, 0.5f, 2.5f, "%.2f")) {
+					shaders->setSmoothness(smoothness);
+				}
+				
+				// Reset button
+				if (ImGui::Button("Reset Post-Processing")) {
+					exposure = 1.0f;
+					saturation = 1.0f;
+					smoothness = 1.0f;
+					shaders->setExposure(exposure);
+					shaders->setSaturation(saturation);
+					shaders->setSmoothness(smoothness);
+				}
+				
+				ImGui::SameLine();
+				if (ImGui::Button("Save Post-Processing")) {
+					// Save current scene with post-processing settings
+					auto& sceneManager = SceneManager::getInstance();
+					Scene* currentScene = sceneManager.getActiveScene();
+					if (currentScene && !EditorInfo::currentScenePath.empty()) {
+						if (SceneSaver::SaveScene(currentScene, EditorInfo::currentScenePath)) {
+							std::cout << "Scene saved with post-processing settings!" << std::endl;
+						}
+					}
+				}
+			}
 		}
 		
 		ImGui::Separator();

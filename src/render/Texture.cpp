@@ -80,6 +80,38 @@ bool Texture::loadFromFile(const std::string& filePath) {
     return true;
 }
 
+bool Texture::loadIconFromFile(const std::string& filePath) {
+    this->filePath = filePath; // Usa la ruta tal cual
+    localBuffer = stbi_load(this->filePath.c_str(), &width, &height, &BPP, 4);
+    if (!localBuffer) {
+        std::cerr << "Error: No se pudo cargar el icono: " << this->filePath << std::endl;
+        std::cerr << "STB Error: " << stbi_failure_reason() << std::endl;
+        return false;
+    }
+
+    glGenTextures(1, &rendererID);
+    glBindTexture(GL_TEXTURE_2D, rendererID);
+
+    // Configurar parámetros de textura optimizados para iconos
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    // Cargar la imagen en la textura
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, localBuffer);
+    
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    // Liberar el buffer local ya que OpenGL tiene una copia
+    if (localBuffer) {
+        stbi_image_free(localBuffer);
+        localBuffer = nullptr;
+    }
+
+    return true;
+}
+
 void Texture::bind(unsigned int slot) const {
     glActiveTexture(GL_TEXTURE0 + slot);
     glBindTexture(GL_TEXTURE_2D, rendererID);

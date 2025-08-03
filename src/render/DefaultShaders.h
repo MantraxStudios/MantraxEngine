@@ -10,6 +10,16 @@ public:
     ~DefaultShaders();
 
     GLuint getProgram() const;
+    
+    // Post-processing uniform setters
+    void setExposure(float exposure);
+    void setSaturation(float saturation);
+    void setSmoothness(float smoothness);
+    
+    // Post-processing uniform getters
+    float getExposure() const;
+    float getSaturation() const;
+    float getSmoothness() const;
 
 private:
     GLuint program;

@@ -1,6 +1,7 @@
 #pragma once
 #include "WindowBehaviour.h"
 #include <imgui/imgui.h>
+#include <GL/glew.h>
 #include <string>
 #include <nlohmann/json.hpp>
 #include <iostream>
@@ -34,6 +35,9 @@ struct TileData {
 
 class TileEditor : public WindowBehaviour {
 public:
+    TileEditor();
+    ~TileEditor();
+    
     void OnRenderGUI() override;
 
     const std::string& getName() const override {
@@ -59,8 +63,11 @@ public:
     bool gridSnapEnabled = true;
     
     // Cache de texturas para ImageButtons
-    std::unordered_map<std::string, GLuint> textureCache;
+    std::unordered_map<std::string, std::shared_ptr<Texture>> textureCache;
     
     // Helper para obtener textura del cache
     GLuint getCachedTexture(const std::string& texturePath);
+    
+    // Cleanup method for texture cache
+    void cleanupTextureCache();
 };

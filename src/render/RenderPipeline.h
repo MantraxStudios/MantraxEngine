@@ -53,6 +53,9 @@ public:
     void setFrustumCulling(bool enabled);
     bool getFrustumCulling() const;
     
+    // Shaders access
+    DefaultShaders* getShaders() const { return shaders; }
+    
     int getVisibleObjectsCount() const;
     int getTotalObjectsCount() const;
     

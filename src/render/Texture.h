@@ -11,6 +11,7 @@ public:
     ~Texture();
 
     bool loadFromFile(const std::string& filePath);
+    bool loadIconFromFile(const std::string& filePath); // New method for loading icons
     void bind(unsigned int slot = 0) const;
     void unbind() const;
     

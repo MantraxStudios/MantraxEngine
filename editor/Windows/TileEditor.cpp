@@ -7,6 +7,22 @@
 #include "../EUI/UIBuilder.h"
 #include "components/EventSystem.h"
 #include "../EUI/EditorInfo.h"
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
+
+TileEditor::TileEditor() {
+    // Constructor initialization
+}
+
+TileEditor::~TileEditor() {
+    cleanupTextureCache();
+}
+
+void TileEditor::cleanupTextureCache() {
+    textureCache.clear();
+    // Si tienes un storage de objetos Texture, también lo puedes limpiar aquí
+    // texturesStorage.clear();
+}
 
 // Implementación de la función applyGridSnap
 glm::vec3 TileEditor::applyGridSnap(const glm::vec3& position) const {
@@ -21,31 +37,19 @@ glm::vec3 TileEditor::applyGridSnap(const glm::vec3& position) const {
     );
 }
 
-// Implementación de la función helper para obtener textura del cache
 GLuint TileEditor::getCachedTexture(const std::string& texturePath) {
-    // Verificar si la textura ya está en cache
     auto it = textureCache.find(texturePath);
     if (it != textureCache.end()) {
-        return it->second;
+        return it->second->getID();
     }
-    
-    // Cargar la textura y agregarla al cache
-    try {
-        auto texture = std::make_shared<Texture>(texturePath);
-        GLuint textureID = texture->getID();
-        textureCache[texturePath] = textureID;
-        return textureID;
-    } catch (...) {
-        // Si falla la carga, retornar 0
-        textureCache[texturePath] = 0;
-        return 0;
-    }
+    auto texture = std::make_shared<Texture>(texturePath);
+    textureCache[texturePath] = texture;
+    return texture->getID();
 }
 
 void TileEditor::OnRenderGUI() {
     ImGui::Begin("Tile Editor", nullptr, ImGuiWindowFlags_NoCollapse);
 
-    // Sección para crear nuevos tiles
     ImGui::Text("Create New Tile");
     ImGui::Separator();
     
@@ -122,7 +126,13 @@ void TileEditor::OnRenderGUI() {
             ImVec4 tintColor = isSelected ? ImVec4(1.0f, 1.0f, 0.0f, 1.0f) : ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
             
             if (textureID != 0) {
-                if (ImGui::ImageButton(("##" + std::to_string(i)).c_str(), (void*)(intptr_t)textureID, 
+                // Asegurar que la textura esté vinculada antes de usarla
+                // glBindTexture(GL_TEXTURE_2D, textureID); // Eliminado
+                
+                // Usar ImTextureID con cast apropiado
+                ImTextureID imguiTextureID = (ImTextureID)(intptr_t)textureID;
+                
+                if (ImGui::ImageButton(("##" + std::to_string(i)).c_str(), imguiTextureID, 
                     ImVec2(buttonSize, buttonSize), ImVec2(0, 0), ImVec2(1, 1), 
                     ImVec4(0, 0, 0, 0), tintColor)) {
                     selectedTileIndex = i;
@@ -134,6 +144,11 @@ void TileEditor::OnRenderGUI() {
                     selectedTileIndex = i;
                 }
                 ImGui::PopStyleColor();
+                
+                // Mostrar icono de error en el botón
+                ImGui::SameLine();
+                ImGui::SetCursorPosX(ImGui::GetCursorPosX() - buttonSize);
+                ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "!");
             }
             
             // Mostrar nombre del tile debajo del botón
@@ -146,6 +161,9 @@ void TileEditor::OnRenderGUI() {
                 ImGui::BeginTooltip();
                 ImGui::Text("Name: %s", savedTiles[i].name.c_str());
                 ImGui::Text("Texture: %s", savedTiles[i].texturePath.c_str());
+                if (textureID == 0) {
+                    ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "Texture failed to load!");
+                }
                 ImGui::EndTooltip();
             }
             
@@ -169,7 +187,11 @@ void TileEditor::OnRenderGUI() {
             GLuint previewTextureID = getCachedTexture(savedTiles[selectedTileIndex].texturePath);
             
             if (previewTextureID != 0) {
-                ImGui::Image((void*)(intptr_t)previewTextureID, ImVec2(128, 128), 
+                // Asegurar que la textura esté vinculada
+                // glBindTexture(GL_TEXTURE_2D, previewTextureID); // Eliminado
+                
+                ImTextureID imguiPreviewTextureID = (ImTextureID)(intptr_t)previewTextureID;
+                ImGui::Image(imguiPreviewTextureID, ImVec2(128, 128), 
                             ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 1), ImVec4(0.5f, 0.5f, 0.5f, 1.0f));
             } else {
                 ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "Texture preview not available");
@@ -207,9 +229,31 @@ void TileEditor::OnRenderGUI() {
             if (ImGui::Button("Clear Texture Cache")) {
                 textureCache.clear();
             }
+            
+            ImGui::SameLine();
+            if (ImGui::Button("Reload Textures")) {
+                // Limpiar cache y recargar todas las texturas
+                cleanupTextureCache();
+                for (const auto& tile : savedTiles) {
+                    getCachedTexture(tile.texturePath);
+                }
+            }
         }
 
         ImGui::Spacing();
+        
+        // Mostrar estadísticas del cache de texturas
+        int validTextures = 0;
+        int invalidTextures = 0;
+        for (const auto& pair : textureCache) {
+            if (pair.second && pair.second->getID() != 0) {
+                validTextures++;
+            } else {
+                invalidTextures++;
+            }
+        }
+        
+        ImGui::Text("Texture Cache: %d valid, %d invalid", validTextures, invalidTextures);
         
         if (ImGui::Button("Instantiate All Tile")) {
             for (const auto& tile : savedTiles) {

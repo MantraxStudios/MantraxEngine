@@ -5,7 +5,12 @@
         "CameraType": 1,
         "FrustrumOn": true,
         "LightType": true,
-        "LowAmbient": false
+        "LowAmbient": false,
+        "PostProcessing": {
+            "Exposure": 2.0,
+            "Saturation": 1.2999999523162842,
+            "Smoothness": 0.5
+        }
     },
     "objects": [
         {
@@ -23,12 +28,12 @@
                     {
                         "animationSpeed": 3.5230000019073486,
                         "animator": "",
-                        "currentFrame": 1,
+                        "currentFrame": 0,
                         "currentState": "Walk",
                         "debugMode": false,
                         "enabled": true,
                         "forceMaterialUpdate": false,
-                        "frameTimer": 0.5636799931526184,
+                        "frameTimer": 0.6764159798622131,
                         "isPlaying": true,
                         "material": {
                             "albedo": [
@@ -65,7 +70,7 @@
             },
             "position": [
                 0.0,
-                0.0,
+                -0.5,
                 0.0
             ],
             "rotation": [
@@ -80,7 +85,7 @@
             ]
         },
         {
-            "Name": "New Object",
+            "Name": "BG",
             "Tag": "Default",
             "components": {
                 "Geometry": {

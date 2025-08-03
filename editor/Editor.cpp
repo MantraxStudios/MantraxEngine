@@ -174,7 +174,7 @@ int main() {
     // Initialize RenderConfig singleton
     RenderConfig::initialize(1200, 800, 65.0f);
     RenderConfig& config = RenderConfig::getInstance();
-    config.setAntialiasing(0);
+    config.setAntialiasing(16);
 
     if (!config.initContext()) return -1;
 

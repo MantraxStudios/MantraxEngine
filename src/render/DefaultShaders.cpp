@@ -93,6 +93,11 @@ uniform vec3 uViewPos;
 uniform vec3 uAmbientLight;
 uniform bool uUsePBR; // Flag to switch between PBR and Blinn-Phong
 
+// Post-processing uniforms
+uniform float uExposure = 1.0;
+uniform float uSaturation = 1.0;
+uniform float uSmoothness = 1.0;
+
 // Directional Light
 uniform bool uHasDirLight;
 uniform vec3 uDirLightDirection;
@@ -377,18 +382,28 @@ void main() {
         vec3 ambientFactor = mix(vec3(0.03), albedo, metallic);
         ambient = uAmbientLight * albedo * ao * (1.0 - metallic * 0.5);
     } else {
-        ambient = uAmbientLight * albedo * ao;
+        // Ambient mejorado para preservar saturación
+        vec3 ambientColor = uAmbientLight * albedo * ao;
+        // Aplicar saturación preservada
+        float luminance = dot(ambientColor, vec3(0.299, 0.587, 0.114));
+        ambient = mix(ambientColor, albedo * luminance, 0.3); // Preservar 30% del color original
     }
     
     // Final color
     vec3 color = ambient + Lo + emissive;
     
-    // Exposure tone mapping
-    float exposure = 1.0;
-    color = vec3(1.0) - exp(-color * exposure);
+    // Exposure tone mapping mejorado
+    color = color / (color + vec3(1.0)); // Reinhard tone mapping
     
-    // Gamma correction
-    color = pow(color, vec3(1.0/2.2)); 
+    // Aplicar exposure
+    color = color * uExposure;
+    
+    // Aplicar saturación
+    float luminance = dot(color, vec3(0.299, 0.587, 0.114));
+    color = mix(vec3(luminance), color, uSaturation);
+    
+    // Gamma correction con smoothness
+    color = pow(color, vec3(1.0/uSmoothness)); // Smoothness controla la gamma
 
     if (alpha < 0.1)
         discard;
@@ -443,4 +458,60 @@ GLuint DefaultShaders::compileShader(GLenum type, const std::string& source) {
     }
 
     return shader;
+}
+
+// Post-processing uniform setters
+void DefaultShaders::setExposure(float exposure) {
+    glUseProgram(program);
+    GLint location = glGetUniformLocation(program, "uExposure");
+    if (location != -1) {
+        glUniform1f(location, exposure);
+    }
+}
+
+void DefaultShaders::setSaturation(float saturation) {
+    glUseProgram(program);
+    GLint location = glGetUniformLocation(program, "uSaturation");
+    if (location != -1) {
+        glUniform1f(location, saturation);
+    }
+}
+
+void DefaultShaders::setSmoothness(float smoothness) {
+    glUseProgram(program);
+    GLint location = glGetUniformLocation(program, "uSmoothness");
+    if (location != -1) {
+        glUniform1f(location, smoothness);
+    }
+}
+
+// Post-processing uniform getters
+float DefaultShaders::getExposure() const {
+    GLint location = glGetUniformLocation(program, "uExposure");
+    if (location != -1) {
+        float value;
+        glGetUniformfv(program, location, &value);
+        return value;
+    }
+    return 1.0f; // Default value
+}
+
+float DefaultShaders::getSaturation() const {
+    GLint location = glGetUniformLocation(program, "uSaturation");
+    if (location != -1) {
+        float value;
+        glGetUniformfv(program, location, &value);
+        return value;
+    }
+    return 1.0f; // Default value
+}
+
+float DefaultShaders::getSmoothness() const {
+    GLint location = glGetUniformLocation(program, "uSmoothness");
+    if (location != -1) {
+        float value;
+        glGetUniformfv(program, location, &value);
+        return value;
+    }
+    return 1.0f; // Default value
 }
