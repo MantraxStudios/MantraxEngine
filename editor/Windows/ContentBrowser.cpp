@@ -68,7 +68,7 @@ static char s_scriptNameBuffer[256] = "";
 static bool s_showLuaEditorPopup = false;
 static std::string s_luaEditorPath = "";
 static std::string s_luaEditorName = "";
-static char s_luaEditorBuffer[4096] = "";
+static char s_luaEditorBuffer[16384] = ""; // Increased buffer size
 
 // Función para inicializar de forma segura
 void InitializeAssetsBrowser() {
@@ -387,14 +387,34 @@ bool CreateLuaScript(const std::string& scriptPath, const std::string& scriptNam
 // Función para renombrar archivo o directorio
 bool RenameFile(const std::string& oldPath, const std::string& newName) {
     try {
+        // Validar parámetros de entrada
+        if (oldPath.empty() || newName.empty()) {
+            std::cerr << "Error renaming file: Invalid parameters" << std::endl;
+            return false;
+        }
+        
         fs::path oldPathObj(oldPath);
         fs::path newPathObj = oldPathObj.parent_path() / newName;
         
+        // Verificar que el archivo original existe
+        if (!fs::exists(oldPathObj)) {
+            std::cerr << "Error renaming file: Source file does not exist: " << oldPath << std::endl;
+            return false;
+        }
+        
+        // Verificar que el nombre nuevo no esté vacío después de procesar
+        if (newName.empty() || newName == "." || newName == "..") {
+            std::cerr << "Error renaming file: Invalid new name: " << newName << std::endl;
+            return false;
+        }
+        
         if (fs::exists(newPathObj)) {
+            std::cerr << "Error renaming file: Destination file already exists: " << newPathObj.string() << std::endl;
             return false; // Ya existe un archivo con ese nombre
         }
         
         fs::rename(oldPathObj, newPathObj);
+        std::cout << "File renamed successfully: " << oldPath << " -> " << newPathObj.string() << std::endl;
         return true;
     }
     catch (const std::exception& e) {
@@ -500,7 +520,9 @@ void RenderContextMenu() {
             if (ImGui::MenuItem("Delete")) {
                 if (DeleteFile(s_contextMenuPath)) {
                     s_needsRefresh = true;
-                    s_selectedFile->clear();
+                    if (s_selectedFile) {
+                        s_selectedFile->clear();
+                    }
                 }
             }
         }
@@ -573,7 +595,9 @@ void RenderContextMenu() {
             if (ImGui::MenuItem("Delete")) {
                 if (DeleteFile(s_contextMenuPath)) {
                     s_needsRefresh = true;
-                    s_selectedFile->clear();
+                    if (s_selectedFile) {
+                        s_selectedFile->clear();
+                    }
                 }
             }
         }
@@ -589,6 +613,11 @@ void ShowRenamePopup() {
     ImGui::OpenPopup("RenamePopup");
     s_showRenamePopup = false;
     
+    // Asegurar que el buffer esté inicializado
+    if (strlen(s_renameBuffer) == 0 && !s_renameOriginalName.empty()) {
+        strncpy_s(s_renameBuffer, sizeof(s_renameBuffer), s_renameOriginalName.c_str(), _TRUNCATE);
+    }
+    
     if (ImGui::BeginPopupModal("RenamePopup", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
         ImGui::Text("Rename: %s", s_renameOriginalName.c_str());
         ImGui::Separator();
@@ -598,7 +627,9 @@ void ShowRenamePopup() {
             if (!newName.empty() && newName != s_renameOriginalName) {
                 if (RenameFile(s_renameOriginalPath, newName)) {
                     s_needsRefresh = true;
-                    s_selectedFile->clear();
+                    if (s_selectedFile) {
+                        s_selectedFile->clear();
+                    }
                 }
             }
             ImGui::CloseCurrentPopup();
@@ -609,7 +640,9 @@ void ShowRenamePopup() {
             if (!newName.empty() && newName != s_renameOriginalName) {
                 if (RenameFile(s_renameOriginalPath, newName)) {
                     s_needsRefresh = true;
-                    s_selectedFile->clear();
+                    if (s_selectedFile) {
+                        s_selectedFile->clear();
+                    }
                 }
             }
             ImGui::CloseCurrentPopup();
@@ -831,7 +864,9 @@ void RenderBreadcrumbs() {
                 if (i < breadcrumbPaths.size()) {
                     *s_currentPath = breadcrumbPaths[i];
                     s_needsRefresh = true;
-                    s_selectedFile->clear();
+                    if (s_selectedFile) {
+                        s_selectedFile->clear();
+                    }
                 }
             }
         }
@@ -995,7 +1030,34 @@ void RenderTreeView() {
             if (ImGui::IsMouseDoubleClicked(0) && entry.isDirectory) {
                 *s_currentPath = entry.path;
                 s_needsRefresh = true;
-                s_selectedFile->clear();
+                if (s_selectedFile) {
+                    s_selectedFile->clear();
+                }
+            }
+
+            // Doble click para abrir archivos .lua con Visual Studio Code
+            if (ImGui::IsMouseDoubleClicked(0) && !entry.isDirectory) {
+                std::string extension;
+                size_t dotPos = entry.name.find_last_of('.');
+                if (dotPos != std::string::npos) {
+                    extension = entry.name.substr(dotPos);
+                    std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
+                }
+
+                if (extension == ".lua") {
+                    // Abrir con Visual Studio Code
+                    std::string command = "code \"" + entry.path + "\"";
+                    int result = system(command.c_str());
+                    if (result == 0) {
+                        std::cout << "Archivo Lua abierto con Visual Studio Code: " << entry.name << std::endl;
+                    } else {
+                        std::cerr << "Error al abrir archivo con Visual Studio Code: " << entry.path << std::endl;
+                        // Fallback: intentar abrir con notepad
+                        std::string fallbackCommand = "notepad \"" + entry.path + "\"";
+                        system(fallbackCommand.c_str());
+                        std::cout << "Archivo abierto con Notepad como fallback" << std::endl;
+                    }
+                }
             }
         }
 
@@ -1129,7 +1191,9 @@ void ContentBrowser::OnRenderGUI() {
                     if (IsPathWithinContent(parentPath.string()) || parentPath == contentPathObj) {
                         *s_currentPath = parentPath.string();
                         s_needsRefresh = true;
-                        s_selectedFile->clear();
+                        if (s_selectedFile) {
+                            s_selectedFile->clear();
+                        }
                     }
                 }
             } else {
@@ -1148,7 +1212,9 @@ void ContentBrowser::OnRenderGUI() {
         if (ImGui::Button("Content")) {
             *s_currentPath = *s_contentRootPath;
             s_needsRefresh = true;
-            s_selectedFile->clear();
+            if (s_selectedFile) {
+                s_selectedFile->clear();
+            }
         }
 
         ImGui::EndMenuBar();
@@ -1243,44 +1309,167 @@ void ContentBrowser::ShowLuaEditorPopup() {
     ImGui::OpenPopup("LuaEditorPopup");
     s_showLuaEditorPopup = false;
     
-    if (ImGui::BeginPopupModal("LuaEditorPopup", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
-        ImGui::Text("Edit Lua Script: %s", s_luaEditorName.c_str());
+    // Configurar tamaño de ventana
+    ImGui::SetNextWindowSize(ImVec2(800, 600), ImGuiCond_FirstUseEver);
+    ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x * 0.5f, ImGui::GetIO().DisplaySize.y * 0.5f),
+                           ImGuiCond_FirstUseEver, ImVec2(0.5f, 0.5f));
+    
+    if (ImGui::BeginPopupModal("LuaEditorPopup", nullptr, ImGuiWindowFlags_NoCollapse)) {
+        // Título personalizado
+        ImGui::TextColored(ImVec4(0.2f, 0.8f, 0.2f, 1.0f), "📝 Lua Script Editor");
+        ImGui::SameLine();
+        ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), " - %s", s_luaEditorName.c_str());
         ImGui::Separator();
         
-        // Cargar contenido del archivo
+        // Toolbar
+        if (ImGui::Button("📁 Open External")) {
+            // Abrir en editor externo
+            std::string command = "notepad \"" + s_luaEditorPath + "\"";
+            system(command.c_str());
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("💾 Save")) {
+            try {
+                if (FileSystem::writeString(s_luaEditorPath, s_luaEditorBuffer)) {
+                    std::cout << "Script saved: " << s_luaEditorName << std::endl;
+                } else {
+                    std::cerr << "Failed to save script: " << s_luaEditorPath << std::endl;
+                }
+            } catch (const std::exception& e) {
+                std::cerr << "Error saving script: " << e.what() << std::endl;
+            }
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("🔄 Reload")) {
+            try {
+                std::string content;
+                if (FileSystem::readString(s_luaEditorPath, content)) {
+                    // Limpiar buffer antes de copiar
+                    memset(s_luaEditorBuffer, 0, sizeof(s_luaEditorBuffer));
+                    // Copiar contenido de forma segura
+                    if (content.length() < sizeof(s_luaEditorBuffer)) {
+                        strncpy_s(s_luaEditorBuffer, sizeof(s_luaEditorBuffer), content.c_str(), _TRUNCATE);
+                        std::cout << "Script reloaded: " << s_luaEditorName << std::endl;
+                    } else {
+                        std::cerr << "Script too large to load in editor: " << s_luaEditorName << std::endl;
+                    }
+                } else {
+                    std::cerr << "Failed to reload script: " << s_luaEditorPath << std::endl;
+                }
+            } catch (const std::exception& e) {
+                std::cerr << "Error reloading script: " << e.what() << std::endl;
+            }
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("📋 Copy Path")) {
+            ImGui::SetClipboardText(s_luaEditorPath.c_str());
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("📂 Show in Explorer")) {
+            std::string command = "explorer /select,\"" + s_luaEditorPath + "\"";
+            system(command.c_str());
+        }
+        
+        ImGui::Separator();
+        
+        // Cargar contenido del archivo solo la primera vez
         static std::string lastLoadedFile = "";
         if (lastLoadedFile != s_luaEditorPath) {
             lastLoadedFile = s_luaEditorPath;
-            std::string content;
-            if (FileSystem::readString(s_luaEditorPath, content)) {
-                strncpy_s(s_luaEditorBuffer, sizeof(s_luaEditorBuffer), content.c_str(), _TRUNCATE);
-            } else {
+            try {
+                std::string content;
+                if (FileSystem::readString(s_luaEditorPath, content)) {
+                    // Limpiar buffer antes de copiar
+                    memset(s_luaEditorBuffer, 0, sizeof(s_luaEditorBuffer));
+                    // Copiar contenido de forma segura
+                    if (content.length() < sizeof(s_luaEditorBuffer)) {
+                        strncpy_s(s_luaEditorBuffer, sizeof(s_luaEditorBuffer), content.c_str(), _TRUNCATE);
+                    } else {
+                        std::cerr << "Script too large to load in editor: " << s_luaEditorName << std::endl;
+                        // Cargar solo los primeros caracteres
+                        strncpy_s(s_luaEditorBuffer, sizeof(s_luaEditorBuffer), content.substr(0, sizeof(s_luaEditorBuffer) - 1).c_str(), _TRUNCATE);
+                    }
+                } else {
+                    memset(s_luaEditorBuffer, 0, sizeof(s_luaEditorBuffer));
+                    std::cerr << "Failed to load script: " << s_luaEditorPath << std::endl;
+                }
+            } catch (const std::exception& e) {
+                std::cerr << "Error loading script: " << e.what() << std::endl;
                 memset(s_luaEditorBuffer, 0, sizeof(s_luaEditorBuffer));
             }
         }
         
-        ImGui::Text("Script Content:");
-        ImGui::Spacing();
+        // Área del editor
+        ImGui::BeginChild("EditorArea", ImVec2(0, 400), true, ImGuiWindowFlags_HorizontalScrollbar);
         
-        // Editor de texto multilínea
-        ImGui::PushItemWidth(600);
-        if (ImGui::InputTextMultiline("##LuaEditor", s_luaEditorBuffer, sizeof(s_luaEditorBuffer), 
-                                     ImVec2(600, 400), ImGuiInputTextFlags_AllowTabInput)) {
+        // Configurar área de texto
+        ImGui::PushItemWidth(-1);
+        
+        // Contador de líneas y caracteres
+        int lineCount = 1;
+        int charCount = 0;
+        for (int i = 0; s_luaEditorBuffer[i] != '\0'; i++) {
+            if (s_luaEditorBuffer[i] == '\n') lineCount++;
+            charCount++;
+        }
+        
+        // Editor de texto multilínea con mejor UX
+        ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
+        
+        // Área de texto editable
+        if (ImGui::InputTextMultiline("##LuaEditor", s_luaEditorBuffer, sizeof(s_luaEditorBuffer),
+                                     ImVec2(-1, 380),
+                                     ImGuiInputTextFlags_AllowTabInput |
+                                     ImGuiInputTextFlags_NoHorizontalScroll)) {
             // El contenido se actualiza automáticamente
         }
+        
+        ImGui::PopStyleVar();
+        
+        // Manejar entrada de texto
+        if (ImGui::IsWindowFocused()) {
+            // Atajos de teclado
+            if (ImGui::IsKeyPressed(ImGuiKey_S) && ImGui::GetIO().KeyCtrl) {
+                try {
+                    if (FileSystem::writeString(s_luaEditorPath, s_luaEditorBuffer)) {
+                        std::cout << "Script saved: " << s_luaEditorName << std::endl;
+                    }
+                } catch (const std::exception& e) {
+                    std::cerr << "Error saving script: " << e.what() << std::endl;
+                }
+            }
+        }
+        
         ImGui::PopItemWidth();
+        ImGui::EndChild();
         
-        ImGui::Spacing();
+        // Barra de estado
+        ImGui::Separator();
+        ImGui::TextColored(ImVec4(0.6f, 0.6f, 0.6f, 1.0f),
+            "Lines: %d | Characters: %d | Path: %s",
+            lineCount, charCount, s_luaEditorPath.c_str());
         
-        // Botones
-        if (ImGui::Button("Save", ImVec2(80, 0))) {
-            FileSystem::writeString(s_luaEditorPath, s_luaEditorBuffer);
-            std::cout << "Script saved: " << s_luaEditorName << std::endl;
+        // Botones de acción
+        ImGui::Separator();
+        if (ImGui::Button("💾 Save", ImVec2(80, 0))) {
+            try {
+                if (FileSystem::writeString(s_luaEditorPath, s_luaEditorBuffer)) {
+                    std::cout << "Script saved: " << s_luaEditorName << std::endl;
+                }
+            } catch (const std::exception& e) {
+                std::cerr << "Error saving script: " << e.what() << std::endl;
+            }
         }
         
         ImGui::SameLine();
-        if (ImGui::Button("Cancel", ImVec2(80, 0)) || ImGui::IsKeyPressed(ImGuiKey_Escape)) {
+        if (ImGui::Button("❌ Cancel", ImVec2(80, 0)) || ImGui::IsKeyPressed(ImGuiKey_Escape)) {
             ImGui::CloseCurrentPopup();
+        }
+        
+        ImGui::SameLine();
+        if (ImGui::Button("▶️ Run Script", ImVec2(100, 0))) {
+            // Aquí podrías implementar la ejecución del script
+            std::cout << "Running script: " << s_luaEditorName << std::endl;
         }
         
         ImGui::EndPopup();

@@ -24,10 +24,6 @@
 #include <core/FileSystem.h>
 #include "../EUI/ComponentSerializer.h"
 
-// ============================================================================
-// HELPER FUNCTIONS
-// ============================================================================
-
 
 // Helper function to render styled separators
 void RenderStyledSeparator() {

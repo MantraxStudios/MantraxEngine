@@ -1,6 +1,7 @@
 #include "ScriptExecutor.h"
 #include <filesystem>
 #include <nlohmann/json.hpp>
+#include "../core/FileSystem.h"
 
 using json = nlohmann::json;
 
@@ -19,7 +20,7 @@ void ScriptExecutor::start() {
     CoreWrapper coreWrapper;
     coreWrapper.Register(lua);
 
-    std::string fullPath = "x64/debug/Scripts/" + luaPath + ".lua";
+    std::string fullPath = FileSystem::getProjectPath() + "\\Content\\" + luaPath + ".lua";
 
     // Revisa que el archivo exista ANTES de intentar cargarlo
     if (!std::filesystem::exists(fullPath)) {
@@ -54,7 +55,10 @@ void ScriptExecutor::start() {
 
 
 void ScriptExecutor::update() {
-    // Llamar a update() en Lua si existe
+    if (!scriptTable.valid()) {
+        return;
+    }
+
     sol::function updateFunc = scriptTable["OnTick"];
     if (updateFunc.valid()) {
         try {
@@ -69,6 +73,10 @@ void ScriptExecutor::update() {
 }
 
 void ScriptExecutor::destroy() {
+    if (!scriptTable.valid()) {
+        return;
+    }
+
     // Llamar a onDestroy() en Lua si existe
     sol::function destroyFunc = scriptTable["onDestroy"];
     if (destroyFunc.valid()) {
@@ -88,6 +96,8 @@ void ScriptExecutor::reloadScript() {
     scriptTable = sol::table();
     scriptLoaded = false;
     lastError.clear();
+
+    destroy();
     
     // Restart the script
     start();

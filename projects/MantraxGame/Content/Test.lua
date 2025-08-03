@@ -7,7 +7,7 @@ function OnStart()
 end
 
 function OnTick()
-    -- Update your script here
+    print("Script started: Test.lua")
 end
 
 function OnDestroy()
