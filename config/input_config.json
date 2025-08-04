@@ -59,12 +59,12 @@
       "type": "Button"
     },
     {
-      "mouse_axis": "Y",
+      "mouse_axis": "X",
       "name": "MouseLookX",
       "type": "MouseAxis"
     },
     {
-      "mouse_axis": "Y",
+      "mouse_button": "SDL_BUTTON_RIGHT",
       "name": "MouseRight",
       "type": "MouseButton"
     },

@@ -189,10 +189,12 @@ int main() {
 
             // Handle mouse capture toggle
             if (event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_RIGHT) {
-                auto mouseRight = InputSystem::getInstance().getAction("MouseRight");
-                if (mouseRight) {
-                    mouseCaptured = !mouseCaptured;
-                    SDL_SetRelativeMouseMode(mouseCaptured ? SDL_TRUE : SDL_FALSE);
+                mouseCaptured = !mouseCaptured;
+                SDL_SetRelativeMouseMode(mouseCaptured ? SDL_TRUE : SDL_FALSE);
+                if (mouseCaptured) {
+                    SDL_ShowCursor(SDL_DISABLE);
+                } else {
+                    SDL_ShowCursor(SDL_ENABLE);
                 }
             }
 
@@ -202,14 +204,8 @@ int main() {
                 SDL_SetRelativeMouseMode(SDL_FALSE);
             }
 
-            // Process input through InputSystem only when mouse is captured
-            if (mouseCaptured || 
-                (event.type != SDL_MOUSEMOTION && 
-                 event.type != SDL_MOUSEWHEEL && 
-                 event.type != SDL_MOUSEBUTTONDOWN && 
-                 event.type != SDL_MOUSEBUTTONUP)) {
-                InputSystem::getInstance().processInput(event);
-            }
+            // Process input through InputSystem
+            InputSystem::getInstance().processInput(event);
         }
 
         // Update input system
