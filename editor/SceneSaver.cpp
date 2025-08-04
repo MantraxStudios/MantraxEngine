@@ -28,6 +28,8 @@ bool SceneSaver::SaveScene(const Scene* scene, const std::string& filepath) {
     Scene* activeScene = SceneManager::getInstance().getActiveScene();
     RenderPipeline* pipeline = activeScene->getRenderPipeline();
 
+    MainJson["name"] = activeScene->getName();
+
     MainJson["Settings"]["CameraType"] = scene->getCamera()->getProjectionType() == ProjectionType::Orthographic ? 1 : 0;
     MainJson["Settings"]["CameraFov"] = scene->getCamera()->getOrthographicSize();
     MainJson["Settings"]["AmbientIntensity"] = pipeline->getAmbientIntensity();
@@ -374,6 +376,8 @@ bool SceneSaver::LoadScene(const std::string& filepath) {
 Scene* SceneSaver::MakeNewScene(std::string sceneName) {
     auto& sceneManager = SceneManager::getInstance();
     Scene* newScene = new Scene(sceneName);
+
+    EditorInfo::currentScenePath = "";
 
     auto camera = std::make_unique<Camera>(65.0f, 1200.0f / 800.0f, 0.1f, 1000.0f);
     camera->setPosition(glm::vec3(0.0f, 5.0f, 10.0f));
