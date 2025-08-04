@@ -24,6 +24,23 @@ void Scene::addGameObjectNoSync(GameObject* object) {
     }
 }
 
+void Scene::removeGameObject(GameObject* object) {
+    if (object) {
+        // Verificar que el objeto esté en la lista antes de eliminarlo
+        auto it = std::find(gameObjects.begin(), gameObjects.end(), object);
+        if (it != gameObjects.end()) {
+            // Remover del RenderPipeline primero
+            if (renderPipeline) {
+                renderPipeline->RemoveGameObject(object);
+            }
+            // Remover de la lista de game objects
+            gameObjects.erase(it);
+            // Eliminar el objeto de la memoria
+            delete object;
+        }
+    }
+}
+
 void Scene::updateNative(float deltaTime) {
     // Update all game objects
     for (auto* obj : gameObjects) {

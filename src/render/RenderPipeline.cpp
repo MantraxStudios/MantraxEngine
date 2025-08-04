@@ -25,6 +25,12 @@ void RenderPipeline::AddGameObject(GameObject* object) {
     sceneObjects.push_back(object);
 }
 
+void RenderPipeline::RemoveGameObject(GameObject* object) {
+    if (object) {
+        sceneObjects.erase(std::remove(sceneObjects.begin(), sceneObjects.end(), object), sceneObjects.end());
+    }
+}
+
 void RenderPipeline::AddLight(std::shared_ptr<Light> light) {
     lights.push_back(light);
 }

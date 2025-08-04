@@ -70,4 +70,9 @@ public:
     
     // Cleanup method for texture cache
     void cleanupTextureCache();
+    
+    // Variables para el popup de preview
+    bool showTilePreview = false;
+    float previewTimer = 0.0f;
+    inline static constexpr float PREVIEW_DURATION = 2.0f; // Duración en segundos
 };

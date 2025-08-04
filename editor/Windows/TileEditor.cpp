@@ -2,8 +2,12 @@
 #include "core/FileSystem.h"
 #include <map>
 #include <memory>
+#include "Selection.h"
+#include <imgui/ImGuizmo.h>
+using namespace ImGuizmo;
 #include <cstring>
 #include <iostream>
+#include <exception>
 #include "../EUI/UIBuilder.h"
 #include "components/EventSystem.h"
 #include "../EUI/EditorInfo.h"
@@ -91,6 +95,13 @@ void TileEditor::OnRenderGUI() {
     ImGui::Separator();
     
     ImGui::Checkbox("Enable Grid Snap", &gridSnapEnabled);
+    
+    ImGui::Spacing();
+    ImGui::Text("Controls:");
+    ImGui::Text("- Left Click: Place selected tile");
+    ImGui::Text("- Ctrl + Left Click: Delete object under cursor");
+    ImGui::Text("- Ctrl + Mouse Wheel: Change selected tile");
+    ImGui::Separator();
     if (gridSnapEnabled) {
         ImGui::SliderFloat("Grid Size", &gridSize, 0.1f, 5.0f);
         ImGui::Text("Grid Size: %.2f", gridSize);
@@ -136,12 +147,16 @@ void TileEditor::OnRenderGUI() {
                     ImVec2(buttonSize, buttonSize), ImVec2(0, 0), ImVec2(1, 1), 
                     ImVec4(0, 0, 0, 0), tintColor)) {
                     selectedTileIndex = i;
+                    showTilePreview = true;
+                    previewTimer = PREVIEW_DURATION;
                 }
             } else {
                 // Fallback: botón con color sólido si no se puede cargar la textura
                 ImGui::PushStyleColor(ImGuiCol_Button, isSelected ? ImVec4(0.3f, 0.3f, 0.0f, 1.0f) : ImVec4(0.2f, 0.2f, 0.2f, 1.0f));
                 if (ImGui::Button(("##" + std::to_string(i)).c_str(), ImVec2(buttonSize, buttonSize))) {
                     selectedTileIndex = i;
+                    showTilePreview = true;
+                    previewTimer = PREVIEW_DURATION;
                 }
                 ImGui::PopStyleColor();
                 
@@ -180,7 +195,10 @@ void TileEditor::OnRenderGUI() {
         ImGui::Spacing();
 
         if (selectedTileIndex >= 0 && selectedTileIndex < savedTiles.size()) {
-            ImGui::Text("Selected: %s", savedTiles[selectedTileIndex].name.c_str());
+            ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Selected: %s (%d/%d)", 
+                savedTiles[selectedTileIndex].name.c_str(), 
+                selectedTileIndex + 1, 
+                (int)savedTiles.size());
             
             // Preview de la textura seleccionada
             ImGui::Text("Texture Preview:");
@@ -273,7 +291,8 @@ void TileEditor::OnRenderGUI() {
             }
         }
 
-        if (ImGui::IsMouseClicked(0) && EditorInfo::IsHoveringScene && selectedTileIndex != -1) {
+        // Clic izquierdo para colocar tiles
+        if (ImGui::IsMouseClicked(0) && EditorInfo::IsHoveringScene && selectedTileIndex != -1 && !ImGui::IsKeyDown(ImGuiKey_LeftCtrl)) {
             glm::vec2 _P = EventSystem::get_mouse_position_in_viewport(glm::vec2(0.0f), glm::vec2(0.0f));
 
             GameObject* newObject = new GameObject("Plane.fbx");
@@ -289,6 +308,114 @@ void TileEditor::OnRenderGUI() {
             newObject->setMaterial(savedTiles[selectedTileIndex].material);
 
             SceneManager::getInstance().getActiveScene()->addGameObject(newObject);
+        }
+        
+        // Ctrl + clic para borrar objetos
+        if (ImGui::IsMouseClicked(0) && ImGui::IsKeyDown(ImGuiKey_LeftCtrl) && EditorInfo::IsHoveringScene) {
+            try {
+                // Si hay un objeto seleccionado, eliminarlo directamente
+                if (Selection::GameObjectSelect && Selection::GameObjectSelect->hasGeometry()) {
+                    GameObject* objectToDelete = Selection::GameObjectSelect;
+                    Selection::GameObjectSelect = nullptr; // Limpiar selección
+                    SceneManager::getInstance().getActiveScene()->removeGameObject(objectToDelete);
+                } else {
+                    // Si no hay objeto seleccionado, usar raycast para encontrar uno
+                    CastData* data = new CastData();
+                    EventSystem::ViewportRenderPosition = glm::vec2(EditorInfo::RenderPositionX, EditorInfo::RenderPositionY);
+                    glm::vec2 WorldPoint = EventSystem::screen_to_viewport(SceneManager::getInstance().getActiveScene()->getCamera());
+
+                    if (EventSystem::MouseCast2D_Precise(WorldPoint, data, SceneManager::getInstance().getActiveScene()->getCamera()) && !IsOver()) {
+                        if (data && data->object && data->object->hasGeometry()) {
+                            SceneManager::getInstance().getActiveScene()->removeGameObject(data->object);
+                        }
+                    }
+                    
+                    delete data;
+                }
+            } catch (const std::exception& e) {
+                std::cerr << "Error al borrar objeto: " << e.what() << std::endl;
+            } catch (...) {
+                std::cerr << "Error desconocido al borrar objeto" << std::endl;
+            }
+        }
+        
+        // Ctrl + rueda del ratón para cambiar tile seleccionado
+        if (ImGui::IsKeyDown(ImGuiKey_LeftCtrl) && !savedTiles.empty()) {
+            float wheel = ImGui::GetIO().MouseWheel;
+            if (wheel != 0.0f) {
+                int previousIndex = selectedTileIndex;
+                
+                if (selectedTileIndex == -1) {
+                    // Si no hay tile seleccionado, seleccionar el primero
+                    selectedTileIndex = 0;
+                } else {
+                    // Cambiar al siguiente o anterior tile
+                    if (wheel > 0.0f) {
+                        // Rueda hacia arriba - siguiente tile
+                        selectedTileIndex = (selectedTileIndex + 1) % savedTiles.size();
+                    } else {
+                        // Rueda hacia abajo - tile anterior
+                        selectedTileIndex = (selectedTileIndex - 1 + savedTiles.size()) % savedTiles.size();
+                    }
+                }
+                
+                // Mostrar popup de preview si cambió el tile
+                if (previousIndex != selectedTileIndex) {
+                    showTilePreview = true;
+                    previewTimer = PREVIEW_DURATION;
+                }
+            }
+        }
+    }
+    
+    // Mostrar popup de preview del tile seleccionado
+    if (showTilePreview && selectedTileIndex >= 0 && selectedTileIndex < savedTiles.size()) {
+        // Obtener posición del mouse
+        ImVec2 mousePos = ImGui::GetMousePos();
+        
+        // Posicionar el popup arriba y a la izquierda del cursor
+        ImVec2 popupPos = ImVec2(mousePos.x - 160, mousePos.y - 220);
+        ImGui::SetNextWindowPos(popupPos);
+        
+        // Configurar el popup
+        ImGui::SetNextWindowSize(ImVec2(140, 140));
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(5, 5));
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 8.0f);
+        ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.1f, 0.1f, 0.1f, 0.9f));
+        ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(1.0f, 1.0f, 0.0f, 0.8f));
+        
+        if (ImGui::Begin("TilePreview", nullptr, 
+            ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | 
+            ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar)) {
+            
+            // Mostrar nombre del tile
+            ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", 
+                savedTiles[selectedTileIndex].name.c_str());
+            
+            // Mostrar preview de la textura
+            GLuint previewTextureID = getCachedTexture(savedTiles[selectedTileIndex].texturePath);
+            if (previewTextureID != 0) {
+                ImTextureID imguiPreviewTextureID = (ImTextureID)(intptr_t)previewTextureID;
+                ImGui::Image(imguiPreviewTextureID, ImVec2(80, 60), 
+                            ImVec2(0, 0), ImVec2(1, 1), 
+                            ImVec4(1, 1, 1, 1), ImVec4(0.5f, 0.5f, 0.5f, 1.0f));
+            } else {
+                ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "No texture");
+            }
+            
+            // Mostrar indicador de posición
+            ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.8f, 1.0f), "%d/%d", 
+                selectedTileIndex + 1, (int)savedTiles.size());
+        }
+        
+        ImGui::End();
+        ImGui::PopStyleColor(2);
+        ImGui::PopStyleVar(2);
+        
+        // Actualizar timer
+        previewTimer -= ImGui::GetIO().DeltaTime;
+        if (previewTimer <= 0.0f) {
+            showTilePreview = false;
         }
     }
 

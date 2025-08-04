@@ -56,6 +56,9 @@ public:
     // Agregar objeto sin sincronización automática (para casos especiales)
     void addGameObjectNoSync(GameObject* object);
     
+    // Remover objeto del scene
+    void removeGameObject(GameObject* object);
+    
     // RenderPipeline access
     void setRenderPipeline(RenderPipeline* pipeline) { renderPipeline = pipeline; }
     RenderPipeline* getRenderPipeline() const { return renderPipeline; }

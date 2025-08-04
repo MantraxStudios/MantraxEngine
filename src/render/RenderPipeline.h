@@ -26,6 +26,7 @@ public:
     ~RenderPipeline();
 
     void AddGameObject(GameObject* object);
+    void RemoveGameObject(GameObject* object);
     void AddLight(std::shared_ptr<Light> light);
     void RemoveLight(std::shared_ptr<Light> light);
     void renderFrame();
