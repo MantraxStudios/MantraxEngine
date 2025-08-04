@@ -26,7 +26,7 @@ void Hierarchy::RenderGameObjectNode(GameObject* gameObject) {
     if (Selection::GameObjectSelect == gameObject)
         flags |= ImGuiTreeNodeFlags_Selected;
 
-    bool hasChildren = !gameObject->getAllChildren().empty();
+    bool hasChildren = !gameObject->getChildren().empty();
     bool open = ImGui::TreeNodeEx((void*)gameObject, flags | (hasChildren ? 0 : ImGuiTreeNodeFlags_Leaf), "%s", gameObject->Name.c_str());
 
     // Selección por clic
@@ -80,7 +80,7 @@ void Hierarchy::RenderGameObjectNode(GameObject* gameObject) {
 
     // Renderizado recursivo de hijos
     if (open) {
-        for (auto* child : gameObject->getAllChildren()) {
+        for (auto* child : gameObject->getChildren()) {
             RenderGameObjectNode(child);
         }
         ImGui::TreePop();
@@ -137,16 +137,23 @@ void Hierarchy::OnRenderGUI() {
 
             // Renderizar objetos raíz
             const auto& gameObjects = activeScene->getGameObjects();
+            std::cout << "Hierarchy: Rendering scene '" << activeScene->getName() << "' with " << gameObjects.size() << " objects" << std::endl;
+            
             bool anyRoot = false;
             for (GameObject* gameObject : gameObjects) {
-                if (!gameObject || !gameObject->isValid()) continue;
+                if (!gameObject || !gameObject->isValid()) {
+                    std::cout << "Hierarchy: Skipping invalid object" << std::endl;
+                    continue;
+                }
                 if (!gameObject->hasParent()) {
                     anyRoot = true;
+                    std::cout << "Hierarchy: Rendering root object: " << gameObject->Name << std::endl;
                     RenderGameObjectNode(gameObject);
                 }
             }
             if (!anyRoot) {
                 ImGui::Text("No GameObjects in scene");
+                std::cout << "Hierarchy: No root objects found in scene" << std::endl;
             }
 
             ImGui::TreePop();

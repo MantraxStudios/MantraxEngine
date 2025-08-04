@@ -50,7 +50,6 @@
 #include "SceneSaver.h"
 
 
-// Variable global para manejo seguro del cierre
 volatile bool g_running = true;
 
 void signalHandler(int signal) {

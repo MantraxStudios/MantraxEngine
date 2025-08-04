@@ -1,0 +1,86 @@
+{
+    "Camera": {
+        "FOV": 65.0,
+        "FarPlane": 1000.0,
+        "Forward": [
+            0.6590697765350342,
+            -0.18909673392772675,
+            -0.7279213666915894
+        ],
+        "NearPlane": 0.10000000149011612,
+        "OrthographicSize": 5.0,
+        "Position": [
+            -1.3155248165130615,
+            8.180782318115234,
+            9.213932037353516
+        ],
+        "ProjectionType": 1
+    },
+    "Settings": {
+        "AmbientIntensity": 1.0,
+        "CameraFov": 5.0,
+        "CameraType": 1,
+        "FrustrumOn": true,
+        "LightType": true,
+        "LowAmbient": false,
+        "PostProcessing": {
+            "Exposure": 1.0,
+            "Saturation": 1.0,
+            "Smoothness": 1.0
+        }
+    },
+    "name": "TestParentSave",
+    "objects": [
+        {
+            "Name": "New Object",
+            "ObjectID": "1",
+            "Tag": "Default",
+            "components": {
+                "Geometry": {
+                    "modelPath": "Plane.fbx"
+                }
+            },
+            "position": [
+                0.15079879760742188,
+                8.098584175109863,
+                -6.103659688960761e-05
+            ],
+            "rotation": [
+                0.0,
+                -0.0,
+                0.0
+            ],
+            "scale": [
+                1.0,
+                1.0,
+                1.0
+            ]
+        },
+        {
+            "Name": "New Object",
+            "ObjectID": "2",
+            "Tag": "Default",
+            "components": {
+                "Geometry": {
+                    "modelPath": "Plane.fbx"
+                }
+            },
+            "parentID": "1",
+            "position": [
+                11.723003387451172,
+                12.62548542022705,
+                -6.103659688960761e-05
+            ],
+            "rotation": [
+                0.0,
+                -0.0,
+                0.0
+            ],
+            "scale": [
+                1.0,
+                1.0,
+                1.0
+            ]
+        }
+    ]
+}

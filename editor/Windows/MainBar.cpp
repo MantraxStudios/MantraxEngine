@@ -220,6 +220,17 @@ void MainBar::OnRenderGUI() {
 				sceneManager.getActiveScene()->getCamera()->setOrthographicSize(fovCamera);
 			}
 			
+			// Botón para reiniciar la posición y rotación de la cámara
+			if (ImGui::Button("Reset Camera Position")) {
+				Camera* camera = sceneManager.getActiveScene()->getCamera();
+				if (camera) {
+					// Reiniciar posición a valores por defecto
+					camera->setPosition(glm::vec3(0.0f, 5.0f, 10.0f));
+					camera->setRotation(0.0f, 0.0f); // Reiniciar rotación (yaw, pitch)
+					std::cout << "Camera position and rotation reset to default" << std::endl;
+				}
+			}
+			
 			bool lowAmbient = pipeline->getLowAmbient();
 			if (ImGui::MenuItem("Toggle Low Ambient", nullptr, &lowAmbient)) {
 				pipeline->setLowAmbient(lowAmbient);

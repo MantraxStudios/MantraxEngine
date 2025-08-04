@@ -12,7 +12,9 @@
 #include "EUI/EditorInfo.h"
 #include "render/DefaultShaders.h"
 #include "EUI/EditorInfo.h"
-#include "Windows/FileExplorer.h" 
+#include "Windows/FileExplorer.h"
+#include <glm/glm.hpp>
+#include <cmath> 
 
 using namespace nlohmann;
 
@@ -28,8 +30,28 @@ bool SceneSaver::SaveScene(const Scene* scene, const std::string& filepath) {
     Scene* activeScene = SceneManager::getInstance().getActiveScene();
     RenderPipeline* pipeline = activeScene->getRenderPipeline();
 
-    MainJson["name"] = activeScene->getName();
+    MainJson["name"] = FileSystem::getFileNameWithoutExtension(filepath);
 
+    // Guardar información de la cámara
+    if (scene->getCamera()) {
+        MainJson["Camera"]["Position"] = { 
+            scene->getCamera()->getPosition().x, 
+            scene->getCamera()->getPosition().y, 
+            scene->getCamera()->getPosition().z 
+        };
+        // Nota: Camera no tiene getTarget(), usamos getForward() como alternativa
+        MainJson["Camera"]["Forward"] = { 
+            scene->getCamera()->getForward().x, 
+            scene->getCamera()->getForward().y, 
+            scene->getCamera()->getForward().z 
+        };
+        MainJson["Camera"]["ProjectionType"] = scene->getCamera()->getProjectionType() == ProjectionType::Orthographic ? 1 : 0;
+        MainJson["Camera"]["FOV"] = scene->getCamera()->getFOV();
+        MainJson["Camera"]["OrthographicSize"] = scene->getCamera()->getOrthographicSize();
+        MainJson["Camera"]["NearPlane"] = scene->getCamera()->getNearClip();
+        MainJson["Camera"]["FarPlane"] = scene->getCamera()->getFarClip();
+    }
+    
     MainJson["Settings"]["CameraType"] = scene->getCamera()->getProjectionType() == ProjectionType::Orthographic ? 1 : 0;
     MainJson["Settings"]["CameraFov"] = scene->getCamera()->getOrthographicSize();
     MainJson["Settings"]["AmbientIntensity"] = pipeline->getAmbientIntensity();
@@ -70,9 +92,18 @@ bool SceneSaver::SaveScene(const Scene* scene, const std::string& filepath) {
         // Datos básicos del objeto
         subObject["Name"] = obj->Name;
         subObject["Tag"] = obj->Tag;
+        subObject["ObjectID"] = obj->ObjectID;
         subObject["position"] = { obj->getWorldPosition().x, obj->getWorldPosition().y, obj->getWorldPosition().z };
         subObject["rotation"] = { obj->getWorldRotationEuler().x, obj->getWorldRotationEuler().y, obj->getWorldRotationEuler().z };
         subObject["scale"] = { obj->getLocalScale().x, obj->getLocalScale().y, obj->getLocalScale().z };
+
+        // Guardar información del padre si existe
+        if (obj->hasParent()) {
+            GameObject* parent = obj->getParent();
+            if (parent && parent->isValid()) {
+                subObject["parentID"] = parent->ObjectID;
+            }
+        }
 
         json components;
 
@@ -176,14 +207,61 @@ bool SceneSaver::LoadScene(const std::string& filepath) {
         return false;
     }
 
-    // 2. Crear la nueva escena con nombre desde el JSON
-    std::string sceneName = MainJson.contains("name") ? MainJson["name"].get<std::string>() : "ExampleScene";
+    std::string sceneName = FileSystem::getFileNameWithoutExtension(filepath);
     auto newScene = std::make_unique<Scene>(sceneName);
 
-    // 3. Crear la cámara por defecto (puedes mejorar para buscarla en los GameObjects cargados)
-    auto camera = std::make_unique<Camera>(65.0f, 1200.0f / 800.0f, 0.1f, 1000.0f);
-    camera->setPosition(glm::vec3(0.0f, 5.0f, 10.0f));
-    camera->setTarget(glm::vec3(0.0f));
+    // 3. Crear la cámara con información guardada o valores por defecto
+    std::unique_ptr<Camera> camera;
+    
+    if (MainJson.contains("Camera")) {
+        // Cargar información de la cámara desde el archivo
+        const json& cameraData = MainJson["Camera"];
+        
+        float fov = cameraData.value("FOV", 65.0f);
+        float aspectRatio = cameraData.value("AspectRatio", 1200.0f / 800.0f);
+        float nearPlane = cameraData.value("NearPlane", 0.1f);
+        float farPlane = cameraData.value("FarPlane", 1000.0f);
+        
+        camera = std::make_unique<Camera>(fov, aspectRatio, nearPlane, farPlane);
+        
+        // Cargar posición y forward
+        if (cameraData.contains("Position")) {
+            auto pos = cameraData["Position"];
+            camera->setPosition(glm::vec3(pos[0], pos[1], pos[2]));
+        }
+        
+        // Nota: Camera no tiene setTarget(), usamos setRotation() para orientar la cámara
+        if (cameraData.contains("Forward")) {
+            auto forward = cameraData["Forward"];
+            glm::vec3 forwardVec = glm::vec3(forward[0], forward[1], forward[2]);
+            // Calcular yaw y pitch desde el vector forward
+            float yaw = atan2(forwardVec.x, forwardVec.z);
+            float pitch = asin(-forwardVec.y);
+            camera->setRotation(yaw, pitch);
+        }
+        
+        // Cargar tipo de proyección
+        if (cameraData.contains("ProjectionType")) {
+            int projectionType = cameraData["ProjectionType"];
+            ProjectionType type = (projectionType == 1) ? ProjectionType::Orthographic : ProjectionType::Perspective;
+            camera->setProjectionType(type, true);
+        }
+        
+        // Cargar tamaño ortográfico si es necesario
+        if (cameraData.contains("OrthographicSize")) {
+            float orthoSize = cameraData["OrthographicSize"];
+            camera->setOrthographicSize(orthoSize);
+        }
+        
+        std::cout << "Loaded camera from scene file" << std::endl;
+    } else {
+        // Crear cámara por defecto si no hay información guardada
+        camera = std::make_unique<Camera>(65.0f, 1200.0f / 800.0f, 0.1f, 1000.0f);
+        camera->setPosition(glm::vec3(0.0f, 5.0f, 10.0f));
+        camera->setTarget(glm::vec3(0.0f));
+        std::cout << "Created default camera" << std::endl;
+    }
+    
     newScene->setCamera(std::move(camera));
 
     // 4. Configurar el RenderPipeline
@@ -207,10 +285,19 @@ bool SceneSaver::LoadScene(const std::string& filepath) {
         std::cerr << "No hay 'objects' en el archivo de escena." << std::endl;
         return false;
     }
+
+    // Primera pasada: crear todos los objetos y almacenar información de parent-child
+    std::vector<std::pair<GameObject*, std::string>> parentChildPairs; // pair<child, parentID>
+    
     for (const auto& subObject : MainJson["objects"]) {
         GameObject* obj = new GameObject();
         obj->Name = subObject.value("Name", "New Object");
         obj->Tag = subObject.value("Tag", "");
+        
+        // Cargar ObjectID si existe, sino mantener el generado automáticamente
+        if (subObject.contains("ObjectID")) {
+            obj->ObjectID = subObject["ObjectID"].get<std::string>();
+        }
 
         if (subObject.contains("position")) {
             auto pos = subObject["position"];
@@ -224,6 +311,42 @@ bool SceneSaver::LoadScene(const std::string& filepath) {
             auto scl = subObject["scale"];
             obj->setLocalScale(glm::vec3(scl[0], scl[1], scl[2]));
         }
+
+        // Almacenar información de parent-child para procesar después
+        if (subObject.contains("parentID")) {
+            std::string parentID = subObject["parentID"].get<std::string>();
+            parentChildPairs.push_back({obj, parentID});
+        }
+
+        newScene->addGameObject(obj);
+    }
+
+    // Segunda pasada: establecer parent-child relationships
+    for (const auto& pair : parentChildPairs) {
+        GameObject* child = pair.first;
+        const std::string& parentID = pair.second;
+        
+        // Buscar el padre en la escena por ID
+        GameObject* parent = nullptr;
+        for (GameObject* obj : newScene->getGameObjects()) {
+            if (obj->ObjectID == parentID) {
+                parent = obj;
+                break;
+            }
+        }
+        
+        if (parent && parent->isValid()) {
+            child->setParent(parent);
+            std::cout << "Established parent-child relationship: '" << parent->Name << "' (ID: " << parentID << ") -> '" << child->Name << "' (ID: " << child->ObjectID << ")" << std::endl;
+        } else {
+            std::cerr << "Warning: Parent GameObject with ID '" << parentID << "' not found for object '" << child->Name << "' (ID: " << child->ObjectID << ")." << std::endl;
+        }
+    }
+
+    // Tercera pasada: cargar componentes para todos los objetos
+    for (size_t i = 0; i < MainJson["objects"].size(); i++) {
+        const auto& subObject = MainJson["objects"][i];
+        GameObject* obj = newScene->getGameObjects()[i];
 
         if (subObject.contains("components")) {
             const json& components = subObject["components"];
@@ -287,8 +410,6 @@ bool SceneSaver::LoadScene(const std::string& filepath) {
                 }
             }
         }
-
-        newScene->addGameObject(obj);
     }
 
     newScene->initialize();
@@ -336,6 +457,15 @@ bool SceneSaver::LoadScene(const std::string& filepath) {
     // 7. Agregar la escena al manager y activar
     sceneManager.addScene(std::move(newScene));
     sceneManager.setActiveScene(sceneName);
+    
+    // Verificar que los objetos se cargaron correctamente
+    Scene* loadedScene = sceneManager.getActiveScene();
+    if (loadedScene) {
+        std::cout << "Scene loaded successfully. Total objects: " << loadedScene->getGameObjects().size() << std::endl;
+        for (const auto* obj : loadedScene->getGameObjects()) {
+            std::cout << "  - Object: " << obj->Name << " (ID: " << obj->ObjectID << ")" << std::endl;
+        }
+    }
     
     // Post-processing settings - CARGAR DESPUÉS DE CONFIGURAR LA ESCENA
     if (settings.contains("PostProcessing")) {

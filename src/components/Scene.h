@@ -35,12 +35,12 @@ public:
             std::cout << "renderPipeline IS nullptr!" << std::endl;
         }
 
-
         std::cout << "Scene: clearing lights..." << std::endl;
         lights.clear();
 
-        std::cout << "Scene: clearing camera..." << std::endl;
-        camera.reset();
+        // NO eliminar la cámara para preservar su estado
+        // std::cout << "Scene: clearing camera..." << std::endl;
+        // camera.reset();
 
         initialized = false;
         std::cout << "Scene: cleanup - end" << std::endl;

@@ -1,0 +1,56 @@
+{
+    "name": "TestCamera",
+    "Camera": {
+        "Position": [0.0, 10.0, 15.0],
+        "Forward": [0.0, -0.5, -1.0],
+        "ProjectionType": 0,
+        "FOV": 75.0,
+        "OrthographicSize": 10.0,
+        "NearPlane": 0.1,
+        "FarPlane": 1000.0
+    },
+    "Settings": {
+        "CameraType": 0,
+        "CameraFov": 10.0,
+        "AmbientIntensity": 0.1,
+        "LowAmbient": 0.0,
+        "LightType": false,
+        "FrustrumOn": true,
+        "PostProcessing": {
+            "Exposure": 1.0,
+            "Saturation": 1.0,
+            "Smoothness": 0.5
+        }
+    },
+    "objects": [
+        {
+            "Name": "TestCube",
+            "Tag": "Default",
+            "ObjectID": "2001",
+            "position": [0.0, 0.0, 0.0],
+            "rotation": [0.0, 0.0, 0.0],
+            "scale": [1.0, 1.0, 1.0],
+            "components": {
+                "component": [
+                    {
+                        "type": "PhysicalObject",
+                        "bodyType": 0,
+                        "shapeType": 0,
+                        "mass": 1.0,
+                        "friction": 0.5,
+                        "restitution": 0.1,
+                        "isTrigger": false,
+                        "gravityFactor": 1.0,
+                        "damping": 0.0,
+                        "boxHalfExtents": [0.5, 0.5, 0.5],
+                        "sphereRadius": 0.5,
+                        "capsuleHalfHeight": 0.5,
+                        "capsuleRadius": 0.5,
+                        "currentLayer": 1,
+                        "currentLayerMask": 16777215
+                    }
+                ]
+            }
+        }
+    ]
+} 

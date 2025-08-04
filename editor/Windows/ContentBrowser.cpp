@@ -999,7 +999,7 @@ void RenderTreeView() {
         }
         
         // Para todos los elementos, usar Selectable para mejor visibilidad
-        if (ImGui::Selectable(displayText.c_str(), isSelected, ImGuiSelectableFlags_AllowDoubleClick)) {
+        if (ImGui::Selectable(displayText.c_str(), isSelected, ImGuiSelectableFlags_AllowDoubleClick) && ImGui::IsMouseDoubleClicked(0)) {
             if (s_selectedFile) {
                 *s_selectedFile = entry.path;
             }

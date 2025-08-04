@@ -67,7 +67,9 @@ void SceneView::OnRenderGUI() {
                 int w = fb->getWidth(), h = fb->getHeight();
                 camera->setAspectRatio((float)w / h);
 
-                ImGuizmo::SetOrthographic(false);
+                // Configurar ImGuizmo según el tipo de proyección de la cámara
+                bool isOrthographic = camera->getProjectionType() == ProjectionType::Orthographic;
+                ImGuizmo::SetOrthographic(isOrthographic);
                 ImGuizmo::SetRect(imagePos.x, imagePos.y, (float)w, (float)h);
 
                 if (Selection::GameObjectSelect || Selection::LightSelect) {

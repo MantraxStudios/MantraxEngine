@@ -94,8 +94,9 @@ void SceneManager::setActiveScene(const std::string& sceneName) {
     if (activeScene != it->second.get()) {
         // Cleanup the current scene if it exists
         if (activeScene) {
-            std::cout << "Loading Scene: " << sceneName << std::endl;
-            activeScene->cleanup();
+            std::cout << "Switching from scene: " << activeScene->getName() << " to: " << sceneName << std::endl;
+            // No llamar cleanup() aquí para preservar los objetos
+            // activeScene->cleanup();
         }
         
         // Set the new scene
@@ -106,11 +107,13 @@ void SceneManager::setActiveScene(const std::string& sceneName) {
             activeScene->setRenderPipeline(renderPipeline);
         }
         
-        // Only initialize if not already initialized
+        // Always reinitialize the scene to ensure objects are properly loaded
         if (!activeScene->isInitialized()) {
             activeScene->initialize();
             activeScene->setInitialized(true);
         }
+        
+        std::cout << "Scene switched successfully. Objects in scene: " << activeScene->getGameObjects().size() << std::endl;
     }
 }
 
