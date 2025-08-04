@@ -17,4 +17,5 @@ public:
 	void RegisterAudioSource(sol::state& lua);
 	void RegisterScriptExecutor(sol::state& lua);
 	void RegisterSpriteAnimator(sol::state& lua);
+	void RegisterCamera(sol::state& lua);
 };

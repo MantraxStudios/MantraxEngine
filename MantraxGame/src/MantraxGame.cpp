@@ -22,7 +22,7 @@
 #include "components/ModelScene.h"
 #include "input/InputSystem.h"
 #include "core/Time.h"
-#include "ui/UIManager.h"
+
 
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
@@ -237,8 +237,7 @@ int main() {
     // Camera control variables
     bool mouseCaptured = false;
 
-    // UI Demo control variable
-    bool showUIDemo = true;
+
 
     // Banner de inicio
     bool showStartupBanner = true;

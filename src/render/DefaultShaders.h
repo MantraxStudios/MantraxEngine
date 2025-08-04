@@ -20,7 +20,7 @@ public:
     float getExposure() const;
     float getSaturation() const;
     float getSmoothness() const;
-
+    
 private:
     GLuint program;
 

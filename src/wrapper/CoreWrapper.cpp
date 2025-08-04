@@ -15,6 +15,7 @@
 #include "../components/AudioSource.h"
 #include "../components/ScriptExecutor.h"
 #include "../render/Light.h"
+#include "../render/Camera.h"
 
 void CoreWrapper::Register(sol::state& lua) {
     RegisterDebug(lua);
@@ -27,6 +28,7 @@ void CoreWrapper::Register(sol::state& lua) {
     RegisterAudioSource(lua);
     RegisterScriptExecutor(lua);
     RegisterSpriteAnimator(lua);
+    RegisterCamera(lua);
 }
 
 void CoreWrapper::RegisterMaths(sol::state& lua) {
@@ -723,4 +725,266 @@ void CoreWrapper::RegisterSpriteAnimator(sol::state& lua) {
     );
 
     std::cout << "[Lua] SpriteAnimator system registered successfully" << std::endl;
+}
+
+void CoreWrapper::RegisterCamera(sol::state& lua) {
+    // ===== PROJECTION TYPE ENUM =====
+    lua.new_enum<ProjectionType>("ProjectionType", {
+        {"Perspective", ProjectionType::Perspective},
+        {"Orthographic", ProjectionType::Orthographic}
+    });
+
+    // ===== CAMERA REGISTRATION =====
+    lua.new_usertype<Camera>("Camera",
+        sol::no_constructor,
+
+        // ===== POSITION AND ORIENTATION =====
+        "setPosition", [](Camera* self, const glm::vec3& pos) {
+            if (!self) {
+                std::cout << "[Lua Error] Camera is null in setPosition" << std::endl;
+                return;
+            }
+            self->setPosition(pos);
+        },
+        "getPosition", [](Camera* self) -> glm::vec3 {
+            if (!self) {
+                std::cout << "[Lua Error] Camera is null in getPosition" << std::endl;
+                return glm::vec3(0.0f);
+            }
+            return self->getPosition();
+        },
+        "setTarget", [](Camera* self, const glm::vec3& target) {
+            if (!self) {
+                std::cout << "[Lua Error] Camera is null in setTarget" << std::endl;
+                return;
+            }
+            self->setTarget(target);
+        },
+
+        // ===== ROTATION =====
+        "setRotation", [](Camera* self, float yaw, float pitch) {
+            if (!self) {
+                std::cout << "[Lua Error] Camera is null in setRotation" << std::endl;
+                return;
+            }
+            self->setRotation(yaw, pitch);
+        },
+        "rotate", [](Camera* self, float yawDelta, float pitchDelta) {
+            if (!self) {
+                std::cout << "[Lua Error] Camera is null in rotate" << std::endl;
+                return;
+            }
+            self->rotate(yawDelta, pitchDelta);
+        },
+
+        // ===== MOVEMENT =====
+        "moveForward", [](Camera* self, float distance) {
+            if (!self) {
+                std::cout << "[Lua Error] Camera is null in moveForward" << std::endl;
+                return;
+            }
+            self->moveForward(distance);
+        },
+        "moveRight", [](Camera* self, float distance) {
+            if (!self) {
+                std::cout << "[Lua Error] Camera is null in moveRight" << std::endl;
+                return;
+            }
+            self->moveRight(distance);
+        },
+        "moveUp", [](Camera* self, float distance) {
+            if (!self) {
+                std::cout << "[Lua Error] Camera is null in moveUp" << std::endl;
+                return;
+            }
+            self->moveUp(distance);
+        },
+
+        // ===== ORIENTATION VECTORS =====
+        "getForward", [](Camera* self) -> glm::vec3 {
+            if (!self) {
+                std::cout << "[Lua Error] Camera is null in getForward" << std::endl;
+                return glm::vec3(0.0f, 0.0f, -1.0f);
+            }
+            return self->getForward();
+        },
+        "getRight", [](Camera* self) -> glm::vec3 {
+            if (!self) {
+                std::cout << "[Lua Error] Camera is null in getRight" << std::endl;
+                return glm::vec3(1.0f, 0.0f, 0.0f);
+            }
+            return self->getRight();
+        },
+        "getUp", [](Camera* self) -> glm::vec3 {
+            if (!self) {
+                std::cout << "[Lua Error] Camera is null in getUp" << std::endl;
+                return glm::vec3(0.0f, 1.0f, 0.0f);
+            }
+            return self->getUp();
+        },
+
+        // ===== PROJECTION SETTINGS =====
+        "setProjectionType", [](Camera* self, ProjectionType type, bool instant) {
+            if (!self) {
+                std::cout << "[Lua Error] Camera is null in setProjectionType" << std::endl;
+                return;
+            }
+            self->setProjectionType(type, instant);
+        },
+        "getProjectionType", [](Camera* self) -> ProjectionType {
+            if (!self) {
+                std::cout << "[Lua Error] Camera is null in getProjectionType" << std::endl;
+                return ProjectionType::Perspective;
+            }
+            return self->getProjectionType();
+        },
+        "isTransitioning", [](Camera* self) -> bool {
+            if (!self) {
+                std::cout << "[Lua Error] Camera is null in isTransitioning" << std::endl;
+                return false;
+            }
+            return self->isTransitioning();
+        },
+
+        // ===== PERSPECTIVE SETTINGS =====
+        "setFOV", [](Camera* self, float fov) {
+            if (!self) {
+                std::cout << "[Lua Error] Camera is null in setFOV" << std::endl;
+                return;
+            }
+            // Note: This would need to be added to Camera class
+            // For now, we'll use the existing methods
+        },
+        "getFOV", [](Camera* self) -> float {
+            if (!self) {
+                std::cout << "[Lua Error] Camera is null in getFOV" << std::endl;
+                return 45.0f;
+            }
+            return self->getFOV();
+        },
+        "setAspectRatio", [](Camera* self, float aspect) {
+            if (!self) {
+                std::cout << "[Lua Error] Camera is null in setAspectRatio" << std::endl;
+                return;
+            }
+            self->setAspectRatio(aspect);
+        },
+        "getAspectRatio", [](Camera* self) -> float {
+            if (!self) {
+                std::cout << "[Lua Error] Camera is null in getAspectRatio" << std::endl;
+                return 16.0f / 9.0f;
+            }
+            return self->getAspectRatio();
+        },
+
+        // ===== ORTHOGRAPHIC SETTINGS =====
+        "setOrthographicSize", [](Camera* self, float size) {
+            if (!self) {
+                std::cout << "[Lua Error] Camera is null in setOrthographicSize" << std::endl;
+                return;
+            }
+            self->setOrthographicSize(size);
+        },
+        "getOrthographicSize", [](Camera* self) -> float {
+            if (!self) {
+                std::cout << "[Lua Error] Camera is null in getOrthographicSize" << std::endl;
+                return 5.0f;
+            }
+            return self->getOrthographicSize();
+        },
+
+        // ===== CLIP PLANES =====
+        "setNearClip", [](Camera* self, float nearClip) {
+            if (!self) {
+                std::cout << "[Lua Error] Camera is null in setNearClip" << std::endl;
+                return;
+            }
+            // Note: This would need to be added to Camera class
+        },
+        "getNearClip", [](Camera* self) -> float {
+            if (!self) {
+                std::cout << "[Lua Error] Camera is null in getNearClip" << std::endl;
+                return 0.1f;
+            }
+            return self->getNearClip();
+        },
+        "setFarClip", [](Camera* self, float farClip) {
+            if (!self) {
+                std::cout << "[Lua Error] Camera is null in setFarClip" << std::endl;
+                return;
+            }
+            // Note: This would need to be added to Camera class
+        },
+        "getFarClip", [](Camera* self) -> float {
+            if (!self) {
+                std::cout << "[Lua Error] Camera is null in getFarClip" << std::endl;
+                return 1000.0f;
+            }
+            return self->getFarClip();
+        },
+
+        // ===== FRAMEBUFFER =====
+        "enableFramebuffer", [](Camera* self, bool enabled) {
+            if (!self) {
+                std::cout << "[Lua Error] Camera is null in enableFramebuffer" << std::endl;
+                return;
+            }
+            self->enableFramebuffer(enabled);
+        },
+        "isFramebufferEnabled", [](Camera* self) -> bool {
+            if (!self) {
+                std::cout << "[Lua Error] Camera is null in isFramebufferEnabled" << std::endl;
+                return false;
+            }
+            return self->isFramebufferEnabled();
+        },
+        "setFramebufferSize", [](Camera* self, int width, int height) {
+            if (!self) {
+                std::cout << "[Lua Error] Camera is null in setFramebufferSize" << std::endl;
+                return;
+            }
+            self->setFramebufferSize(width, height);
+        },
+
+        // ===== VELOCITY (for audio) =====
+        "getVelocity", [](Camera* self) -> glm::vec3 {
+            if (!self) {
+                std::cout << "[Lua Error] Camera is null in getVelocity" << std::endl;
+                return glm::vec3(0.0f);
+            }
+            return self->GetVelocity();
+        },
+
+        // ===== UPDATE =====
+        "update", [](Camera* self, float deltaTime) {
+            if (!self) {
+                std::cout << "[Lua Error] Camera is null in update" << std::endl;
+                return;
+            }
+            self->update(deltaTime);
+        }
+    );
+
+    // ===== GLOBAL CAMERA ACCESS FUNCTIONS =====
+    lua.set_function("getActiveCamera", []() -> Camera* {
+        auto& sceneManager = SceneManager::getInstance();
+        Scene* activeScene = sceneManager.getActiveScene();
+        if (!activeScene) {
+            std::cout << "[Lua Error] No active scene found" << std::endl;
+            return nullptr;
+        }
+        return activeScene->getCamera();
+    });
+
+    lua.set_function("getCameraFromScene", [](const std::string& sceneName) -> Camera* {
+        auto& sceneManager = SceneManager::getInstance();
+        Scene* scene = sceneManager.getScene(sceneName);
+        if (!scene) {
+            std::cout << "[Lua Error] Scene not found: " << sceneName << std::endl;
+            return nullptr;
+        }
+        return scene->getCamera();
+    });
+
+    std::cout << "[Lua] Camera system registered successfully" << std::endl;
 }

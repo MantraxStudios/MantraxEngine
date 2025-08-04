@@ -432,6 +432,8 @@ DefaultShaders::DefaultShaders() {
         glGetProgramInfoLog(program, 512, nullptr, infoLog);
         std::cerr << "Error al enlazar shaders: " << infoLog << std::endl;
     }
+    
+
 }
 
 DefaultShaders::~DefaultShaders() {
@@ -496,6 +498,8 @@ float DefaultShaders::getExposure() const {
     return 1.0f; // Default value
 }
 
+
+
 float DefaultShaders::getSaturation() const {
     GLint location = glGetUniformLocation(program, "uSaturation");
     if (location != -1) {
@@ -515,3 +519,5 @@ float DefaultShaders::getSmoothness() const {
     }
     return 1.0f; // Default value
 }
+
+

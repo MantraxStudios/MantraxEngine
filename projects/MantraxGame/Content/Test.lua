@@ -1,13 +1,18 @@
-function OnTick ()
-    local pos = self():getPosition()
-    pos.x = pos.x + 0.001
+-- Camera Debug Test Script
+-- This script will help identify what's working and what's not
 
-    self():setPosition(pos)
-
-    local pb = self():getPhysicalObject()
-
-    if pb ~= nil and self():getPosition().y <= -10 then
-        pb:addForce(vector3.new(0, 1000, 0), ForceMode.Force)
-        print("pb found")
-    end
+function OnStart()
+  
 end
+
+function OnTick()
+  print("=== Camera Debug Test Started ===")
+    
+    -- Test 1: Try to get the active camera
+    local camera = getActiveCamera()
+    if camera then
+        -- Test 6: Test movement
+        camera:moveForward(0.01)
+    end
+    
+    print("=== Camera Debug Test Completed ===")end

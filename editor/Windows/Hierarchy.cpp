@@ -151,11 +151,6 @@ void Hierarchy::OnRenderGUI() {
                     RenderGameObjectNode(gameObject);
                 }
             }
-            if (!anyRoot) {
-                ImGui::Text("No GameObjects in scene");
-                std::cout << "Hierarchy: No root objects found in scene" << std::endl;
-            }
-
             ImGui::TreePop();
         }
     }

@@ -111,27 +111,7 @@
     <ClCompile Include="..\src\components\TestScene.cpp">
       <Filter>02_Scene\Scenes</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\ui\UIElement.cpp">
-      <Filter>03_UI\Elements</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\ui\Button.cpp">
-      <Filter>03_UI\Elements</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\ui\Text.cpp">
-      <Filter>03_UI\Elements</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\ui\Image.cpp">
-      <Filter>03_UI\Elements</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\ui\Canvas.cpp">
-      <Filter>03_UI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\ui\UIDemo.cpp">
-      <Filter>03_UI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\ui\UIManager.cpp">
-      <Filter>03_UI</Filter>
-    </ClCompile>
+
     <ClCompile Include="..\src\core\UIDGenerator.cpp">
       <Filter>01_Core\Timer</Filter>
     </ClCompile>
@@ -258,27 +238,7 @@
       <Filter>01_Core\Components</Filter>
     </ClInclude>
     <ClInclude Include="..\vendors\includes\stb_image.h" />
-    <ClInclude Include="..\src\ui\UIElement.h">
-      <Filter>03_UI\Elements</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\ui\Button.h">
-      <Filter>03_UI\Elements</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\ui\Text.h">
-      <Filter>03_UI\Elements</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\ui\Image.h">
-      <Filter>03_UI\Elements</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\ui\Canvas.h">
-      <Filter>03_UI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\ui\UIDemo.h">
-      <Filter>03_UI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\ui\UIManager.h">
-      <Filter>03_UI</Filter>
-    </ClInclude>
+
     <ClInclude Include="..\src\core\UIDGenerator.h">
       <Filter>01_Core\Timer</Filter>
     </ClInclude>

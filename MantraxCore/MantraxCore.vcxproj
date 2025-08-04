@@ -54,13 +54,7 @@
     <ClCompile Include="..\src\render\RenderConfig.cpp" />
     <ClCompile Include="..\src\render\RenderPipeline.cpp" />
     <ClCompile Include="..\src\render\Texture.cpp" />
-    <ClCompile Include="..\src\ui\UIElement.cpp" />
-    <ClCompile Include="..\src\ui\Button.cpp" />
-    <ClCompile Include="..\src\ui\Text.cpp" />
-    <ClCompile Include="..\src\ui\Image.cpp" />
-    <ClCompile Include="..\src\ui\Canvas.cpp" />
-    <ClCompile Include="..\src\ui\UIDemo.cpp" />
-    <ClCompile Include="..\src\ui\UIManager.cpp" />
+
     <ClCompile Include="..\src\wrapper\CoreWrapper.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -104,13 +98,7 @@
     <ClInclude Include="..\src\render\RenderConfig.h" />
     <ClInclude Include="..\src\render\RenderPipeline.h" />
     <ClInclude Include="..\src\render\Texture.h" />
-    <ClInclude Include="..\src\ui\UIElement.h" />
-    <ClInclude Include="..\src\ui\Button.h" />
-    <ClInclude Include="..\src\ui\Text.h" />
-    <ClInclude Include="..\src\ui\Image.h" />
-    <ClInclude Include="..\src\ui\Canvas.h" />
-    <ClInclude Include="..\src\ui\UIDemo.h" />
-    <ClInclude Include="..\src\ui\UIManager.h" />
+
     <ClInclude Include="..\src\wrapper\CoreWrapper.h" />
     <ClInclude Include="..\vendors\includes\fmod\fmod.h" />
     <ClInclude Include="..\vendors\includes\fmod\fmod.hpp" />

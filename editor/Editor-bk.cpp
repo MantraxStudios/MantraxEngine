@@ -23,7 +23,7 @@
 #include "components/ModelScene.h"
 #include "input/InputSystem.h"
 #include "core/Time.h"
-#include "ui/UIManager.h"
+
 #include "EUI/EditorInfo.h"
 
 #include <glm/glm.hpp>
@@ -271,8 +271,7 @@ int main() {
     // Camera control variables
     bool mouseCaptured = false;
 
-    // UI Demo control variable
-    bool showUIDemo = true;
+
 
     // Banner de inicio
     bool showStartupBanner = true;
@@ -299,12 +298,7 @@ int main() {
                 break;
             }
 
-            // Toggle UI demo window with 'U' key  
-            if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_u) {
-                showUIDemo = !showUIDemo;
-                std::cout << "UI Demo toggled - Visible: " << (showUIDemo ? "YES" : "NO") << std::endl;
-                continue;
-            }
+
 
             // Show startup banner with 'B' key
             if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_b) {
