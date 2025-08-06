@@ -272,7 +272,9 @@ glm::mat4 ShadowManager::calculateLightSpaceMatrix(std::shared_ptr<Light> light,
     float fov = camera->getFOV();
     float aspect = camera->getAspectRatio();
     float nearDist = camera->getNearClip();
-    float farDist = std::min(camera->getFarClip(), 50.0f); // Reducir distancia de sombras
+    // CORREGIDO: Distancia de sombras adaptiva basada en la cámara
+    float maxShadowDistance = 20.0f; // Reducir aún más para mejor resolución
+    float farDist = std::min(camera->getFarClip(), maxShadowDistance);
 
     // Calculate frustum dimensions
     float nearHeight = 2.0f * tan(glm::radians(fov) * 0.5f) * nearDist;
@@ -346,11 +348,11 @@ glm::mat4 ShadowManager::calculateLightSpaceMatrix(std::shared_ptr<Light> light,
     }
 
     // CORREGIR: Extender hacia atr�s de manera m�s controlada
-    float backExtension = 50.0f; // Extensi�n fija hacia atr�s
+    float backExtension = maxShadowDistance * 0.5f; // Reducir extensión hacia atrás // Extensi�n fija hacia atr�s
     minZ -= backExtension; // Extender hacia atr�s para capturar shadow casters
 
     // CORREGIR: Padding m�s peque�o y sim�trico
-    float padding = 2.0f;
+    float padding = 1.0f; // Menos padding para mejor resolución
     minX -= padding;
     maxX += padding;
     minY -= padding;

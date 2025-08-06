@@ -243,10 +243,10 @@ float SampleShadowMapPCF(vec3 projCoords, float bias) {
     // Aplicar bias a la coordenada Z una sola vez
     float biasedDepth = projCoords.z - bias;
     
-    // 3x3 PCF sampling pattern con pesos más suaves
+    // CORREGIDO: PCF adaptivo - menos muestras, mejor rendimiento y claridad
     for(int x = -1; x <= 1; ++x) {
         for(int y = -1; y <= 1; ++y) {
-            vec2 offset = vec2(x, y) * texelSize * 0.5; // Hacer sampling más fino
+            vec2 offset = vec2(x, y) * texelSize * 0.25; // Sampling más fino para evitar blur
             vec3 sampleCoords = vec3(projCoords.xy + offset, biasedDepth);
             shadow += texture(uShadowMap, sampleCoords);
             samples++;
@@ -262,6 +262,12 @@ float CalculateShadow(vec3 lightDir) {
         return 1.0;
     }
     
+    // CORREGIDO: Verificar distancia desde la cámara para sombras adaptivas
+    float distanceFromCamera = length(uViewPos - FragPos);
+    if (distanceFromCamera > 20.0) { // Máxima distancia de sombras
+        return 1.0; // Sin sombras muy lejos
+    }
+    
     // Perform perspective divide
     vec3 projCoords = FragPosLightSpace.xyz / FragPosLightSpace.w;
     
@@ -275,19 +281,31 @@ float CalculateShadow(vec3 lightDir) {
         return 1.0; // Outside shadow map
     }
     
-    // CORREGIDO: Calculate bias más conservador para evitar auto-sombrado
+    // CORREGIDO: Bias adaptivo basado en distancia y ángulo
     vec3 normal = normalize(Normal);
     float NdotL = max(dot(normal, lightDir), 0.0);
-    // Bias más conservador: menor variación y rango más pequeño
-    float dynamicBias = uShadowBias * (1.0 + (1.0 - NdotL) * 0.5);
-    float bias = clamp(dynamicBias, uShadowBias * 0.5, uShadowBias * 2.0);
+    
+    // Bias más pequeño para objetos cercanos, más grande para lejanos
+    float distanceFactor = smoothstep(0.5, 10.0, distanceFromCamera);
+    float baseBias = mix(uShadowBias * 0.2, uShadowBias, distanceFactor);
+    
+    float dynamicBias = baseBias * (1.0 + (1.0 - NdotL) * 0.3);
+    float bias = clamp(dynamicBias, baseBias * 0.5, baseBias * 2.0);
     
     // Use PCF for smoother shadows (igual que tu código original)
     float shadow = SampleShadowMapPCF(projCoords, bias);
     
-    // Apply shadow strength
+    // CORREGIDO: Apply shadow strength con desvanecimiento suave por distancia
     shadow = smoothstep(0.0, 1.0, shadow);
-    return mix(1.0 - uShadowStrength, 1.0, shadow);
+    
+    // Desvanecimiento suave de sombras basado en distancia
+    float fadeStart = 15.0;
+    float fadeEnd = 20.0;
+    float fadeFactor = smoothstep(fadeStart, fadeEnd, distanceFromCamera);
+    
+    // Mezclar entre sombra normal y sin sombra basado en distancia
+    float finalShadow = mix(shadow, 1.0, fadeFactor);
+    return mix(1.0 - uShadowStrength, 1.0, finalShadow);
 }
 
 // Mantén tu función SampleShadowMapPCF original tal como estaba

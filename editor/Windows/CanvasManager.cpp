@@ -89,7 +89,6 @@ void CanvasManager::OnRenderGUI() {
     ImGui::End();
 }
 
-//
 const std::string& CanvasManager::getName() const {
     static const std::string name = "Canvas Manager";
     return name;
