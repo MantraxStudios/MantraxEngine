@@ -1,5 +1,6 @@
 #define SDL_MAIN_HANDLED
 #include <SDL.h>
+
 #include <GL/glew.h>
 
 #include "../render/RenderConfig.h"
@@ -187,6 +188,17 @@ int main() {
                 break;
             }
 
+            // Handle window resize
+            if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_RESIZED) {
+                int w = event.window.data1;
+                int h = event.window.data2;
+                config.resizeViewport(w, h);
+                pipeline.updateCanvasSize(w, h);
+                if (activeScene && activeScene->getCamera()) {
+                    activeScene->getCamera()->setAspectRatio(static_cast<float>(w) / h);
+                }
+            }
+
             // Handle mouse capture toggle
             if (event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_RIGHT) {
                 mouseCaptured = !mouseCaptured;
@@ -242,6 +254,10 @@ int main() {
 
     // Cleanup
     audioManager.destroy();
+    
+    // FreeType cleanup is handled by Canvas2D destructor
+    std::cout << "FreeType cleanup handled by Canvas2D" << std::endl;
+    
     RenderConfig::destroy();
     return 0;
 }

@@ -1,12 +1,9 @@
 #pragma once
-#include <imgui/imgui.h>
-#include <components/GameObject.h>
-#include <render/Light.h>
-#include <memory>
+#include "../../src/components/GameObject.h"
+#include "../../src/render/Light.h"
 
-class Selection
-{
+class Selection {
 public:
     static GameObject* GameObjectSelect;
-    static std::shared_ptr<Light> LightSelect;
+    static Light* LightSelect;
 };

@@ -85,6 +85,9 @@
     <ClCompile Include="editor\Windows\InputEditor.cpp">
       <Filter>01_Main\Windows</Filter>
     </ClCompile>
+    <ClCompile Include="editor\Windows\CanvasManager.cpp">
+      <Filter>01_Main\Windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Vendors">
@@ -204,6 +207,9 @@
       <Filter>01_Main\Windows</Filter>
     </ClInclude>
     <ClInclude Include="editor\Windows\InputEditor.h">
+      <Filter>01_Main\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\Windows\CanvasManager.h">
       <Filter>01_Main\Windows</Filter>
     </ClInclude>
   </ItemGroup>

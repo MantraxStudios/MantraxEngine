@@ -314,9 +314,9 @@ void TileEditor::OnRenderGUI() {
         if (ImGui::IsMouseClicked(0) && ImGui::IsKeyDown(ImGuiKey_LeftCtrl) && EditorInfo::IsHoveringScene) {
             try {
                 // Si hay un objeto seleccionado, eliminarlo directamente
-                if (Selection::GameObjectSelect && Selection::GameObjectSelect->hasGeometry()) {
-                    GameObject* objectToDelete = Selection::GameObjectSelect;
-                    Selection::GameObjectSelect = nullptr; // Limpiar selección
+        if (Selection::GameObjectSelect && Selection::GameObjectSelect->hasGeometry()) {
+            GameObject* objectToDelete = Selection::GameObjectSelect;
+            Selection::GameObjectSelect = nullptr; // Limpiar selección
                     SceneManager::getInstance().getActiveScene()->removeGameObject(objectToDelete);
                 } else {
                     // Si no hay objeto seleccionado, usar raycast para encontrar uno

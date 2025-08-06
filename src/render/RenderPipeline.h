@@ -7,8 +7,8 @@
 #include <string>
 #include <glm/glm.hpp>
 #include "../core/CoreExporter.h"
+#include "../ui/Canvas.h"
 
-// Forward declarations to reduce dependencies
 class Camera;
 class DefaultShaders;
 class Material;
@@ -74,18 +74,30 @@ public:
     bool hasMaterial(const std::string& materialName) const;
     void listMaterials() const;
     
+    // Canvas management
+    Canvas2D* addCanvas(int width, int height);
+    void removeCanvas(size_t index);
+    Canvas2D* getCanvas(size_t index = 0);
+    size_t getCanvasCount() const;
+    
+    // Canvas size management
+    void updateCanvasSize(int width, int height);
+    void updateCanvasFromCameraBuffer();
+    
     void clearModelCache();
     void listLoadedModels() const;
     size_t getModelCacheSize() const;
 
     static RenderPipeline& getInstance(Camera* camera = nullptr, DefaultShaders* shaders = nullptr) {
-        static std::unique_ptr<RenderPipeline> instance;
-        if (!instance) {
+        static RenderPipeline* instance = nullptr;
+        if (!instance && camera && shaders) {
             // Solo permite crear la instancia una vez (con argumentos)
-            instance = std::make_unique<RenderPipeline>(camera, shaders);
+            instance = new RenderPipeline(camera, shaders);
         }
         return *instance;
     }
+
+    std::vector<Canvas2D*> _canvas = std::vector<Canvas2D*>();
 
 private:
     std::vector<GameObject*> sceneObjects;
@@ -105,6 +117,8 @@ private:
     std::unordered_map<std::string, std::shared_ptr<AssimpGeometry>> modelCache;
     
     std::vector<std::shared_ptr<Material>> materialPool;
+    
+    // Canvas storage
     
     void renderInstanced();
     void renderNonInstanced();

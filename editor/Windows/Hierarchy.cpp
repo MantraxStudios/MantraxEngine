@@ -18,6 +18,8 @@ bool Hierarchy::isChildOf(GameObject* possibleParent, GameObject* child) {
     return false;
 }
 
+
+
 // Renderizado recursivo de GameObjects en árbol con Drag & Drop parenting.
 void Hierarchy::RenderGameObjectNode(GameObject* gameObject) {
     if (!gameObject) return;
@@ -32,14 +34,12 @@ void Hierarchy::RenderGameObjectNode(GameObject* gameObject) {
     // Selección por clic
     if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen()) {
         Selection::GameObjectSelect = gameObject;
-        Selection::LightSelect = nullptr;
     }
 
     // Menú contextual (opcional, puedes expandir)
     if (ImGui::BeginPopupContextItem()) {
         if (ImGui::MenuItem("Select")) {
             Selection::GameObjectSelect = gameObject;
-            Selection::LightSelect = nullptr;
         }
         if (ImGui::MenuItem("Deselect")) {
             Selection::GameObjectSelect = nullptr;
@@ -211,15 +211,8 @@ void Hierarchy::OnRenderGUI() {
             const auto& lights = activeScene->getLights();
             ImGui::TextColored(ImVec4(1.0f, 0.8f, 0.0f, 1.0f),
                 "Total Lights: %zu", lights.size());
-            if (Selection::LightSelect) {
-                ImGui::TextColored(ImVec4(0.2f, 0.6f, 1.0f, 1.0f),
-                    "Selected: %s Light",
-                    Selection::LightSelect->getType() == LightType::Directional ? "Directional" :
-                    Selection::LightSelect->getType() == LightType::Point ? "Point" : "Spot");
-            }
-            else {
-                ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "No light selected");
-            }
+            // TODO: Implement light selection in new Selection system
+            ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "Light selection not implemented");
             ImGui::Separator();
 
             if (lights.empty()) {
@@ -252,39 +245,23 @@ void Hierarchy::OnRenderGUI() {
                         break;
                     }
 
-                    bool isSelected = (light == Selection::LightSelect);
-
-                    if (isSelected) {
-                        ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.2f, 0.6f, 1.0f, 0.8f));
-                        ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.3f, 0.7f, 1.0f, 0.9f));
-                        ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(0.1f, 0.5f, 0.9f, 1.0f));
-                    }
+                    // TODO: Implement light selection in new Selection system
+                    bool isSelected = false;
 
                     std::string displayText = typeName;
-                    if (isSelected) {
-                        displayText = "> " + displayText;
-                    }
 
                     if (ImGui::Selectable((icon + std::string(" ") + displayText).c_str(), isSelected)) {
-                        Selection::LightSelect = (isSelected ? nullptr : light);
-                        if (Selection::LightSelect) {
-                            Selection::GameObjectSelect = nullptr;
-                        }
+                        // TODO: Implement light selection
                     }
 
                     if (ImGui::BeginPopupContextItem()) {
                         if (ImGui::MenuItem("Select")) {
-                            Selection::LightSelect = light;
-                            Selection::GameObjectSelect = nullptr;
+                            // TODO: Implement light selection
                         }
                         if (ImGui::MenuItem("Deselect")) {
-                            Selection::LightSelect = nullptr;
+                            // TODO: Implement light selection
                         }
                         ImGui::EndPopup();
-                    }
-
-                    if (isSelected) {
-                        ImGui::PopStyleColor(3);
                     }
 
                     ImGui::PopID();

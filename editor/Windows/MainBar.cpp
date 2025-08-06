@@ -13,6 +13,7 @@
 #include <iostream>
 #include "../Windows/FileExplorer.h"
 #include <mpak/MantraxCorePackBuilder.h>
+#include "CanvasManager.h"
 
 // Declaración de la variable externa
 extern volatile bool g_running;
@@ -408,6 +409,13 @@ void MainBar::OnRenderGUI() {
 			}
 		}
 
+		// Canvas Manager
+		if (auto* canvasManagerWindow = windowManager.GetWindow<CanvasManager>()) {
+			if (ImGui::MenuItem("Canvas Manager", nullptr, &canvasManagerWindow->isOpen)) {
+				// El estado se actualiza automáticamente por ImGui
+			}
+		}
+
 		ImGui::Separator();
 
 		// Layout options
@@ -416,6 +424,7 @@ void MainBar::OnRenderGUI() {
 			if (auto* sceneView = windowManager.GetWindow<SceneView>()) sceneView->isOpen = true;
 			if (auto* inspector = windowManager.GetWindow<Inspector>()) inspector->isOpen = true;
 			if (auto* gizmos = windowManager.GetWindow<Gizmos>()) gizmos->isOpen = true;
+			if (auto* canvasManager = windowManager.GetWindow<CanvasManager>()) canvasManager->isOpen = true;
 		}
 
 		if (ImGui::MenuItem("Minimize All")) {
@@ -423,6 +432,7 @@ void MainBar::OnRenderGUI() {
 			if (auto* sceneView = windowManager.GetWindow<SceneView>()) sceneView->isOpen = false;
 			if (auto* inspector = windowManager.GetWindow<Inspector>()) inspector->isOpen = false;
 			if (auto* gizmos = windowManager.GetWindow<Gizmos>()) gizmos->isOpen = false;
+			if (auto* canvasManager = windowManager.GetWindow<CanvasManager>()) canvasManager->isOpen = false;
 		}
 
 		ImGui::EndMenu();

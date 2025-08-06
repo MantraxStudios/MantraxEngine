@@ -107,6 +107,33 @@
                 1.0,
                 1.0
             ]
+        },
+        "Material_PBR": {
+            "albedo": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "emissive": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "metallic": 0.0,
+            "normal_strength": 1.0,
+            "roughness": 0.0,
+            "textures": {
+                "albedo": "txt\\Bricks102_4K-PNG_Color.png",
+                "ao": "txt\\Bricks102_4K-PNG_AmbientOcclusion.png",
+                "emissive": "",
+                "metallic": "",
+                "normal": "txt\\Bricks102_4K-PNG_Roughness.png",
+                "roughness": "txt\\Bricks102_4K-PNG_Roughness.png"
+            },
+            "tiling": [
+                1.0,
+                1.0
+            ]
         }
     }
 }

@@ -1,24 +1,64 @@
 #include "RenderPipeline.h"
 #include "Camera.h"
 #include "DefaultShaders.h"
+#include "../ui/Canvas.h"
 #include "Material.h"
 #include "MaterialManager.h"
 #include "Light.h"
 #include "Frustum.h"
 #include "Framebuffer.h"
 #include "AssimpGeometry.h"
+#include "RenderConfig.h"
 
 #include "../components/GameObject.h"
 #include <GL/glew.h>
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
+#include <algorithm>
+#include <cstddef>
+#include <direct.h>
+#include <cstdio>
+#include <errno.h>
+#include <filesystem>
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
 RenderPipeline::RenderPipeline(Camera* cam, DefaultShaders* shd)
     : camera(cam), shaders(shd), targetFramebuffer(nullptr), usePBR(true), lowAmbient(false), ambientIntensity(1.0f),
       frustumCullingEnabled(true), visibleObjectsCount(0), totalObjectsCount(0) {
+
+    // FreeType is now handled by Canvas2D
+    std::cout << "FreeType will be initialized by Canvas2D" << std::endl;
+    
+    int initialWidth = 1920;
+    int initialHeight = 1080;
+    
+    // Try to get actual window size from RenderConfig
+    if (RenderConfig::getInstance().getWindow()) {
+        int w, h;
+        SDL_GetWindowSize(RenderConfig::getInstance().getWindow(), &w, &h);
+        if (w > 0 && h > 0) {
+            initialWidth = w;
+            initialHeight = h;
+            std::cout << "Canvas initialized with actual window size: " << w << "x" << h << std::endl;
+        }
+    }
+    
+    // Get current working directory for debugging
+    char cwd[1024];
+    if (_getcwd(cwd, sizeof(cwd)) != NULL) {
+        std::cout << "Current working directory: " << cwd << std::endl;
+    } else {
+        std::cerr << "Failed to get current working directory" << std::endl;
+    }
+   
 }
 
 RenderPipeline::~RenderPipeline() {
+    for (auto canvas : _canvas) {
+        delete canvas;
+    }
+    _canvas.clear();
 }
 
 void RenderPipeline::AddGameObject(GameObject* object) {
@@ -78,7 +118,6 @@ int RenderPipeline::getVisibleObjectsCount() const {
 }
 
 void RenderPipeline::renderFrame() {
-    // Check if camera has framebuffer enabled, prioritize it over targetFramebuffer
     Framebuffer* activeFramebuffer = nullptr;
     if (camera && camera->isFramebufferEnabled() && camera->getFramebuffer()) {
         activeFramebuffer = camera->getFramebuffer();
@@ -118,6 +157,18 @@ void RenderPipeline::renderFrame() {
     configureLighting();
 
     renderInstanced();
+    
+    // Update canvas size to match camera buffer if available
+    updateCanvasFromCameraBuffer();
+    
+
+    // Render all canvases
+    for (auto canvas : _canvas) {
+        if (canvas) {
+            // Example: Draw some text on each canvas
+            canvas->DrawElements();
+        }
+    }
     
     // Unbind framebuffer if specified
     if (activeFramebuffer) {
@@ -508,4 +559,107 @@ void RenderPipeline::listMaterials() const {
 
 Camera* RenderPipeline::getCamera() const {
     return camera;
+}
+
+void RenderPipeline::updateCanvasSize(int width, int height) {
+    for (auto canvas : _canvas) {
+        if (canvas) {
+            // Check if camera has a framebuffer and use its size if available
+            if (camera && camera->isFramebufferEnabled()) {
+                auto [bufferWidth, bufferHeight] = camera->getBufferSize();
+                if (bufferWidth > 0 && bufferHeight > 0) {
+                    canvas->setUISize(bufferWidth, bufferHeight);
+                    std::cout << "Canvas size updated to camera buffer size: "
+                        << bufferWidth << "x" << bufferHeight << std::endl;
+                    continue;
+                }
+            }
+            // Fallback to window size if no camera buffer
+            canvas->setUISize(width, height);
+            std::cout << "Canvas size updated to window size: "
+                << width << "x" << height << std::endl;
+        }
+    }
+}
+
+
+void RenderPipeline::updateCanvasFromCameraBuffer() {
+    if (!camera) return;
+    for (auto canvas : _canvas) {
+        if (canvas && camera->isFramebufferEnabled()) {
+            auto [bufferWidth, bufferHeight] = camera->getBufferSize();
+            if (bufferWidth > 0 && bufferHeight > 0) {
+                canvas->setUISize(bufferWidth, bufferHeight);
+                std::cout << "Canvas updated to camera buffer size: "
+                    << bufferWidth << "x" << bufferHeight << std::endl;
+            }
+        }
+    }
+}
+
+Canvas2D* RenderPipeline::addCanvas(int width, int height) {
+    Canvas2D* new_Canvas = nullptr;
+
+    try {
+        new_Canvas = new Canvas2D(width, height);
+        
+        const char* fontPaths[] = {
+        "C:/Users/tupap/source/repos/MantraxEngine/engine/fonts/Ubuntu-Regular.ttf"
+        };
+
+        for (const char* path : fontPaths) {
+            std::cout << "Trying path: " << path << std::endl;
+            if (std::filesystem::exists(path)) {
+                std::cout << "File exists: " << path << std::endl;
+                if (new_Canvas->loadFont(path, 32)) {
+                    std::cout << "Font loaded successfully from: " << path << std::endl;
+                    break;
+                }
+            }
+            else {
+                std::cout << "File does not exist: " << path << std::endl;
+            }
+        }
+
+        // Only add to vector if creation was successful
+        _canvas.push_back(new_Canvas);
+        std::cout << "Canvas added: " << width << "x" << height << " (Total: " << _canvas.size() << ")" << std::endl;
+        return new_Canvas;
+        
+    } catch (const std::exception& e) {
+        std::cerr << "Failed to create Canvas2D: " << e.what() << std::endl;
+        if (new_Canvas) {
+            delete new_Canvas;
+        }
+        return nullptr;
+    } catch (...) {
+        std::cerr << "Unknown error occurred while creating Canvas2D" << std::endl;
+        if (new_Canvas) {
+            delete new_Canvas;
+        }
+        return nullptr;
+    }
+}
+
+
+void RenderPipeline::removeCanvas(size_t index) {
+    if (index < _canvas.size()) {
+        delete _canvas[index];
+        _canvas.erase(_canvas.begin() + static_cast<std::ptrdiff_t>(index));
+        std::cout << "Canvas removed at index " << index << " (Total: " << _canvas.size() << ")" << std::endl;
+    }
+    else {
+        std::cerr << "Canvas index " << index << " out of range!" << std::endl;
+    }
+}
+
+Canvas2D* RenderPipeline::getCanvas(size_t index) {
+    if (index < _canvas.size()) {
+        return _canvas[index];
+    }
+    return nullptr;
+}
+
+size_t RenderPipeline::getCanvasCount() const {
+    return _canvas.size();
 }

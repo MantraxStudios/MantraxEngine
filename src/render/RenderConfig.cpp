@@ -80,6 +80,12 @@ bool RenderConfig::initContext() {
         return false;
     }
 
+    // Make the OpenGL context current
+    if (SDL_GL_MakeCurrent(window, glContext) != 0) {
+        std::cerr << "SDL_GL_MakeCurrent error: " << SDL_GetError() << std::endl;
+        return false;
+    }
+
     glewExperimental = GL_TRUE;
     if (glewInit() != GLEW_OK) {
         std::cerr << "GLEW init error" << std::endl;

@@ -6,6 +6,7 @@
 #include "../../src/components/ScriptExecutor.h"
 #include "../../src/components/CharacterController.h"
 #include "../../src/components/SpriteAnimator.h"
+
 #include "../../src/render/Texture.h"
 
 #include "../../src/components/GameBehaviourFactory.h"
@@ -31,7 +32,6 @@ void RenderStyledSeparator() {
     ImGui::PopStyleColor();
 }
 
-// Helper function to render section titles
 void RenderSectionTitle(const char* title) {
     ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(255, 161, 0, 255)); 
     ImGui::Text("%s", title);
@@ -91,7 +91,7 @@ void Inspector::RenderTransformSection(GameObject* go) {
         
         PopStyledInputs();
     } else {
-        ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(150, 150, 150, 255));  // textGray
+        ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(150, 150, 150, 255));
         ImGui::Text("Transform updates disabled");
         ImGui::PopStyleColor();
     }
@@ -149,6 +149,7 @@ void Inspector::RenderModelSection(GameObject* go) {
     }
 }
 
+
 void Inspector::RenderLayerSection(GameObject* go) {
     RenderStyledSeparator();
     RenderSectionTitle("Layer Configuration:");
@@ -199,19 +200,20 @@ void Inspector::RenderComponentsSection(GameObject* go) {
     RenderStyledSeparator();
     RenderSectionTitle("Components");
 
-    // Show existing components
     if (go->hasGeometry()) {
-        ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(51, 204, 51, 255));  // Green for active components
+        ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(51, 204, 51, 255));  
         ImGui::Text("[Mesh]");
         ImGui::PopStyleColor();
     }
 
     auto material = go->getMaterial();
     if (material) {
-        ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(51, 204, 51, 255));  // Green for active components
+        ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(51, 204, 51, 255));  
         ImGui::Text("[Material]");
         ImGui::PopStyleColor();
     }
+
+
 
 //    for (auto _CPM : go->getAllComponents())
 //    {
@@ -338,13 +340,9 @@ void Inspector::OnRenderGUI() {
     ImGui::Begin("Inspector", &isOpen);
 
     GameObject* go = Selection::GameObjectSelect;
-    std::shared_ptr<Light> light = Selection::LightSelect;
 
     if (go != nullptr && go->isValid()) {
         RenderGameObjectInspector(go);
-    }
-    else if (light != nullptr) {
-        RenderLightInspector(light);
     }
     else {
         ImGui::Text("No object selected.");
@@ -508,6 +506,16 @@ void Inspector::RenderAddComponentSection(GameObject* go) {
         RenderStyledSeparator();
         
         ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(150, 150, 150, 255));  // textGray
+        ImGui::Text("UI");
+        ImGui::PopStyleColor();
+        
+        RenderStyledSeparator();
+
+
+
+        RenderStyledSeparator();
+        
+        ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(150, 150, 150, 255));  // textGray
         ImGui::Text("LIGHTING");
         ImGui::PopStyleColor();
         
@@ -538,6 +546,8 @@ void Inspector::RenderAddComponentSection(GameObject* go) {
     }
     ImGui::PopStyleVar();
 }
+
+
 
 void Inspector::RenderLightInspector(std::shared_ptr<Light> light) {
     if (!light) {
@@ -587,7 +597,6 @@ void Inspector::RenderLightInspector(std::shared_ptr<Light> light) {
             light->setPosition(position);
         }
 
-        // Atenuación
         glm::vec3 attenuation = light->getAttenuation();
         bool attChanged = false;
         attChanged |= ImGui::DragFloat("Constant", &attenuation.x, 0.01f, 0.0f, 2.0f);

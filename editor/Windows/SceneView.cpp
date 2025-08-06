@@ -49,7 +49,6 @@ void SceneView::OnRenderGUI() {
                         if (EventSystem::MouseCast2D_Precise(WorldPoint, data, camera) && !ImGuizmo::IsOver()) {
                             if (Selection::GameObjectSelect != data->object) {
                                 Selection::GameObjectSelect = data->object;
-                                Selection::LightSelect = nullptr; 
                             }
                         }
                         else {
@@ -72,45 +71,10 @@ void SceneView::OnRenderGUI() {
                 ImGuizmo::SetOrthographic(isOrthographic);
                 ImGuizmo::SetRect(imagePos.x, imagePos.y, (float)w, (float)h);
 
-                if (Selection::GameObjectSelect || Selection::LightSelect) {
+                if (Selection::GameObjectSelect) {
                     glm::mat4 view = camera->getViewMatrix();
                     glm::mat4 proj = camera->getProjectionMatrix();
-                    glm::mat4 model;
-
-                    if (Selection::GameObjectSelect) {
-                        model = Selection::GameObjectSelect->getWorldModelMatrix();
-                    }
-                    else if (Selection::LightSelect) {
-                        glm::vec3 position;
-                        glm::vec3 scale(0.5f);
-
-                        if (Selection::LightSelect->getType() == LightType::Directional) {
-                            position = camera->getPosition() + camera->getForward() * 5.0f;
-                            currentGizmoOperation = ROTATE;
-                        }
-                        else {
-                            position = Selection::LightSelect->getPosition();
-                            // Permitir tanto traslación como rotación para otros tipos de luces
-                            if (currentGizmoOperation == SCALE) {
-                                currentGizmoOperation = TRANSLATE; // No permitir escalado para luces
-                            }
-                        }
-
-                        model = glm::translate(glm::mat4(1.0f), position);
-                        
-                        // Aplicar rotación basada en la dirección de la luz
-                        if (Selection::LightSelect->getType() != LightType::Point) {
-                            glm::vec3 direction = Selection::LightSelect->getDirection();
-                            glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
-                            glm::vec3 right = glm::normalize(glm::cross(direction, up));
-                            up = glm::normalize(glm::cross(right, direction));
-                            
-                            glm::mat3 rotationMatrix(right, up, -direction);
-                            model = model * glm::mat4(rotationMatrix);
-                        }
-
-                        model = glm::scale(model, scale);
-                    }
+                    glm::mat4 model = Selection::GameObjectSelect->getWorldModelMatrix();
 
                     bool used = ImGuizmo::Manipulate(glm::value_ptr(view), glm::value_ptr(proj),
                         currentGizmoOperation, currentGizmoMode,
@@ -123,45 +87,26 @@ void SceneView::OnRenderGUI() {
                         glm::vec4 perspective;
 
                         if (glm::decompose(model, scale, rotation, translation, skew, perspective)) {
-                            if (Selection::GameObjectSelect) {
-                                // Actualizar transformación del objeto
-                                if (Selection::GameObjectSelect->hasParent()) {
-                                    glm::mat4 parentWorldMatrix = Selection::GameObjectSelect->getParent()->getWorldModelMatrix();
-                                    glm::mat4 parentWorldInverse = glm::inverse(parentWorldMatrix);
-                                    glm::mat4 localMatrix = parentWorldInverse * model;
-                                    
-                                    glm::vec3 localTranslation, localScale;
-                                    glm::quat localRotation;
-                                    glm::vec3 localSkew;
-                                    glm::vec4 localPerspective;
-                                    
-                                    if (glm::decompose(localMatrix, localScale, localRotation, localTranslation, localSkew, localPerspective)) {
-                                        Selection::GameObjectSelect->setLocalPosition(localTranslation);
-                                        Selection::GameObjectSelect->setLocalRotationQuat(localRotation);
-                                        Selection::GameObjectSelect->setLocalScale(localScale);
-                                    }
-                                } else {
-                                    Selection::GameObjectSelect->setWorldPosition(translation);
-                                    Selection::GameObjectSelect->setWorldRotationQuat(rotation);
-                                    Selection::GameObjectSelect->setWorldScale(scale);
+                            // Actualizar transformación del objeto
+                            if (Selection::GameObjectSelect->hasParent()) {
+                                glm::mat4 parentWorldMatrix = Selection::GameObjectSelect->getParent()->getWorldModelMatrix();
+                                glm::mat4 parentWorldInverse = glm::inverse(parentWorldMatrix);
+                                glm::mat4 localMatrix = parentWorldInverse * model;
+                                
+                                glm::vec3 localTranslation, localScale;
+                                glm::quat localRotation;
+                                glm::vec3 localSkew;
+                                glm::vec4 localPerspective;
+                                
+                                if (glm::decompose(localMatrix, localScale, localRotation, localTranslation, localSkew, localPerspective)) {
+                                    Selection::GameObjectSelect->setLocalPosition(localTranslation);
+                                    Selection::GameObjectSelect->setLocalRotationQuat(localRotation);
+                                    Selection::GameObjectSelect->setLocalScale(localScale);
                                 }
-                            }
-                            else if (Selection::LightSelect) {
-                                // Actualizar transformación de la luz
-                                if (Selection::LightSelect->getType() == LightType::Directional) {
-                                    // Para luces direccionales, solo actualizar dirección
-                                    glm::vec3 forward = -glm::normalize(glm::mat3(model) * glm::vec3(0.0f, 0.0f, 1.0f));
-                                    Selection::LightSelect->setDirection(forward);
-                                }
-                                else {
-                                    // Para otros tipos de luces, actualizar posición y dirección
-                                    Selection::LightSelect->setPosition(translation / scale.x); // Deshacer el escalado aplicado al gizmo
-                                    
-                                    if (Selection::LightSelect->getType() == LightType::Spot) {
-                                        glm::vec3 forward = -glm::normalize(glm::mat3(model) * glm::vec3(0.0f, 0.0f, 1.0f));
-                                        Selection::LightSelect->setDirection(forward);
-                                    }
-                                }
+                            } else {
+                                Selection::GameObjectSelect->setWorldPosition(translation);
+                                Selection::GameObjectSelect->setWorldRotationQuat(rotation);
+                                Selection::GameObjectSelect->setWorldScale(scale);
                             }
                         }
                     }

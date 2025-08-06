@@ -63,6 +63,11 @@ public:
     bool isFramebufferEnabled() const { return framebufferEnabled; }
     void setFramebufferSize(int width, int height);
     Framebuffer* getFramebuffer() const { return framebuffer; }
+    
+    // Buffer size getters
+    int getBufferWidth() const { return framebufferEnabled ? framebufferWidth : 0; }
+    int getBufferHeight() const { return framebufferEnabled ? framebufferHeight : 0; }
+    std::pair<int, int> getBufferSize() const { return { getBufferWidth(), getBufferHeight() }; }
 
     void update(float deltaTime);
 

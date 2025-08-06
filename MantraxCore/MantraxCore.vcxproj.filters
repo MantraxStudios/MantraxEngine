@@ -13,9 +13,6 @@
     <Filter Include="03_UI">
       <UniqueIdentifier>{b5af6c17-b584-44fd-b9c4-6db1b73a7a99}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03_UI\Elements">
-      <UniqueIdentifier>{c6af6c17-b584-44fd-b9c4-6db1b73a7a01}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Vendors">
       <UniqueIdentifier>{8e2a6f4c-63b1-4f93-8a1d-dca8fe3190f6}</UniqueIdentifier>
     </Filter>
@@ -54,6 +51,9 @@
     </Filter>
     <Filter Include="01_Core\LuaWrappers">
       <UniqueIdentifier>{f74021d3-cbd6-4f1d-8444-a4587d2f421c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03_UI\UIElement">
+      <UniqueIdentifier>{b739a96b-4d27-44cf-8756-cc4de15afd3c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -111,7 +111,6 @@
     <ClCompile Include="..\src\components\TestScene.cpp">
       <Filter>02_Scene\Scenes</Filter>
     </ClCompile>
-
     <ClCompile Include="..\src\core\UIDGenerator.cpp">
       <Filter>01_Core\Timer</Filter>
     </ClCompile>
@@ -165,6 +164,15 @@
     </ClCompile>
     <ClCompile Include="..\src\components\SpriteAnimator.cpp">
       <Filter>01_Core\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ui\Canvas.cpp">
+      <Filter>03_UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ui\UIElements\UIText.cpp">
+      <Filter>03_UI\UIElement</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ui\UIBehaviour.cpp">
+      <Filter>03_UI\UIElement</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -238,7 +246,6 @@
       <Filter>01_Core\Components</Filter>
     </ClInclude>
     <ClInclude Include="..\vendors\includes\stb_image.h" />
-
     <ClInclude Include="..\src\core\UIDGenerator.h">
       <Filter>01_Core\Timer</Filter>
     </ClInclude>
@@ -316,6 +323,16 @@
     </ClInclude>
     <ClInclude Include="..\src\components\SpriteAnimator.h">
       <Filter>01_Core\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ui\Canvas.h">
+      <Filter>03_UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\vendors\includes\ft2build.h" />
+    <ClInclude Include="..\src\ui\UIElements\UIText.h">
+      <Filter>03_UI\UIElement</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ui\UIBehaviour.h">
+      <Filter>03_UI\UIElement</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

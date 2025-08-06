@@ -11,6 +11,8 @@
 #include "AnimatorEditor.h"
 #include "TileEditor.h"
 #include "InputEditor.h"
+#include "CanvasManager.h"
+
 
 
 class RenderWindows {
@@ -22,13 +24,14 @@ public:
         m_windows.push_back(std::make_unique<Hierarchy>());
         m_windows.push_back(std::make_unique<SceneView>());
         m_windows.push_back(std::make_unique<Inspector>());
-        m_windows.push_back(std::make_unique<Gizmos>());
         m_windows.push_back(std::make_unique<MainBar>());
         m_windows.push_back(std::make_unique<ContentBrowser>());
         m_windows.push_back(std::make_unique<MaterialEditor>());
         m_windows.push_back(std::make_unique<AnimatorEditor>());
         m_windows.push_back(std::make_unique<TileEditor>());
         m_windows.push_back(std::make_unique<InputEditor>());
+        m_windows.push_back(std::make_unique<CanvasManager>());
+
 
     }
     
