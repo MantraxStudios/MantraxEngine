@@ -53,6 +53,7 @@
     <ClCompile Include="..\src\render\ModelLoader.cpp" />
     <ClCompile Include="..\src\render\RenderConfig.cpp" />
     <ClCompile Include="..\src\render\RenderPipeline.cpp" />
+    <ClCompile Include="..\src\render\ShadowManager.cpp" />
     <ClCompile Include="..\src\render\Texture.cpp" />
     <ClCompile Include="..\src\ui\Canvas.cpp" />
     <ClCompile Include="..\src\ui\UIBehaviour.cpp" />
@@ -99,6 +100,7 @@
     <ClInclude Include="..\src\render\ModelLoader.h" />
     <ClInclude Include="..\src\render\RenderConfig.h" />
     <ClInclude Include="..\src\render\RenderPipeline.h" />
+    <ClInclude Include="..\src\render\ShadowManager.h" />
     <ClInclude Include="..\src\render\Texture.h" />
     <ClInclude Include="..\src\ui\Canvas.h" />
     <ClInclude Include="..\src\ui\UIBehaviour.h" />

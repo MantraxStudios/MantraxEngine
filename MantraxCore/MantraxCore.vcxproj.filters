@@ -78,6 +78,9 @@
     <ClCompile Include="..\src\render\RenderPipeline.cpp">
       <Filter>01_Core\Render</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\render\ShadowManager.cpp">
+      <Filter>01_Core\Render</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\render\Light.cpp">
       <Filter>01_Core\Render</Filter>
     </ClCompile>
@@ -198,6 +201,9 @@
       <Filter>01_Core\Render</Filter>
     </ClInclude>
     <ClInclude Include="..\src\render\RenderPipeline.h">
+      <Filter>01_Core\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\render\ShadowManager.h">
       <Filter>01_Core\Render</Filter>
     </ClInclude>
     <ClInclude Include="..\src\render\Light.h">

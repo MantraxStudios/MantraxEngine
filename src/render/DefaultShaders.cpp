@@ -5,7 +5,11 @@ const char* vertexShaderSource = R"glsl(
 #version 330 core
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec2 aTexCoord;
-layout (location = 2) in mat4 aInstanceMatrix;
+// CORREGIDO: Usar locations 2-5 para instanced rendering 
+layout (location = 2) in vec4 aInstanceMatrix_0;
+layout (location = 3) in vec4 aInstanceMatrix_1;
+layout (location = 4) in vec4 aInstanceMatrix_2;
+layout (location = 5) in vec4 aInstanceMatrix_3;
 layout (location = 6) in vec3 aNormal;     // Normal del modelo (opcional)
 layout (location = 7) in vec3 aTangent;    // Tangente del modelo (opcional)  
 layout (location = 8) in vec3 aBitangent;  // Bitangente del modelo (opcional)
@@ -14,17 +18,27 @@ uniform mat4 view;
 uniform mat4 projection;
 uniform bool uUseModelNormals; // Flag para usar normales del modelo o calcular del cubo
 
+// Shadow mapping uniforms
+uniform mat4 uLightSpaceMatrix;
+
 out vec2 TexCoord;
 out vec3 FragPos;
 out vec3 Normal;
 out mat3 TBN;
+out vec4 FragPosLightSpace; // Light space position for simple shadows
 
 void main() {
     TexCoord = aTexCoord;
     
+    // CORREGIDO: Reconstruir la matriz de instancia desde los 4 vec4
+    mat4 aInstanceMatrix = mat4(aInstanceMatrix_0, aInstanceMatrix_1, aInstanceMatrix_2, aInstanceMatrix_3);
+    
     // Transformar posición
     vec4 worldPos = aInstanceMatrix * vec4(aPos, 1.0);
     FragPos = worldPos.xyz;
+    
+    // Calcular posición en espacio de luz
+    FragPosLightSpace = uLightSpaceMatrix * worldPos;
     
     // Matriz normal para transformar normales correctamente
     mat3 normalMatrix = mat3(transpose(inverse(aInstanceMatrix)));
@@ -63,6 +77,7 @@ in vec2 TexCoord;
 in vec3 FragPos;
 in vec3 Normal;
 in mat3 TBN;
+in vec4 FragPosLightSpace; // Light space position for simple shadows
 
 // Material properties
 uniform vec3 uAlbedo;
@@ -122,6 +137,12 @@ uniform float uSpotLightIntensities[2];
 uniform float uSpotLightCutOffs[2];
 uniform float uSpotLightOuterCutOffs[2];
 uniform float uSpotLightRanges[2];
+
+// Simple Shadow Mapping
+uniform bool uEnableShadows = true;
+uniform sampler2DShadow uShadowMap;
+uniform float uShadowBias = 0.001;
+uniform float uShadowStrength = 0.7;
 
 // Constants
 const float PI = 3.14159265359;
@@ -213,6 +234,64 @@ vec3 CalculateBlinnPhongLighting(vec3 albedo, float shininess, vec3 N, vec3 V, v
     return (diffuse + specular) * lightColor;
 }
 
+// CORREGIDO: PCF mejorado para sombras más suaves
+float SampleShadowMapPCF(vec3 projCoords, float bias) {
+    vec2 texelSize = 1.0 / textureSize(uShadowMap, 0);
+    float shadow = 0.0;
+    int samples = 0;
+    
+    // Aplicar bias a la coordenada Z una sola vez
+    float biasedDepth = projCoords.z - bias;
+    
+    // 3x3 PCF sampling pattern con pesos más suaves
+    for(int x = -1; x <= 1; ++x) {
+        for(int y = -1; y <= 1; ++y) {
+            vec2 offset = vec2(x, y) * texelSize * 0.5; // Hacer sampling más fino
+            vec3 sampleCoords = vec3(projCoords.xy + offset, biasedDepth);
+            shadow += texture(uShadowMap, sampleCoords);
+            samples++;
+        }    
+    }
+    
+    return shadow / float(samples);
+}
+
+// Versión mínima - casi idéntica a tu código original
+float CalculateShadow(vec3 lightDir) {
+    if (!uEnableShadows || !uHasDirLight) {
+        return 1.0;
+    }
+    
+    // Perform perspective divide
+    vec3 projCoords = FragPosLightSpace.xyz / FragPosLightSpace.w;
+    
+    // Transform to [0,1] range
+    projCoords = projCoords * 0.5 + 0.5;
+    
+    // Check if we're outside the shadow map bounds
+    if (projCoords.x < 0.0 || projCoords.x > 1.0 || 
+        projCoords.y < 0.0 || projCoords.y > 1.0 || 
+        projCoords.z > 1.0) {
+        return 1.0; // Outside shadow map
+    }
+    
+    // CORREGIDO: Calculate bias más conservador para evitar auto-sombrado
+    vec3 normal = normalize(Normal);
+    float NdotL = max(dot(normal, lightDir), 0.0);
+    // Bias más conservador: menor variación y rango más pequeño
+    float dynamicBias = uShadowBias * (1.0 + (1.0 - NdotL) * 0.5);
+    float bias = clamp(dynamicBias, uShadowBias * 0.5, uShadowBias * 2.0);
+    
+    // Use PCF for smoother shadows (igual que tu código original)
+    float shadow = SampleShadowMapPCF(projCoords, bias);
+    
+    // Apply shadow strength
+    shadow = smoothstep(0.0, 1.0, shadow);
+    return mix(1.0 - uShadowStrength, 1.0, shadow);
+}
+
+// Mantén tu función SampleShadowMapPCF original tal como estaba
+
 void main() {
     vec2 texCoord = TexCoord * uTiling;
 
@@ -278,6 +357,9 @@ void main() {
         vec3 L = normalize(-uDirLightDirection);
         vec3 lightContrib;
         
+        // Calculate shadow factor
+        float shadowFactor = CalculateShadow(L);
+        
         if (uUsePBR) {
             // Ajustar intensidad basada en el ángulo de incidencia
             float NdotL = max(dot(N, L), 0.0);
@@ -287,7 +369,8 @@ void main() {
             lightContrib = CalculateBlinnPhongLighting(albedo, shininess, N, V, L, uDirLightColor * uDirLightIntensity);
         }
         
-        Lo += lightContrib;
+        // Apply shadow to directional light contribution
+        Lo += lightContrib * shadowFactor;
     }
     
     // Point Lights

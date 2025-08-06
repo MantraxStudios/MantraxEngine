@@ -16,6 +16,7 @@ class Light;
 class Frustum;
 class Framebuffer;
 class AssimpGeometry;
+class ShadowManager;
 
 class GameObject;
 
@@ -56,6 +57,17 @@ public:
     
     // Shaders access
     DefaultShaders* getShaders() const { return shaders; }
+    
+    // Shadow mapping control
+    void enableShadows(bool enabled);
+    bool getShadowsEnabled() const;
+    void setShadowMapSize(int size);
+    int getShadowMapSize() const;
+    void setShadowBias(float bias);
+    float getShadowBias() const;
+    void setShadowStrength(float strength);
+    float getShadowStrength() const;
+    ShadowManager* getShadowManager() const { return shadowManager; }
     
     int getVisibleObjectsCount() const;
     int getTotalObjectsCount() const;
@@ -109,6 +121,8 @@ private:
     bool lowAmbient; // Flag to reduce ambient light
     float ambientIntensity; // Ambient light intensity multiplier
     bool frustumCullingEnabled; // Flag para habilitar/deshabilitar frustum culling
+    bool shadowsEnabled; // Flag para habilitar/deshabilitar shadow mapping
+    ShadowManager* shadowManager; // Shadow mapping manager
     
     int visibleObjectsCount;
     int totalObjectsCount;
@@ -122,6 +136,7 @@ private:
     
     void renderInstanced();
     void renderNonInstanced();
+    void renderShadowPass(); // New method for shadow rendering
     void configureMaterial(Material* material);
     void configureDefaultMaterial();
     void configureLighting();

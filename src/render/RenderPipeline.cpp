@@ -9,6 +9,7 @@
 #include "Framebuffer.h"
 #include "AssimpGeometry.h"
 #include "RenderConfig.h"
+#include "ShadowManager.h"
 
 #include "../components/GameObject.h"
 #include <GL/glew.h>
@@ -25,7 +26,7 @@
 
 RenderPipeline::RenderPipeline(Camera* cam, DefaultShaders* shd)
     : camera(cam), shaders(shd), targetFramebuffer(nullptr), usePBR(true), lowAmbient(false), ambientIntensity(1.0f),
-      frustumCullingEnabled(true), visibleObjectsCount(0), totalObjectsCount(0) {
+      frustumCullingEnabled(true), shadowsEnabled(true), shadowManager(nullptr), visibleObjectsCount(0), totalObjectsCount(0) {
 
     // FreeType is now handled by Canvas2D
     std::cout << "FreeType will be initialized by Canvas2D" << std::endl;
@@ -51,10 +52,20 @@ RenderPipeline::RenderPipeline(Camera* cam, DefaultShaders* shd)
     } else {
         std::cerr << "Failed to get current working directory" << std::endl;
     }
-   
+    
+    // Initialize shadow manager
+    shadowManager = new ShadowManager();
+    shadowManager->initialize(4096); // 4096x4096 shadow maps para mejor calidad
+    std::cout << "ShadowManager initialized successfully" << std::endl;
 }
 
 RenderPipeline::~RenderPipeline() {
+    // Clean up shadow manager
+    if (shadowManager) {
+        delete shadowManager;
+        shadowManager = nullptr;
+    }
+    
     for (auto canvas : _canvas) {
         delete canvas;
     }
@@ -118,6 +129,15 @@ int RenderPipeline::getVisibleObjectsCount() const {
 }
 
 void RenderPipeline::renderFrame() {
+    // 1. Shadow pass - render to shadow maps first
+    if (shadowsEnabled) {
+        std::cout << "RenderPipeline: Executing shadow pass (shadows enabled)" << std::endl;
+        renderShadowPass();
+    } else {
+        std::cout << "RenderPipeline: Skipping shadow pass (shadows disabled)" << std::endl;
+    }
+    
+    // 2. Main rendering pass
     Framebuffer* activeFramebuffer = nullptr;
     if (camera && camera->isFramebufferEnabled() && camera->getFramebuffer()) {
         activeFramebuffer = camera->getFramebuffer();
@@ -155,6 +175,22 @@ void RenderPipeline::renderFrame() {
 
     // Configurar iluminación
     configureLighting();
+    
+    // Configurar shadow mapping
+    if (shadowsEnabled && shadowManager) {
+        std::cout << "RenderPipeline: Setting up simple shadow uniforms..." << std::endl;
+        shadowManager->bindShadowMap(program);
+        shadowManager->setupShadowUniforms(program);
+        
+        // Enable shadows in shader
+        GLint enableShadowsLoc = glGetUniformLocation(program, "uEnableShadows");
+        glUniform1i(enableShadowsLoc, 1);
+        std::cout << "RenderPipeline: uEnableShadows location: " << enableShadowsLoc << ", enabled" << std::endl;
+    } else {
+        GLint enableShadowsLoc = glGetUniformLocation(program, "uEnableShadows");
+        glUniform1i(enableShadowsLoc, 0);
+        std::cout << "RenderPipeline: Shadows disabled in shader (shadowsEnabled: " << shadowsEnabled << ", shadowManager: " << (shadowManager ? "valid" : "null") << ")" << std::endl;
+    }
 
     renderInstanced();
     
@@ -663,3 +699,127 @@ Canvas2D* RenderPipeline::getCanvas(size_t index) {
 size_t RenderPipeline::getCanvasCount() const {
     return _canvas.size();
 }
+
+// Shadow pass rendering
+void RenderPipeline::renderShadowPass() {
+    if (!shadowManager || !shadowManager->isInitialized() || !camera) {
+        std::cout << "RenderPipeline: Cannot render shadows - shadowManager: " << (shadowManager ? "valid" : "null") 
+                  << ", initialized: " << (shadowManager ? shadowManager->isInitialized() : false) 
+                  << ", camera: " << (camera ? "valid" : "null") << std::endl;
+        return;
+    }
+    
+    std::cout << "RenderPipeline: Looking for directional lights (" << lights.size() << " total lights)" << std::endl;
+    
+    // Find directional light for shadow casting
+    std::shared_ptr<Light> directionalLight = nullptr;
+    for (const auto& light : lights) {
+        std::cout << "RenderPipeline: Checking light - Type: " << (int)light->getType() 
+                  << ", Enabled: " << light->isEnabled() << std::endl;
+        if (light->isEnabled() && light->getType() == LightType::Directional) {
+            directionalLight = light;
+            break;
+        }
+    }
+    
+    if (!directionalLight) {
+        std::cout << "RenderPipeline: No directional light found for shadows!" << std::endl;
+        return; // No directional light for shadows
+    }
+    
+    std::cout << "RenderPipeline: Found directional light for shadows" << std::endl;
+    
+    // Begin shadow pass
+    shadowManager->beginShadowPass(directionalLight, camera);
+    
+    // Render shadow map (simple shadows - no cascades)
+    std::cout << "RenderPipeline: Rendering simple shadow map with " << sceneObjects.size() << " scene objects" << std::endl;
+    
+    // Render all objects from light's perspective
+    std::map<MaterialGeometryKey, std::vector<GameObject*>> geometryGroups;
+    int validObjects = 0;
+    
+    for (GameObject* obj : sceneObjects) {
+        if (!obj->hasGeometry()) continue;
+        
+        MaterialGeometryKey key;
+        key.material = obj->getMaterial();
+        key.geometry = obj->getGeometry();
+        
+        geometryGroups[key].push_back(obj);
+        validObjects++;
+    }
+    
+    std::cout << "RenderPipeline: Shadow pass - " << validObjects << " valid objects in " << geometryGroups.size() << " geometry groups" << std::endl;
+    
+    // Render each geometry group
+    for (auto& group : geometryGroups) {
+        auto& objects = group.second;
+        AssimpGeometry* geometry = group.first.geometry;
+        
+        if (objects.size() > 1) {
+            // Prepare model matrices for instanced rendering
+            std::vector<glm::mat4> modelMatrices;
+            for (GameObject* obj : objects) {
+                modelMatrices.push_back(obj->getWorldModelMatrix());
+            }
+            
+            geometry->updateInstanceBuffer(modelMatrices);
+            geometry->drawInstanced(modelMatrices);
+        } else if (!objects.empty()) {
+            // Single object
+            GameObject* obj = objects[0];
+            glm::mat4 model = obj->getWorldModelMatrix();
+            
+            std::vector<glm::mat4> singleInstance = { model };
+            geometry->updateInstanceBuffer(singleInstance);
+            geometry->drawInstanced(singleInstance);
+        }
+    }
+    
+    // End shadow pass
+    shadowManager->endShadowPass();
+}
+
+// Shadow mapping methods
+void RenderPipeline::enableShadows(bool enabled) {
+    shadowsEnabled = enabled;
+    std::cout << "Shadows " << (enabled ? "enabled" : "disabled") << std::endl;
+}
+
+bool RenderPipeline::getShadowsEnabled() const {
+    return shadowsEnabled;
+}
+
+void RenderPipeline::setShadowMapSize(int size) {
+    if (shadowManager) {
+        shadowManager->cleanup();
+        shadowManager->initialize(size);
+        std::cout << "Shadow map size set to " << size << "x" << size << std::endl;
+    }
+}
+
+int RenderPipeline::getShadowMapSize() const {
+    return shadowManager ? shadowManager->getShadowMapSize() : 0;
+}
+
+void RenderPipeline::setShadowBias(float bias) {
+    if (shadowManager) {
+        shadowManager->setShadowBias(bias);
+    }
+}
+
+float RenderPipeline::getShadowBias() const {
+    return shadowManager ? shadowManager->getShadowBias() : 0.0f;
+}
+
+void RenderPipeline::setShadowStrength(float strength) {
+    if (shadowManager) {
+        shadowManager->setShadowStrength(strength);
+    }
+}
+
+float RenderPipeline::getShadowStrength() const {
+    return shadowManager ? shadowManager->getShadowStrength() : 0.0f;
+}
+

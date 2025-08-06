@@ -54,7 +54,7 @@ void CanvasManager::OnRenderGUI() {
     }
 
     ImGui::SameLine();
-    if (ImGui::Button("O")) { // Center
+    if (ImGui::Button("O")) {
         if (UIText* textElement = dynamic_cast<UIText*>(SceneManager::getInstance().getActiveScene()->getRenderPipeline()->getCanvas(0)->RenderElements[0])) {
             textElement->setAnchor(Anchor::Center);
         }
@@ -67,7 +67,6 @@ void CanvasManager::OnRenderGUI() {
         }
     }
 
-    // Tercera fila
     if (ImGui::Button("v<")) {
         if (UIText* textElement = dynamic_cast<UIText*>(SceneManager::getInstance().getActiveScene()->getRenderPipeline()->getCanvas(0)->RenderElements[0])) {
             textElement->setAnchor(Anchor::BottomLeft);
@@ -90,6 +89,7 @@ void CanvasManager::OnRenderGUI() {
     ImGui::End();
 }
 
+//
 const std::string& CanvasManager::getName() const {
     static const std::string name = "Canvas Manager";
     return name;

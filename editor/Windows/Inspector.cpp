@@ -230,7 +230,6 @@ void Inspector::RenderComponentsSection(GameObject* go) {
 //
 //        if (treeNodeOpen)
 //        {
-//            // Procesar las variables del componente
 //            for (auto& [name, anyPtr] : _CPM->variableMap)
 //            {
 //                std::cout << "\n--- Processing variable: " << name << " ---" << std::endl;
