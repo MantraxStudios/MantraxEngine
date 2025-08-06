@@ -153,6 +153,21 @@ void Canvas2D::setUISize(int w, int h) {
     width = w;
     height = h;
     updateOrtho();
+    
+    // Update all UI elements with new dimensions
+    for (UIBehaviour* element : RenderElements) {
+        element->width = static_cast<float>(w);
+        element->height = static_cast<float>(h);
+        
+        // Update UIText elements specifically with new resize handler
+        if (UIText* textElement = dynamic_cast<UIText*>(element)) {
+            textElement->onCanvasResize(static_cast<float>(w), static_cast<float>(h));
+            textElement->ortho = this->ortho;
+            // Don't call update() here - it will be called in DrawElements()
+        }
+    }
+    
+    std::cout << "Canvas2D: Updated UI size to " << w << "x" << h << " and notified " << RenderElements.size() << " UI elements" << std::endl;
 }
 
 void Canvas2D::clear(glm::vec3 color) {
@@ -187,8 +202,6 @@ std::pair<int, int> Canvas2D::drawTextInternal(const std::string& msg, float x, 
         std::cerr << "Canvas2D: No font loaded!" << std::endl;
         return { 0,0 };
     }
-    
-    std::cout << "Rendering text: '" << msg << "' at (" << x << ", " << y << ")" << std::endl;
     
     float currentX = x;
     float maxHeight = 0;
@@ -231,39 +244,47 @@ std::pair<int, int> Canvas2D::drawTextInternal(const std::string& msg, float x, 
 
 
 void Canvas2D::DrawElements() {
-    // Get camera framebuffer size if available
+    // Use camera framebuffer size instead of window size
     int canvasWidth = width;
     int canvasHeight = height;
     
-    // Try to get size from current scene's camera framebuffer
-    auto& sceneManager = SceneManager::getInstance();
-    Scene* activeScene = sceneManager.getActiveScene();
+    // Get camera framebuffer size from active scene
+    Scene* activeScene = SceneManager::getInstance().getActiveScene();
     if (activeScene && activeScene->getCamera()) {
         Camera* camera = activeScene->getCamera();
-        if (camera->isFramebufferEnabled() && camera->getFramebuffer()) {
-            Framebuffer* fb = camera->getFramebuffer();
-            canvasWidth = fb->getWidth();
-            canvasHeight = fb->getHeight();
+        int newWidth = camera->getBufferWidth();
+        int newHeight = camera->getBufferHeight();
+        
+        std::cout << "Canvas2D: Camera framebuffer size: " << newWidth << "x" << newHeight << std::endl;
+        std::cout << "Canvas2D: Current canvas size: " << canvasWidth << "x" << canvasHeight << std::endl;
+        
+        canvasWidth = newWidth;
+        canvasHeight = newHeight;
+        
+        // Update ortho matrix for new size
+        if (canvasWidth != width || canvasHeight != height) {
+            std::cout << "Canvas2D: Size changed! Updating from " << width << "x" << height << " to " << canvasWidth << "x" << canvasHeight << std::endl;
+            width = canvasWidth;
+            height = canvasHeight;
+            updateOrtho();
             
-            std::cout << "Canvas2D: Using camera framebuffer size: " << canvasWidth << "x" << canvasHeight << std::endl;
-            
-            // Update ortho matrix for new size
-            if (canvasWidth != width || canvasHeight != height) {
-                width = canvasWidth;
-                height = canvasHeight;
-                updateOrtho();
-                std::cout << "Canvas2D: Updated canvas size to: " << width << "x" << height << std::endl;
+            // Notify all UI elements of the size change (but don't call update() here)
+            for (UIBehaviour* element : RenderElements) {
+                element->width = static_cast<float>(width);
+                element->height = static_cast<float>(height);
+                
+                // Update UIText elements specifically with new resize handler
+                if (UIText* textElement = dynamic_cast<UIText*>(element)) {
+                    textElement->onCanvasResize(static_cast<float>(width), static_cast<float>(height));
+                    textElement->ortho = this->ortho;
+                    // Don't call update() here - it will be called in the loop below
+                }
             }
-        } else {
-            std::cout << "Canvas2D: Using default size: " << canvasWidth << "x" << canvasHeight << std::endl;
         }
-    } else {
-        std::cout << "Canvas2D: No active scene or camera, using default size: " << canvasWidth << "x" << canvasHeight << std::endl;
     }
     
     // Set viewport for all UI elements
     glViewport(0, 0, canvasWidth, canvasHeight);
-    std::cout << "Canvas2D: Set viewport to " << canvasWidth << "x" << canvasHeight << std::endl;
     
     for (UIBehaviour* Behaviour : RenderElements)
     {
@@ -286,6 +307,7 @@ void Canvas2D::DrawElements() {
             textElement->characterTextures = this->characterTextures;
         }
         
+        // Always call update() here (only once per frame)
         Behaviour->update();
     }
 }
@@ -297,6 +319,9 @@ std::pair<float, float> Canvas2D::getAnchoredPosition(float x, float y, float wi
     // Use UI size, not screen size
     float uiWidth = static_cast<float>(this->width);
     float uiHeight = static_cast<float>(this->height);
+    
+    std::cout << "Canvas2D::getAnchoredPosition - Input: x=" << x << ", y=" << y << ", w=" << width << ", h=" << height << std::endl;
+    std::cout << "Canvas2D::getAnchoredPosition - UI size: " << uiWidth << "x" << uiHeight << std::endl;
     
     float finalX = x;
     float finalY = y;
@@ -339,6 +364,12 @@ std::pair<float, float> Canvas2D::getAnchoredPosition(float x, float y, float wi
             finalY = uiHeight - height - y;
             break;
     }
+    
+    // Ensure the element stays within bounds
+    finalX = std::max(0.0f, std::min(finalX, uiWidth - width));
+    finalY = std::max(0.0f, std::min(finalY, uiHeight - height));
+    
+    std::cout << "Canvas2D::getAnchoredPosition - Output: x=" << finalX << ", y=" << finalY << " (Anchor: " << static_cast<int>(anchor) << ")" << std::endl;
     
     return { finalX, finalY };
 }
@@ -684,19 +715,35 @@ UIText* Canvas2D::MakeNewText(std::string Text) {
     UIText* _Text = new UIText();
     _Text->Text = Text;
     
-    // Initialize basic properties
-    _Text->Position = glm::vec2(50.0f, 50.0f); // Move text to visible area
+    // Initialize basic properties with a position that works well for all anchors
+    // Use a smaller offset to prevent going off-screen, especially for top anchors
+    _Text->Position = glm::vec2(5.0f, 5.0f); // Smaller offset to prevent off-screen issues
     _Text->Color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
     _Text->UIAnchor = Anchor::TopLeft;
     
-    // Initialize canvas size
+    // Initialize canvas size with current canvas dimensions and set up relative positioning
     _Text->width = static_cast<float>(this->width);
     _Text->height = static_cast<float>(this->height);
+    _Text->originalWidth = static_cast<float>(this->width);
+    _Text->originalHeight = static_cast<float>(this->height);
     _Text->ortho = this->ortho;
+    
+    // Set up relative positioning
+    if (this->width > 0 && this->height > 0) {
+        _Text->relativePosition.x = _Text->Position.x / static_cast<float>(this->width);
+        _Text->relativePosition.y = _Text->Position.y / static_cast<float>(this->height);
+        _Text->useRelativePositioning = true;
+    }
+    
+    // Initialize font and textures from canvas
+    _Text->currentFont = this->currentFont;
+    _Text->characterTextures = this->characterTextures;
     
     // OpenGL variables will be set in DrawElements()
     // This avoids duplication and ensures they're set correctly each frame
 
     RenderElements.push_back(_Text);
+    std::cout << "Canvas2D: Created new UIText with canvas size " << this->width << "x" << this->height 
+              << " and relative position (" << _Text->relativePosition.x << ", " << _Text->relativePosition.y << ")" << std::endl;
     return _Text;
 }

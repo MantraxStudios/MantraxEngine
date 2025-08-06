@@ -23,21 +23,100 @@ public:
 
     float width;
     float height;
+    
+    // Store original reference dimensions and position for proper scaling
+    float originalWidth = 0.0f;
+    float originalHeight = 0.0f;
+    glm::vec2 relativePosition; // Position as percentage of canvas size (0.0-1.0)
+    bool useRelativePositioning = false;
 
     std::map<char, GLuint> characterTextures;
 
     void update() override {
         // Only try to draw if we have a valid font and OpenGL context
         if (currentFont && textShaderProgram != 0 && width > 0 && height > 0) {
-            std::cout << "UIText update: Text='" << Text << "', Position=(" << Position.x << ", " << Position.y 
-                      << "), Canvas size=(" << width << "x" << height << "), shader=" << textShaderProgram 
-                      << ", font=" << currentFont << std::endl;
-            drawText(Text, Position.x, Position.y, Color);
-        } else {
-            std::cout << "UIText update skipped: font=" << (currentFont ? "yes" : "no") 
-                      << ", shader=" << (textShaderProgram != 0 ? "yes" : "no") 
-                      << ", size=(" << width << "x" << height << ")" << std::endl;
+            // Calculate text size for anchoring
+            auto [textWidth, textHeight] = calculateTextSize(Text);
+            
+            // Get anchored position using text dimensions and current anchor
+            auto [finalX, finalY] = getAnchoredPosition(Position.x, Position.y, static_cast<float>(textWidth), static_cast<float>(textHeight), UIAnchor);
+            
+            // Draw text at the calculated position
+            drawTextInternal(Text, finalX, finalY, Color);
         }
+    }
+
+    void setAnchor(Anchor newAnchor) {
+        UIAnchor = newAnchor;
+        std::cout << "UIText: Anchor changed to " << static_cast<int>(newAnchor) << std::endl;
+        // Force immediate update to reposition text
+        update();
+    }
+    
+    // Method to handle canvas resize and maintain relative positioning
+    void onCanvasResize(float newWidth, float newHeight) {
+        // If this is the first time setting size, store as original reference
+        if (originalWidth == 0.0f && originalHeight == 0.0f) {
+            originalWidth = newWidth;
+            originalHeight = newHeight;
+            // Convert absolute position to relative position (percentage)
+            if (newWidth > 0 && newHeight > 0) {
+                relativePosition.x = Position.x / newWidth;
+                relativePosition.y = Position.y / newHeight;
+                useRelativePositioning = true;
+            }
+        } else if (useRelativePositioning && newWidth > 0 && newHeight > 0) {
+            // Update position based on new canvas size and relative position
+            Position.x = relativePosition.x * newWidth;
+            Position.y = relativePosition.y * newHeight;
+        }
+        
+        width = newWidth;
+        height = newHeight;
+        
+        std::cout << "UIText: Canvas resized to " << newWidth << "x" << newHeight 
+                  << ", updated position to (" << Position.x << ", " << Position.y << ")" << std::endl;
+    }
+    
+    // Method to set position and enable relative positioning
+    void setPosition(float x, float y) {
+        Position.x = x;
+        Position.y = y;
+        
+        // Update relative position if we have valid canvas dimensions
+        if (width > 0 && height > 0) {
+            relativePosition.x = x / width;
+            relativePosition.y = y / height;
+            useRelativePositioning = true;
+            
+            // Store current dimensions as reference if not set
+            if (originalWidth == 0.0f && originalHeight == 0.0f) {
+                originalWidth = width;
+                originalHeight = height;
+            }
+        }
+    }
+    
+    // Safe position setting for different anchors
+    void setPositionForAnchor(float x, float y, Anchor anchor) {
+        // Adjust position based on anchor to prevent off-screen issues
+        float safeX = x;
+        float safeY = y;
+        
+        // For top anchors, ensure Y is not too small
+        if (anchor == Anchor::TopLeft || anchor == Anchor::TopCenter || anchor == Anchor::TopRight) {
+            safeY = std::max(5.0f, y);
+        }
+        
+        // For right anchors, ensure there's enough space
+        if (anchor == Anchor::TopRight || anchor == Anchor::CenterRight || anchor == Anchor::BottomRight) {
+            safeX = std::max(5.0f, x);
+        }
+        
+        setPosition(safeX, safeY);
+        UIAnchor = anchor;
+        
+        std::cout << "UIText: Set position (" << safeX << ", " << safeY << ") for anchor " << static_cast<int>(anchor) << std::endl;
     }
 
     std::pair<int, int> drawText(const std::string& msg, float x, float y, glm::vec4 color) {
@@ -53,13 +132,6 @@ public:
         if (!currentFont) {
             std::cerr << "UIText: No font loaded!" << std::endl;
             return { 0,0 };
-        }
-
-        std::cout << "UIText rendering: '" << msg << "' at (" << x << ", " << y << ") with canvas size (" << width << "x" << height << "), font=" << currentFont << ", ortho matrix available=" << (ortho != glm::mat4(0.0f)) << std::endl;
-        
-        // Check if coordinates are within viewport
-        if (x < 0 || y < 0 || x > width || y > height) {
-            std::cout << "UIText WARNING: Text position (" << x << ", " << y << ") is outside viewport (" << width << "x" << height << ")" << std::endl;
         }
 
         float currentX = x;
@@ -104,9 +176,6 @@ public:
     void drawCharacter(GLuint texture, float x, float y, float w, float h, glm::vec4 color) {
         if (w <= 0 || h <= 0) return;
 
-        std::cout << "UIText drawCharacter: texture=" << texture << ", pos=(" << x << "," << y 
-                  << "), size=(" << w << "x" << h << "), canvas size=(" << width << "x" << height << ")" << std::endl;
-
         glUseProgram(textShaderProgram);
         
         // Don't change viewport - let the canvas handle it
@@ -124,10 +193,8 @@ public:
         glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(x, y, 0.0f));
         model = glm::scale(model, glm::vec3(w, h, 1.0f));
         glUniformMatrix4fv(textModelLoc, 1, GL_FALSE, &model[0][0]);
-        std::cout << "UIText: Set ortho matrix, model matrix for pos=(" << x << "," << y << "), scale=(" << w << "x" << h << ")" << std::endl;
         glUniform1i(textSamplerLoc, 0);
         glUniform4fv(glGetUniformLocation(textShaderProgram, "textColor"), 1, glm::value_ptr(color));
-        std::cout << "UIText: Set text color to (" << color.r << ", " << color.g << ", " << color.b << ", " << color.a << ")" << std::endl;
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture);
@@ -135,7 +202,6 @@ public:
         glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
         glBindVertexArray(0);
         glBindTexture(GL_TEXTURE_2D, 0);
-        std::cout << "UIText: Drew character with texture " << texture << std::endl;
 
         // Re-enable depth testing
         glEnable(GL_DEPTH_TEST);
@@ -165,51 +231,84 @@ public:
         return { totalWidth, maxHeight };
     }
 
-    std::pair<float, float> getAnchoredPosition(float x, float y, float width, float height, Anchor anchor) {
-        // Use UI size, not screen size
+    std::pair<float, float> getAnchoredPosition(float x, float y, float textWidth, float textHeight, Anchor anchor) {
+        // Use current UI size
         float uiWidth = this->width;
         float uiHeight = this->height;
+        
+        // Safety check for valid dimensions
+        if (uiWidth <= 0 || uiHeight <= 0) {
+            std::cerr << "UIText: Invalid canvas dimensions: " << uiWidth << "x" << uiHeight << std::endl;
+            return { x, y };
+        }
 
         float finalX = x;
         float finalY = y;
+        
+        // Use the current Position for offset calculations, which is now maintained proportionally
+        float offsetX = Position.x;
+        float offsetY = Position.y;
 
         switch (anchor) {
         case Anchor::TopLeft:
-            finalX = x;
-            finalY = y;
+            finalX = offsetX;
+            finalY = offsetY;
             break;
         case Anchor::TopCenter:
-            finalX = (uiWidth - width) * 0.5f + x;
-            finalY = y;
+            finalX = (uiWidth - textWidth) * 0.5f + offsetX;
+            finalY = offsetY;
             break;
         case Anchor::TopRight:
-            finalX = uiWidth - width - x;
-            finalY = y;
+            finalX = uiWidth - textWidth - offsetX;
+            finalY = offsetY;
             break;
         case Anchor::CenterLeft:
-            finalX = x;
-            finalY = (uiHeight - height) * 0.5f + y;
+            finalX = offsetX;
+            finalY = (uiHeight - textHeight) * 0.5f + offsetY;
             break;
         case Anchor::Center:
-            finalX = (uiWidth - width) * 0.5f + x;
-            finalY = (uiHeight - height) * 0.5f + y;
+            finalX = (uiWidth - textWidth) * 0.5f + offsetX;
+            finalY = (uiHeight - textHeight) * 0.5f + offsetY;
             break;
         case Anchor::CenterRight:
-            finalX = uiWidth - width - x;
-            finalY = (uiHeight - height) * 0.5f + y;
+            finalX = uiWidth - textWidth - offsetX;
+            finalY = (uiHeight - textHeight) * 0.5f + offsetY;
             break;
         case Anchor::BottomLeft:
-            finalX = x;
-            finalY = uiHeight - height - y;
+            finalX = offsetX;
+            finalY = uiHeight - textHeight - offsetY;
             break;
         case Anchor::BottomCenter:
-            finalX = (uiWidth - width) * 0.5f + x;
-            finalY = uiHeight - height - y;
+            finalX = (uiWidth - textWidth) * 0.5f + offsetX;
+            finalY = uiHeight - textHeight - offsetY;
             break;
         case Anchor::BottomRight:
-            finalX = uiWidth - width - x;
-            finalY = uiHeight - height - y;
+            finalX = uiWidth - textWidth - offsetX;
+            finalY = uiHeight - textHeight - offsetY;
             break;
+        }
+
+        // Ensure the element stays within bounds with proper clamping
+        // For X axis: keep text within horizontal bounds
+        if (textWidth > 0) {
+            finalX = std::max(0.0f, std::min(finalX, uiWidth - textWidth));
+        } else {
+            finalX = std::max(0.0f, std::min(finalX, uiWidth));
+        }
+        
+        // For Y axis: keep text within vertical bounds 
+        // Special handling for top anchors to prevent going above screen
+        if (textHeight > 0) {
+            finalY = std::max(0.0f, std::min(finalY, uiHeight - textHeight));
+        } else {
+            finalY = std::max(0.0f, std::min(finalY, uiHeight));
+        }
+        
+        // Additional safety for top anchors - ensure minimum distance from top
+        // Since Y=0 is top of screen in our coordinate system, ensure we don't go negative
+        if (anchor == Anchor::TopLeft || anchor == Anchor::TopCenter || anchor == Anchor::TopRight) {
+            // For top anchors, ensure we have at least textHeight distance from top edge
+            finalY = std::max(textHeight > 0 ? textHeight : 20.0f, finalY);
         }
 
         return { finalX, finalY };

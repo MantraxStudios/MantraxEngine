@@ -21,59 +21,72 @@ void CanvasManager::OnRenderGUI() {
     if (ImGui::Button("Make New Text")) {
         Canvas2D* canvas = SceneManager::getInstance().getActiveScene()->getRenderPipeline()->getCanvas(0);
         if (canvas) {
-            canvas->MakeNewText("Hello From CanvasManager")->UIAnchor = Anchor::BottomLeft;
+            canvas->MakeNewText("Hello From CanvasManager")->setAnchor(Anchor::BottomLeft);
         } else {
             std::cerr << "No canvas available at index 0!" << std::endl;
         }
     }
 
-    if (SceneManager::getInstance().getActiveScene()->getRenderPipeline()->getCanvas(0)->RenderElements.size() > 0) {
-        if (ImGui::Button("<")) {
-            SceneManager::getInstance().getActiveScene()->getRenderPipeline()->getCanvas(0)->RenderElements[0]->UIAnchor = Anchor::TopLeft;
-        }
-
-        ImGui::SameLine();
-        if (ImGui::Button("[]")) {
-            SceneManager::getInstance().getActiveScene()->getRenderPipeline()->getCanvas(0)->RenderElements[0]->UIAnchor = Anchor::TopCenter;
-        }
-
-        ImGui::SameLine();
-        if (ImGui::Button(">")) {
-            SceneManager::getInstance().getActiveScene()->getRenderPipeline()->getCanvas(0)->RenderElements[0]->UIAnchor = Anchor::TopRight;
-        }
-
-        // Segunda fila
-        if (ImGui::Button("|<")) {
-            SceneManager::getInstance().getActiveScene()->getRenderPipeline()->getCanvas(0)->RenderElements[0]->UIAnchor = Anchor::CenterLeft;
-        }
-
-        ImGui::SameLine();
-        if (ImGui::Button("O")) { // Center
-            SceneManager::getInstance().getActiveScene()->getRenderPipeline()->getCanvas(0)->RenderElements[0]->UIAnchor = Anchor::Center;
-        }
-
-        ImGui::SameLine();
-        if (ImGui::Button(">|")) {
-            SceneManager::getInstance().getActiveScene()->getRenderPipeline()->getCanvas(0)->RenderElements[0]->UIAnchor = Anchor::CenterRight;
-        }
-
-        // Tercera fila
-        if (ImGui::Button("v<")) {
-            SceneManager::getInstance().getActiveScene()->getRenderPipeline()->getCanvas(0)->RenderElements[0]->UIAnchor = Anchor::BottomLeft;
-        }
-
-        ImGui::SameLine();
-        if (ImGui::Button("v[]")) {
-            SceneManager::getInstance().getActiveScene()->getRenderPipeline()->getCanvas(0)->RenderElements[0]->UIAnchor = Anchor::BottomCenter;
-        }
-
-        ImGui::SameLine();
-        if (ImGui::Button("v>")) {
-            SceneManager::getInstance().getActiveScene()->getRenderPipeline()->getCanvas(0)->RenderElements[0]->UIAnchor = Anchor::BottomRight;
+    if (ImGui::Button("<")) {
+        if (UIText* textElement = dynamic_cast<UIText*>(SceneManager::getInstance().getActiveScene()->getRenderPipeline()->getCanvas(0)->RenderElements[0])) {
+            textElement->setAnchor(Anchor::TopLeft);
         }
     }
 
-    
+    ImGui::SameLine();
+    if (ImGui::Button("[]")) {
+        if (UIText* textElement = dynamic_cast<UIText*>(SceneManager::getInstance().getActiveScene()->getRenderPipeline()->getCanvas(0)->RenderElements[0])) {
+            textElement->setAnchor(Anchor::TopCenter);
+        }
+    }
+
+    ImGui::SameLine();
+    if (ImGui::Button(">")) {
+        if (UIText* textElement = dynamic_cast<UIText*>(SceneManager::getInstance().getActiveScene()->getRenderPipeline()->getCanvas(0)->RenderElements[0])) {
+            textElement->setAnchor(Anchor::TopRight);
+        }
+    }
+
+    if (ImGui::Button("|<")) {
+        if (UIText* textElement = dynamic_cast<UIText*>(SceneManager::getInstance().getActiveScene()->getRenderPipeline()->getCanvas(0)->RenderElements[0])) {
+            textElement->setAnchor(Anchor::CenterLeft);
+        }
+    }
+
+    ImGui::SameLine();
+    if (ImGui::Button("O")) { // Center
+        if (UIText* textElement = dynamic_cast<UIText*>(SceneManager::getInstance().getActiveScene()->getRenderPipeline()->getCanvas(0)->RenderElements[0])) {
+            textElement->setAnchor(Anchor::Center);
+        }
+    }
+
+    ImGui::SameLine();
+    if (ImGui::Button(">|")) {
+        if (UIText* textElement = dynamic_cast<UIText*>(SceneManager::getInstance().getActiveScene()->getRenderPipeline()->getCanvas(0)->RenderElements[0])) {
+            textElement->setAnchor(Anchor::CenterRight);
+        }
+    }
+
+    // Tercera fila
+    if (ImGui::Button("v<")) {
+        if (UIText* textElement = dynamic_cast<UIText*>(SceneManager::getInstance().getActiveScene()->getRenderPipeline()->getCanvas(0)->RenderElements[0])) {
+            textElement->setAnchor(Anchor::BottomLeft);
+        }
+    }
+
+    ImGui::SameLine();
+    if (ImGui::Button("v[]")) {
+        if (UIText* textElement = dynamic_cast<UIText*>(SceneManager::getInstance().getActiveScene()->getRenderPipeline()->getCanvas(0)->RenderElements[0])) {
+            textElement->setAnchor(Anchor::BottomCenter);
+        }
+    }
+
+    ImGui::SameLine();
+    if (ImGui::Button("v>")) {
+        if (UIText* textElement = dynamic_cast<UIText*>(SceneManager::getInstance().getActiveScene()->getRenderPipeline()->getCanvas(0)->RenderElements[0])) {
+            textElement->setAnchor(Anchor::BottomRight);
+        }
+    }
     ImGui::End();
 }
 

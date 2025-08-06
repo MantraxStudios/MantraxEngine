@@ -217,9 +217,7 @@ void Inspector::RenderComponentsSection(GameObject* go) {
 
 //    for (auto _CPM : go->getAllComponents())
 //    {
-//        // Obtener el nombre del componente
 //        std::string componentName = _CPM->getComponentName(); // Asume que tienes esta función
-//
 //        bool removeComponent = false;
 //        bool treeNodeOpen = ImGui::TreeNode(("[" + componentName + "]").c_str());
 //
