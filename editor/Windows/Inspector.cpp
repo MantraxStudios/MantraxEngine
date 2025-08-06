@@ -57,7 +57,7 @@ void RenderStyledInputs() {
 void PopStyledInputs() {
     ImGui::PopStyleColor(3);
 }
-
+//
 
 void Inspector::RenderTransformSection(GameObject* go) {
     RenderStyledSeparator();

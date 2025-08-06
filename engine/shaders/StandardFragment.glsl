@@ -5,7 +5,9 @@ in vec2 TexCoord;
 in vec3 FragPos;
 in vec3 Normal;
 in mat3 TBN;
-in vec4 FragPosLightSpace; // Light space position for simple shadows
+in vec4 FragPosLightSpace;         // Light space position for simple shadows
+// Spot light positions (opcional)
+in vec4 FragPosSpotLightSpace[2];
 
 // Material properties
 uniform vec3 uAlbedo;
@@ -47,7 +49,7 @@ uniform vec3 uDirLightDirection;
 uniform vec3 uDirLightColor;
 uniform float uDirLightIntensity;
 
-// Point Lights (máximo 4)
+// Point Lights (mï¿½ximo 4)
 uniform int uNumPointLights;
 uniform vec3 uPointLightPositions[4];
 uniform vec3 uPointLightColors[4];
@@ -56,7 +58,7 @@ uniform vec3 uPointLightAttenuations[4];
 uniform float uPointLightMinDistances[4];
 uniform float uPointLightMaxDistances[4];
 
-// Spot Lights (máximo 2)
+// Spot Lights (mï¿½ximo 2)
 uniform int uNumSpotLights;
 uniform vec3 uSpotLightPositions[2];
 uniform vec3 uSpotLightDirections[2];
@@ -72,6 +74,15 @@ uniform sampler2DShadow uShadowMap;
 uniform float uShadowBias = 0.001;
 uniform float uShadowStrength = 0.7;
 
+// Spot Light Shadow Mapping (opcional)
+uniform bool uEnableSpotShadows = false;
+uniform sampler2DShadow uSpotShadowMaps[2];
+
+// Point Light Shadow Mapping (opcional)
+uniform bool uEnablePointShadows = false;
+uniform samplerCubeShadow uPointShadowMaps[4];
+uniform float uPointShadowFarPlanes[4];
+
 // Constants
 const float PI = 3.14159265359;
 
@@ -86,7 +97,7 @@ float DistributionGGX(vec3 N, vec3 H, float roughness) {
     float denom = (NdotH2 * (a2 - 1.0) + 1.0);
     denom = PI * denom * denom;
 
-    return nom / max(denom, 0.0001); // Prevenir división por cero
+    return nom / max(denom, 0.0001); // Prevenir divisiï¿½n por cero
 }
 
 float GeometrySchlickGGX(float NdotV, float roughness) {
@@ -96,7 +107,7 @@ float GeometrySchlickGGX(float NdotV, float roughness) {
     float nom = NdotV;
     float denom = NdotV * (1.0 - k) + k;
 
-    return nom / max(denom, 0.0001); // Prevenir división por cero
+    return nom / max(denom, 0.0001); // Prevenir divisiï¿½n por cero
 }
 
 float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness) {
@@ -162,7 +173,7 @@ vec3 CalculateBlinnPhongLighting(vec3 albedo, float shininess, vec3 N, vec3 V, v
     return (diffuse + specular) * lightColor;
 }
 
-// CORREGIDO: PCF mejorado para sombras más suaves
+// CORREGIDO: PCF mejorado para sombras mÃ¡s suaves
 float SampleShadowMapPCF(vec3 projCoords, float bias) {
     vec2 texelSize = 1.0 / textureSize(uShadowMap, 0);
     float shadow = 0.0;
@@ -174,7 +185,7 @@ float SampleShadowMapPCF(vec3 projCoords, float bias) {
     // CORREGIDO: PCF adaptivo - menos muestras, mejor rendimiento y claridad
     for(int x = -1; x <= 1; ++x) {
         for(int y = -1; y <= 1; ++y) {
-            vec2 offset = vec2(x, y) * texelSize * 0.25; // Sampling más fino para evitar blur
+            vec2 offset = vec2(x, y) * texelSize * 0.25; // Sampling mÃ¡s fino para evitar blur
             vec3 sampleCoords = vec3(projCoords.xy + offset, biasedDepth);
             shadow += texture(uShadowMap, sampleCoords);
             samples++;
@@ -184,15 +195,15 @@ float SampleShadowMapPCF(vec3 projCoords, float bias) {
     return shadow / float(samples);
 }
 
-// Versión mínima - casi idéntica a tu código original
+// Versiï¿½n mï¿½nima - casi idï¿½ntica a tu cï¿½digo original
 float CalculateShadow(vec3 lightDir) {
     if (!uEnableShadows || !uHasDirLight) {
         return 1.0;
     }
     
-    // CORREGIDO: Verificar distancia desde la cámara para sombras adaptivas
+    // CORREGIDO: Verificar distancia desde la cï¿½mara para sombras adaptivas
     float distanceFromCamera = length(uViewPos - FragPos);
-    if (distanceFromCamera > 20.0) { // Máxima distancia de sombras
+    if (distanceFromCamera > 20.0) { // Mï¿½xima distancia de sombras
         return 1.0; // Sin sombras muy lejos
     }
     
@@ -209,18 +220,18 @@ float CalculateShadow(vec3 lightDir) {
         return 1.0; // Outside shadow map
     }
     
-    // CORREGIDO: Bias adaptivo basado en distancia y ángulo
+    // CORREGIDO: Bias adaptivo basado en distancia y ï¿½ngulo
     vec3 normal = normalize(Normal);
     float NdotL = max(dot(normal, lightDir), 0.0);
     
-    // Bias más pequeño para objetos cercanos, más grande para lejanos
+    // Bias mï¿½s pequeï¿½o para objetos cercanos, mï¿½s grande para lejanos
     float distanceFactor = smoothstep(0.5, 10.0, distanceFromCamera);
     float baseBias = mix(uShadowBias * 0.2, uShadowBias, distanceFactor);
     
     float dynamicBias = baseBias * (1.0 + (1.0 - NdotL) * 0.3);
     float bias = clamp(dynamicBias, baseBias * 0.5, baseBias * 2.0);
     
-    // Use PCF for smoother shadows (igual que tu código original)
+    // Use PCF for smoother shadows (igual que tu cï¿½digo original)
     float shadow = SampleShadowMapPCF(projCoords, bias);
     
     // CORREGIDO: Apply shadow strength con desvanecimiento suave por distancia
@@ -236,7 +247,103 @@ float CalculateShadow(vec3 lightDir) {
     return mix(1.0 - uShadowStrength, 1.0, finalShadow);
 }
 
-// Mantén tu función SampleShadowMapPCF original tal como estaba
+// VersiÃ³n PCF parametrizada para otros tipos de sombras
+float SampleShadowMapPCFCustom(sampler2DShadow shadowMap, vec3 projCoords, float bias) {
+    vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
+    float shadow = 0.0;
+    int samples = 0;
+    
+    // Aplicar bias a la coordenada Z una sola vez
+    float biasedDepth = projCoords.z - bias;
+    
+    // PCF sampling
+    for(int x = -1; x <= 1; ++x) {
+        for(int y = -1; y <= 1; ++y) {
+            vec2 offset = vec2(x, y) * texelSize * 0.25;
+            vec3 sampleCoords = vec3(projCoords.xy + offset, biasedDepth);
+            shadow += texture(shadowMap, sampleCoords);
+            samples++;
+        }    
+    }
+    
+    return shadow / float(samples);
+}
+
+// Sombras para spot lights
+float CalculateSpotShadow(int lightIndex, vec3 lightDir) {
+    if (!uEnableShadows || !uEnableSpotShadows || lightIndex >= 2) {
+        return 1.0;
+    }
+    
+    // Verificar distancia para optimizaciÃ³n
+    float distanceFromCamera = length(uViewPos - FragPos);
+    if (distanceFromCamera > 25.0) {
+        return 1.0;
+    }
+    
+    // Perform perspective divide
+    vec3 projCoords = FragPosSpotLightSpace[lightIndex].xyz / FragPosSpotLightSpace[lightIndex].w;
+    
+    // Transform to [0,1] range
+    projCoords = projCoords * 0.5 + 0.5;
+    
+    // Check if we're outside the shadow map bounds
+    if (projCoords.x < 0.0 || projCoords.x > 1.0 || 
+        projCoords.y < 0.0 || projCoords.y > 1.0 || 
+        projCoords.z > 1.0) {
+        return 1.0;
+    }
+    
+    // Calculate bias similar to directional shadow
+    vec3 normal = normalize(Normal);
+    float NdotL = max(dot(normal, lightDir), 0.0);
+    float bias = max(uShadowBias * (1.0 - NdotL), uShadowBias * 0.1);
+    
+    // Sample shadow map with PCF
+    float shadow = SampleShadowMapPCFCustom(uSpotShadowMaps[lightIndex], projCoords, bias);
+    
+    // Apply shadow strength
+    return mix(1.0 - uShadowStrength, 1.0, shadow);
+}
+
+// Sampling para point light shadows (cube map)
+float SamplePointShadowMap(samplerCubeShadow shadowMap, vec3 lightPos, vec3 fragPos, float farPlane, float bias) {
+    vec3 lightToFrag = fragPos - lightPos;
+    float currentDepth = length(lightToFrag) / farPlane;
+    
+    // Normalizar la direcciÃ³n
+    vec3 lightDir = normalize(lightToFrag);
+    
+    // Simple cube map sampling (sin PCF por performance)
+    float shadow = texture(shadowMap, vec4(lightDir, currentDepth - bias));
+    
+    return shadow;
+}
+
+// Sombras para point lights
+float CalculatePointShadow(int lightIndex, vec3 lightPos) {
+    if (!uEnableShadows || !uEnablePointShadows || lightIndex >= 4) {
+        return 1.0;
+    }
+    
+    // Verificar distancia para optimizaciÃ³n
+    float distanceFromCamera = length(uViewPos - FragPos);
+    if (distanceFromCamera > 20.0) {
+        return 1.0;
+    }
+    
+    // Calculate bias
+    vec3 normal = normalize(Normal);
+    vec3 lightDir = normalize(lightPos - FragPos);
+    float NdotL = max(dot(normal, lightDir), 0.0);
+    float bias = max(uShadowBias * (1.0 - NdotL), uShadowBias * 0.1);
+    
+    // Sample cube shadow map
+    float shadow = SamplePointShadowMap(uPointShadowMaps[lightIndex], lightPos, FragPos, uPointShadowFarPlanes[lightIndex], bias);
+    
+    // Apply shadow strength
+    return mix(1.0 - uShadowStrength, 1.0, shadow);
+}
 
 void main() {
     vec2 texCoord = TexCoord * uTiling;
@@ -289,7 +396,7 @@ void main() {
     // View direction
     vec3 V = normalize(uViewPos - FragPos);
     
-    // Verificar que V es válido
+    // Verificar que V es vï¿½lido
     if (length(V) < 0.1) V = vec3(0.0, 0.0, 1.0);
     
     // Calculate lighting
@@ -307,7 +414,7 @@ void main() {
         float shadowFactor = CalculateShadow(L);
         
         if (uUsePBR) {
-            // Ajustar intensidad basada en el ángulo de incidencia
+            // Ajustar intensidad basada en el ï¿½ngulo de incidencia
             float NdotL = max(dot(N, L), 0.0);
             vec3 adjustedColor = uDirLightColor * uDirLightIntensity * NdotL;
             lightContrib = CalculatePBRLighting(albedo, metallic, roughness, N, V, L, adjustedColor);
@@ -324,24 +431,24 @@ void main() {
         vec3 L = normalize(uPointLightPositions[i] - FragPos);
         float distance = length(uPointLightPositions[i] - FragPos);
         
-        // Early exit si está fuera del rango
+        // Early exit si estï¿½ fuera del rango
         if (distance > uPointLightMaxDistances[i]) continue;
         
-        // Atenuación física más realista con rango configurable
+        // Atenuaciï¿½n fï¿½sica mï¿½s realista con rango configurable
         float constant = uPointLightAttenuations[i].x;
         float linear = uPointLightAttenuations[i].y;
         float quadratic = uPointLightAttenuations[i].z;
         
-        // Calcular atenuación base
+        // Calcular atenuaciï¿½n base
         float attenuation = 1.0 / (constant + linear * distance + quadratic * distance * distance);
         
-        // Aplicar rango mínimo y máximo
+        // Aplicar rango mï¿½nimo y mï¿½ximo
         float rangeAttenuation = 1.0;
         if (distance < uPointLightMinDistances[i]) {
-            // Suavizar transición cerca de la luz
+            // Suavizar transiciï¿½n cerca de la luz
             rangeAttenuation = smoothstep(0.0, uPointLightMinDistances[i], distance);
         } else if (distance > uPointLightMaxDistances[i] * 0.75) {
-            // Suavizar transición en el borde máximo
+            // Suavizar transiciï¿½n en el borde mï¿½ximo
             rangeAttenuation = smoothstep(uPointLightMaxDistances[i], uPointLightMaxDistances[i] * 0.75, distance);
         }
         
@@ -356,7 +463,10 @@ void main() {
             lightContrib = CalculateBlinnPhongLighting(albedo, shininess, N, V, L, lightColor);
         }
         
-        Lo += lightContrib;
+        // Calculate point light shadow
+        float shadowFactor = CalculatePointShadow(i, uPointLightPositions[i]);
+        
+        Lo += lightContrib * shadowFactor;
     }
     
     // Spot Lights
@@ -364,17 +474,17 @@ void main() {
         vec3 lightDir = uSpotLightPositions[i] - FragPos;
         float distance = length(lightDir);
         
-        // Early exit si está fuera del rango
+        // Early exit si estï¿½ fuera del rango
         if (distance > uSpotLightRanges[i]) continue;
         
         vec3 L = normalize(lightDir);
         
-        // Calcular atenuación por distancia con rango máximo
+        // Calcular atenuaciï¿½n por distancia con rango mï¿½ximo
         float distanceRatio = distance / uSpotLightRanges[i];
         float attenuation = 1.0 / (1.0 + 0.09 * distance + 0.032 * distance * distance);
         attenuation *= 1.0 - smoothstep(0.75, 1.0, distanceRatio);
         
-        // Calcular ángulo entre dirección de la luz y dirección al fragmento
+        // Calcular ï¿½ngulo entre direcciï¿½n de la luz y direcciï¿½n al fragmento
         float theta = dot(L, normalize(-uSpotLightDirections[i]));
         float epsilon = cos(uSpotLightCutOffs[i]) - cos(uSpotLightOuterCutOffs[i]);
         float spotIntensity = clamp((theta - cos(uSpotLightOuterCutOffs[i])) / epsilon, 0.0, 1.0);
@@ -382,7 +492,7 @@ void main() {
         // Suavizar los bordes del cono de luz
         spotIntensity = smoothstep(0.0, 1.0, spotIntensity);
         
-        // Agregar atenuación radial desde el centro del cono
+        // Agregar atenuaciï¿½n radial desde el centro del cono
         float radialFalloff = 1.0 - length(cross(L, normalize(-uSpotLightDirections[i])));
         radialFalloff = smoothstep(0.0, 0.5, radialFalloff);
         
@@ -401,7 +511,10 @@ void main() {
             lightContrib = CalculateBlinnPhongLighting(albedo, shininess, N, V, L, lightColor);
         }
         
-        Lo += lightContrib;
+        // Calculate spot light shadow
+        float shadowFactor = CalculateSpotShadow(i, L);
+        
+        Lo += lightContrib * shadowFactor;
     }
     
     // Ambient lighting (mejorado para PBR)
@@ -411,9 +524,9 @@ void main() {
         vec3 ambientFactor = mix(vec3(0.03), albedo, metallic);
         ambient = uAmbientLight * albedo * ao * (1.0 - metallic * 0.5);
     } else {
-        // Ambient mejorado para preservar saturación
+        // Ambient mejorado para preservar saturaciï¿½n
         vec3 ambientColor = uAmbientLight * albedo * ao;
-        // Aplicar saturación preservada
+        // Aplicar saturaciï¿½n preservada
         float luminance = dot(ambientColor, vec3(0.299, 0.587, 0.114));
         ambient = mix(ambientColor, albedo * luminance, 0.3); // Preservar 30% del color original
     }
@@ -427,7 +540,7 @@ void main() {
     // Aplicar exposure
     color = color * uExposure;
     
-    // Aplicar saturación
+    // Aplicar saturaciï¿½n
     float luminance = dot(color, vec3(0.299, 0.587, 0.114));
     color = mix(vec3(luminance), color, uSaturation);
     

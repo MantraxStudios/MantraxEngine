@@ -15,13 +15,17 @@ uniform mat4 projection;
 uniform bool uUseModelNormals; // Flag para usar normales del modelo o calcular del cubo
 
 // Shadow mapping uniforms
-uniform mat4 uLightSpaceMatrix;
+uniform mat4 uLightSpaceMatrix;      // Para luz direccional
+// Spot light shadow matrices (opcional)
+uniform mat4 uSpotLightMatrices[2];
 
 out vec2 TexCoord;
 out vec3 FragPos;
 out vec3 Normal;
 out mat3 TBN;
 out vec4 FragPosLightSpace; // Light space position for simple shadows
+// Spot light positions (opcional)
+out vec4 FragPosSpotLightSpace[2];
 
 void main() {
     TexCoord = aTexCoord;
@@ -29,12 +33,17 @@ void main() {
     // CORREGIDO: Reconstruir la matriz de instancia desde los 4 vec4
     mat4 aInstanceMatrix = mat4(aInstanceMatrix_0, aInstanceMatrix_1, aInstanceMatrix_2, aInstanceMatrix_3);
     
-    // Transformar posición
+    // Transformar posiciï¿½n
     vec4 worldPos = aInstanceMatrix * vec4(aPos, 1.0);
     FragPos = worldPos.xyz;
     
-    // Calcular posición en espacio de luz
+    // Calcular posiciï¿½n en espacio de luz
     FragPosLightSpace = uLightSpaceMatrix * worldPos;
+    
+    // Calcular posiciones para spot lights (opcional)
+    for (int i = 0; i < 2; i++) {
+        FragPosSpotLightSpace[i] = uSpotLightMatrices[i] * worldPos;
+    }
     
     // Matriz normal para transformar normales correctamente
     mat3 normalMatrix = mat3(transpose(inverse(aInstanceMatrix)));
@@ -47,7 +56,7 @@ void main() {
         tangent = normalize(normalMatrix * aTangent);
         bitangent = normalize(normalMatrix * aBitangent);
     } else {
-        // Calcular normales del cubo basadas en la posición local
+        // Calcular normales del cubo basadas en la posiciï¿½n local
         normal = normalize(normalMatrix * normalize(aPos));
         tangent = normalize(normalMatrix * vec3(1.0, 0.0, 0.0));
         bitangent = normalize(normalMatrix * vec3(0.0, 1.0, 0.0));
