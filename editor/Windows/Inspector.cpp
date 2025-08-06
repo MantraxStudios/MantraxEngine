@@ -234,7 +234,6 @@ void Inspector::RenderComponentsSection(GameObject* go) {
 //            {
 //                std::cout << "\n--- Processing variable: " << name << " ---" << std::endl;
 //                std::cout << "Type stored: " << anyPtr.type().name() << std::endl;
-//
 //                try {
 //                    // Float*
 //                    if (anyPtr.type() == typeid(float*))

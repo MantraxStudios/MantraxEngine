@@ -6,6 +6,8 @@
 #include <limits>
 #include <vector>
 
+#include "../core/FileSystem.h"
+
 ShadowManager::ShadowManager() 
     : initialized(false)
     , shadowMapSize(4096)
@@ -99,35 +101,18 @@ void ShadowManager::createFramebuffer() {
 }
 
 void ShadowManager::createShadowShader() {
-    const char* vertexShaderSource = R"(
-#version 330 core
-layout (location = 0) in vec3 aPos;
-// CORREGIDO: Usar locations 2-5 para instanced rendering como en tu AssimpGeometry
-layout (location = 2) in vec4 aInstanceMatrix_0;
-layout (location = 3) in vec4 aInstanceMatrix_1;
-layout (location = 4) in vec4 aInstanceMatrix_2;
-layout (location = 5) in vec4 aInstanceMatrix_3;
 
-uniform mat4 uLightSpaceMatrix;
+    std::string _Vert;
+    std::string _Frag;
 
-void main() {
-    // Reconstruir la matriz de instancia desde los 4 vec4
-    mat4 aInstanceMatrix = mat4(aInstanceMatrix_0, aInstanceMatrix_1, aInstanceMatrix_2, aInstanceMatrix_3);
-    gl_Position = uLightSpaceMatrix * aInstanceMatrix * vec4(aPos, 1.0);
-}
-)";
+    FileSystem::readString("engine/shaders/ShadowVert.glsl", _Vert);
+    FileSystem::readString("engine/shaders/ShadowFrag.glsl", _Frag);
+    const char* vertSource = _Vert.c_str();
+    const char* fragSource = _Frag.c_str();
 
-    const char* fragmentShaderSource = R"(
-#version 330 core
-
-void main() {
-    // gl_FragDepth is automatically written
-}
-)";
-    
     // Create vertex shader
     GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertexShaderSource, nullptr);
+    glShaderSource(vertexShader, 1, &vertSource, nullptr);
     glCompileShader(vertexShader);
     
     // Check compilation
@@ -141,7 +126,7 @@ void main() {
     
     // Create fragment shader
     GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragmentShaderSource, nullptr);
+    glShaderSource(fragmentShader, 1, &fragSource, nullptr);
     glCompileShader(fragmentShader);
     
     glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
