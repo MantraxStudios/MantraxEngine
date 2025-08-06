@@ -14,6 +14,7 @@
 #include "../components/GameObject.h"
 #include <GL/glew.h>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
 #include <algorithm>
 #include <cstddef>
@@ -182,14 +183,54 @@ void RenderPipeline::renderFrame() {
         shadowManager->bindShadowMap(program);
         shadowManager->setupShadowUniforms(program);
         
+        // Configurar shadow maps avanzados para spot y point lights
+        std::vector<std::shared_ptr<Light>> spotLightsForShadows;
+        std::vector<std::shared_ptr<Light>> pointLightsForShadows;
+        
+        // Recopilar spot y point lights para sombras
+        for (auto& light : lights) {
+            if (!light->isEnabled()) continue;
+            
+            if (light->getType() == LightType::Spot && spotLightsForShadows.size() < 2) {
+                spotLightsForShadows.push_back(light);
+            } else if (light->getType() == LightType::Point && pointLightsForShadows.size() < 4) {
+                pointLightsForShadows.push_back(light);
+            }
+        }
+        
+        // Configurar shadow maps avanzados si tenemos luces spot o point
+        if (!spotLightsForShadows.empty() || !pointLightsForShadows.empty()) {
+            shadowManager->bindAllShadowMaps(program);
+            shadowManager->setupAllShadowUniforms(program, spotLightsForShadows, pointLightsForShadows);
+        }
+        
         // Enable shadows in shader
         GLint enableShadowsLoc = glGetUniformLocation(program, "uEnableShadows");
         glUniform1i(enableShadowsLoc, 1);
         std::cout << "RenderPipeline: uEnableShadows location: " << enableShadowsLoc << ", enabled" << std::endl;
+        
+        // Habilitar sombras de spot y point lights SOLO SI HAY LUCES
+        GLint enableSpotShadowsLoc = glGetUniformLocation(program, "uEnableSpotShadows");
+        GLint enablePointShadowsLoc = glGetUniformLocation(program, "uEnablePointShadows");
+        
+        // Solo habilitar spot shadows si tenemos spot lights con shadow maps
+        int spotShadowsEnabled = !spotLightsForShadows.empty() ? 1 : 0;
+        glUniform1i(enableSpotShadowsLoc, spotShadowsEnabled);
+        
+        // Habilitar point shadows si hay point lights
+        int pointShadowsEnabled = !pointLightsForShadows.empty() ? 1 : 0;
+        glUniform1i(enablePointShadowsLoc, pointShadowsEnabled);
+        
+        std::cout << "RenderPipeline: Spot shadows: " << (spotShadowsEnabled ? "enabled" : "disabled") 
+                  << ", Point shadows: disabled (performance)" << std::endl;
     } else {
         GLint enableShadowsLoc = glGetUniformLocation(program, "uEnableShadows");
+        GLint enableSpotShadowsLoc = glGetUniformLocation(program, "uEnableSpotShadows");
+        GLint enablePointShadowsLoc = glGetUniformLocation(program, "uEnablePointShadows");
         glUniform1i(enableShadowsLoc, 0);
-        std::cout << "RenderPipeline: Shadows disabled in shader (shadowsEnabled: " << shadowsEnabled << ", shadowManager: " << (shadowManager ? "valid" : "null") << ")" << std::endl;
+        glUniform1i(enableSpotShadowsLoc, 0);
+        glUniform1i(enablePointShadowsLoc, 0);
+        std::cout << "RenderPipeline: All shadows disabled in shader (shadowsEnabled: " << shadowsEnabled << ", shadowManager: " << (shadowManager ? "valid" : "null") << ")" << std::endl;
     }
 
     renderInstanced();
@@ -292,6 +333,23 @@ void RenderPipeline::configureLighting() {
         glUniform1f(glGetUniformLocation(program, ("uSpotLightCutOffs[" + std::to_string(i) + "]").c_str()), cutOff);
         glUniform1f(glGetUniformLocation(program, ("uSpotLightOuterCutOffs[" + std::to_string(i) + "]").c_str()), outerCutOff);
         glUniform1f(glGetUniformLocation(program, ("uSpotLightRanges[" + std::to_string(i) + "]").c_str()), light->getSpotRange());
+        
+        // CORREGIDO: Usar las matrices de sombra calculadas por el ShadowManager
+        if (shadowsEnabled && shadowManager) {
+            // Usar la matriz de spot light calculada por el shadow manager
+            const auto& spotMatrices = shadowManager->getSpotLightSpaceMatrices();
+            if (i < spotMatrices.size()) {
+                GLint spotMatrixLoc = glGetUniformLocation(program, ("uSpotLightMatrices[" + std::to_string(i) + "]").c_str());
+                if (spotMatrixLoc != -1) {
+                    glUniformMatrix4fv(spotMatrixLoc, 1, GL_FALSE, glm::value_ptr(spotMatrices[i]));
+                    std::cout << "RenderPipeline: Set spot light " << i << " matrix (location: " << spotMatrixLoc << ")" << std::endl;
+                } else {
+                    std::cout << "RenderPipeline: WARNING - Could not find uSpotLightMatrices[" << i << "] uniform!" << std::endl;
+                }
+            } else {
+                std::cout << "RenderPipeline: WARNING - No spot matrix available for light " << i << std::endl;
+            }
+        }
     }
 }
 
@@ -334,17 +392,40 @@ void RenderPipeline::renderInstanced() {
         // Skip empty groups
         if (objects.empty()) continue;
         
-        // Configurar material
+                // Configurar material y shadow maps en el orden correcto
+        GLuint program = shaders->getProgram();
+        
+        // 1. Configurar material primero
         if (key.material) {
             configureMaterial(key.material.get());
         } else {
             configureDefaultMaterial();
         }
         
-        		AssimpGeometry* geometry = key.geometry;
+        // 2. Configurar shadow maps después del material
+        if (shadowsEnabled && shadowManager) {
+            shadowManager->bindAllShadowMaps(program);
+            
+            // Recopilar luces para shadow maps
+            std::vector<std::shared_ptr<Light>> spotLightsForShadows;
+            std::vector<std::shared_ptr<Light>> pointLightsForShadows;
+            
+            for (auto& light : lights) {
+                if (!light->isEnabled()) continue;
+                
+                if (light->getType() == LightType::Spot && spotLightsForShadows.size() < 2) {
+                    spotLightsForShadows.push_back(light);
+                } else if (light->getType() == LightType::Point && pointLightsForShadows.size() < 4) {
+                    pointLightsForShadows.push_back(light);
+                }
+            }
+            
+            shadowManager->setupAllShadowUniforms(program, spotLightsForShadows, pointLightsForShadows);
+        }
+        
+        AssimpGeometry* geometry = key.geometry;
         
         // Configurar si usa normales de modelo
-        GLuint program = shaders->getProgram();
         glUniform1i(glGetUniformLocation(program, "uUseModelNormals"), geometry->usesModelNormals() ? 1 : 0);
         
         // Optimización: usar instanced rendering para grupos grandes
@@ -398,8 +479,11 @@ void RenderPipeline::configureMaterial(Material* material) {
     glUniform1i(glGetUniformLocation(program, "uHasEmissiveTexture"), material->hasEmissiveTexture());
     glUniform1i(glGetUniformLocation(program, "uHasAOTexture"), material->hasAOTexture());
     
-    // Bind texturas
+    // Bind texturas del material
     material->bindTextures();
+    
+    // CRÍTICO: Rebindear TODOS los shadow maps después de bindear texturas del material
+    rebindShadowMapsAfterMaterial(program);
 }
 
 void RenderPipeline::configureDefaultMaterial() {
@@ -420,6 +504,40 @@ void RenderPipeline::configureDefaultMaterial() {
     glUniform1i(glGetUniformLocation(program, "uHasRoughnessTexture"), 0);
     glUniform1i(glGetUniformLocation(program, "uHasEmissiveTexture"), 0);
     glUniform1i(glGetUniformLocation(program, "uHasAOTexture"), 0);
+    
+    // CRÍTICO: También rebindear shadow maps después del material por defecto
+    rebindShadowMapsAfterMaterial(program);
+}
+
+// Método helper para rebindear shadow maps después de cualquier configuración de material
+void RenderPipeline::rebindShadowMapsAfterMaterial(GLuint program) {
+    if (!shadowsEnabled || !shadowManager) return;
+    
+    std::cout << "RenderPipeline: CRÍTICO - Rebindeando shadow maps después de configurar material..." << std::endl;
+    
+    // Recopilar luces para shadow maps avanzados
+    std::vector<std::shared_ptr<Light>> spotLightsForShadows;
+    std::vector<std::shared_ptr<Light>> pointLightsForShadows;
+    
+    for (auto& light : lights) {
+        if (!light->isEnabled()) continue;
+        
+        if (light->getType() == LightType::Spot && spotLightsForShadows.size() < 2) {
+            spotLightsForShadows.push_back(light);
+        } else if (light->getType() == LightType::Point && pointLightsForShadows.size() < 4) {
+            pointLightsForShadows.push_back(light);
+        }
+    }
+    
+    // ESTRATEGIA AGRESIVA: Siempre rebindear TODOS los shadow maps Y uniforms
+    shadowManager->bindAllShadowMaps(program);
+    shadowManager->setupAllShadowUniforms(program, spotLightsForShadows, pointLightsForShadows);
+    
+    // También rebindear el shadow map básico por seguridad
+    shadowManager->bindShadowMap(program);
+    shadowManager->setupShadowUniforms(program);
+    
+    std::cout << "RenderPipeline: Shadow maps Y uniforms rebindeados completamente después de material" << std::endl;
 }
 
 void RenderPipeline::renderNonInstanced() {
@@ -709,9 +827,9 @@ void RenderPipeline::renderShadowPass() {
         return;
     }
     
-    std::cout << "RenderPipeline: Looking for directional lights (" << lights.size() << " total lights)" << std::endl;
+    std::cout << "RenderPipeline: Looking for lights (" << lights.size() << " total lights)" << std::endl;
     
-    // Find directional light for shadow casting
+    // Find directional light for shadow casting (opcional)
     std::shared_ptr<Light> directionalLight = nullptr;
     for (const auto& light : lights) {
         std::cout << "RenderPipeline: Checking light - Type: " << (int)light->getType() 
@@ -722,19 +840,103 @@ void RenderPipeline::renderShadowPass() {
         }
     }
     
+    // CORREGIDO: Permitir spot light shadows aún sin directional light
     if (!directionalLight) {
-        std::cout << "RenderPipeline: No directional light found for shadows!" << std::endl;
-        return; // No directional light for shadows
+        std::cout << "RenderPipeline: No directional light found, but continuing with spot/point lights" << std::endl;
     }
     
-    std::cout << "RenderPipeline: Found directional light for shadows" << std::endl;
+    if (directionalLight) {
+        std::cout << "RenderPipeline: Found directional light for shadows" << std::endl;
+    }
     
-    // Begin shadow pass
-    shadowManager->beginShadowPass(directionalLight, camera);
+    // Recopilar luces spot y point para shadow rendering
+    std::vector<std::shared_ptr<Light>> spotLightsForShadows;
+    std::vector<std::shared_ptr<Light>> pointLightsForShadows;
     
-    // Render shadow map (simple shadows - no cascades)
-    std::cout << "RenderPipeline: Rendering simple shadow map with " << sceneObjects.size() << " scene objects" << std::endl;
+    for (const auto& light : lights) {
+        if (!light->isEnabled()) continue;
+        
+        if (light->getType() == LightType::Spot && spotLightsForShadows.size() < 2) {
+            spotLightsForShadows.push_back(light);
+        } else if (light->getType() == LightType::Point && pointLightsForShadows.size() < 4) {
+            pointLightsForShadows.push_back(light);
+        }
+    }
     
+    // Preparar spot y point shadow passes (calcular matrices) solo si hay luces
+    bool hasSpotLights = !spotLightsForShadows.empty();
+    bool hasPointLights = !pointLightsForShadows.empty();
+    
+    if (hasSpotLights) {
+        std::cout << "RenderPipeline: Initializing spot shadow pass for " << spotLightsForShadows.size() << " lights" << std::endl;
+        shadowManager->beginSpotShadowPass(spotLightsForShadows, camera);
+    }
+    
+    if (hasPointLights) {
+        std::cout << "RenderPipeline: Initializing point shadow pass for " << pointLightsForShadows.size() << " lights" << std::endl;
+        shadowManager->beginPointShadowPass(pointLightsForShadows, camera);
+    }
+    
+    // 1. Render directional light shadow map (solo si hay directional light)
+    if (directionalLight) {
+        std::cout << "RenderPipeline: Rendering directional light shadow map" << std::endl;
+        shadowManager->beginShadowPass(directionalLight, camera);
+        renderShadowGeometry();
+        shadowManager->endShadowPass();
+    } else {
+        std::cout << "RenderPipeline: Skipping directional light shadow map (no directional light)" << std::endl;
+    }
+    
+    // 2. Render spot light shadow maps (solo si hay spot lights)
+    if (!spotLightsForShadows.empty()) {
+        std::cout << "RenderPipeline: Rendering " << spotLightsForShadows.size() << " spot light shadow maps" << std::endl;
+        for (size_t i = 0; i < spotLightsForShadows.size() && i < 2; i++) {
+            auto& light = spotLightsForShadows[i];
+            glm::mat4 spotMatrix = shadowManager->getSpotLightSpaceMatrices()[i];
+            
+            std::cout << "RenderPipeline: Rendering spot light " << i << " shadow map" << std::endl;
+            shadowManager->beginSingleSpotShadowRender(i, spotMatrix);
+            renderShadowGeometry();
+            shadowManager->endSingleSpotShadowRender();
+        }
+    } else {
+        std::cout << "RenderPipeline: No spot lights for shadows, skipping spot shadow maps" << std::endl;
+    }
+    
+    // 3. Point light shadow maps - HABILITADO CON RENDIMIENTO OPTIMIZADO
+    if (!pointLightsForShadows.empty()) {
+        std::cout << "RenderPipeline: Rendering " << pointLightsForShadows.size() << " point light shadow maps" << std::endl;
+        for (size_t i = 0; i < pointLightsForShadows.size() && i < 4; i++) {
+            auto& light = pointLightsForShadows[i];
+            glm::vec3 lightPos = light->getPosition();
+            float farPlane = light->getMaxDistance();
+            
+            // Renderizar las 6 caras del cube map
+            std::vector<glm::mat4> viewMatrices = shadowManager->calculatePointLightViewMatrices(lightPos);
+            for (int face = 0; face < 6; face++) {
+                glm::mat4 lightSpaceMatrix = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, farPlane) * viewMatrices[face];
+                
+                std::cout << "RenderPipeline: Rendering point light " << i << " face " << face << " shadow map" << std::endl;
+                shadowManager->beginSinglePointShadowRender(i, face, lightSpaceMatrix);
+                renderShadowGeometry();
+                shadowManager->endSinglePointShadowRender();
+            }
+        }
+    } else {
+        std::cout << "RenderPipeline: No point lights for shadows, skipping point shadow maps" << std::endl;
+    }
+    
+    // End shadow passes (solo si se iniciaron)
+    if (hasSpotLights) {
+        shadowManager->endSpotShadowPass();
+    }
+    if (hasPointLights) {
+        shadowManager->endPointShadowPass();
+    }
+}
+
+// Helper method for rendering geometry during shadow passes
+void RenderPipeline::renderShadowGeometry() {
     // Render all objects from light's perspective
     std::map<MaterialGeometryKey, std::vector<GameObject*>> geometryGroups;
     int validObjects = 0;
@@ -750,9 +952,9 @@ void RenderPipeline::renderShadowPass() {
         validObjects++;
     }
     
-    std::cout << "RenderPipeline: Shadow pass - " << validObjects << " valid objects in " << geometryGroups.size() << " geometry groups" << std::endl;
+    std::cout << "RenderPipeline: Shadow pass rendering " << validObjects << " objects in " << geometryGroups.size() << " groups" << std::endl;
     
-    // Render each geometry group
+    // Render each geometry group with instanced rendering
     for (auto& group : geometryGroups) {
         auto& objects = group.second;
         AssimpGeometry* geometry = group.first.geometry;
@@ -766,6 +968,7 @@ void RenderPipeline::renderShadowPass() {
             
             geometry->updateInstanceBuffer(modelMatrices);
             geometry->drawInstanced(modelMatrices);
+            std::cout << "RenderPipeline: Shadow pass rendered " << objects.size() << " instanced objects" << std::endl;
         } else if (!objects.empty()) {
             // Single object
             GameObject* obj = objects[0];
@@ -774,11 +977,9 @@ void RenderPipeline::renderShadowPass() {
             std::vector<glm::mat4> singleInstance = { model };
             geometry->updateInstanceBuffer(singleInstance);
             geometry->drawInstanced(singleInstance);
+            std::cout << "RenderPipeline: Shadow pass rendered 1 object" << std::endl;
         }
     }
-    
-    // End shadow pass
-    shadowManager->endShadowPass();
 }
 
 // Shadow mapping methods

@@ -60,7 +60,7 @@ GLuint DefaultShaders::compileShader(GLenum type, const std::string& source) {
 
 // Post-processing uniform setters
 void DefaultShaders::setExposure(float exposure) {
-    glUseProgram(program);
+    // NOTE: No llamar glUseProgram aquí - usar el programa activo
     GLint location = glGetUniformLocation(program, "uExposure");
     if (location != -1) {
         glUniform1f(location, exposure);
@@ -68,7 +68,7 @@ void DefaultShaders::setExposure(float exposure) {
 }
 
 void DefaultShaders::setSaturation(float saturation) {
-    glUseProgram(program);
+    // NOTE: No llamar glUseProgram aquí - usar el programa activo
     GLint location = glGetUniformLocation(program, "uSaturation");
     if (location != -1) {
         glUniform1f(location, saturation);
@@ -76,7 +76,7 @@ void DefaultShaders::setSaturation(float saturation) {
 }
 
 void DefaultShaders::setSmoothness(float smoothness) {
-    glUseProgram(program);
+    // NOTE: No llamar glUseProgram aquí - usar el programa activo
     GLint location = glGetUniformLocation(program, "uSmoothness");
     if (location != -1) {
         glUniform1f(location, smoothness);

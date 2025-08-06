@@ -365,6 +365,9 @@ void Material::bindTextures() const {
     if (aoTexture) {
         aoTexture->bind(5);
     }
+    
+    // CRÍTICO: Restaurar la unidad de textura activa a 0 para no interferir con shadow maps
+    glActiveTexture(GL_TEXTURE0);
 }
 
 void Material::unbindTextures() const {

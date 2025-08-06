@@ -75,11 +75,11 @@ uniform float uShadowBias = 0.001;
 uniform float uShadowStrength = 0.7;
 
 // Spot Light Shadow Mapping (opcional)
-uniform bool uEnableSpotShadows = false;
+uniform bool uEnableSpotShadows = true;
 uniform sampler2DShadow uSpotShadowMaps[2];
 
 // Point Light Shadow Mapping (opcional)
-uniform bool uEnablePointShadows = false;
+uniform bool uEnablePointShadows = true;
 uniform samplerCubeShadow uPointShadowMaps[4];
 uniform float uPointShadowFarPlanes[4];
 
@@ -247,31 +247,55 @@ float CalculateShadow(vec3 lightDir) {
     return mix(1.0 - uShadowStrength, 1.0, finalShadow);
 }
 
-// Versión PCF parametrizada para otros tipos de sombras
+// Versión PCF mejorada para spot lights
 float SampleShadowMapPCFCustom(sampler2DShadow shadowMap, vec3 projCoords, float bias) {
     vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
     float shadow = 0.0;
-    int samples = 0;
+    float samples = 0.0;
     
-    // Aplicar bias a la coordenada Z una sola vez
-    float biasedDepth = projCoords.z - bias;
+    // Aplicar bias a la coordenada Z con clamping
+    float biasedDepth = clamp(projCoords.z - bias, 0.0, 1.0);
     
-    // PCF sampling
-    for(int x = -1; x <= 1; ++x) {
-        for(int y = -1; y <= 1; ++y) {
-            vec2 offset = vec2(x, y) * texelSize * 0.25;
-            vec3 sampleCoords = vec3(projCoords.xy + offset, biasedDepth);
-            shadow += texture(shadowMap, sampleCoords);
-            samples++;
+    // PCF sampling con patrón optimizado para spot lights
+    float radius = 2.0; // Radio de sampling aumentado para sombras más suaves
+    int filterSize = 3; // Tamaño del kernel de filtrado
+    
+    for(int x = -filterSize; x <= filterSize; ++x) {
+        for(int y = -filterSize; y <= filterSize; ++y) {
+            vec2 offset = vec2(x, y) * texelSize * radius;
+            vec2 sampleCoords = projCoords.xy + offset;
+            
+            // Verificar que estamos dentro de los bounds con margen
+            if (sampleCoords.x >= 0.01 && sampleCoords.x <= 0.99 && 
+                sampleCoords.y >= 0.01 && sampleCoords.y <= 0.99) {
+                // Usar peso gaussiano basado en la distancia al centro
+                float weight = (1.0 - length(vec2(x, y)) / (filterSize * 1.5));
+                shadow += texture(shadowMap, vec3(sampleCoords, biasedDepth)) * weight;
+                samples += weight;
+            }
         }    
     }
     
-    return shadow / float(samples);
+    // Si no tenemos samples válidos, asumir que no hay sombra
+    if (samples < 0.0001) return 1.0;
+    
+    return shadow / samples;
 }
 
 // Sombras para spot lights
 float CalculateSpotShadow(int lightIndex, vec3 lightDir) {
+    // Verificar que el sistema esté habilitado y configurado
     if (!uEnableShadows || !uEnableSpotShadows || lightIndex >= 2) {
+        return 1.0;
+    }
+    
+    // DEBUG: Verificar valores válidos
+    if (lightIndex < 0) {
+        return 1.0;
+    }
+    
+    // Verificar que tenemos datos válidos de posición
+    if (FragPosSpotLightSpace[lightIndex].w <= 0.001) {
         return 1.0;
     }
     
@@ -294,13 +318,27 @@ float CalculateSpotShadow(int lightIndex, vec3 lightDir) {
         return 1.0;
     }
     
-    // Calculate bias similar to directional shadow
+    // Calculate bias similar to directional shadow with distance factor
     vec3 normal = normalize(Normal);
     float NdotL = max(dot(normal, lightDir), 0.0);
-    float bias = max(uShadowBias * (1.0 - NdotL), uShadowBias * 0.1);
+    
+    // Bias adaptivo basado en ángulo y distancia
+    float distanceFactor = clamp(distanceFromCamera / 15.0, 0.1, 2.0);
+    float baseBias = uShadowBias * distanceFactor;
+    float bias = max(baseBias * (1.0 - NdotL), baseBias * 0.1);
     
     // Sample shadow map with PCF
     float shadow = SampleShadowMapPCFCustom(uSpotShadowMaps[lightIndex], projCoords, bias);
+    
+    // Aplicar desvanecimiento suave en los bordes del shadow map
+    vec2 fadeFactors = vec2(
+        smoothstep(0.0, 0.1, projCoords.x) * smoothstep(1.0, 0.9, projCoords.x),
+        smoothstep(0.0, 0.1, projCoords.y) * smoothstep(1.0, 0.9, projCoords.y)
+    );
+    float edgeFade = fadeFactors.x * fadeFactors.y;
+    
+    // Mezclar shadow con edge fade
+    shadow = mix(1.0, shadow, edgeFade);
     
     // Apply shadow strength
     return mix(1.0 - uShadowStrength, 1.0, shadow);
@@ -309,18 +347,71 @@ float CalculateSpotShadow(int lightIndex, vec3 lightDir) {
 // Sampling para point light shadows (cube map)
 float SamplePointShadowMap(samplerCubeShadow shadowMap, vec3 lightPos, vec3 fragPos, float farPlane, float bias) {
     vec3 lightToFrag = fragPos - lightPos;
-    float currentDepth = length(lightToFrag) / farPlane;
+    float currentDepth = length(lightToFrag);
     
-    // Normalizar la dirección
+    // Normalizar la dirección para el cube map lookup
     vec3 lightDir = normalize(lightToFrag);
     
-    // Simple cube map sampling (sin PCF por performance)
-    float shadow = texture(shadowMap, vec4(lightDir, currentDepth - bias));
+    // Convertir la profundidad a [0,1] range
+    float normalizedDepth = currentDepth / farPlane;
+    
+    // Aplicar bias y clamping
+    float biasedDepth = clamp(normalizedDepth - bias, 0.0, 1.0);
+    
+    // PCF simple para cube maps (3x3 samples)
+    float shadow = 0.0;
+    vec3 sampleOffsetDirections[20] = vec3[]
+    (
+       vec3( 1,  1,  1), vec3( 1, -1,  1), vec3(-1, -1,  1), vec3(-1,  1,  1), 
+       vec3( 1,  1, -1), vec3( 1, -1, -1), vec3(-1, -1, -1), vec3(-1,  1, -1),
+       vec3( 1,  1,  0), vec3( 1, -1,  0), vec3(-1, -1,  0), vec3(-1,  1,  0),
+       vec3( 1,  0,  1), vec3(-1,  0,  1), vec3( 1,  0, -1), vec3(-1,  0, -1),
+       vec3( 0,  1,  1), vec3( 0, -1,  1), vec3( 0, -1, -1), vec3( 0,  1, -1)
+    );
+    
+    float diskRadius = 0.05;
+    int samples = 9; // Usar menos samples para mejor performance
+    for(int i = 0; i < samples; ++i) {
+        vec3 sampleDir = lightDir + sampleOffsetDirections[i] * diskRadius;
+        shadow += texture(shadowMap, vec4(normalize(sampleDir), biasedDepth));
+    }
+    shadow /= float(samples);
     
     return shadow;
 }
 
-// Sombras para point lights
+// Sombras simples para point lights (usa el directional shadow map como aproximación)
+float CalculateSimplePointShadow(int lightIndex, vec3 lightPos) {
+    if (!uEnableShadows || lightIndex >= 4) {
+        return 1.0;
+    }
+    
+    // Verificar distancia para optimización
+    float distanceFromCamera = length(uViewPos - FragPos);
+    float lightDistance = length(lightPos - FragPos);
+    
+    // Si estamos muy lejos de la cámara o muy lejos de la luz, no hay sombra
+    if (distanceFromCamera > 15.0 || lightDistance > 10.0) {
+        return 1.0;
+    }
+    
+    // Aproximación simple: usar el directional shadow map si estamos cerca de la luz
+    // y si hay un directional light activo
+    if (uHasDirLight && lightDistance < 5.0) {
+        // Usar una versión atenuada del directional shadow
+        float dirShadow = CalculateShadow(-uDirLightDirection);
+        
+        // Atenuar basado en distancia a la point light
+        float attenuation = 1.0 - smoothstep(2.0, 5.0, lightDistance);
+        
+        // Mezclar entre sombra completa y sin sombra basado en distancia
+        return mix(1.0, dirShadow, attenuation * 0.5); // 50% de intensidad máxima
+    }
+    
+    return 1.0; // Sin sombras si no aplica la aproximación
+}
+
+// Sombras completas para point lights usando cube maps
 float CalculatePointShadow(int lightIndex, vec3 lightPos) {
     if (!uEnableShadows || !uEnablePointShadows || lightIndex >= 4) {
         return 1.0;
@@ -328,20 +419,53 @@ float CalculatePointShadow(int lightIndex, vec3 lightPos) {
     
     // Verificar distancia para optimización
     float distanceFromCamera = length(uViewPos - FragPos);
-    if (distanceFromCamera > 20.0) {
+    float lightDistance = length(lightPos - FragPos);
+    
+    // Si estamos muy lejos de la cámara o muy lejos de la luz, no hay sombra
+    if (distanceFromCamera > 20.0 || lightDistance > uPointLightMaxDistances[lightIndex]) {
         return 1.0;
     }
     
-    // Calculate bias
-    vec3 normal = normalize(Normal);
-    vec3 lightDir = normalize(lightPos - FragPos);
-    float NdotL = max(dot(normal, lightDir), 0.0);
-    float bias = max(uShadowBias * (1.0 - NdotL), uShadowBias * 0.1);
+    // Usar cube map shadow sampling
+    vec3 lightToFrag = FragPos - lightPos;
+    float currentDepth = length(lightToFrag);
+    float farPlane = uPointShadowFarPlanes[lightIndex];
     
-    // Sample cube shadow map
-    float shadow = SamplePointShadowMap(uPointShadowMaps[lightIndex], lightPos, FragPos, uPointShadowFarPlanes[lightIndex], bias);
+    // Normalizar la profundidad
+    float normalizedDepth = currentDepth / farPlane;
     
-    // Apply shadow strength
+    // Aplicar bias
+    float bias = uShadowBias * 2.0; // Bias más grande para point lights
+    float biasedDepth = clamp(normalizedDepth - bias, 0.0, 1.0);
+    
+    // Normalizar la dirección para el cube map lookup
+    vec3 lightDir = normalize(lightToFrag);
+    
+    // PCF simple para cube maps
+    float shadow = 0.0;
+    float samples = 0.0;
+    float diskRadius = 0.05;
+    
+    // Vectores de offset para PCF
+    vec3 sampleOffsetDirections[20] = vec3[]
+    (
+       vec3( 1,  1,  1), vec3( 1, -1,  1), vec3(-1, -1,  1), vec3(-1,  1,  1), 
+       vec3( 1,  1, -1), vec3( 1, -1, -1), vec3(-1, -1, -1), vec3(-1,  1, -1),
+       vec3( 1,  1,  0), vec3( 1, -1,  0), vec3(-1, -1,  0), vec3(-1,  1,  0),
+       vec3( 1,  0,  1), vec3(-1,  0,  1), vec3( 1,  0, -1), vec3(-1,  0, -1),
+       vec3( 0,  1,  1), vec3( 0, -1,  1), vec3( 0, -1, -1), vec3( 0,  1, -1)
+    );
+    
+    // Tomar muestras del cube map
+    for(int i = 0; i < 20; ++i) {
+        vec3 sampleDir = lightDir + sampleOffsetDirections[i] * diskRadius;
+        shadow += texture(uPointShadowMaps[lightIndex], vec4(normalize(sampleDir), biasedDepth));
+        samples += 1.0;
+    }
+    
+    shadow /= samples;
+    
+    // Aplicar shadow strength
     return mix(1.0 - uShadowStrength, 1.0, shadow);
 }
 
@@ -463,7 +587,7 @@ void main() {
             lightContrib = CalculateBlinnPhongLighting(albedo, shininess, N, V, L, lightColor);
         }
         
-        // Calculate point light shadow
+        // Point light shadows con cube maps completos
         float shadowFactor = CalculatePointShadow(i, uPointLightPositions[i]);
         
         Lo += lightContrib * shadowFactor;
@@ -513,7 +637,6 @@ void main() {
         
         // Calculate spot light shadow
         float shadowFactor = CalculateSpotShadow(i, L);
-        
         Lo += lightContrib * shadowFactor;
     }
     

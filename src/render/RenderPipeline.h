@@ -137,8 +137,10 @@ private:
     void renderInstanced();
     void renderNonInstanced();
     void renderShadowPass(); // New method for shadow rendering
+    void renderShadowGeometry(); // Helper method for rendering geometry during shadow passes
     void configureMaterial(Material* material);
     void configureDefaultMaterial();
+    void rebindShadowMapsAfterMaterial(GLuint program);
     void configureLighting();
     bool isObjectVisible(GameObject* object, const Frustum& cameraFrustum) const;
     

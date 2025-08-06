@@ -42,7 +42,12 @@ void main() {
     
     // Calcular posiciones para spot lights (opcional)
     for (int i = 0; i < 2; i++) {
+        // Asegurarnos de que la matriz de spot light es válida
         FragPosSpotLightSpace[i] = uSpotLightMatrices[i] * worldPos;
+        // Verificar que w no es 0 para evitar divisiones por cero
+        if (abs(FragPosSpotLightSpace[i].w) < 0.00001) {
+            FragPosSpotLightSpace[i] = vec4(0.0, 0.0, 0.0, 1.0);
+        }
     }
     
     // Matriz normal para transformar normales correctamente
