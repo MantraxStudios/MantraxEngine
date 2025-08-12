@@ -6,6 +6,7 @@
 #include <nlohmann/json.hpp>
 #include <glm/glm.hpp>
 #include <iostream>
+#include <core/UIDGenerator.h>
 
 class GameObject;
 
@@ -88,6 +89,8 @@ public:
     virtual void enable() { isEnabled = true; }
     virtual void disable() { isEnabled = false; }
     bool isActive() const { return isEnabled && !isDestroyed; }
+
+    int id = UIDGenerator::Generate();
 
 protected:
     GameObject* owner = nullptr;

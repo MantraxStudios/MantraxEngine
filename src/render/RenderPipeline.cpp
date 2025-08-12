@@ -27,7 +27,7 @@
 
 RenderPipeline::RenderPipeline(Camera* cam, DefaultShaders* shd)
     : camera(cam), shaders(shd), targetFramebuffer(nullptr), usePBR(true), lowAmbient(false), ambientIntensity(1.0f),
-      frustumCullingEnabled(true), shadowsEnabled(true), shadowManager(nullptr), visibleObjectsCount(0), totalObjectsCount(0) {
+      frustumCullingEnabled(true), shadowsEnabled(false), shadowManager(nullptr), visibleObjectsCount(0), totalObjectsCount(0) {
 
     // FreeType is now handled by Canvas2D
     std::cout << "FreeType will be initialized by Canvas2D" << std::endl;
