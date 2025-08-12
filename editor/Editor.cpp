@@ -346,7 +346,9 @@ int main() {
         InputSystem::getInstance().update(Time::getDeltaTime());
 
         // Update scene
-        sceneManager.update(Time::getDeltaTime());
+        if (EditorInfo::IsPlaying) {
+            sceneManager.update(Time::getDeltaTime());
+        }
 
         // Update active scene pointer if it changed
         Scene* newActiveScene = sceneManager.getActiveScene();

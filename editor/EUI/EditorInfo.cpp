@@ -11,3 +11,4 @@ RenderPipeline* EditorInfo::pipeline = nullptr;
 std::string EditorInfo::currentScenePath;
 std::string EditorInfo::SelectedProject = "";
 std::string EditorInfo::SelectedProjectPath = "";
+bool EditorInfo::IsPlaying = false;

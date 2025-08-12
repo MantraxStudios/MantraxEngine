@@ -6,7 +6,7 @@
 #include <nlohmann/json.hpp>
 #include <glm/glm.hpp>
 #include <iostream>
-#include <core/UIDGenerator.h>
+#include "../core/UIDGenerator.h"
 
 class GameObject;
 

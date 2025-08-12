@@ -132,10 +132,7 @@ int RenderPipeline::getVisibleObjectsCount() const {
 void RenderPipeline::renderFrame() {
     // 1. Shadow pass - render to shadow maps first
     if (shadowsEnabled) {
-        std::cout << "RenderPipeline: Executing shadow pass (shadows enabled)" << std::endl;
         renderShadowPass();
-    } else {
-        std::cout << "RenderPipeline: Skipping shadow pass (shadows disabled)" << std::endl;
     }
     
     // 2. Main rendering pass
@@ -220,9 +217,6 @@ void RenderPipeline::renderFrame() {
         // Habilitar point shadows si hay point lights
         int pointShadowsEnabled = !pointLightsForShadows.empty() ? 1 : 0;
         glUniform1i(enablePointShadowsLoc, pointShadowsEnabled);
-        
-        std::cout << "RenderPipeline: Spot shadows: " << (spotShadowsEnabled ? "enabled" : "disabled") 
-                  << ", Point shadows: disabled (performance)" << std::endl;
     } else {
         GLint enableShadowsLoc = glGetUniformLocation(program, "uEnableShadows");
         GLint enableSpotShadowsLoc = glGetUniformLocation(program, "uEnableSpotShadows");
@@ -230,7 +224,6 @@ void RenderPipeline::renderFrame() {
         glUniform1i(enableShadowsLoc, 0);
         glUniform1i(enableSpotShadowsLoc, 0);
         glUniform1i(enablePointShadowsLoc, 0);
-        std::cout << "RenderPipeline: All shadows disabled in shader (shadowsEnabled: " << shadowsEnabled << ", shadowManager: " << (shadowManager ? "valid" : "null") << ")" << std::endl;
     }
 
     renderInstanced();

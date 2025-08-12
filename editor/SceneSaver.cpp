@@ -210,6 +210,23 @@ bool SceneSaver::LoadScene(const std::string& filepath) {
     std::string sceneName = FileSystem::getFileNameWithoutExtension(filepath);
     auto newScene = std::make_unique<Scene>(sceneName);
 
+    // 2. Configurar el RenderPipeline
+    if (auto currentScene = sceneManager.getActiveScene()) {
+        newScene->setRenderPipeline(currentScene->getRenderPipeline());
+        std::cout << "Loading Pipeline in current scene for the new scene" << std::endl;
+    }
+    else {
+        std::unique_ptr<DefaultShaders> shaders = std::make_unique<DefaultShaders>();
+        auto pipeline = std::make_unique<RenderPipeline>(newScene->getCamera(), shaders.get());
+        if (!pipeline->loadMaterialsFromConfig("config/materials_config.json")) {
+            std::cerr << "Error: Failed to load materials configuration" << std::endl;
+        }
+        else {
+            std::cout << "Materials Loaded" << std::endl;
+        }
+        newScene->setRenderPipeline(pipeline.get());
+    }
+
     // 3. Crear la cámara con información guardada o valores por defecto
     std::unique_ptr<Camera> camera;
     
@@ -263,23 +280,6 @@ bool SceneSaver::LoadScene(const std::string& filepath) {
     }
     
     newScene->setCamera(std::move(camera));
-
-    // 4. Configurar el RenderPipeline
-    if (auto currentScene = sceneManager.getActiveScene()) {
-        newScene->setRenderPipeline(currentScene->getRenderPipeline());
-        std::cout << "Loading Pipeline in current scene for the new scene" << std::endl;
-    }
-    else {
-        std::unique_ptr<DefaultShaders> shaders = std::make_unique<DefaultShaders>();
-        auto pipeline = std::make_unique<RenderPipeline>(newScene->getCamera(), shaders.get());
-        if (!pipeline->loadMaterialsFromConfig("config/materials_config.json")) {
-            std::cerr << "Error: Failed to load materials configuration" << std::endl;
-        }
-        else {
-            std::cout << "Materials Loaded" << std::endl;
-        }
-        newScene->setRenderPipeline(pipeline.get());
-    }
 
     if (!MainJson.contains("objects")) {
         std::cerr << "No hay 'objects' en el archivo de escena." << std::endl;
@@ -427,19 +427,19 @@ bool SceneSaver::LoadScene(const std::string& filepath) {
     // AmbientIntensity
     if (settings.contains("AmbientIntensity")) {
         float ambientIntensity = settings["AmbientIntensity"];
-        RenderPipeline::getInstance().setAmbientIntensity(ambientIntensity);
+        newScene.get()->getRenderPipeline()->setAmbientIntensity(ambientIntensity);
     }
 
     // LowAmbient
     if (settings.contains("LowAmbient")) {
         float lowAmbient = settings["LowAmbient"];
-        RenderPipeline::getInstance().setLowAmbient(lowAmbient);
+        newScene.get()->getRenderPipeline()->setLowAmbient(lowAmbient);
     }
 
     // LightType
     if (settings.contains("LightType")) {
         bool usePBR = settings["LightType"];
-        RenderPipeline::getInstance().setUsePBR(usePBR);
+        newScene.get()->getRenderPipeline()->setUsePBR(usePBR);
     }
 
     // CameraFov
@@ -451,7 +451,7 @@ bool SceneSaver::LoadScene(const std::string& filepath) {
     // FrustrumOn
     if (settings.contains("FrustrumOn")) {
         bool frustumOn = settings["FrustrumOn"];
-        RenderPipeline::getInstance().setFrustumCulling(frustumOn);
+        newScene.get()->getRenderPipeline()->setFrustumCulling(frustumOn);
     }
 
     // 7. Agregar la escena al manager y activar
