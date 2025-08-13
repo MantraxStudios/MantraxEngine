@@ -339,73 +339,58 @@ void Material::applyAutoConfiguration(const std::string& materialType) {
 }
 
 void Material::bindTextures() const {
-    std::cout << "Material::bindTextures: Binding textures for material '" << name << "'" << std::endl;
-    
     // Configurar texturas solo si son válidas
     if (hasAlbedoTexture()) {
         glActiveTexture(GL_TEXTURE0);
         albedoTexture->bind(0);
-        std::cout << "  - Albedo texture bound to slot 0 (ID: " << albedoTexture->getID() << ")" << std::endl;
     } else {
         // Si no hay textura de albedo, usar una textura blanca por defecto
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, 0);
-        std::cout << "  - No valid albedo texture, using default white texture" << std::endl;
     }
     
     if (hasNormalTexture()) {
         glActiveTexture(GL_TEXTURE1);
         normalTexture->bind(1);
-        std::cout << "  - Normal texture bound to slot 1 (ID: " << normalTexture->getID() << ")" << std::endl;
     } else {
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, 0);
-        std::cout << "  - No valid normal texture available" << std::endl;
     }
     
     if (hasMetallicTexture()) {
         glActiveTexture(GL_TEXTURE2);
         metallicTexture->bind(2);
-        std::cout << "  - Metallic texture bound to slot 2 (ID: " << metallicTexture->getID() << ")" << std::endl;
     } else {
         glActiveTexture(GL_TEXTURE2);
         glBindTexture(GL_TEXTURE_2D, 0);
-        std::cout << "  - No valid metallic texture available" << std::endl;
     }
     
     if (hasRoughnessTexture()) {
         glActiveTexture(GL_TEXTURE3);
         roughnessTexture->bind(3);
-        std::cout << "  - Roughness texture bound to slot 3 (ID: " << roughnessTexture->getID() << ")" << std::endl;
     } else {
         glActiveTexture(GL_TEXTURE3);
         glBindTexture(GL_TEXTURE_2D, 0);
-        std::cout << "  - No valid roughness texture available" << std::endl;
     }
     
     if (hasEmissiveTexture()) {
         glActiveTexture(GL_TEXTURE4);
         emissiveTexture->bind(4);
-        std::cout << "  - Emissive texture bound to slot 4 (ID: " << emissiveTexture->getID() << ")" << std::endl;
     } else {
         glActiveTexture(GL_TEXTURE4);
         glBindTexture(GL_TEXTURE_2D, 0);
-        std::cout << "  - No valid emissive texture available" << std::endl;
     }
     
     if (hasAOTexture()) {
         glActiveTexture(GL_TEXTURE5);
         aoTexture->bind(5);
-        std::cout << "  - AO texture bound to slot 5 (ID: " << aoTexture->getID() << ")" << std::endl;
     } else {
         glActiveTexture(GL_TEXTURE5);
         glBindTexture(GL_TEXTURE_2D, 0);
-        std::cout << "  - No valid AO texture available" << std::endl;
     }
     
     // Reset active texture unit to 0
     glActiveTexture(GL_TEXTURE0);
-    std::cout << "  - Active texture unit reset to 0" << std::endl;
 }
 
 bool Material::hasAnyValidTextures() const {

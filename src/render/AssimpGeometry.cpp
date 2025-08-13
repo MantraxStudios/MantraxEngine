@@ -57,15 +57,15 @@ AssimpGeometry::~AssimpGeometry() {
 void AssimpGeometry::loadModel(const std::string& path) {
     Assimp::Importer importer;
 
-    // Configurar flags de procesamiento para maximizar calidad
-    unsigned int flags = aiProcess_Triangulate |
-        aiProcess_FlipUVs |
-        aiProcess_CalcTangentSpace |
-        aiProcess_GenSmoothNormals |
-        aiProcess_JoinIdenticalVertices |
-        aiProcess_ImproveCacheLocality |
-        aiProcess_OptimizeMeshes |
-        aiProcess_PreTransformVertices; // Hornear transformaciones de nodos para evitar superposición de submeshes
+    unsigned int flags = aiProcess_Triangulate
+        | aiProcess_FlipUVs
+        | aiProcess_CalcTangentSpace
+        | aiProcess_GenSmoothNormals
+        | aiProcess_JoinIdenticalVertices
+        | aiProcess_ImproveCacheLocality
+        | aiProcess_OptimizeMeshes
+        | aiProcess_PreTransformVertices
+        | aiProcess_FlipWindingOrder;  // <— clave si hay espejos/handedness
 
     std::cout << "Loading model from: " << path << std::endl;
 

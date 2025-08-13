@@ -92,7 +92,7 @@ void MainBar::OnRenderGUI() {
 			
 			if (pipeline) {
 				// Crear el objeto
-				GameObject* NewObject = new GameObject("Plane.fbx");
+				GameObject* NewObject = new GameObject("Cube.fbx");
 				NewObject->Name = "New Object";
 				NewObject->setLocalScale({ 0.010f, 0.010f, 0.010f });
 				NewObject->setLocalPosition({ 0.0f, 0.0f, 0.0f });
@@ -133,13 +133,10 @@ void MainBar::OnRenderGUI() {
 			RenderPipeline* pipeline = activeScene->getRenderPipeline();
 			
 			if (pipeline) {
-				// Limpiar objetos del RenderPipeline
 				pipeline->clearGameObjects();
 				
-				// Limpiar objetos de la escena
 				activeScene->cleanup();
 				
-				// Reconfigurar la escena
 				activeScene->initialize();
 				activeScene->setInitialized(true);
 				

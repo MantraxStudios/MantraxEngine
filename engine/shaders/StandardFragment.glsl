@@ -159,7 +159,7 @@ void main() {
     if (uHasAlbedoTexture) {
         vec4 albedoSample = texture(uAlbedoTexture, texCoord);
         albedo *= albedoSample.rgb;
-        alpha = 1.0;
+        alpha = albedoSample.a; // Usar el canal alpha de la textura
     }
 
     float metallic = uMetallic;
@@ -218,7 +218,6 @@ void main() {
             lightContrib = CalculateBlinnPhongLighting(albedo, shininess, N, V, L, uDirLightColor * uDirLightIntensity);
         }
         
-        // Sin shadow maps - aplicar directamente
         Lo += lightContrib;
     }
     
@@ -253,7 +252,6 @@ void main() {
             lightContrib = CalculateBlinnPhongLighting(albedo, shininess, N, V, L, lightColor);
         }
         
-        // Sin shadow maps - aplicar directamente
         Lo += lightContrib;
     }
     
@@ -276,7 +274,7 @@ void main() {
         
         spotIntensity = smoothstep(0.0, 1.0, spotIntensity);
         
-        float radialFalloff = 1.0 - length(cross(L, normalize(-uSpotLightDirections[i])));
+        float radialFalloff = 1.0 - length(cross(L, normalize(-uSpotLightDirections[i]))); 
         radialFalloff = smoothstep(0.0, 0.5, radialFalloff);
         
         float finalIntensity = spotIntensity * attenuation * radialFalloff * uSpotLightIntensities[i];
@@ -292,14 +290,12 @@ void main() {
             lightContrib = CalculateBlinnPhongLighting(albedo, shininess, N, V, L, lightColor);
         }
         
-        // Sin shadow maps - aplicar directamente
         Lo += lightContrib;
     }
     
     // Ambient lighting
     vec3 ambient;
     if (uUsePBR) {
-        vec3 ambientFactor = mix(vec3(0.03), albedo, metallic);
         ambient = uAmbientLight * albedo * ao * (1.0 - metallic * 0.5);
     } else {
         vec3 ambientColor = uAmbientLight * albedo * ao;
@@ -319,7 +315,6 @@ void main() {
     
     color = pow(color, vec3(1.0/uSmoothness));
 
-    // Asegurar visibilidad mínima
     if (!uHasAlbedoTexture) {
         color = mix(color, uAlbedo, 0.3);
     }
@@ -330,5 +325,5 @@ void main() {
         color = color * (minBrightness / currentBrightness);
     }
     
-    FragColor = vec4(color, 1.0);
+    FragColor = vec4(color, alpha); // ← Transparencia aplicada
 }

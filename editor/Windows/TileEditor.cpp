@@ -219,7 +219,7 @@ void TileEditor::OnRenderGUI() {
             
             if (ImGui::Button("Instantiate Selected Tile")) {
                 // Crear objeto con el tile seleccionado
-                GameObject* newObject = new GameObject("Plane.fbx");
+                GameObject* newObject = new GameObject("Cube.fbx");
                 newObject->Name = savedTiles[selectedTileIndex].name + "_Instance";
                 
                 // Aplicar grid snap si está habilitado
@@ -230,6 +230,7 @@ void TileEditor::OnRenderGUI() {
                 
                 newObject->setLocalPosition(position);
                 newObject->setMaterial(savedTiles[selectedTileIndex].material);
+                newObject->setLocalScale({ 0.010f, 0.010f, 0.010f });
                 
                 SceneManager::getInstance().getActiveScene()->addGameObject(newObject);
             }
@@ -250,7 +251,6 @@ void TileEditor::OnRenderGUI() {
             
             ImGui::SameLine();
             if (ImGui::Button("Reload Textures")) {
-                // Limpiar cache y recargar todas las texturas
                 cleanupTextureCache();
                 for (const auto& tile : savedTiles) {
                     getCachedTexture(tile.texturePath);
@@ -275,7 +275,7 @@ void TileEditor::OnRenderGUI() {
         
         if (ImGui::Button("Instantiate All Tile")) {
             for (const auto& tile : savedTiles) {
-                GameObject* newObject = new GameObject("Plane.fbx");
+                GameObject* newObject = new GameObject("Cube.fbx");
                 newObject->Name = tile.name + "_Instance";
                 
                 // Aplicar grid snap si está habilitado
@@ -286,7 +286,8 @@ void TileEditor::OnRenderGUI() {
                 
                 newObject->setLocalPosition(position);
                 newObject->setMaterial(tile.material);
-                
+                newObject->setLocalScale({ 0.010f, 0.010f, 0.010f });
+
                 SceneManager::getInstance().getActiveScene()->addGameObject(newObject);
             }
         }
@@ -295,7 +296,7 @@ void TileEditor::OnRenderGUI() {
         if (ImGui::IsMouseClicked(0) && EditorInfo::IsHoveringScene && selectedTileIndex != -1 && !ImGui::IsKeyDown(ImGuiKey_LeftCtrl)) {
             glm::vec2 _P = EventSystem::get_mouse_position_in_viewport(glm::vec2(0.0f), glm::vec2(0.0f));
 
-            GameObject* newObject = new GameObject("Plane.fbx");
+            GameObject* newObject = new GameObject("Cube.fbx");
             newObject->Name = savedTiles[selectedTileIndex].name + "_Instance";
             
             // Aplicar grid snap si está habilitado
@@ -306,6 +307,7 @@ void TileEditor::OnRenderGUI() {
             
             newObject->setLocalPosition(position);
             newObject->setMaterial(savedTiles[selectedTileIndex].material);
+            newObject->setLocalScale({ 0.010f, 0.010f, 0.010f });
 
             SceneManager::getInstance().getActiveScene()->addGameObject(newObject);
         }
@@ -326,7 +328,7 @@ void TileEditor::OnRenderGUI() {
 
                     if (EventSystem::MouseCast2D_Precise(WorldPoint, data, SceneManager::getInstance().getActiveScene()->getCamera()) && !IsOver()) {
                         if (data && data->object && data->object->hasGeometry()) {
-                            SceneManager::getInstance().getActiveScene()->removeGameObject(data->object);
+                            SceneManager::getInstance().getActiveScene()->getRenderPipeline()->RemoveGameObject(data->object);
                         }
                     }
                     

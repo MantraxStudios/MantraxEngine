@@ -58,7 +58,7 @@ bool SceneSaver::SaveScene(const Scene* scene, const std::string& filepath) {
     MainJson["Settings"]["LowAmbient"] = pipeline->getLowAmbient();
     MainJson["Settings"]["LightType"] = pipeline->getUsePBR();
     MainJson["Settings"]["FrustrumOn"] = pipeline->getFrustumCulling();
-    
+
     // Post-processing settings
     DefaultShaders* shaders = pipeline->getShaders();
     if (shaders) {
@@ -79,6 +79,9 @@ bool SceneSaver::SaveScene(const Scene* scene, const std::string& filepath) {
         std::cerr << "Error: No active scene" << std::endl;
         return false;
     }
+
+
+    //MainJson["TileData"][]
 
     const auto& gameObjects = activeScene->getGameObjects();
     for (size_t i = 0; i < gameObjects.size(); i++) {
