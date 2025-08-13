@@ -186,6 +186,10 @@ public:
     // Material
     void setMaterial(std::shared_ptr<Material> material);
     std::shared_ptr<Material> getMaterial() const;
+    
+    // Debug methods
+    void debugMaterialState() const;
+    void debugTextureState() const;
 
     // Render control methods
     void setRenderEnabled(bool enable) { shouldRender = enable; }

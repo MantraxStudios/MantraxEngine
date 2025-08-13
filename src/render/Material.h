@@ -65,12 +65,18 @@ public:
     std::string getName() const { return name; }
 
     // Flags para verificar si tiene texturas
-    bool hasAlbedoTexture() const { return albedoTexture != nullptr; }
-    bool hasNormalTexture() const { return normalTexture != nullptr; }
-    bool hasMetallicTexture() const { return metallicTexture != nullptr; }
-    bool hasRoughnessTexture() const { return roughnessTexture != nullptr; }
-    bool hasEmissiveTexture() const { return emissiveTexture != nullptr; }
-    bool hasAOTexture() const { return aoTexture != nullptr; }
+    bool hasAlbedoTexture() const { return albedoTexture != nullptr && albedoTexture->getID() != 0; }
+    bool hasNormalTexture() const { return normalTexture != nullptr && normalTexture->getID() != 0; }
+    bool hasMetallicTexture() const { return metallicTexture != nullptr && metallicTexture->getID() != 0; }
+    bool hasRoughnessTexture() const { return roughnessTexture != nullptr && roughnessTexture->getID() != 0; }
+    bool hasEmissiveTexture() const { return emissiveTexture != nullptr && emissiveTexture->getID() != 0; }
+    bool hasAOTexture() const { return aoTexture != nullptr && aoTexture->getID() != 0; }
+
+    // Check if material has any valid textures
+    bool hasAnyValidTextures() const;
+
+    // Debug method to diagnose texture issues
+    void debugTextureState() const;
 
 private:
     std::string name;

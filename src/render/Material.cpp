@@ -54,7 +54,7 @@ void Material::setAlbedoTexture(const std::string& filePath) {
         albedoTexture = nullptr;
     } else {
         std::cout << "Albedo texture cargada para material '" << name << "': " << filePath << std::endl;
-        autoConfigureMaterial(); // Configuración automática
+        // No llamamos a autoConfigureMaterial() para evitar sobrescribir configuraciones manuales
     }
 }
 
@@ -65,7 +65,7 @@ void Material::setNormalTexture(const std::string& filePath) {
         normalTexture = nullptr;
     } else {
         std::cout << "Normal texture cargada para material '" << name << "': " << filePath << std::endl;
-        autoConfigureMaterial(); // Configuración automática
+        // No llamamos a autoConfigureMaterial() para evitar sobrescribir configuraciones manuales
     }
 }
 
@@ -76,7 +76,7 @@ void Material::setMetallicTexture(const std::string& filePath) {
         metallicTexture = nullptr;
     } else {
         std::cout << "Metallic texture cargada para material '" << name << "': " << filePath << std::endl;
-        autoConfigureMaterial(); // Configuración automática
+        // No llamamos a autoConfigureMaterial() para evitar sobrescribir configuraciones manuales
     }
 }
 
@@ -87,7 +87,7 @@ void Material::setRoughnessTexture(const std::string& filePath) {
         roughnessTexture = nullptr;
     } else {
         std::cout << "Roughness texture cargada para material '" << name << "': " << filePath << std::endl;
-        autoConfigureMaterial(); // Configuración automática
+        // No llamamos a autoConfigureMaterial() para evitar sobrescribir configuraciones manuales
     }
 }
 
@@ -98,7 +98,7 @@ void Material::setEmissiveTexture(const std::string& filePath) {
         emissiveTexture = nullptr;
     } else {
         std::cout << "Emissive texture cargada para material '" << name << "': " << filePath << std::endl;
-        autoConfigureMaterial();
+        // No llamamos a autoConfigureMaterial() para evitar sobrescribir configuraciones manuales
     }
 }
 
@@ -109,14 +109,14 @@ void Material::setAOTexture(const std::string& filePath) {
         aoTexture = nullptr;
     } else {
         std::cout << "AO texture cargada para material '" << name << "': " << filePath << std::endl;
-        autoConfigureMaterial(); 
+        // No llamamos a autoConfigureMaterial() para evitar sobrescribir configuraciones manuales
     }
 }
 
 void Material::setAlbedoTexture(std::shared_ptr<Texture> texture) {
     albedoTexture = texture;
     if (albedoTexture && albedoTexture->getID()) {
-        autoConfigureMaterial();
+        // No llamamos a autoConfigureMaterial() para evitar sobrescribir configuraciones manuales
     }
 }
 
@@ -124,7 +124,7 @@ void Material::setNormalTexture(std::shared_ptr<Texture> texture) {
     normalTexture = texture;
     if (normalTexture && normalTexture->getID()) {
         std::cout << "Normal texture establecida directamente para material '" << name << "'" << std::endl;
-        autoConfigureMaterial();
+        // No llamamos a autoConfigureMaterial() para evitar sobrescribir configuraciones manuales
     }
 }
 
@@ -132,7 +132,7 @@ void Material::setMetallicTexture(std::shared_ptr<Texture> texture) {
     metallicTexture = texture;
     if (metallicTexture && metallicTexture->getID()) {
         std::cout << "Metallic texture establecida directamente para material '" << name << "'" << std::endl;
-        autoConfigureMaterial();
+        // No llamamos a autoConfigureMaterial() para evitar sobrescribir configuraciones manuales
     }
 }
 
@@ -140,7 +140,7 @@ void Material::setRoughnessTexture(std::shared_ptr<Texture> texture) {
     roughnessTexture = texture;
     if (roughnessTexture && roughnessTexture->getID()) {
         std::cout << "Roughness texture establecida directamente para material '" << name << "'" << std::endl;
-        autoConfigureMaterial();
+        // No llamamos a autoConfigureMaterial() para evitar sobrescribir configuraciones manuales
     }
 }
 
@@ -148,7 +148,7 @@ void Material::setEmissiveTexture(std::shared_ptr<Texture> texture) {
     emissiveTexture = texture;
     if (emissiveTexture && emissiveTexture->getID()) {
         std::cout << "Emissive texture establecida directamente para material '" << name << "'" << std::endl;
-        autoConfigureMaterial();
+        // No llamamos a autoConfigureMaterial() para evitar sobrescribir configuraciones manuales
     }
 }
 
@@ -156,14 +156,17 @@ void Material::setAOTexture(std::shared_ptr<Texture> texture) {
     aoTexture = texture;
     if (aoTexture && aoTexture->getID()) {
         std::cout << "AO texture establecida directamente para material '" << name << "'" << std::endl;
-        autoConfigureMaterial();
+        // No llamamos a autoConfigureMaterial() para evitar sobrescribir configuraciones manuales
     }
 }
 
 // Configuración automática basada en las texturas cargadas
 void Material::autoConfigureMaterial() {
+    // Solo detectamos el tipo de material pero no aplicamos configuración automática
+    // para evitar sobrescribir configuraciones manuales
     std::string materialType = detectMaterialType();
-    applyAutoConfiguration(materialType);
+    // Comentamos la siguiente línea para evitar que se sobrescriban las propiedades
+    // applyAutoConfiguration(materialType);
 }
 
 // Detecta el tipo de material basándose en las texturas y nombres
@@ -336,38 +339,78 @@ void Material::applyAutoConfiguration(const std::string& materialType) {
 }
 
 void Material::bindTextures() const {
-    // Bind albedo texture (slot 0)
-    if (albedoTexture) {
+    std::cout << "Material::bindTextures: Binding textures for material '" << name << "'" << std::endl;
+    
+    // Configurar texturas solo si son válidas
+    if (hasAlbedoTexture()) {
+        glActiveTexture(GL_TEXTURE0);
         albedoTexture->bind(0);
+        std::cout << "  - Albedo texture bound to slot 0 (ID: " << albedoTexture->getID() << ")" << std::endl;
+    } else {
+        // Si no hay textura de albedo, usar una textura blanca por defecto
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, 0);
+        std::cout << "  - No valid albedo texture, using default white texture" << std::endl;
     }
     
-    // Bind normal texture (slot 1)
-    if (normalTexture) {
+    if (hasNormalTexture()) {
+        glActiveTexture(GL_TEXTURE1);
         normalTexture->bind(1);
+        std::cout << "  - Normal texture bound to slot 1 (ID: " << normalTexture->getID() << ")" << std::endl;
+    } else {
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, 0);
+        std::cout << "  - No valid normal texture available" << std::endl;
     }
     
-    // Bind metallic texture (slot 2)
-    if (metallicTexture) {
+    if (hasMetallicTexture()) {
+        glActiveTexture(GL_TEXTURE2);
         metallicTexture->bind(2);
+        std::cout << "  - Metallic texture bound to slot 2 (ID: " << metallicTexture->getID() << ")" << std::endl;
+    } else {
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, 0);
+        std::cout << "  - No valid metallic texture available" << std::endl;
     }
     
-    // Bind roughness texture (slot 3)
-    if (roughnessTexture) {
+    if (hasRoughnessTexture()) {
+        glActiveTexture(GL_TEXTURE3);
         roughnessTexture->bind(3);
+        std::cout << "  - Roughness texture bound to slot 3 (ID: " << roughnessTexture->getID() << ")" << std::endl;
+    } else {
+        glActiveTexture(GL_TEXTURE3);
+        glBindTexture(GL_TEXTURE_2D, 0);
+        std::cout << "  - No valid roughness texture available" << std::endl;
     }
     
-    // Bind emissive texture (slot 4)
-    if (emissiveTexture) {
+    if (hasEmissiveTexture()) {
+        glActiveTexture(GL_TEXTURE4);
         emissiveTexture->bind(4);
+        std::cout << "  - Emissive texture bound to slot 4 (ID: " << emissiveTexture->getID() << ")" << std::endl;
+    } else {
+        glActiveTexture(GL_TEXTURE4);
+        glBindTexture(GL_TEXTURE_2D, 0);
+        std::cout << "  - No valid emissive texture available" << std::endl;
     }
     
-    // Bind AO texture (slot 5)
-    if (aoTexture) {
+    if (hasAOTexture()) {
+        glActiveTexture(GL_TEXTURE5);
         aoTexture->bind(5);
+        std::cout << "  - AO texture bound to slot 5 (ID: " << aoTexture->getID() << ")" << std::endl;
+    } else {
+        glActiveTexture(GL_TEXTURE5);
+        glBindTexture(GL_TEXTURE_2D, 0);
+        std::cout << "  - No valid AO texture available" << std::endl;
     }
     
-    // CRÍTICO: Restaurar la unidad de textura activa a 0 para no interferir con shadow maps
+    // Reset active texture unit to 0
     glActiveTexture(GL_TEXTURE0);
+    std::cout << "  - Active texture unit reset to 0" << std::endl;
+}
+
+bool Material::hasAnyValidTextures() const {
+    return hasAlbedoTexture() || hasNormalTexture() || hasMetallicTexture() || 
+           hasRoughnessTexture() || hasEmissiveTexture() || hasAOTexture();
 }
 
 void Material::unbindTextures() const {
@@ -383,4 +426,8 @@ void Material::unbindTextures() const {
     glBindTexture(GL_TEXTURE_2D, 0);
     glActiveTexture(GL_TEXTURE5);
     glBindTexture(GL_TEXTURE_2D, 0);
-} 
+}
+
+void Material::debugTextureState() const {
+
+}

@@ -137,17 +137,14 @@ void Hierarchy::OnRenderGUI() {
 
             // Renderizar objetos raíz
             const auto& gameObjects = activeScene->getGameObjects();
-            std::cout << "Hierarchy: Rendering scene '" << activeScene->getName() << "' with " << gameObjects.size() << " objects" << std::endl;
             
             bool anyRoot = false;
             for (GameObject* gameObject : gameObjects) {
                 if (!gameObject || !gameObject->isValid()) {
-                    std::cout << "Hierarchy: Skipping invalid object" << std::endl;
                     continue;
                 }
                 if (!gameObject->hasParent()) {
                     anyRoot = true;
-                    std::cout << "Hierarchy: Rendering root object: " << gameObject->Name << std::endl;
                     RenderGameObjectNode(gameObject);
                 }
             }

@@ -618,11 +618,92 @@ bool GameObject::loadModelFromPath(const std::string& path) {
 }
 
 void GameObject::setMaterial(std::shared_ptr<Material> mat) {
+    if (!mat) {
+        std::cerr << "GameObject::setMaterial: Warning - Attempting to set nullptr material for object '" << Name << "'" << std::endl;
+        return;
+    }
+    if (!mat->isValid()) {
+        std::cerr << "GameObject::setMaterial: Warning - Material '" << mat->getName() << "' is not valid for object '" << Name << "'" << std::endl;
+        return;
+    }
+    std::cout << "GameObject::setMaterial: Changing material for object '" << Name << "' from '";
+    if (material) { std::cout << material->getName(); } else { std::cout << "none"; }
+    std::cout << "' to '" << mat->getName() << "'" << std::endl;
+    if (mat->hasAlbedoTexture()) {
+        std::cout << "  - Has albedo texture: " << mat->getAlbedoTexture()->getFilePath() << std::endl;
+    } else {
+        std::cout << "  - No albedo texture" << std::endl;
+    }
     material = mat;
+    if (material == mat) {
+        std::cout << "GameObject::setMaterial: Material successfully assigned to object '" << Name << "'" << std::endl;
+        
+        // Mark RenderPipeline as dirty to force material refresh
+        // Note: This requires access to the RenderPipeline instance
+        // For now, we'll rely on the fact that materials are always configured in renderInstanced
+        std::cout << "GameObject::setMaterial: Material change will be applied on next render frame" << std::endl;
+    } else {
+        std::cerr << "GameObject::setMaterial: ERROR - Material assignment failed for object '" << Name << "'" << std::endl;
+    }
 }
 
 std::shared_ptr<Material> GameObject::getMaterial() const {
     return material;
+}
+
+void GameObject::debugMaterialState() const {
+    std::cout << "=== GameObject Material Debug: " << Name << " ===" << std::endl;
+    
+    if (material) {
+        std::cout << "Material: " << material->getName() << std::endl;
+        std::cout << "Material valid: " << (material->isValid() ? "YES" : "NO") << std::endl;
+        std::cout << "Has geometry: " << (hasGeometry() ? "YES" : "NO") << std::endl;
+        std::cout << "Render enabled: " << (isRenderEnabled() ? "YES" : "NO") << std::endl;
+        
+        // Debug material properties
+        std::cout << "Material properties:" << std::endl;
+        std::cout << "  - Albedo: " << material->getAlbedo().r << ", " << material->getAlbedo().g << ", " << material->getAlbedo().b << std::endl;
+        std::cout << "  - Metallic: " << material->getMetallic() << std::endl;
+        std::cout << "  - Roughness: " << material->getRoughness() << std::endl;
+        std::cout << "  - Emissive: " << material->getEmissive().r << ", " << material->getEmissive().g << ", " << material->getEmissive().b << std::endl;
+        std::cout << "  - Tiling: " << material->getTiling().x << ", " << material->getTiling().y << std::endl;
+        std::cout << "  - Normal Strength: " << material->getNormalStrength() << std::endl;
+        
+        // Debug texture state
+        std::cout << "Texture state:" << std::endl;
+        std::cout << "  - Has any valid textures: " << (material->hasAnyValidTextures() ? "YES" : "NO") << std::endl;
+        std::cout << "  - Has albedo texture: " << (material->hasAlbedoTexture() ? "YES" : "NO") << std::endl;
+        std::cout << "  - Has normal texture: " << (material->hasNormalTexture() ? "YES" : "NO") << std::endl;
+        std::cout << "  - Has metallic texture: " << (material->hasMetallicTexture() ? "YES" : "NO") << std::endl;
+        std::cout << "  - Has roughness texture: " << (material->hasRoughnessTexture() ? "YES" : "NO") << std::endl;
+        std::cout << "  - Has emissive texture: " << (material->hasEmissiveTexture() ? "YES" : "NO") << std::endl;
+        std::cout << "  - Has AO texture: " << (material->hasAOTexture() ? "YES" : "NO") << std::endl;
+        
+        // Debug detailed texture info
+        material->debugTextureState();
+    } else {
+        std::cout << "No material assigned" << std::endl;
+    }
+    
+    // Debug geometry info
+    if (geometry) {
+        std::cout << "Geometry info:" << std::endl;
+        std::cout << "  - Uses model normals: " << (geometry->usesModelNormals() ? "YES" : "NO") << std::endl;
+        std::cout << "  - Bounding box min: " << geometry->getBoundingBoxMin().x << ", " << geometry->getBoundingBoxMin().y << ", " << geometry->getBoundingBoxMin().z << std::endl;
+        std::cout << "  - Bounding box max: " << geometry->getBoundingBoxMax().x << ", " << geometry->getBoundingBoxMax().y << ", " << geometry->getBoundingBoxMax().z << std::endl;
+    } else {
+        std::cout << "No geometry assigned" << std::endl;
+    }
+    
+    std::cout << "=== End GameObject Debug ===" << std::endl;
+}
+
+void GameObject::debugTextureState() const {
+    if (material) {
+        material->debugTextureState();
+    } else {
+        std::cout << "GameObject '" << Name << "' has no material to debug textures for" << std::endl;
+    }
 }
 
 void GameObject::calculateBoundingVolumes() {

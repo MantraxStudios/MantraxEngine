@@ -96,6 +96,10 @@ public:
     void updateCanvasSize(int width, int height);
     void updateCanvasFromCameraBuffer();
     
+    // Material refresh management
+    void forceMaterialRefresh();
+    void markMaterialsDirty();
+    
     void clearModelCache();
     void listLoadedModels() const;
     size_t getModelCacheSize() const;
@@ -126,6 +130,9 @@ private:
     
     int visibleObjectsCount;
     int totalObjectsCount;
+    
+    // Material refresh tracking
+    bool materialsDirty; // Flag to indicate materials need refreshing
     
     // Resource caches
     std::unordered_map<std::string, std::shared_ptr<AssimpGeometry>> modelCache;

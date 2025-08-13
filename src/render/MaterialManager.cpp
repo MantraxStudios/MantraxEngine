@@ -1,4 +1,7 @@
 #include "MaterialManager.h"
+#include "Material.h"
+#include "Texture.h"
+#include "../core/FileSystem.h"
 #include <iostream>
 #include <fstream>
 #include <nlohmann/json.hpp>
@@ -68,31 +71,37 @@ bool MaterialManager::loadMaterialsFromConfig(const std::string& configPath) {
                 material->setNormalStrength(materialData["normal_strength"]);
             }
 
-            // Load textures if present
+            // Load textures if present - pasar rutas relativas directamente
             if (materialData.contains("textures")) {
                 const json& textures = materialData["textures"];
                 
-                if (textures.contains("albedo")) {
+                if (textures.contains("albedo") && !textures["albedo"].get<std::string>().empty()) {
+                    std::cout << "Loading albedo texture: " << textures["albedo"] << std::endl;
                     material->setAlbedoTexture(textures["albedo"]);
                 }
                 
-                if (textures.contains("normal")) {
+                if (textures.contains("normal") && !textures["normal"].get<std::string>().empty()) {
+                    std::cout << "Loading normal texture: " << textures["normal"] << std::endl;
                     material->setNormalTexture(textures["normal"]);
                 }
                 
-                if (textures.contains("metallic")) {
+                if (textures.contains("metallic") && !textures["metallic"].get<std::string>().empty()) {
+                    std::cout << "Loading metallic texture: " << textures["metallic"] << std::endl;
                     material->setMetallicTexture(textures["metallic"]);
                 }
                 
-                if (textures.contains("roughness")) {
+                if (textures.contains("roughness") && !textures["roughness"].get<std::string>().empty()) {
+                    std::cout << "Loading roughness texture: " << textures["roughness"] << std::endl;
                     material->setRoughnessTexture(textures["roughness"]);
                 }
                 
-                if (textures.contains("emissive")) {
+                if (textures.contains("emissive") && !textures["emissive"].get<std::string>().empty()) {
+                    std::cout << "Loading emissive texture: " << textures["emissive"] << std::endl;
                     material->setEmissiveTexture(textures["emissive"]);
                 }
                 
-                if (textures.contains("ao")) {
+                if (textures.contains("ao") && !textures["ao"].get<std::string>().empty()) {
+                    std::cout << "Loading AO texture: " << textures["ao"] << std::endl;
                     material->setAOTexture(textures["ao"]);
                 }
             }

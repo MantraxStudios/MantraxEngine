@@ -27,7 +27,7 @@
 
 RenderPipeline::RenderPipeline(Camera* cam, DefaultShaders* shd)
     : camera(cam), shaders(shd), targetFramebuffer(nullptr), usePBR(true), lowAmbient(false), ambientIntensity(1.0f),
-      frustumCullingEnabled(true), shadowsEnabled(false), shadowManager(nullptr), visibleObjectsCount(0), totalObjectsCount(0) {
+      frustumCullingEnabled(true), shadowsEnabled(true), shadowManager(nullptr), visibleObjectsCount(0), totalObjectsCount(0), materialsDirty(false) {
 
     // FreeType is now handled by Canvas2D
     std::cout << "FreeType will be initialized by Canvas2D" << std::endl;
@@ -351,6 +351,12 @@ void RenderPipeline::renderInstanced() {
     visibleObjectsCount = 0;
     totalObjectsCount = sceneObjects.size();
     
+    // Check if materials need refreshing
+    if (materialsDirty) {
+        std::cout << "RenderPipeline: Materials are dirty, forcing refresh..." << std::endl;
+        materialsDirty = false;
+    }
+    
     // Obtener el frustum de la cámara SOLO si culling está habilitado
     Frustum cameraFrustum;
     if (frustumCullingEnabled) {
@@ -363,7 +369,28 @@ void RenderPipeline::renderInstanced() {
     for (GameObject* obj : sceneObjects) {
         // Skip objects without geometry
         if (!obj->hasGeometry()) {
+            std::cout << "RenderPipeline: Object '" << obj->Name << "' has no geometry, skipping..." << std::endl;
             continue;
+        }
+        
+        // Validar que el objeto tenga un material válido
+        auto material = obj->getMaterial();
+        if (!material) {
+            std::cout << "RenderPipeline: Object '" << obj->Name << "' has no material, skipping..." << std::endl;
+            continue;
+        }
+        
+        if (!material->isValid()) {
+            std::cout << "RenderPipeline: Object '" << obj->Name << "' has invalid material '" << material->getName() << "', skipping..." << std::endl;
+            continue;
+        }
+        
+        // CORREGIDO: No requerir textura de albedo, solo verificar que el material sea válido
+        // Los materiales sin texturas pueden usar colores sólidos
+        if (material->hasAlbedoTexture()) {
+            std::cout << "RenderPipeline: Object '" << obj->Name << "' material '" << material->getName() << "' has albedo texture" << std::endl;
+        } else {
+            std::cout << "RenderPipeline: Object '" << obj->Name << "' material '" << material->getName() << "' using solid color (no albedo texture)" << std::endl;
         }
         
         // Realizar frustum culling
@@ -385,13 +412,15 @@ void RenderPipeline::renderInstanced() {
         // Skip empty groups
         if (objects.empty()) continue;
         
-                // Configurar material y shadow maps en el orden correcto
+        // Configurar material y shadow maps en el orden correcto
         GLuint program = shaders->getProgram();
         
-        // 1. Configurar material primero
+        // 1. Configurar material primero - ALWAYS configure material to ensure fresh state
         if (key.material) {
+            std::cout << "RenderPipeline: Configuring material '" << key.material->getName() << "' for " << objects.size() << " objects" << std::endl;
             configureMaterial(key.material.get());
         } else {
+            std::cout << "RenderPipeline: Using default material for " << objects.size() << " objects" << std::endl;
             configureDefaultMaterial();
         }
         
@@ -431,12 +460,24 @@ void RenderPipeline::renderInstanced() {
                 modelMatrices.push_back(obj->getWorldModelMatrix());
             }
             
+            // CORREGIDO: Asegurar que las texturas estén correctamente vinculadas antes del renderizado instanciado
+            if (key.material && key.material->hasAnyValidTextures()) {
+                key.material->bindTextures();
+                std::cout << "RenderPipeline: Re-binding textures before instanced rendering for " << objects.size() << " objects" << std::endl;
+            }
+            
             geometry->updateInstanceBuffer(modelMatrices);
             geometry->drawInstanced(modelMatrices);
         } else {
             // Renderizar individualmente si solo hay un objeto
             GameObject* obj = objects[0];
             glm::mat4 model = obj->getWorldModelMatrix();
+            
+            // CORREGIDO: Asegurar que las texturas estén correctamente vinculadas antes del renderizado instanciado
+            if (key.material && key.material->hasAnyValidTextures()) {
+                key.material->bindTextures();
+                std::cout << "RenderPipeline: Re-binding textures before instanced rendering for single object" << std::endl;
+            }
             
             std::vector<glm::mat4> singleInstance = { model };
             geometry->updateInstanceBuffer(singleInstance);
@@ -446,7 +487,32 @@ void RenderPipeline::renderInstanced() {
 }
 
 void RenderPipeline::configureMaterial(Material* material) {
+    if (!material) {
+        std::cerr << "RenderPipeline::configureMaterial: ERROR - Material is nullptr!" << std::endl;
+        configureDefaultMaterial();
+        return;
+    }
+    
+    if (!material->isValid()) {
+        std::cerr << "RenderPipeline::configureMaterial: ERROR - Material '" << material->getName() << "' is not valid!" << std::endl;
+        configureDefaultMaterial();
+        return;
+    }
+    
     GLuint program = shaders->getProgram();
+    
+    // Always ensure we're using the correct shader program
+    glUseProgram(program);
+    
+    // Log del material que se está configurando
+    std::cout << "RenderPipeline: Configuring material '" << material->getName() << "'" << std::endl;
+    
+    // Check if material has any valid textures
+    if (!material->hasAnyValidTextures()) {
+        std::cout << "RenderPipeline: WARNING - Material '" << material->getName() << "' has no valid textures!" << std::endl;
+        std::cout << "  This material will use solid colors instead of textures." << std::endl;
+        std::cout << "  Albedo: " << material->getAlbedo().r << ", " << material->getAlbedo().g << ", " << material->getAlbedo().b << std::endl;
+    }
     
     // Configurar propiedades del material
     glUniform3fv(glGetUniformLocation(program, "uAlbedo"), 1, glm::value_ptr(material->getAlbedo()));
@@ -465,18 +531,42 @@ void RenderPipeline::configureMaterial(Material* material) {
     glUniform1i(glGetUniformLocation(program, "uAOTexture"), 5);
     
     // Configurar flags de texturas
-    glUniform1i(glGetUniformLocation(program, "uHasAlbedoTexture"), material->hasAlbedoTexture());
-    glUniform1i(glGetUniformLocation(program, "uHasNormalTexture"), material->hasNormalTexture());
-    glUniform1i(glGetUniformLocation(program, "uHasMetallicTexture"), material->hasMetallicTexture());
-    glUniform1i(glGetUniformLocation(program, "uHasRoughnessTexture"), material->hasRoughnessTexture());
-    glUniform1i(glGetUniformLocation(program, "uHasEmissiveTexture"), material->hasEmissiveTexture());
-    glUniform1i(glGetUniformLocation(program, "uHasAOTexture"), material->hasAOTexture());
+    bool hasAlbedo = material->hasAlbedoTexture();
+    bool hasNormal = material->hasNormalTexture();
+    bool hasMetallic = material->hasMetallicTexture();
+    bool hasRoughness = material->hasRoughnessTexture();
+    bool hasEmissive = material->hasEmissiveTexture();
+    bool hasAO = material->hasAOTexture();
     
-    // Bind texturas del material
-    material->bindTextures();
+    // CORREGIDO: Asegurar que los flags de textura se establezcan correctamente
+    glUniform1i(glGetUniformLocation(program, "uHasAlbedoTexture"), hasAlbedo ? 1 : 0);
+    glUniform1i(glGetUniformLocation(program, "uHasNormalTexture"), hasNormal ? 1 : 0);
+    glUniform1i(glGetUniformLocation(program, "uHasMetallicTexture"), hasMetallic ? 1 : 0);
+    glUniform1i(glGetUniformLocation(program, "uHasRoughnessTexture"), hasRoughness ? 1 : 0);
+    glUniform1i(glGetUniformLocation(program, "uHasEmissiveTexture"), hasEmissive ? 1 : 0);
+    glUniform1i(glGetUniformLocation(program, "uHasAOTexture"), hasAO ? 1 : 0);
+    
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glActiveTexture(GL_TEXTURE3);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glActiveTexture(GL_TEXTURE4);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glActiveTexture(GL_TEXTURE5);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glActiveTexture(GL_TEXTURE0); // Reset to 0
+    
+    // CORREGIDO: Siempre bindear texturas, incluso si no hay texturas válidas
+    if (material->hasAnyValidTextures()) {
+        material->bindTextures();
+    }
     
     // CRÍTICO: Rebindear TODOS los shadow maps después de bindear texturas del material
-    rebindShadowMapsAfterMaterial(program);
+    // rebindShadowMapsAfterMaterial(program);
 }
 
 void RenderPipeline::configureDefaultMaterial() {
@@ -499,7 +589,7 @@ void RenderPipeline::configureDefaultMaterial() {
     glUniform1i(glGetUniformLocation(program, "uHasAOTexture"), 0);
     
     // CRÍTICO: También rebindear shadow maps después del material por defecto
-    rebindShadowMapsAfterMaterial(program);
+    // rebindShadowMapsAfterMaterial(program);
 }
 
 // Método helper para rebindear shadow maps después de cualquier configuración de material
@@ -1015,5 +1105,28 @@ void RenderPipeline::setShadowStrength(float strength) {
 
 float RenderPipeline::getShadowStrength() const {
     return shadowManager ? shadowManager->getShadowStrength() : 0.0f;
+}
+
+void RenderPipeline::forceMaterialRefresh() {
+    std::cout << "RenderPipeline: Forcing material refresh..." << std::endl;
+    materialsDirty = true;
+    
+    // Force OpenGL state reset for materials
+    GLuint program = shaders->getProgram();
+    glUseProgram(program);
+    
+    // Reset all texture units to ensure clean state
+    for (int i = 0; i < 6; i++) {
+        glActiveTexture(GL_TEXTURE0 + i);
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+    glActiveTexture(GL_TEXTURE0);
+    
+    std::cout << "RenderPipeline: OpenGL texture state reset complete" << std::endl;
+}
+
+void RenderPipeline::markMaterialsDirty() {
+    materialsDirty = true;
+    std::cout << "RenderPipeline: Materials marked as dirty, will refresh on next render" << std::endl;
 }
 

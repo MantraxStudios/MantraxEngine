@@ -22,6 +22,8 @@ Texture::~Texture() {
 bool Texture::loadFromFile(const std::string& filePath) {
     this->filePath = FileSystem::getProjectPath() + "\\Content\\" + filePath;
     
+    std::cout << "Texture::loadFromFile: Attempting to load texture from: " << this->filePath << std::endl;
+    
     //stbi_set_flip_vertically_on_load(1);
     
     // Determinar si es una textura de datos o color
@@ -31,11 +33,31 @@ bool Texture::loadFromFile(const std::string& filePath) {
                           this->filePath.find("AO") != std::string::npos ||
                           this->filePath.find("Height") != std::string::npos);
     
+    // Cargar con 4 canales (RGBA) para asegurar que siempre tengamos un canal alfa
     localBuffer = stbi_load(this->filePath.c_str(), &width, &height, &BPP, 4);
     if (!localBuffer) {
         std::cerr << "Error: No se pudo cargar la textura: " << this->filePath << std::endl;
         std::cerr << "STB Error: " << stbi_failure_reason() << std::endl;
+        
+        // Check if file exists
+        std::ifstream fileCheck(this->filePath);
+        if (!fileCheck.good()) {
+            std::cerr << "File does not exist or is not accessible" << std::endl;
+        } else {
+            std::cerr << "File exists but STB failed to load it" << std::endl;
+            fileCheck.close();
+        }
+        
         return false;
+    }
+    
+    std::cout << "Texture loaded successfully: " << filePath << " (" << width << "x" << height << ", " << BPP << " channels)" << std::endl;
+    
+    // Asegurarse de que el canal alfa sea 1.0 para todas las texturas
+    // Esto evita problemas con objetos que desaparecen
+    unsigned char* pixels = (unsigned char*)localBuffer;
+    for (int i = 0; i < width * height; i++) {
+        pixels[i * 4 + 3] = 255; // Establecer canal alfa a 255 (1.0)
     }
 
     glGenTextures(1, &rendererID);
@@ -77,6 +99,7 @@ bool Texture::loadFromFile(const std::string& filePath) {
     }
 
     std::cout << "Textura cargada exitosamente: " << filePath << " (" << width << "x" << height << ")" << std::endl;
+    std::cout << "OpenGL Texture ID: " << rendererID << std::endl;
     return true;
 }
 
@@ -119,4 +142,4 @@ void Texture::bind(unsigned int slot) const {
 
 void Texture::unbind() const {
     glBindTexture(GL_TEXTURE_2D, 0);
-} 
+}

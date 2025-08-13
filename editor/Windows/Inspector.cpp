@@ -15,6 +15,7 @@
 #include "../../src/render/RenderConfig.h"
 #include "Selection.h"
 #include "../EUI/UIBuilder.h"
+#include "../EUI/EditorInfo.h"
 #include <glm/gtc/type_ptr.hpp>
 #include <cstring>
 #include <iostream>
@@ -125,7 +126,38 @@ void Inspector::RenderModelSection(GameObject* go) {
 
         for (const auto& [materialName, materialPtr] : allMaterials) {
             if (materialPtr && ImGui::MenuItem(materialName.c_str())) {
-                go->setMaterial(MaterialManager::getInstance().getMaterial(materialName));
+                // Validar el material antes de asignarlo
+                if (materialPtr->isValid()) {
+                    std::cout << "Inspector: Changing material for GameObject '" << go->Name << "' to '" << materialName << "'" << std::endl;
+                    
+                    // Verificar si el material tiene texturas
+                    if (materialPtr->hasAlbedoTexture()) {
+                        std::cout << "  - Material has albedo texture: " << materialPtr->getAlbedoTexture()->getFilePath() << std::endl;
+                    } else {
+                        std::cout << "  - Material has NO albedo texture - object may not be visible!" << std::endl;
+                    }
+                    
+                    // Asignar el material
+                    go->setMaterial(materialPtr);
+                    
+                    // Verificar que se asignó correctamente
+                    auto assignedMaterial = go->getMaterial();
+                    if (assignedMaterial && assignedMaterial->getName() == materialName) {
+                        std::cout << "Inspector: Material successfully assigned to GameObject" << std::endl;
+                        
+                        // Mark RenderPipeline as dirty to force material refresh on next render
+                        if (EditorInfo::pipeline) {
+                            EditorInfo::pipeline->markMaterialsDirty();
+                            std::cout << "Inspector: RenderPipeline marked as dirty - material will refresh on next render" << std::endl;
+                        } else {
+                            std::cout << "Inspector: Warning - No RenderPipeline access, material refresh may be delayed" << std::endl;
+                        }
+                    } else {
+                        std::cerr << "Inspector: ERROR - Material assignment failed!" << std::endl;
+                    }
+                } else {
+                    std::cerr << "Inspector: ERROR - Material '" << materialName << "' is not valid!" << std::endl;
+                }
             }
         }
 
@@ -210,6 +242,40 @@ void Inspector::RenderComponentsSection(GameObject* go) {
         ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(51, 204, 51, 255));  
         ImGui::Text("[Material]");
         ImGui::PopStyleColor();
+        
+        // Botón de debug del material
+        if (ImGui::Button("Debug Material")) {
+            go->debugMaterialState();
+        }
+        if (ImGui::IsItemHovered()) {
+            ImGui::SetTooltip("Debug material properties and state");
+        }
+        ImGui::SameLine();
+        // Botón para debug de texturas
+        if (ImGui::Button("Debug Textures")) {
+            auto material = go->getMaterial();
+            if (material) {
+                material->debugTextureState();
+            } else {
+                std::cout << "Inspector: No material to debug textures for" << std::endl;
+            }
+        }
+        if (ImGui::IsItemHovered()) {
+            ImGui::SetTooltip("Debug texture loading and binding state");
+        }
+        ImGui::SameLine();
+        // Botón para forzar refresh del material
+        if (ImGui::Button("Force Material Refresh")) {
+            if (EditorInfo::pipeline) {
+                EditorInfo::pipeline->forceMaterialRefresh();
+                std::cout << "Inspector: Forced material refresh requested" << std::endl;
+            } else {
+                std::cout << "Inspector: Warning - No RenderPipeline access for forced refresh" << std::endl;
+            }
+        }
+        if (ImGui::IsItemHovered()) {
+            ImGui::SetTooltip("Force immediate material refresh in rendering pipeline");
+        }
     }
 
     ComponentSerializer::RenderAudioSourceComponent(go);
