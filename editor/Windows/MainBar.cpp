@@ -94,8 +94,9 @@ void MainBar::OnRenderGUI() {
 				// Crear el objeto
 				GameObject* NewObject = new GameObject("Plane.fbx");
 				NewObject->Name = "New Object";
+				NewObject->setLocalScale({ 0.010f, 0.010f, 0.010f });
 				NewObject->setLocalPosition({ 0.0f, 0.0f, 0.0f });
-				NewObject->setMaterial(pipeline->getMaterial("red_material"));
+				NewObject->setMaterial(pipeline->getMaterial("Default_Material"));
 				
 				// Agregar a la escena (sincronización automática con RenderPipeline)
 				activeScene->addGameObject(NewObject);
@@ -120,37 +121,6 @@ void MainBar::OnRenderGUI() {
 			activeScene->addGameObject(NewObject);
 			
 			std::cout << "Created empty object: " << NewObject->Name << std::endl;
-		}
-		
-		if (ImGui::MenuItem("New Object from Model"))
-		{
-			auto& sceneManager = SceneManager::getInstance();
-			Scene* activeScene = sceneManager.getActiveScene();
-			RenderPipeline* pipeline = activeScene->getRenderPipeline();
-			
-			if (pipeline) {
-				// Crear objeto con carga automática de modelo
-				GameObject* NewObject = new GameObject("models/cube.obj");
-				NewObject->Name = "Model Object";
-				NewObject->setLocalPosition({ -2.0f, 0.0f, 0.0f });
-				NewObject->setMaterial(pipeline->getMaterial("blue_material"));
-				
-				// Solo agregar si se cargó correctamente
-				if (NewObject->hasGeometry()) {
-					activeScene->addGameObject(NewObject);
-					std::cout << "Created model object: " << NewObject->Name << std::endl;
-				} else {
-					std::cout << "Warning: Model failed to load, creating fallback object" << std::endl;
-					delete NewObject;
-					
-					// Crear objeto con geometría por defecto
-					NewObject = new GameObject();
-					NewObject->Name = "Fallback Object";
-					NewObject->setLocalPosition({ -2.0f, 0.0f, 0.0f });
-					NewObject->setMaterial(pipeline->getMaterial("green_material"));
-					activeScene->addGameObject(NewObject);
-				}
-			}
 		}
 		ImGui::EndMenu();
 	}
