@@ -76,6 +76,9 @@ public:
     nlohmann::json serializeTilesToJson() const;
     bool loadTilesFromJson(const nlohmann::json& tileDataArray);
     
+    // Clear all tiles and reset the editor
+    void clearAllTiles();
+    
     // Variables para el popup de preview
     bool showTilePreview = false;
     float previewTimer = 0.0f;

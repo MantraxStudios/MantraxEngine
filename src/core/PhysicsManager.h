@@ -179,4 +179,7 @@ public:
     
     // Force cleanup of all physics objects (call before destruction)
     void forceCleanupAllObjects();
+    
+    // Cleanup physics components for scene switching
+    void cleanupScenePhysicsComponents();
 }; 

@@ -42,17 +42,26 @@ void Rigidbody::update() {
 }
 
 void Rigidbody::destroy() {
+    std::cout << "[Rigidbody] Starting cleanup for " << (owner ? owner->Name : "Unknown") << std::endl;
+    
     if (rigidActor) {
+        std::cout << "[Rigidbody] Removing actor from scene..." << std::endl;
         auto& physicsManager = PhysicsManager::getInstance();
         if (physicsManager.getScene()) {
             physicsManager.getScene()->removeActor(*rigidActor);
         }
+        
+        std::cout << "[Rigidbody] Releasing rigid actor..." << std::endl;
         rigidActor->release();
         rigidActor = nullptr;
         dynamicActor = nullptr;
         staticActor = nullptr;
     }
+    
+    // Reset all state
     initialized = false;
+    
+    std::cout << "[Rigidbody] Cleanup completed for " << (owner ? owner->Name : "Unknown") << std::endl;
 }
 
 void Rigidbody::initializePhysics() {

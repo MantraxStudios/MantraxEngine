@@ -54,7 +54,13 @@ void Collider::update() {
 }
 
 void Collider::destroy() {
+    std::cout << "[Collider] Starting cleanup for " << (owner ? owner->Name : "Unknown") << std::endl;
+    
+    // Detach from rigidbody first if attached
+    detachFromRigidbody();
+    
     if (shape) {
+        std::cout << "[Collider] Releasing shape..." << std::endl;
         // Detach from rigidbody before releasing
         detachFromRigidbody();
         shape->release();
@@ -62,6 +68,7 @@ void Collider::destroy() {
     }
     
     if (staticActor) {
+        std::cout << "[Collider] Removing static actor from scene..." << std::endl;
         auto& physicsManager = PhysicsManager::getInstance();
         if (physicsManager.getScene()) {
             physicsManager.getScene()->removeActor(*staticActor);
@@ -71,11 +78,16 @@ void Collider::destroy() {
     }
     
     if (material) {
+        std::cout << "[Collider] Releasing material..." << std::endl;
         material->release();
         material = nullptr;
     }
     
+    // Reset all state
+    transformNeedsUpdate = false;
     initialized = false;
+    
+    std::cout << "[Collider] Cleanup completed for " << (owner ? owner->Name : "Unknown") << std::endl;
 }
 
 void Collider::initializeCollider() {

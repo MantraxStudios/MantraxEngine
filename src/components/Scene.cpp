@@ -4,7 +4,31 @@
 #include "SceneManager.h"
 #include <iostream>
 
-Scene::Scene(const std::string& name) : name(name), initialized(false) {
+Scene::Scene(const std::string& name) : name(name), initialized(false), camera(nullptr), renderPipeline(nullptr) {
+    std::cout << "Scene: Creating new scene: " << name << std::endl;
+    std::cout << "Scene: Initial camera state: " << (camera ? "Valid" : "Null") << std::endl;
+}
+
+void Scene::initialize() {
+    std::cout << "Scene: Initializing scene: " << name << std::endl;
+    
+    // Verificar que la cámara esté configurada
+    if (!camera) {
+        std::cerr << "Scene: ERROR - Cannot initialize scene without camera!" << std::endl;
+        std::cerr << "Scene: Please set a camera before initializing the scene" << std::endl;
+        return;
+    }
+    
+    // Verificar que el RenderPipeline esté configurado
+    if (!renderPipeline) {
+        std::cerr << "Scene: WARNING - Scene initialized without RenderPipeline" << std::endl;
+        std::cerr << "Scene: Some functionality may be limited" << std::endl;
+    }
+    
+    std::cout << "Scene: Scene initialized successfully: " << name << std::endl;
+    std::cout << "Scene: Camera position: (" << camera->getPosition().x << ", " 
+              << camera->getPosition().y << ", " << camera->getPosition().z << ")" << std::endl;
+    std::cout << "Scene: RenderPipeline: " << (renderPipeline ? "Configured" : "Not configured") << std::endl;
 }
 
 void Scene::addGameObject(GameObject* object) {
@@ -84,5 +108,28 @@ void Scene::removeLight(std::shared_ptr<Light> light) {
         }
         // Remover de la lista de luces
         lights.erase(std::remove(lights.begin(), lights.end(), light), lights.end());
+    }
+}
+
+void Scene::setCamera(std::unique_ptr<Camera> newCamera) {
+    if (!newCamera) {
+        std::cerr << "Scene: ERROR - Attempting to set null camera!" << std::endl;
+        return;
+    }
+    
+    std::cout << "Scene: Setting camera for scene: " << name << std::endl;
+    std::cout << "Scene: Camera position: (" << newCamera->getPosition().x << ", " 
+              << newCamera->getPosition().y << ", " << newCamera->getPosition().z << ")" << std::endl;
+    
+    // Mover la cámara a la escena
+    camera = std::move(newCamera);
+    
+    // Verificar que se estableció correctamente
+    if (camera) {
+        std::cout << "Scene: Camera set successfully for scene: " << name << std::endl;
+        std::cout << "Scene: Final camera position: (" << camera->getPosition().x << ", " 
+                  << camera->getPosition().y << ", " << camera->getPosition().z << ")" << std::endl;
+    } else {
+        std::cerr << "Scene: ERROR - Camera not properly set after move!" << std::endl;
     }
 } 

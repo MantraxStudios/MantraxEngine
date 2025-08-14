@@ -19,6 +19,9 @@ public:
     void setActiveScene(const std::string& sceneName);
     Scene* getActiveScene() { return activeScene; }
     Scene* getScene(const std::string& sceneName);
+    
+    // Remove scene completely from the manager
+    void removeScene(const std::string& sceneName);
 
     void update(float deltaTime);
     void setupRenderPipeline(RenderPipeline& pipeline);
@@ -29,6 +32,12 @@ public:
     bool initializePhysics();
     void cleanupPhysics();
     PhysicsManager& getPhysicsManager() { return PhysicsManager::getInstance(); }
+
+    // Physics components cleanup for scene switching
+    void cleanupPhysicsComponents(Scene* scene);
+    
+    // Reinitialize physics components for the active scene
+    void reinitializePhysicsComponents();
 
 private:
     SceneManager();

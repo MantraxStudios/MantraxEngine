@@ -7,6 +7,8 @@
 #include <components/CharacterController.h>
 #include <components/SpriteAnimator.h>
 #include <components/ScriptExecutor.h>
+#include <components/Collider.h>
+#include <components/Rigidbody.h>
 #include "windows/Selection.h"
 #include <render/RenderPipeline.h>
 #include "EUI/EditorInfo.h"
@@ -147,6 +149,7 @@ bool SceneSaver::SaveScene(const Scene* scene, const std::string& filepath) {
                             break;
                         }
                     }
+                    data["enabled"] = comp->isActive();
                     data["type"] = rawType;
                 }
 
@@ -208,7 +211,34 @@ bool SceneSaver::SaveScene(const Scene* scene, const std::string& filepath) {
 bool SceneSaver::LoadScene(const std::string& filepath) {
     auto& sceneManager = SceneManager::getInstance();
 
-    // 1. Leer el archivo JSON de escena
+    // 1. Limpiar completamente la escena anterior si existe
+    Scene* currentScene = sceneManager.getActiveScene();
+    if (currentScene) {
+        std::cout << "SceneSaver: Cleaning up previous scene: " << currentScene->getName() << std::endl;
+        
+        // Limpiar componentes de física de la escena anterior
+        sceneManager.cleanupPhysicsComponents(currentScene);
+        
+        // Limpiar completamente la escena anterior
+        currentScene->cleanup();
+        
+        // Limpiar el TileEditor si existe
+        try {
+            TileEditor* tileEditor = RenderWindows::getInstance().GetWindow<TileEditor>();
+            if (tileEditor) {
+                std::cout << "SceneSaver: Clearing TileEditor data from previous scene" << std::endl;
+                tileEditor->clearAllTiles();
+            }
+        } catch (const std::exception& e) {
+            std::cerr << "SceneSaver: Error clearing TileEditor: " << e.what() << std::endl;
+        }
+        
+        // Remover la escena anterior del SceneManager
+        // Nota: Esto se hace automáticamente cuando se agrega la nueva escena
+        std::cout << "SceneSaver: Previous scene cleaned up successfully" << std::endl;
+    }
+
+    // 2. Leer el archivo JSON de escena
     std::string jsonStr;
     if (!FileSystem::readString(filepath, jsonStr)) {
         std::cerr << "Error: No se pudo leer el archivo " << filepath << std::endl;
@@ -227,24 +257,7 @@ bool SceneSaver::LoadScene(const std::string& filepath) {
     std::string sceneName = FileSystem::getFileNameWithoutExtension(filepath);
     auto newScene = std::make_unique<Scene>(sceneName);
 
-    // 2. Configurar el RenderPipeline
-    if (auto currentScene = sceneManager.getActiveScene()) {
-        newScene->setRenderPipeline(currentScene->getRenderPipeline());
-        std::cout << "Loading Pipeline in current scene for the new scene" << std::endl;
-    }
-    else {
-        std::unique_ptr<DefaultShaders> shaders = std::make_unique<DefaultShaders>();
-        auto pipeline = std::make_unique<RenderPipeline>(newScene->getCamera(), shaders.get());
-        if (!pipeline->loadMaterialsFromConfig("config/materials_config.json")) {
-            std::cerr << "Error: Failed to load materials configuration" << std::endl;
-        }
-        else {
-            std::cout << "Materials Loaded" << std::endl;
-        }
-        newScene->setRenderPipeline(pipeline.get());
-    }
-
-    // 3. Crear la cámara con información guardada o valores por defecto
+    // 3. Crear la cámara PRIMERO con información guardada o valores por defecto
     std::unique_ptr<Camera> camera;
     
     if (MainJson.contains("Camera")) {
@@ -257,6 +270,12 @@ bool SceneSaver::LoadScene(const std::string& filepath) {
         float farPlane = cameraData.value("FarPlane", 1000.0f);
         
         camera = std::make_unique<Camera>(fov, aspectRatio, nearPlane, farPlane);
+        
+        // Verificar que la cámara se creó correctamente
+        if (!camera) {
+            std::cerr << "SceneSaver: ERROR - Failed to create camera from scene file!" << std::endl;
+            return false;
+        }
         
         // Cargar posición y forward
         if (cameraData.contains("Position")) {
@@ -287,16 +306,83 @@ bool SceneSaver::LoadScene(const std::string& filepath) {
             camera->setOrthographicSize(orthoSize);
         }
         
-        std::cout << "Loaded camera from scene file" << std::endl;
+        std::cout << "SceneSaver: Loaded camera from scene file successfully" << std::endl;
     } else {
         // Crear cámara por defecto si no hay información guardada
         camera = std::make_unique<Camera>(65.0f, 1200.0f / 800.0f, 0.1f, 1000.0f);
+        
+        // Verificar que la cámara se creó correctamente
+        if (!camera) {
+            std::cerr << "SceneSaver: ERROR - Failed to create default camera!" << std::endl;
+            return false;
+        }
+        
         camera->setPosition(glm::vec3(0.0f, 5.0f, 10.0f));
         camera->setTarget(glm::vec3(0.0f));
-        std::cout << "Created default camera" << std::endl;
+        std::cout << "SceneSaver: Created default camera successfully" << std::endl;
     }
     
+    // Establecer la cámara en la escena ANTES de crear el RenderPipeline
     newScene->setCamera(std::move(camera));
+    
+    // Verificar que la cámara se estableció correctamente
+    if (!newScene->getCamera()) {
+        std::cerr << "SceneSaver: ERROR - Camera not properly set in scene!" << std::endl;
+        return false;
+    }
+    
+    std::cout << "SceneSaver: Camera set in scene successfully. Position: (" 
+              << newScene->getCamera()->getPosition().x << ", " 
+              << newScene->getCamera()->getPosition().y << ", " 
+              << newScene->getCamera()->getPosition().z << ")" << std::endl;
+
+    // 2. Configurar el RenderPipeline DESPUÉS de establecer la cámara
+    if (auto currentScene = sceneManager.getActiveScene()) {
+        newScene->setRenderPipeline(currentScene->getRenderPipeline());
+        std::cout << "SceneSaver: Using existing RenderPipeline from current scene" << std::endl;
+    }
+    else {
+        // Crear un nuevo RenderPipeline solo si es necesario
+        std::unique_ptr<DefaultShaders> shaders = std::make_unique<DefaultShaders>();
+        if (!shaders) {
+            std::cerr << "SceneSaver: ERROR - Failed to create DefaultShaders!" << std::endl;
+            return false;
+        }
+        
+        // Usar la cámara que ya está en la escena
+        Camera* sceneCamera = newScene->getCamera();
+        if (!sceneCamera) {
+            std::cerr << "SceneSaver: ERROR - Scene camera is null when creating RenderPipeline!" << std::endl;
+            return false;
+        }
+        
+        auto pipeline = std::make_unique<RenderPipeline>(sceneCamera, shaders.get());
+        if (!pipeline) {
+            std::cerr << "SceneSaver: ERROR - Failed to create RenderPipeline!" << std::endl;
+            return false;
+        }
+        
+        if (!pipeline->loadMaterialsFromConfig("config/materials_config.json")) {
+            std::cerr << "SceneSaver: Warning - Failed to load materials configuration" << std::endl;
+        }
+        else {
+            std::cout << "SceneSaver: Materials loaded successfully" << std::endl;
+        }
+        
+        newScene->setRenderPipeline(std::move(pipeline));
+        std::cout << "SceneSaver: New RenderPipeline created and set successfully" << std::endl;
+    }
+    
+    // Verificar que tanto la cámara como el RenderPipeline estén configurados
+    if (!newScene->getCamera()) {
+        std::cerr << "SceneSaver: ERROR - Camera is null after RenderPipeline setup!" << std::endl;
+        return false;
+    }
+    
+    if (!newScene->getRenderPipeline()) {
+        std::cerr << "SceneSaver: ERROR - RenderPipeline is null after setup!" << std::endl;
+        return false;
+    }
 
     // Cargar datos de tiles del TileEditor ANTES que los objetos
     if (MainJson.contains("TileData") && !MainJson["TileData"].empty()) {
@@ -395,27 +481,91 @@ bool SceneSaver::LoadScene(const std::string& filepath) {
                             if (type == "ScriptExecutor") {
                                 auto* scriptComp = obj->addComponent<ScriptExecutor>();
                                 scriptComp->deserialize(compData.dump());
+
+                                if (compData.at("enabled").get<bool>() == true) {
+                                    scriptComp->enable();
+                                }
+                                else {
+                                    scriptComp->disable();
+                                }
                             }
                             else if (type == "LightComponent") {
                                 auto* lightComp = obj->addComponent<LightComponent>();
                                 lightComp->deserialize(compData.dump());
+
+                                if (compData.at("enabled").get<bool>() == true) {
+                                    lightComp->enable();
+                                }
+                                else {
+                                    lightComp->disable();
+                                }
                             }
                             else if (type == "AudioSource") {
                                 auto* audioComp = obj->addComponent<AudioSource>();
                                 audioComp->deserialize(compData.dump());
+
+                                if (compData.at("enabled").get<bool>() == true) {
+                                    audioComp->enable();
+                                }
+                                else {
+                                    audioComp->disable();
+                                }
                             }
                             else if (type == "PhysicalObject") {
                                 auto* physComp = obj->addComponent<PhysicalObject>(obj);
                                 physComp->initializePhysics();
                                 physComp->deserialize(compData.dump());
+
+                                if (compData.at("enabled").get<bool>() == true) {
+                                    physComp->enable();
+                                }
+                                else {
+                                    physComp->disable();
+                                }
                             }
                             else if (type == "CharacterController") {
                                 auto* ccComp = obj->addComponent<CharacterController>();
                                 ccComp->deserialize(compData.dump());
+
+                                if (compData.at("enabled").get<bool>() == true) {
+                                    ccComp->enable();
+                                }
+                                else {
+                                    ccComp->disable();
+                                }
                             }
                             else if (type == "SpriteAnimator") {
                                 auto* spaComp = obj->addComponent<SpriteAnimator>();
                                 spaComp->deserialize(compData.dump());
+
+                                if (compData.at("enabled").get<bool>() == true) {
+                                    spaComp->enable();
+                                }
+                                else {
+                                    spaComp->disable();
+                                }
+                            }
+                            else if (type == "Collider") {
+                                auto* clComp = obj->addComponent<Collider>(obj);
+                                clComp->deserialize(compData.dump());
+
+                                if (compData.at("enabled").get<bool>() == true) {
+                                    clComp->enable();
+                                }
+                                else {
+                                    clComp->disable();
+                                }
+                            }
+                            else if (type == "Rigidbody") {
+                                auto* rgComp = obj->addComponent<Rigidbody>(obj);
+                                rgComp->deserialize(compData.dump());
+
+                                if (compData.at("enabled").get<bool>() == true) {
+                                    rgComp->enable();
+                                }
+                                else {
+                                    rgComp->disable();
+                                }
                             }
                         }
                         catch (const nlohmann::json::exception& e) {
@@ -491,6 +641,12 @@ bool SceneSaver::LoadScene(const std::string& filepath) {
     }
 
     // 7. Agregar la escena al manager y activar
+    // Remover la escena anterior si existe con el mismo nombre
+    if (sceneManager.getScene(sceneName)) {
+        std::cout << "SceneSaver: Removing existing scene with same name: " << sceneName << std::endl;
+        sceneManager.removeScene(sceneName);
+    }
+    
     sceneManager.addScene(std::move(newScene));
     sceneManager.setActiveScene(sceneName);
     
@@ -541,33 +697,109 @@ bool SceneSaver::LoadScene(const std::string& filepath) {
 
 Scene* SceneSaver::MakeNewScene(std::string sceneName) {
     auto& sceneManager = SceneManager::getInstance();
-    Scene* newScene = new Scene(sceneName);
+    auto newScene = std::make_unique<Scene>(sceneName);
 
     EditorInfo::currentScenePath = "";
 
+    // Crear cámara con valores por defecto seguros
     auto camera = std::make_unique<Camera>(65.0f, 1200.0f / 800.0f, 0.1f, 1000.0f);
     camera->setPosition(glm::vec3(0.0f, 5.0f, 10.0f));
     camera->setTarget(glm::vec3(0.0f));
+    
+    // Verificar que la cámara se creó correctamente
+    if (!camera) {
+        std::cerr << "SceneSaver: ERROR - Failed to create camera for new scene!" << std::endl;
+        return nullptr;
+    }
+    
+    // Obtener una referencia a la cámara antes de moverla
+    Camera* cameraPtr = camera.get();
+    
+    // Establecer la cámara en la escena
     newScene->setCamera(std::move(camera));
+    
+    // Verificar que la cámara se estableció correctamente
+    if (!newScene->getCamera()) {
+        std::cerr << "SceneSaver: ERROR - Camera not properly set in new scene!" << std::endl;
+        return nullptr;
+    }
+    
+    std::cout << "SceneSaver: Camera created and set successfully for new scene: " << sceneName << std::endl;
+    std::cout << "SceneSaver: Camera position: (" << cameraPtr->getPosition().x << ", " 
+              << cameraPtr->getPosition().y << ", " << cameraPtr->getPosition().z << ")" << std::endl;
 
+    // Configurar RenderPipeline
     if (auto currentScene = sceneManager.getActiveScene()) {
+        // Usar la escena actual como referencia para el RenderPipeline
         newScene->setRenderPipeline(currentScene->getRenderPipeline());
+        std::cout << "SceneSaver: Using existing RenderPipeline from current scene" << std::endl;
     }
     else {
+        // Crear un nuevo RenderPipeline solo si es necesario
         std::unique_ptr<DefaultShaders> shaders = std::make_unique<DefaultShaders>();
-        RenderPipeline* pipeline = new RenderPipeline(newScene->getCamera(), shaders.get());
-
-        if (!pipeline->loadMaterialsFromConfig("config/materials_config.json")) {
-            std::cerr << "Warning: Failed to load materials configuration" << std::endl;
+        if (!shaders) {
+            std::cerr << "SceneSaver: ERROR - Failed to create DefaultShaders!" << std::endl;
+            return nullptr;
+        }
+        
+        // Usar la cámara que ya está en la escena
+        Camera* sceneCamera = newScene->getCamera();
+        if (!sceneCamera) {
+            std::cerr << "SceneSaver: ERROR - Scene camera is null when creating RenderPipeline!" << std::endl;
+            return nullptr;
+        }
+        
+        auto pipeline = std::make_unique<RenderPipeline>(sceneCamera, shaders.get());
+        if (!pipeline) {
+            std::cerr << "SceneSaver: ERROR - Failed to create RenderPipeline!" << std::endl;
+            return nullptr;
         }
 
-        newScene->setRenderPipeline(pipeline);
+        if (!pipeline->loadMaterialsFromConfig("config/materials_config.json")) {
+            std::cerr << "SceneSaver: Warning - Failed to load materials configuration" << std::endl;
+        }
+
+        newScene->setRenderPipeline(std::move(pipeline));
+        std::cout << "SceneSaver: New RenderPipeline created successfully" << std::endl;
+    }
+    
+    // Verificar que todo esté configurado correctamente antes de inicializar
+    if (!newScene->getCamera()) {
+        std::cerr << "SceneSaver: ERROR - Camera is null before initialization!" << std::endl;
+        return nullptr;
+    }
+    
+    if (!newScene->getRenderPipeline()) {
+        std::cerr << "SceneSaver: ERROR - RenderPipeline is null before initialization!" << std::endl;
+        return nullptr;
     }
 
-    newScene->initialize();
-    newScene->setInitialized(true);
-    sceneManager.addScene(std::unique_ptr<Scene>(newScene));
+    // Inicializar la escena
+    try {
+        newScene->initialize();
+        newScene->setInitialized(true);
+        std::cout << "SceneSaver: Scene initialized successfully: " << sceneName << std::endl;
+    } catch (const std::exception& e) {
+        std::cerr << "SceneSaver: ERROR - Failed to initialize scene: " << e.what() << std::endl;
+        return nullptr;
+    }
+    
+    // Obtener un puntero raw antes de mover el unique_ptr
+    Scene* scenePtr = newScene.get();
+    
+    // Agregar la escena al manager
+    sceneManager.addScene(std::move(newScene));
     sceneManager.setActiveScene(sceneName);
+    
+    // Verificación final
+    Scene* finalScene = sceneManager.getActiveScene();
+    if (finalScene && finalScene->getCamera()) {
+        std::cout << "SceneSaver: New scene created successfully: " << sceneName << std::endl;
+        std::cout << "SceneSaver: Final camera position: (" << finalScene->getCamera()->getPosition().x << ", " 
+                  << finalScene->getCamera()->getPosition().y << ", " << finalScene->getCamera()->getPosition().z << ")" << std::endl;
+    } else {
+        std::cerr << "SceneSaver: ERROR - Final verification failed!" << std::endl;
+    }
 
-    return newScene;
+    return scenePtr;
 }

@@ -575,3 +575,22 @@ void TileEditor::OnRenderGUI() {
 
     ImGui::End();
 }
+
+void TileEditor::clearAllTiles() {
+    std::cout << "TileEditor: Clearing all tiles and resetting editor state" << std::endl;
+    
+    // Limpiar todos los tiles
+    savedTiles.clear();
+    
+    // Resetear el índice seleccionado
+    selectedTileIndex = -1;
+    
+    // Limpiar el cache de texturas
+    cleanupTextureCache();
+    
+    // Resetear variables de estado
+    newTileName = "New Tile";
+    newTexturePath = "";
+    
+    std::cout << "TileEditor: All tiles cleared successfully" << std::endl;
+}

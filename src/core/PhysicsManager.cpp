@@ -832,3 +832,35 @@ void PhysicsManager::forceCleanupAllObjects()
     
     std::cout << "PhysicsManager: Force cleanup completed." << std::endl;
 }
+
+void PhysicsManager::cleanupScenePhysicsComponents() {
+    std::cout << "PhysicsManager: Cleaning up scene physics components..." << std::endl;
+    
+    // Clear event handler to prevent any callbacks during cleanup
+    if (eventHandler) {
+        eventHandler->clear();
+    }
+    
+    // Remove all actors from the scene
+    if (scene) {
+        std::cout << "PhysicsManager: Removing all actors from scene..." << std::endl;
+        
+        // Get all actors in the scene
+        physx::PxU32 nbActors = scene->getNbActors(physx::PxActorTypeFlag::eRIGID_DYNAMIC | physx::PxActorTypeFlag::eRIGID_STATIC);
+        if (nbActors > 0) {
+            std::vector<physx::PxRigidActor*> actors(nbActors);
+            scene->getActors(physx::PxActorTypeFlag::eRIGID_DYNAMIC | physx::PxActorTypeFlag::eRIGID_STATIC, 
+                           reinterpret_cast<physx::PxActor**>(actors.data()), nbActors);
+            
+            // Remove each actor
+            for (physx::PxU32 i = 0; i < nbActors; i++) {
+                if (actors[i]) {
+                    std::cout << "PhysicsManager: Removing actor " << i << " from scene..." << std::endl;
+                    scene->removeActor(*actors[i]);
+                }
+            }
+        }
+    }
+    
+    std::cout << "PhysicsManager: Scene physics components cleanup completed." << std::endl;
+}

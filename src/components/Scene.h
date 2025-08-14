@@ -17,9 +17,10 @@ public:
     Scene(const std::string& name = "New Scene");
     virtual ~Scene() = default;
 
-    virtual void initialize() {}
+    virtual void initialize();
     virtual void update(float deltaTime) {}
     void updateNative(float deltaTime);
+
     virtual void cleanup() {
         std::cout << "Scene: cleanup - start" << std::endl;
 
@@ -61,6 +62,7 @@ public:
     
     // RenderPipeline access
     void setRenderPipeline(RenderPipeline* pipeline) { renderPipeline = pipeline; }
+    void setRenderPipeline(std::unique_ptr<RenderPipeline>&& pipeline) { renderPipeline = pipeline.release(); }
     RenderPipeline* getRenderPipeline() const { return renderPipeline; }
 
     void addLight(std::shared_ptr<Light> light);
@@ -72,7 +74,13 @@ public:
 
     const Camera* getCamera() const { return camera.get(); }
     Camera* getCamera() { return camera.get(); }
-    void setCamera(std::unique_ptr<Camera> newCamera) { camera = std::move(newCamera); }
+    void setCamera(std::unique_ptr<Camera> newCamera);
+    
+    // Verificar que la escena tenga una cámara válida
+    bool hasValidCamera() const { return camera != nullptr; }
+    
+    // Verificar que la escena esté completamente configurada
+    bool isProperlyConfigured() const { return camera != nullptr && renderPipeline != nullptr; }
 
 protected:
     std::string name;

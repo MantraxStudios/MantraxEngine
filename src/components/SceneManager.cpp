@@ -2,6 +2,8 @@
 #include <stdexcept>
 #include <iostream>
 #include "../components/PhysicalObject.h"
+#include "../components/Collider.h"
+#include "../components/Rigidbody.h"
 
 SceneManager::SceneManager() : activeScene(nullptr), physicsInitialized(false) {
 }
@@ -95,6 +97,8 @@ void SceneManager::setActiveScene(const std::string& sceneName) {
         // Cleanup the current scene if it exists
         if (activeScene) {
             std::cout << "Switching from scene: " << activeScene->getName() << " to: " << sceneName << std::endl;
+            // Cleanup physics components before switching scenes
+            cleanupPhysicsComponents(activeScene);
             // No llamar cleanup() aquí para preservar los objetos
             // activeScene->cleanup();
         }
@@ -112,6 +116,9 @@ void SceneManager::setActiveScene(const std::string& sceneName) {
             activeScene->initialize();
             activeScene->setInitialized(true);
         }
+        
+        // Reinitialize physics components for the new scene
+        reinitializePhysicsComponents();
         
         std::cout << "Scene switched successfully. Objects in scene: " << activeScene->getGameObjects().size() << std::endl;
     }
@@ -188,4 +195,108 @@ void SceneManager::initializeAllScenes() {
     }
     
     std::cout << "RenderPipeline set for all scenes, active scene initialized" << std::endl;
+} 
+
+void SceneManager::cleanupPhysicsComponents(Scene* scene) {
+    if (!scene) return;
+    
+    std::cout << "SceneManager: Cleaning up physics components for scene: " << scene->getName() << std::endl;
+    
+    // First, cleanup all physics objects from the scene using PhysicsManager
+    PhysicsManager::getInstance().cleanupScenePhysicsComponents();
+    
+    // Get all game objects from the scene
+    const auto& gameObjects = scene->getGameObjects();
+    
+    for (auto* gameObject : gameObjects) {
+        if (!gameObject) continue;
+        
+        // Cleanup Collider components
+        auto* collider = gameObject->getComponent<Collider>();
+        if (collider) {
+            std::cout << "SceneManager: Cleaning up Collider for GameObject: " << gameObject->Name << std::endl;
+            collider->destroy();
+        }
+        
+        // Cleanup Rigidbody components
+        auto* rigidbody = gameObject->getComponent<Rigidbody>();
+        if (rigidbody) {
+            std::cout << "SceneManager: Cleaning up Rigidbody for GameObject: " << gameObject->Name << std::endl;
+            rigidbody->destroy();
+        }
+        
+        // Cleanup PhysicalObject components (if they exist)
+        auto* physicalObject = gameObject->getComponent<PhysicalObject>();
+        if (physicalObject) {
+            std::cout << "SceneManager: Cleaning up PhysicalObject for GameObject: " << gameObject->Name << std::endl;
+            physicalObject->destroy();
+        }
+    }
+    
+    std::cout << "SceneManager: Physics components cleanup completed for scene: " << scene->getName() << std::endl;
+}
+
+void SceneManager::reinitializePhysicsComponents() {
+    if (!activeScene) return;
+    
+    std::cout << "SceneManager: Reinitializing physics components for scene: " << activeScene->getName() << std::endl;
+    
+    // Get all game objects from the active scene
+    const auto& gameObjects = activeScene->getGameObjects();
+    
+    for (auto* gameObject : gameObjects) {
+        if (!gameObject) continue;
+        
+        // Reinitialize Collider components
+        auto* collider = gameObject->getComponent<Collider>();
+        if (collider) {
+            std::cout << "SceneManager: Reinitializing Collider for GameObject: " << gameObject->Name << std::endl;
+            collider->start();
+        }
+        
+        // Reinitialize Rigidbody components
+        auto* rigidbody = gameObject->getComponent<Rigidbody>();
+        if (rigidbody) {
+            std::cout << "SceneManager: Reinitializing Rigidbody for GameObject: " << gameObject->Name << std::endl;
+            rigidbody->start();
+        }
+        
+        // Reinitialize PhysicalObject components (if they exist)
+        auto* physicalObject = gameObject->getComponent<PhysicalObject>();
+        if (physicalObject) {
+            std::cout << "SceneManager: Reinitializing PhysicalObject for GameObject: " << gameObject->Name << std::endl;
+            physicalObject->start();
+        }
+    }
+    
+    std::cout << "SceneManager: Physics components reinitialization completed for scene: " << activeScene->getName() << std::endl;
+}
+
+void SceneManager::removeScene(const std::string& sceneName) {
+    auto it = scenes.find(sceneName);
+    if (it == scenes.end()) {
+        std::cout << "SceneManager: Scene '" << sceneName << "' not found for removal" << std::endl;
+        return;
+    }
+    
+    std::cout << "SceneManager: Removing scene: " << sceneName << std::endl;
+    
+    // Si es la escena activa, limpiar primero
+    if (activeScene == it->second.get()) {
+        std::cout << "SceneManager: Scene '" << sceneName << "' is active, cleaning up first..." << std::endl;
+        
+        // Limpiar componentes de física
+        cleanupPhysicsComponents(activeScene);
+        
+        // Limpiar la escena
+        activeScene->cleanup();
+        
+        // Resetear la escena activa
+        activeScene = nullptr;
+    }
+    
+    // Remover la escena del map
+    scenes.erase(it);
+    
+    std::cout << "SceneManager: Scene '" << sceneName << "' removed successfully" << std::endl;
 } 
