@@ -102,56 +102,43 @@ void ShadowManager::createDirectionalFramebuffer() {
     glDrawBuffer(GL_NONE);
     glReadBuffer(GL_NONE);
     
-    // Check if framebuffer is complete
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-        std::cout << "ShadowManager: ERROR - Directional framebuffer not complete!" << std::endl;
-    }
-    
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    std::cout << "ShadowManager: Directional framebuffer created (FB: " << dirFramebuffer << ", Texture: " << dirDepthTexture << ")" << std::endl;
 }
 
 void ShadowManager::createSpotFramebuffers() {
     for (int i = 0; i < 2; i++) {
-    // Generate framebuffer
+        // Generate framebuffer
         glGenFramebuffers(1, &spotFramebuffers[i]);
         glBindFramebuffer(GL_FRAMEBUFFER, spotFramebuffers[i]);
-    
-    // Generate depth texture
+
+        // Generate depth texture
         glGenTextures(1, &spotDepthTextures[i]);
         glBindTexture(GL_TEXTURE_2D, spotDepthTextures[i]);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32, shadowMapSize, shadowMapSize, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
-    
-    // Set texture parameters for shadow mapping
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-    
-    // Set border color to white (no shadow)
-    float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-    glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
-    
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32, shadowMapSize, shadowMapSize, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+
+        // Set texture parameters for shadow mapping
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+
+        // Set border color to white (no shadow)
+        float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+        glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+
         // Configure for shadow comparison
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
-    
-    // Attach depth texture as FBO's depth buffer
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+
+        // Attach depth texture as FBO's depth buffer
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, spotDepthTextures[i], 0);
-    
-    // No color buffer needed
-    glDrawBuffer(GL_NONE);
-    glReadBuffer(GL_NONE);
-    
-    // Check if framebuffer is complete
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-            std::cout << "ShadowManager: ERROR - Spot framebuffer " << i << " not complete!" << std::endl;
-        }
-        
-        std::cout << "ShadowManager: Spot framebuffer " << i << " created (FB: " << spotFramebuffers[i] << ", Texture: " << spotDepthTextures[i] << ")" << std::endl;
+
+        // No color buffer needed
+        glDrawBuffer(GL_NONE);
+        glReadBuffer(GL_NONE);
+
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
-    
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void ShadowManager::createPointFramebuffers() {
@@ -184,8 +171,6 @@ void ShadowManager::createPointFramebuffers() {
         // No color buffer needed
         glDrawBuffer(GL_NONE);
         glReadBuffer(GL_NONE);
-        
-        std::cout << "ShadowManager: Point framebuffer " << i << " created (FB: " << pointFramebuffers[i] << ", Texture: " << pointDepthCubeMaps[i] << ")" << std::endl;
     }
     
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -212,7 +197,6 @@ void ShadowManager::createShadowShader() {
     glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
     if (!success) {
         glGetShaderInfoLog(vertexShader, 512, nullptr, infoLog);
-        std::cout << "ShadowManager: Vertex shader compilation failed: " << infoLog << std::endl;
     }
     
     // Create fragment shader
@@ -223,7 +207,6 @@ void ShadowManager::createShadowShader() {
     glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
     if (!success) {
         glGetShaderInfoLog(fragmentShader, 512, nullptr, infoLog);
-        std::cout << "ShadowManager: Fragment shader compilation failed: " << infoLog << std::endl;
     }
     
     // Create shader program
@@ -235,14 +218,11 @@ void ShadowManager::createShadowShader() {
     glGetProgramiv(shadowShader, GL_LINK_STATUS, &success);
     if (!success) {
         glGetProgramInfoLog(shadowShader, 512, nullptr, infoLog);
-        std::cout << "ShadowManager: Shader program linking failed: " << infoLog << std::endl;
     }
     
     // Clean up shaders
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
-    
-    std::cout << "ShadowManager: Shadow shader created (ID: " << shadowShader << ")" << std::endl;
 }
 
 void ShadowManager::beginShadowPass(std::shared_ptr<Light> directionalLight, Camera* camera) {
@@ -268,8 +248,6 @@ void ShadowManager::bindShadowMap(GLuint shaderProgram) {
     
     // CRÍTICO: Restaurar unidad de textura activa
     glActiveTexture(GL_TEXTURE0);
-    
-    std::cout << "ShadowManager: Directional shadow map bound to texture unit 10 and restored to 0 (location: " << shadowMapLoc << ")" << std::endl;
 }
 
 void ShadowManager::setupShadowUniforms(GLuint shaderProgram) {
@@ -287,17 +265,11 @@ void ShadowManager::setupShadowUniforms(GLuint shaderProgram) {
     glUniform1f(shadowBiasLoc, shadowBias);
     glUniform1f(shadowStrengthLoc, shadowStrength);
     glUniform1i(enableShadowsLoc, 1);
-    
-    std::cout << "ShadowManager: Shadow uniforms set - Matrix(" << lightSpaceMatrixLoc 
-              << "), Bias: " << shadowBias << "(" << shadowBiasLoc 
-              << "), Strength: " << shadowStrength << "(" << shadowStrengthLoc 
-              << "), Enabled(" << enableShadowsLoc << ")" << std::endl;
 }
 
 glm::mat4 ShadowManager::calculateDirectionalLightSpaceMatrix(std::shared_ptr<Light> light, Camera* camera) {
     // Get light direction - asegurarse de que est� normalizada
     glm::vec3 lightDir = glm::normalize(light->getDirection());
-    std::cout << "ShadowManager: Light direction: (" << lightDir.x << ", " << lightDir.y << ", " << lightDir.z << ")" << std::endl;
 
     // Get camera properties
     glm::vec3 cameraPos = camera->getPosition();
@@ -759,15 +731,12 @@ void ShadowManager::bindAllShadowMaps(GLuint shaderProgram) {
     if (shadowMapLoc != -1) {
         glUniform1i(shadowMapLoc, 10);
         std::cout << "ShadowManager: Bound directional shadow map to texture unit 10 (texture: " << dirDepthTexture << ", location: " << shadowMapLoc << ")" << std::endl;
-    } else {
-        std::cout << "ShadowManager: ERROR - Could not find uShadowMap uniform!" << std::endl;
     }
     
     // 2. Bind spot shadow maps to texture units 11-12
     for (int i = 0; i < 2; i++) {
         // Verificar que la textura existe
         if (spotDepthTextures[i] == 0) {
-            std::cout << "ShadowManager: ERROR - Spot shadow map " << i << " texture is invalid (ID: 0)" << std::endl;
             continue;
         }
         
@@ -789,18 +758,13 @@ void ShadowManager::bindAllShadowMaps(GLuint shaderProgram) {
             if (uniformError == GL_NO_ERROR) {
                 std::cout << "ShadowManager: Successfully bound spot shadow map " << i << " to texture unit " << (11 + i) 
                           << " (texture: " << spotDepthTextures[i] << ", location: " << spotShadowMapLoc << ")" << std::endl;
-            } else {
-                std::cout << "ShadowManager: ERROR - Failed to set spot shadow map " << i << " uniform (GL error: " << uniformError << ")" << std::endl;
             }
-        } else {
-            std::cout << "ShadowManager: ERROR - Could not find " << uniformName << " uniform!" << std::endl;
         }
     }
     
     // 3. Bind point shadow maps to texture units 13-16 (deshabilitado temporalmente)
     for (int i = 0; i < 4; i++) {
         if (pointDepthCubeMaps[i] == 0) {
-            std::cout << "ShadowManager: Point shadow map " << i << " not initialized (skipping)" << std::endl;
             continue;
         }
         
@@ -810,10 +774,6 @@ void ShadowManager::bindAllShadowMaps(GLuint shaderProgram) {
         GLint pointShadowMapLoc = glGetUniformLocation(shaderProgram, uniformName.c_str());
         if (pointShadowMapLoc != -1) {
             glUniform1i(pointShadowMapLoc, 13 + i);
-            std::cout << "ShadowManager: Bound point shadow map " << i << " to texture unit " << (13 + i) 
-                      << " (texture: " << pointDepthCubeMaps[i] << ", location: " << pointShadowMapLoc << ")" << std::endl;
-        } else {
-            std::cout << "ShadowManager: Point shadow map " << i << " uniform not found (expected for disabled feature)" << std::endl;
         }
     }
     
@@ -823,7 +783,7 @@ void ShadowManager::bindAllShadowMaps(GLuint shaderProgram) {
     // Verificar estado final
     GLenum finalError = glGetError();
     if (finalError == GL_NO_ERROR) {
-        std::cout << "ShadowManager: All shadow maps bound successfully" << std::endl;
+        //std::cout << "ShadowManager: All shadow maps bound successfully" << std::endl;
     } else {
         std::cout << "ShadowManager: WARNING - GL errors occurred during shadow map binding (last error: " << finalError << ")" << std::endl;
     }
@@ -864,6 +824,4 @@ void ShadowManager::setupAllShadowUniforms(GLuint shaderProgram, const std::vect
         GLint farPlaneLoc = glGetUniformLocation(shaderProgram, ("uPointShadowFarPlanes[" + std::to_string(i) + "]").c_str());
         glUniform1f(farPlaneLoc, pointLightFarPlanes[i]);
     }
-    
-    std::cout << "ShadowManager: All shadow uniforms set" << std::endl;
 }

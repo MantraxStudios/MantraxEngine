@@ -91,6 +91,7 @@ public:
     void createShape();
     void verifyTriggerSetup();
     void configureShapeFlags();
+    void configureTriggerFlags(); // Nueva función para configurar triggers correctamente
     
     // Transform synchronization
     void syncTransformToPhysX();
@@ -131,6 +132,9 @@ public:
     ShapeType getShapeType() const { return shapeType; }
     
     // Trigger properties
+    // IMPORTANTE: Para que los objetos puedan atravesar triggers:
+    // - El shape debe tener eTRIGGER_SHAPE = true y eSIMULATION_SHAPE = false
+    // - El actor NO debe tener eDISABLE_SIMULATION = true (debe estar habilitado para detectar eventos)
     void setTrigger(bool isTrigger);
     bool isTrigger() const { return isTriggerShape; }
     

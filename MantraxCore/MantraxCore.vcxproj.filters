@@ -180,6 +180,15 @@
     <ClCompile Include="..\src\components\TileComponent.cpp">
       <Filter>01_Core\Components</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\components\Collider.cpp">
+      <Filter>01_Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\RaycastSystem.cpp">
+      <Filter>01_Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\components\Rigidbody.cpp">
+      <Filter>01_Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\core\CoreExporter.h">
@@ -345,6 +354,15 @@
     </ClInclude>
     <ClInclude Include="..\src\components\TileComponent.h">
       <Filter>01_Core\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\components\Rigidbody.h">
+      <Filter>01_Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\components\Collider.h">
+      <Filter>01_Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\RaycastSystem.h">
+      <Filter>01_Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

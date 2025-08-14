@@ -30,9 +30,9 @@ physx::PxFilterFlags CustomFilterShader(
         pairFlags = physx::PxPairFlag::eTRIGGER_DEFAULT |
                     physx::PxPairFlag::eNOTIFY_TOUCH_FOUND |
                     physx::PxPairFlag::eNOTIFY_TOUCH_LOST;
-        std::cout << "TRIGGER DETECTED - Setting trigger notification flags" << std::endl;
+        std::cout << "TRIGGER DETECTED - Setting trigger notification flags and SUPPRESSING collision" << std::endl;
         std::cout << "==========================" << std::endl;
-        return physx::PxFilterFlag::eDEFAULT;
+        return physx::PxFilterFlag::eSUPPRESS;  // SUPPRESS physical collision but allow trigger events
     }
 
     // Suppress kinematic-kinematic collisions

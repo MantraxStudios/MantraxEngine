@@ -1,5 +1,24 @@
 ﻿#include "ComponentSerializer.h"
 
+// Static member definition
+std::unordered_map<GameObject*, std::unique_ptr<ComponentUIState>> ComponentSerializer::objectStates;
+
+// Helper function implementations
+ComponentUIState* ComponentSerializer::getOrCreateState(GameObject* go) {
+    auto it = objectStates.find(go);
+    if (it == objectStates.end()) {
+        objectStates[go] = std::make_unique<ComponentUIState>();
+    }
+    return objectStates[go].get();
+}
+
+void ComponentSerializer::cleanupObjectState(GameObject* go) {
+    objectStates.erase(go);
+}
+
+void ComponentSerializer::clearAllStates() {
+    objectStates.clear();
+}
 
 void ComponentSerializer::RenderAudioSourceComponent(GameObject* go) {
     if (auto audioSource = go->getComponent<AudioSource>()) {
@@ -217,6 +236,9 @@ void ComponentSerializer::RenderLightComponent(GameObject* go) {
 
 void ComponentSerializer::RenderSpriteAnimatorComponent(GameObject* go) {
     if (auto spriteAnimator = go->getComponent<SpriteAnimator>()) {
+        // Get state for this specific GameObject
+        ComponentUIState* state = getOrCreateState(go);
+        
         bool removeComponent = false;
         bool treeNodeOpen = ImGui::TreeNode("[Sprite Animator]");
 
@@ -248,13 +270,12 @@ void ComponentSerializer::RenderSpriteAnimatorComponent(GameObject* go) {
                 ImGui::Text("Material Settings");
 
                 // Material name input
-                static char materialName[128] = "SpriteMaterial";
-                if (ImGui::InputText("Material Name", materialName, sizeof(materialName))) {
+                if (ImGui::InputText("Material Name", state->materialName, sizeof(state->materialName))) {
                     // Update material name if needed
                 }
 
                 if (ImGui::Button("Create Material")) {
-                    spriteAnimator->createMaterial(materialName);
+                    spriteAnimator->createMaterial(state->materialName);
                 }
 
                 // Material properties
@@ -263,33 +284,28 @@ void ComponentSerializer::RenderSpriteAnimatorComponent(GameObject* go) {
                     ImGui::Text("Material Properties");
 
                     // Albedo color
-                    static glm::vec3 albedoColor(1.0f, 1.0f, 1.0f);
-                    if (ImGui::ColorEdit3("Albedo", glm::value_ptr(albedoColor))) {
-                        spriteAnimator->setSpriteAlbedo(albedoColor);
+                    if (ImGui::ColorEdit3("Albedo", glm::value_ptr(state->albedoColor))) {
+                        spriteAnimator->setSpriteAlbedo(state->albedoColor);
                     }
 
                     // Metallic
-                    static float metallic = 0.0f;
-                    if (ImGui::SliderFloat("Metallic", &metallic, 0.0f, 1.0f)) {
-                        spriteAnimator->setSpriteMetallic(metallic);
+                    if (ImGui::SliderFloat("Metallic", &state->metallic, 0.0f, 1.0f)) {
+                        spriteAnimator->setSpriteMetallic(state->metallic);
                     }
 
                     // Roughness
-                    static float roughness = 0.3f;
-                    if (ImGui::SliderFloat("Roughness", &roughness, 0.0f, 1.0f)) {
-                        spriteAnimator->setSpriteRoughness(roughness);
+                    if (ImGui::SliderFloat("Roughness", &state->roughness, 0.0f, 1.0f)) {
+                        spriteAnimator->setSpriteRoughness(state->roughness);
                     }
 
                     // Emissive
-                    static glm::vec3 emissiveColor(0.1f, 0.1f, 0.1f);
-                    if (ImGui::ColorEdit3("Emissive", glm::value_ptr(emissiveColor))) {
-                        spriteAnimator->setSpriteEmissive(emissiveColor);
+                    if (ImGui::ColorEdit3("Emissive", glm::value_ptr(state->emissiveColor))) {
+                        spriteAnimator->setSpriteEmissive(state->emissiveColor);
                     }
 
                     // Tiling
-                    static glm::vec2 tiling(1.0f, 1.0f);
-                    if (ImGui::DragFloat2("Tiling", glm::value_ptr(tiling), 0.1f)) {
-                        spriteAnimator->setSpriteTiling(tiling);
+                    if (ImGui::DragFloat2("Tiling", glm::value_ptr(state->tiling), 0.1f)) {
+                        spriteAnimator->setSpriteTiling(state->tiling);
                     }
                 }
 
@@ -307,13 +323,12 @@ void ComponentSerializer::RenderSpriteAnimatorComponent(GameObject* go) {
                 }
 
                 // Load animator file button
-                static bool showFileDialog = false;
                 if (ImGui::Button("Load Animator File")) {
-                    showFileDialog = true;
+                    state->showFileDialog = true;
                 }
 
                 // File dialog for .animator files
-                if (showFileDialog) {
+                if (state->showFileDialog) {
                     std::string projectPath = FileSystem::getProjectPath();
                     std::string contentPath = FileSystem::combinePath(projectPath, "Content");
                     std::string animatorsPath = FileSystem::combinePath(contentPath, "Animators");
@@ -334,21 +349,19 @@ void ComponentSerializer::RenderSpriteAnimatorComponent(GameObject* go) {
                         else {
                             ImGui::OpenPopup("AnimatorLoadError");
                         }
-                        showFileDialog = false;
+                        state->showFileDialog = false;
                     }
                 }
 
                 // Load from specific path input
-                static char animatorFilePath[256] = "";
-                ImGui::InputText("Animator File Path", animatorFilePath, sizeof(animatorFilePath));
+                ImGui::InputText("Animator File Path", state->animatorFilePath, sizeof(state->animatorFilePath));
 
                 // Add drag-and-drop functionality for .animator files
-                static std::string lastDroppedAnimatorFile = "";
                 auto animatorResult = UIBuilder::Drag_Objetive("AnimatorClass");
                 if (animatorResult.has_value()) {
                     std::string droppedAnimatorPath = animatorResult.value();
                     // Only process if this is a new file (not the same as last frame)
-                    if (droppedAnimatorPath != lastDroppedAnimatorFile) {
+                    if (droppedAnimatorPath != state->lastDroppedAnimatorFile) {
                         std::cout << "DEBUG: Animator file dropped! Path: " << droppedAnimatorPath << std::endl;
 
                         // Clean up the path using FileSystem::GetPathAfterContent
@@ -361,7 +374,7 @@ void ComponentSerializer::RenderSpriteAnimatorComponent(GameObject* go) {
                         std::cout << "DEBUG: Cleaned animator path: " << cleanedPath << std::endl;
 
                         // Update the input field with the dropped file path
-                        strncpy_s(animatorFilePath, sizeof(animatorFilePath), cleanedPath.c_str(), _TRUNCATE);
+                        strncpy_s(state->animatorFilePath, sizeof(state->animatorFilePath), cleanedPath.c_str(), _TRUNCATE);
 
                         // Load the animator file
                         // Construct the full path using getProjectPath + Content
@@ -377,18 +390,18 @@ void ComponentSerializer::RenderSpriteAnimatorComponent(GameObject* go) {
                             std::cout << "DEBUG: Failed to load animator file" << std::endl;
                         }
 
-                        lastDroppedAnimatorFile = droppedAnimatorPath;
+                        state->lastDroppedAnimatorFile = droppedAnimatorPath;
                     }
                 }
                 else {
                     // Reset the last dropped file when no file is being dragged
-                    lastDroppedAnimatorFile = "";
+                    state->lastDroppedAnimatorFile = "";
                 }
 
                 ImGui::SameLine();
                 if (ImGui::Button("Load")) {
-                    if (strlen(animatorFilePath) > 0) {
-                        std::string filePath = animatorFilePath;
+                    if (strlen(state->animatorFilePath) > 0) {
+                        std::string filePath = state->animatorFilePath;
                         // If it's a relative path, make it absolute
                         if (!std::filesystem::path(filePath).is_absolute()) {
                             filePath = FileSystem::combinePath(FileSystem::getProjectPath(), filePath);
@@ -545,17 +558,16 @@ void ComponentSerializer::RenderSpriteAnimatorComponent(GameObject* go) {
                 }
 
                 // Add new state
-                static char newStateName[64] = "New State";
-                ImGui::InputText("New State Name", newStateName, sizeof(newStateName));
+                ImGui::InputText("New State Name", state->newStateName, sizeof(state->newStateName));
                 if (ImGui::Button("Add State")) {
                     SpriteArray newState;
-                    newState.state_name = newStateName;
+                    newState.state_name = state->newStateName;
                     spriteAnimator->SpriteStates.push_back(newState);
                     // Set as current state if it's the first one or if no current state is selected
                     if (spriteAnimator->currentState == "None" || spriteAnimator->currentState.empty()) {
-                        spriteAnimator->currentState = newStateName;
+                        spriteAnimator->currentState = state->newStateName;
                     }
-                    strcpy_s(newStateName, "New State");
+                    strcpy_s(state->newStateName, "New State");
                 }
 
                 // Animation controls
@@ -564,8 +576,7 @@ void ComponentSerializer::RenderSpriteAnimatorComponent(GameObject* go) {
                     ImGui::Text("Animation Controls");
 
                     // Animation playback state selector
-                    static char playbackStateName[64] = "";
-                    if (ImGui::InputText("Animation State", playbackStateName, sizeof(playbackStateName))) {
+                    if (ImGui::InputText("Animation State", state->playbackStateName, sizeof(state->playbackStateName))) {
                         // State name input updated
                     }
 
@@ -576,7 +587,7 @@ void ComponentSerializer::RenderSpriteAnimatorComponent(GameObject* go) {
                             spriteAnimator->stopAnimation();
                         }
                         else {
-                            std::string stateToPlay = strlen(playbackStateName) > 0 ? playbackStateName : spriteAnimator->currentState;
+                            std::string stateToPlay = strlen(state->playbackStateName) > 0 ? state->playbackStateName : spriteAnimator->currentState;
                             spriteAnimator->playAnimation(stateToPlay);
                         }
                     }
@@ -618,10 +629,8 @@ void ComponentSerializer::RenderSpriteAnimatorComponent(GameObject* go) {
                         ImGui::Text("Current State: %s", spriteAnimator->currentState.c_str());
 
                         // Texture input field with drag-and-drop support
-                        static char texturePath[256] = "";
-
                         // Create the InputText field
-                        if (ImGui::InputText("Texture Path", texturePath, sizeof(texturePath))) {
+                        if (ImGui::InputText("Texture Path", state->texturePath, sizeof(state->texturePath))) {
                             // Path input updated
                         }
 
@@ -641,7 +650,7 @@ void ComponentSerializer::RenderSpriteAnimatorComponent(GameObject* go) {
                             std::cout << "DEBUG: Cleaned path: " << cleanedPath << std::endl;
 
                             // Update the input field with the dropped texture path
-                            strncpy_s(texturePath, sizeof(texturePath), cleanedPath.c_str(), _TRUNCATE);
+                            strncpy_s(state->texturePath, sizeof(state->texturePath), cleanedPath.c_str(), _TRUNCATE);
 
                             // Load texture and add to current state
                             currentStateIt->texturePaths.push_back(cleanedPath);
@@ -659,14 +668,14 @@ void ComponentSerializer::RenderSpriteAnimatorComponent(GameObject* go) {
 
                         ImGui::SameLine();
                         if (ImGui::Button("Add Texture")) {
-                            if (strlen(texturePath) > 0) {
-                                std::cout << "DEBUG: Manual texture addition - Path: " << texturePath << std::endl;
+                            if (strlen(state->texturePath) > 0) {
+                                std::cout << "DEBUG: Manual texture addition - Path: " << state->texturePath << std::endl;
 
                                 // Clean up the path using FileSystem::GetPathAfterContent
-                                std::string cleanedPath = FileSystem::GetPathAfterContent(texturePath);
+                                std::string cleanedPath = FileSystem::GetPathAfterContent(state->texturePath);
                                 if (cleanedPath.empty()) {
                                     // If GetPathAfterContent returns empty, use the original path
-                                    cleanedPath = texturePath;
+                                    cleanedPath = state->texturePath;
                                 }
 
                                 std::cout << "DEBUG: Manual texture - Cleaned path: " << cleanedPath << std::endl;
@@ -675,7 +684,7 @@ void ComponentSerializer::RenderSpriteAnimatorComponent(GameObject* go) {
                                 spriteAnimator->loadTexture(cleanedPath);
                                 spriteAnimator->updateMaterialTexture();
                                 // Clear the input field after successful addition
-                                memset(texturePath, 0, sizeof(texturePath));
+                                memset(state->texturePath, 0, sizeof(state->texturePath));
 
                                 std::cout << "DEBUG: Manual texture added successfully" << std::endl;
                             }
@@ -684,17 +693,17 @@ void ComponentSerializer::RenderSpriteAnimatorComponent(GameObject* go) {
                         // Quick texture path examples
                         ImGui::Text("Quick paths (click to copy):");
                         if (ImGui::Button("Sprites/Characters/player.png")) {
-                            strncpy_s(texturePath, sizeof(texturePath), "Sprites/Characters/player.png", _TRUNCATE);
+                            strncpy_s(state->texturePath, sizeof(state->texturePath), "Sprites/Characters/player.png", _TRUNCATE);
                         }
                         ImGui::SameLine();
                         if (ImGui::Button("Sprites/Backgrounds/background.png")) {
-                            strncpy_s(texturePath, sizeof(texturePath), "Sprites/Backgrounds/background.png", _TRUNCATE);
+                            strncpy_s(state->texturePath, sizeof(state->texturePath), "Sprites/Backgrounds/background.png", _TRUNCATE);
                         }
 
                         // Error popup for failed texture loading
                         if (ImGui::BeginPopupModal("TextureLoadError", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
                             ImGui::Text("Error: Could not load texture from path:");
-                            ImGui::Text("%s", texturePath);
+                            ImGui::Text("%s", state->texturePath);
                             ImGui::Separator();
                             if (ImGui::Button("OK", ImVec2(120, 0))) {
                                 ImGui::CloseCurrentPopup();
@@ -744,6 +753,9 @@ void ComponentSerializer::RenderSpriteAnimatorComponent(GameObject* go) {
 
 void ComponentSerializer::RenderPhysicalObjectComponent(GameObject* go) {
     if (auto physicalObject = go->getComponent<PhysicalObject>()) {
+        // Get state for this specific GameObject
+        ComponentUIState* state = getOrCreateState(go);
+        
         bool removeComponent = false;
         bool treeNodeOpen = ImGui::TreeNodeEx("[Physical Object]", ImGuiTreeNodeFlags_DefaultOpen);
 
@@ -941,12 +953,11 @@ void ComponentSerializer::RenderPhysicalObjectComponent(GameObject* go) {
                 ImGui::Text("Collision Filters");
 
                 // Collision Group (Word0)
-                static int currentCollisionGroup = 0;
                 const char* collisionGroups[] = {
                     "Static", "Dynamic", "Trigger", "Player", "Enemy", "Projectile", "Sensor"
                 };
-                if (ImGui::Combo("Collision Group (Word0)", &currentCollisionGroup, collisionGroups, 7)) {
-                    CollisionGroup group = static_cast<CollisionGroup>(1 << currentCollisionGroup);
+                if (ImGui::Combo("Collision Group (Word0)", &state->currentCollisionGroup, collisionGroups, 7)) {
+                    CollisionGroup group = static_cast<CollisionGroup>(1 << state->currentCollisionGroup);
                     physicalObject->setCollisionGroup(group);
                 }
                 if (ImGui::IsItemHovered()) {
@@ -956,71 +967,63 @@ void ComponentSerializer::RenderPhysicalObjectComponent(GameObject* go) {
                 // Collision Mask (Word1 - what this object can collide with)
                 ImGui::Text("Collision Mask (Word1 - What this object can collide with):");
 
-                static bool collisionMaskStatic = true;
-                static bool collisionMaskDynamic = true;
-                static bool collisionMaskTrigger = false;
-                static bool collisionMaskPlayer = false;
-                static bool collisionMaskEnemy = false;
-                static bool collisionMaskProjectile = false;
-                static bool collisionMaskSensor = false;
-
-                if (ImGui::Checkbox("Static Objects", &collisionMaskStatic)) {
-                    CollisionMask mask = CalculateCollisionMask(collisionMaskStatic, collisionMaskDynamic, collisionMaskTrigger,
-                        collisionMaskPlayer, collisionMaskEnemy, collisionMaskProjectile, collisionMaskSensor);
+                if (ImGui::Checkbox("Static Objects", &state->collisionMaskStatic)) {
+                    CollisionMask mask = CalculateCollisionMask(state->collisionMaskStatic, state->collisionMaskDynamic, state->collisionMaskTrigger,
+                        state->collisionMaskPlayer, state->collisionMaskEnemy, state->collisionMaskProjectile, state->collisionMaskSensor);
                     physicalObject->setCollisionMask(mask);
                 }
                 if (ImGui::IsItemHovered()) {
                     ImGui::SetTooltip("Word1: Can collide with static objects (walls, floors)");
                 }
 
-                if (ImGui::Checkbox("Dynamic Objects", &collisionMaskDynamic)) {
-                    CollisionMask mask = CalculateCollisionMask(collisionMaskStatic, collisionMaskDynamic, collisionMaskTrigger,
-                        collisionMaskPlayer, collisionMaskEnemy, collisionMaskProjectile, collisionMaskSensor);
+                if (ImGui::Checkbox("Dynamic Objects", &state->collisionMaskDynamic)) {
+                    CollisionMask mask = CalculateCollisionMask(state->collisionMaskStatic, state->collisionMaskDynamic, state->collisionMaskTrigger,
+                        state->collisionMaskPlayer, state->collisionMaskEnemy, state->collisionMaskProjectile, state->collisionMaskSensor);
                     physicalObject->setCollisionMask(mask);
                 }
                 if (ImGui::IsItemHovered()) {
                     ImGui::SetTooltip("Word1: Can collide with dynamic objects (moving objects)");
                 }
 
-                if (ImGui::Checkbox("Triggers", &collisionMaskTrigger)) {
-                    CollisionMask mask = CalculateCollisionMask(collisionMaskStatic, collisionMaskDynamic, collisionMaskTrigger,
-                        collisionMaskPlayer, collisionMaskEnemy, collisionMaskProjectile, collisionMaskSensor);
+                if (ImGui::Checkbox("Triggers", &state->collisionMaskTrigger)) {
+                    CollisionMask mask = CalculateCollisionMask(state->collisionMaskStatic, state->collisionMaskDynamic, state->collisionMaskTrigger,
+                        state->collisionMaskPlayer, state->collisionMaskEnemy, state->collisionMaskProjectile, state->collisionMaskSensor);
                     physicalObject->setCollisionMask(mask);
                 }
                 if (ImGui::IsItemHovered()) {
                     ImGui::SetTooltip("Word1: Can collide with trigger zones");
                 }
 
-                if (ImGui::Checkbox("Player", &collisionMaskPlayer)) {
-                    CollisionMask mask = CalculateCollisionMask(collisionMaskStatic, collisionMaskDynamic, collisionMaskTrigger,
-                        collisionMaskPlayer, collisionMaskEnemy, collisionMaskProjectile, collisionMaskSensor);
+                if (ImGui::Checkbox("Player", &state->collisionMaskPlayer)) {
+                    CollisionMask mask = CalculateCollisionMask(state->collisionMaskStatic, state->collisionMaskDynamic, state->collisionMaskTrigger,
+                        state->collisionMaskPlayer, state->collisionMaskEnemy, state->collisionMaskProjectile, state->collisionMaskSensor);
                     physicalObject->setCollisionMask(mask);
                 }
                 if (ImGui::IsItemHovered()) {
                     ImGui::SetTooltip("Word1: Can collide with player objects");
                 }
 
-                if (ImGui::Checkbox("Enemy", &collisionMaskEnemy)) {
-                    CollisionMask mask = CalculateCollisionMask(collisionMaskStatic, collisionMaskDynamic, collisionMaskTrigger,
-                        collisionMaskPlayer, collisionMaskEnemy, collisionMaskProjectile, collisionMaskSensor);
+                if (ImGui::Checkbox("Enemy", &state->collisionMaskEnemy)) {
+                    CollisionMask mask = CalculateCollisionMask(state->collisionMaskStatic, state->collisionMaskDynamic, state->collisionMaskTrigger,
+                        state->collisionMaskPlayer, state->collisionMaskEnemy, state->collisionMaskProjectile, state->collisionMaskSensor);
                     physicalObject->setCollisionMask(mask);
                 }
                 if (ImGui::IsItemHovered()) {
                     ImGui::SetTooltip("Word1: Can collide with enemy objects");
                 }
 
-                if (ImGui::Checkbox("Projectiles", &collisionMaskProjectile)) {
-                    CollisionMask mask = CalculateCollisionMask(collisionMaskStatic, collisionMaskDynamic, collisionMaskTrigger,
-                        collisionMaskPlayer, collisionMaskEnemy, collisionMaskProjectile, collisionMaskSensor);
+                if (ImGui::Checkbox("Projectiles", &state->collisionMaskProjectile)) {
+                    CollisionMask mask = CalculateCollisionMask(state->collisionMaskStatic, state->collisionMaskDynamic, state->collisionMaskTrigger,
+                        state->collisionMaskPlayer, state->collisionMaskEnemy, state->collisionMaskProjectile, state->collisionMaskSensor);
                     physicalObject->setCollisionMask(mask);
                 }
                 if (ImGui::IsItemHovered()) {
                     ImGui::SetTooltip("Word1: Can collide with projectile objects");
                 }
 
-                if (ImGui::Checkbox("Sensors", &collisionMaskSensor)) {
-                    CollisionMask mask = CalculateCollisionMask(collisionMaskStatic, collisionMaskDynamic, collisionMaskTrigger,
-                        collisionMaskPlayer, collisionMaskEnemy, collisionMaskProjectile, collisionMaskSensor);
+                if (ImGui::Checkbox("Sensors", &state->collisionMaskSensor)) {
+                    CollisionMask mask = CalculateCollisionMask(state->collisionMaskStatic, state->collisionMaskDynamic, state->collisionMaskTrigger,
+                        state->collisionMaskPlayer, state->collisionMaskEnemy, state->collisionMaskProjectile, state->collisionMaskSensor);
                     physicalObject->setCollisionMask(mask);
                 }
                 if (ImGui::IsItemHovered()) {
@@ -1032,18 +1035,18 @@ void ComponentSerializer::RenderPhysicalObjectComponent(GameObject* go) {
                 ImGui::Text("Collision Info (Word0/Word1):");
 
                 // Show current collision group (Word0)
-                const char* currentGroupName = collisionGroups[currentCollisionGroup];
+                const char* currentGroupName = collisionGroups[state->currentCollisionGroup];
                 ImGui::TextColored(ImVec4(0.2f, 0.8f, 0.2f, 1.0f), "Word0 (Group): %s", currentGroupName);
 
                 // Show what this object can collide with (Word1)
                 ImGui::Text("Word1 (Can collide with):");
-                if (collisionMaskStatic) ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.2f, 1.0f), " Static Objects");
-                if (collisionMaskDynamic) ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.2f, 1.0f), " Dynamic Objects");
-                if (collisionMaskTrigger) ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.2f, 1.0f), " Triggers");
-                if (collisionMaskPlayer) ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.2f, 1.0f), " Player");
-                if (collisionMaskEnemy) ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.2f, 1.0f), " Enemy");
-                if (collisionMaskProjectile) ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.2f, 1.0f), " Projectiles");
-                if (collisionMaskSensor) ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.2f, 1.0f), " Sensors");
+                if (state->collisionMaskStatic) ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.2f, 1.0f), " Static Objects");
+                if (state->collisionMaskDynamic) ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.2f, 1.0f), " Dynamic Objects");
+                if (state->collisionMaskTrigger) ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.2f, 1.0f), " Triggers");
+                if (state->collisionMaskPlayer) ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.2f, 1.0f), " Player");
+                if (state->collisionMaskEnemy) ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.2f, 1.0f), " Enemy");
+                if (state->collisionMaskProjectile) ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.2f, 1.0f), " Projectiles");
+                if (state->collisionMaskSensor) ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.2f, 1.0f), " Sensors");
 
                 // Physics State
                 ImGui::Separator();
@@ -1057,41 +1060,39 @@ void ComponentSerializer::RenderPhysicalObjectComponent(GameObject* go) {
                     physicalObject->wakeUp();
                 }
                 ImGui::SameLine();
-                static glm::vec3 forceVector(0.0f, 0.0f, 0.0f);
-                static bool showForceDialog = false;
 
                 if (ImGui::Button("Add Force")) {
-                    showForceDialog = true;
+                    state->showForceDialog = true;
                 }
                 if (ImGui::IsItemHovered()) {
                     ImGui::SetTooltip("Apply a force to the object");
                 }
 
                 // Force application dialog
-                if (showForceDialog) {
+                if (state->showForceDialog) {
                     ImGui::OpenPopup("Add Force");
                 }
 
-                if (ImGui::BeginPopupModal("Add Force", &showForceDialog, ImGuiWindowFlags_AlwaysAutoResize)) {
+                if (ImGui::BeginPopupModal("Add Force", &state->showForceDialog, ImGuiWindowFlags_AlwaysAutoResize)) {
                     ImGui::Text("Apply Force to Object");
                     ImGui::Separator();
 
-                    if (ImGui::DragFloat3("Force Vector", glm::value_ptr(forceVector), 0.1f)) {
+                    if (ImGui::DragFloat3("Force Vector", glm::value_ptr(state->forceVector), 0.1f)) {
                         // Force vector is updated in real-time
                     }
 
                     ImGui::Separator();
 
                     if (ImGui::Button("Apply Force", ImVec2(120, 0))) {
-                        physicalObject->addForce(forceVector);
-                        forceVector = glm::vec3(0.0f, 0.0f, 0.0f);
-                        showForceDialog = false;
+                        physicalObject->addForce(state->forceVector);
+                        state->forceVector = glm::vec3(0.0f, 0.0f, 0.0f);
+                        state->showForceDialog = false;
                         ImGui::CloseCurrentPopup();
                     }
                     ImGui::SameLine();
                     if (ImGui::Button("Cancel", ImVec2(120, 0))) {
-                        forceVector = glm::vec3(0.0f, 0.0f, 0.0f);
-                        showForceDialog = false;
+                        state->forceVector = glm::vec3(0.0f, 0.0f, 0.0f);
+                        state->showForceDialog = false;
                         ImGui::CloseCurrentPopup();
                     }
 
@@ -1099,41 +1100,38 @@ void ComponentSerializer::RenderPhysicalObjectComponent(GameObject* go) {
                 }
 
                 // Torque application
-                static glm::vec3 torqueVector(0.0f, 0.0f, 0.0f);
-                static bool showTorqueDialog = false;
-
                 if (ImGui::Button("Add Torque")) {
-                    showTorqueDialog = true;
+                    state->showTorqueDialog = true;
                 }
                 if (ImGui::IsItemHovered()) {
                     ImGui::SetTooltip("Apply a torque to the object");
                 }
 
                 // Torque application dialog
-                if (showTorqueDialog) {
+                if (state->showTorqueDialog) {
                     ImGui::OpenPopup("Add Torque");
                 }
 
-                if (ImGui::BeginPopupModal("Add Torque", &showTorqueDialog, ImGuiWindowFlags_AlwaysAutoResize)) {
+                if (ImGui::BeginPopupModal("Add Torque", &state->showTorqueDialog, ImGuiWindowFlags_AlwaysAutoResize)) {
                     ImGui::Text("Apply Torque to Object");
                     ImGui::Separator();
 
-                    if (ImGui::DragFloat3("Torque Vector", glm::value_ptr(torqueVector), 0.1f)) {
+                    if (ImGui::DragFloat3("Torque Vector", glm::value_ptr(state->torqueVector), 0.1f)) {
                         // Torque vector is updated in real-time
                     }
 
                     ImGui::Separator();
 
                     if (ImGui::Button("Apply Torque", ImVec2(120, 0))) {
-                        physicalObject->addTorque(torqueVector);
-                        torqueVector = glm::vec3(0.0f, 0.0f, 0.0f);
-                        showTorqueDialog = false;
+                        physicalObject->addTorque(state->torqueVector);
+                        state->torqueVector = glm::vec3(0.0f, 0.0f, 0.0f);
+                        state->showTorqueDialog = false;
                         ImGui::CloseCurrentPopup();
                     }
                     ImGui::SameLine();
                     if (ImGui::Button("Cancel", ImVec2(120, 0))) {
-                        torqueVector = glm::vec3(0.0f, 0.0f, 0.0f);
-                        showTorqueDialog = false;
+                        state->torqueVector = glm::vec3(0.0f, 0.0f, 0.0f);
+                        state->showTorqueDialog = false;
                         ImGui::CloseCurrentPopup();
                     }
 
@@ -1141,11 +1139,8 @@ void ComponentSerializer::RenderPhysicalObjectComponent(GameObject* go) {
                 }
 
                 // Impulse application
-                static glm::vec3 impulseVector(0.0f, 0.0f, 0.0f);
-                static bool showImpulseDialog = false;
-
                 if (ImGui::Button("Add Impulse")) {
-                    showImpulseDialog = true;
+                    state->showImpulseDialog = true;
                 }
                 if (ImGui::IsItemHovered()) {
                     ImGui::SetTooltip("Apply an impulse to the object");
@@ -1154,23 +1149,18 @@ void ComponentSerializer::RenderPhysicalObjectComponent(GameObject* go) {
                 ImGui::Separator();
                 ImGui::Text("Raycast Testing");
 
-                static glm::vec3 raycastOrigin(0.0f, 0.0f, 0.0f);
-                static glm::vec3 raycastDirection(0.0f, 0.0f, 1.0f);
-                static float raycastDistance = 100.0f;
-                static RaycastHit lastRaycastHit;
-
-                if (ImGui::DragFloat3("Raycast Origin", glm::value_ptr(raycastOrigin), 0.1f)) {
+                if (ImGui::DragFloat3("Raycast Origin", glm::value_ptr(state->raycastOrigin), 0.1f)) {
                     // Origin updated
                 }
-                if (ImGui::DragFloat3("Raycast Direction", glm::value_ptr(raycastDirection), 0.1f)) {
+                if (ImGui::DragFloat3("Raycast Direction", glm::value_ptr(state->raycastDirection), 0.1f)) {
                     // Direction updated
                 }
-                if (ImGui::DragFloat("Raycast Distance", &raycastDistance, 1.0f, 1.0f, 1000.0f)) {
+                if (ImGui::DragFloat("Raycast Distance", &state->raycastDistance, 1.0f, 1.0f, 1000.0f)) {
                     // Distance updated
                 }
 
                 if (ImGui::Button("Perform Raycast")) {
-                    lastRaycastHit = PhysicalObject::raycast(raycastOrigin, raycastDirection, raycastDistance);
+                    state->lastRaycastHit = PhysicalObject::raycast(state->raycastOrigin, state->raycastDirection, state->raycastDistance);
                 }
                 if (ImGui::IsItemHovered()) {
                     ImGui::SetTooltip("Perform a raycast from the specified origin in the specified direction");
@@ -1184,7 +1174,7 @@ void ComponentSerializer::RenderPhysicalObjectComponent(GameObject* go) {
                         if (auto* camera = activeScene->getCamera()) {
                             glm::vec3 cameraPos = camera->getPosition();
                             glm::vec3 cameraDir = camera->getForward();
-                            lastRaycastHit = PhysicalObject::raycast(cameraPos, cameraDir, raycastDistance);
+                            state->lastRaycastHit = PhysicalObject::raycast(cameraPos, cameraDir, state->raycastDistance);
                         }
                     }
                 }
@@ -1192,41 +1182,41 @@ void ComponentSerializer::RenderPhysicalObjectComponent(GameObject* go) {
                     ImGui::SetTooltip("Perform a raycast from the camera position in the camera direction");
                 }
 
-                if (lastRaycastHit.hit) {
+                if (state->lastRaycastHit.hit) {
                     ImGui::TextColored(ImVec4(0.2f, 0.8f, 0.2f, 1.0f), "Raycast Hit!");
-                    ImGui::Text("Position: (%.2f, %.2f, %.2f)", lastRaycastHit.position.x, lastRaycastHit.position.y, lastRaycastHit.position.z);
-                    ImGui::Text("Normal: (%.2f, %.2f, %.2f)", lastRaycastHit.normal.x, lastRaycastHit.normal.y, lastRaycastHit.normal.z);
-                    ImGui::Text("Distance: %.2f", lastRaycastHit.distance);
+                    ImGui::Text("Position: (%.2f, %.2f, %.2f)", state->lastRaycastHit.position.x, state->lastRaycastHit.position.y, state->lastRaycastHit.position.z);
+                    ImGui::Text("Normal: (%.2f, %.2f, %.2f)", state->lastRaycastHit.normal.x, state->lastRaycastHit.normal.y, state->lastRaycastHit.normal.z);
+                    ImGui::Text("Distance: %.2f", state->lastRaycastHit.distance);
                 }
                 else {
                     ImGui::TextColored(ImVec4(0.8f, 0.2f, 0.2f, 1.0f), "No raycast hit");
                 }
 
                 // Impulse application dialog
-                if (showImpulseDialog) {
+                if (state->showImpulseDialog) {
                     ImGui::OpenPopup("Add Impulse");
                 }
 
-                if (ImGui::BeginPopupModal("Add Impulse", &showImpulseDialog, ImGuiWindowFlags_AlwaysAutoResize)) {
+                if (ImGui::BeginPopupModal("Add Impulse", &state->showImpulseDialog, ImGuiWindowFlags_AlwaysAutoResize)) {
                     ImGui::Text("Apply Impulse to Object");
                     ImGui::Separator();
 
-                    if (ImGui::DragFloat3("Impulse Vector", glm::value_ptr(impulseVector), 0.1f)) {
+                    if (ImGui::DragFloat3("Impulse Vector", glm::value_ptr(state->impulseVector), 0.1f)) {
                         // Impulse vector is updated in real-time
                     }
 
                     ImGui::Separator();
 
                     if (ImGui::Button("Apply Impulse", ImVec2(120, 0))) {
-                        physicalObject->addImpulse(impulseVector);
-                        impulseVector = glm::vec3(0.0f, 0.0f, 0.0f);
-                        showImpulseDialog = false;
+                        physicalObject->addImpulse(state->impulseVector);
+                        state->impulseVector = glm::vec3(0.0f, 0.0f, 0.0f);
+                        state->showImpulseDialog = false;
                         ImGui::CloseCurrentPopup();
                     }
                     ImGui::SameLine();
                     if (ImGui::Button("Cancel", ImVec2(120, 0))) {
-                        impulseVector = glm::vec3(0.0f, 0.0f, 0.0f);
-                        showImpulseDialog = false;
+                        state->impulseVector = glm::vec3(0.0f, 0.0f, 0.0f);
+                        state->showImpulseDialog = false;
                         ImGui::CloseCurrentPopup();
                     }
 
@@ -1243,6 +1233,9 @@ void ComponentSerializer::RenderPhysicalObjectComponent(GameObject* go) {
 
 void ComponentSerializer::RenderScriptExecutorComponent(GameObject* go) {
     if (auto scriptExecutor = go->getComponent<ScriptExecutor>()) {
+        // Get state for this specific GameObject
+        ComponentUIState* state = getOrCreateState(go);
+        
         bool removeComponent = false;
         bool treeNodeOpen = ImGui::TreeNodeEx("[Script Executor]", ImGuiTreeNodeFlags_DefaultOpen);
 
@@ -1263,10 +1256,9 @@ void ComponentSerializer::RenderScriptExecutorComponent(GameObject* go) {
 
             if (!removeComponent && scriptExecutor != nullptr) {
                 // Campo de edición de ruta del script
-                static char scriptPathBuffer[256];
-                strncpy_s(scriptPathBuffer, sizeof(scriptPathBuffer), scriptExecutor->luaPath.c_str(), _TRUNCATE);
-                if (ImGui::InputText("Script Path", scriptPathBuffer, sizeof(scriptPathBuffer))) {
-                    scriptExecutor->luaPath = std::string(scriptPathBuffer);
+                strncpy_s(state->scriptPathBuffer, sizeof(state->scriptPathBuffer), scriptExecutor->luaPath.c_str(), _TRUNCATE);
+                if (ImGui::InputText("Script Path", state->scriptPathBuffer, sizeof(state->scriptPathBuffer))) {
+                    scriptExecutor->luaPath = std::string(state->scriptPathBuffer);
                 }
 
                 // Botón para recargar script
@@ -1386,6 +1378,375 @@ void ComponentSerializer::RenderCharacterControllerComponent(GameObject* go) {
 
         if (removeComponent) {
             go->removeComponent<CharacterController>();
+        }
+    }
+}
+
+void ComponentSerializer::RenderRigidbodyComponent(GameObject* go) {
+    if (auto rigidbody = go->getComponent<Rigidbody>()) {
+        // Get state for this specific GameObject
+        ComponentUIState* state = getOrCreateState(go);
+        
+        bool removeComponent = false;
+        bool treeNodeOpen = ImGui::TreeNodeEx("[Rigidbody]", ImGuiTreeNodeFlags_DefaultOpen);
+
+        if (treeNodeOpen) {
+            // Botón de opciones alineado a la derecha pero dentro de la ventana
+            float windowWidth = ImGui::GetContentRegionAvail().x;
+            ImGui::SameLine(windowWidth - 35);
+            if (ImGui::Button(" ... ##Rigidbody", ImVec2(30, 0))) {
+                ImGui::OpenPopup("RigidbodyOptions");
+            }
+
+            // Popup de opciones
+            if (ImGui::BeginPopup("RigidbodyOptions")) {
+                if (ImGui::MenuItem("Remove Component")) {
+                    removeComponent = true;
+                }
+                if (ImGui::MenuItem("Reset")) {
+                    // TODO: Implementar reset de valores
+                }
+                if (ImGui::MenuItem("Copy Settings")) {
+                    // TODO: Implementar copia de configuración
+                }
+                ImGui::EndPopup();
+            }
+
+            if (!removeComponent && rigidbody != nullptr) {
+                // Enabled/Disabled
+                bool enabled = rigidbody->isActive();
+                if (ImGui::Checkbox("Enabled", &enabled)) {
+                    if (enabled) {
+                        rigidbody->enable();
+                    } else {
+                        rigidbody->disable();
+                    }
+                }
+
+                ImGui::Separator();
+                ImGui::Text("Body Properties");
+
+                // Body Type
+                BodyType currentType = rigidbody->getBodyType();
+                const char* bodyTypes[] = { "Static", "Dynamic", "Kinematic" };
+                int currentItem = static_cast<int>(currentType);
+                if (ImGui::Combo("Body Type", &currentItem, bodyTypes, 3)) {
+                    rigidbody->setBodyType(static_cast<BodyType>(currentItem));
+                }
+                if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("Static: Immovable, Dynamic: Affected by physics, Kinematic: Movable but not affected by forces");
+                }
+
+                // Mass
+                float mass = rigidbody->getMass();
+                if (ImGui::DragFloat("Mass", &mass, 0.1f, 0.1f, 1000.0f)) {
+                    rigidbody->setMass(mass);
+                }
+                if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("Mass of the object (affects physics behavior)");
+                }
+
+                // Gravity Factor
+                float gravityFactor = rigidbody->getGravityFactor();
+                if (ImGui::DragFloat("Gravity Factor", &gravityFactor, 0.1f, 0.0f, 10.0f)) {
+                    rigidbody->setGravityFactor(gravityFactor);
+                }
+                if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("Multiplier for gravity effect (0 = no gravity, 1 = normal gravity)");
+                }
+
+                ImGui::Separator();
+                ImGui::Text("Physics Properties");
+
+                // Linear Velocity
+                glm::vec3 velocity = rigidbody->getVelocity();
+                if (ImGui::DragFloat3("Linear Velocity", glm::value_ptr(velocity), 0.1f)) {
+                    rigidbody->setVelocity(velocity);
+                }
+                if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("Current linear velocity of the object");
+                }
+
+                // Damping
+                float damping = rigidbody->getDamping();
+                if (ImGui::DragFloat("Damping", &damping, 0.01f, 0.0f, 1.0f)) {
+                    rigidbody->setDamping(damping);
+                }
+                if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("Damping factor for velocity (0 = no damping, 1 = full damping)");
+                }
+
+                // Physics State
+                ImGui::Separator();
+                ImGui::Text("Physics State");
+
+                // Is Awake
+                bool isAwake = rigidbody->isAwake();
+                ImGui::Text("Is Awake: %s", isAwake ? "Yes" : "No");
+
+                if (ImGui::Button("Wake Up")) {
+                    rigidbody->wakeUp();
+                }
+
+                ImGui::SameLine();
+                if (ImGui::Button("Add Force")) {
+                    state->rigidbodyShowForceDialog = true;
+                }
+                if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("Apply a force to the object");
+                }
+
+                // Force application dialog
+                if (state->rigidbodyShowForceDialog) {
+                    ImGui::OpenPopup("Add Force##Rigidbody");
+                }
+
+                if (ImGui::BeginPopupModal("Add Force##Rigidbody", &state->rigidbodyShowForceDialog, ImGuiWindowFlags_AlwaysAutoResize)) {
+                    ImGui::Text("Apply Force to Object");
+                    ImGui::Separator();
+
+                    if (ImGui::DragFloat3("Force Vector", glm::value_ptr(state->rigidbodyForceVector), 0.1f)) {
+                        // Force vector is updated in real-time
+                    }
+
+                    ImGui::Separator();
+
+                    if (ImGui::Button("Apply Force", ImVec2(120, 0))) {
+                        rigidbody->addForce(state->rigidbodyForceVector);
+                        state->rigidbodyForceVector = glm::vec3(0.0f, 0.0f, 0.0f);
+                        state->rigidbodyShowForceDialog = false;
+                        ImGui::CloseCurrentPopup();
+                    }
+                    ImGui::SameLine();
+                    if (ImGui::Button("Cancel", ImVec2(120, 0))) {
+                        state->rigidbodyForceVector = glm::vec3(0.0f, 0.0f, 0.0f);
+                        state->rigidbodyShowForceDialog = false;
+                        ImGui::CloseCurrentPopup();
+                    }
+
+                    ImGui::EndPopup();
+                }
+
+                // Torque and impulse buttons (simplified for space)
+                if (ImGui::Button("Add Torque")) {
+                    state->rigidbodyShowTorqueDialog = true;
+                }
+                ImGui::SameLine();
+                if (ImGui::Button("Add Impulse")) {
+                    state->rigidbodyShowImpulseDialog = true;
+                }
+            }
+            ImGui::TreePop();
+        }
+        if (removeComponent) {
+            go->removeComponent<Rigidbody>();
+        }
+    }
+}
+
+void ComponentSerializer::RenderColliderComponent(GameObject* go) {
+    if (auto collider = go->getComponent<Collider>()) {
+        // Get state for this specific GameObject
+        ComponentUIState* state = getOrCreateState(go);
+        
+        bool removeComponent = false;
+        bool treeNodeOpen = ImGui::TreeNodeEx("[Collider]", ImGuiTreeNodeFlags_DefaultOpen);
+
+        if (treeNodeOpen) {
+            // Botón de opciones alineado a la derecha pero dentro de la ventana
+            float windowWidth = ImGui::GetContentRegionAvail().x;
+            ImGui::SameLine(windowWidth - 35);
+            if (ImGui::Button(" ... ##Collider", ImVec2(30, 0))) {
+                ImGui::OpenPopup("ColliderOptions");
+            }
+
+            // Popup de opciones
+            if (ImGui::BeginPopup("ColliderOptions")) {
+                if (ImGui::MenuItem("Remove Component")) {
+                    removeComponent = true;
+                }
+                if (ImGui::MenuItem("Reset")) {
+                    // TODO: Implementar reset de valores
+                }
+                if (ImGui::MenuItem("Copy Settings")) {
+                    // TODO: Implementar copia de configuración
+                }
+                ImGui::EndPopup();
+            }
+
+            if (!removeComponent && collider != nullptr) {
+                ImGui::Separator();
+                ImGui::Text("Shape Properties");
+
+                // Shape Type
+                ShapeType currentShapeType = collider->getShapeType();
+                const char* shapeTypes[] = { "Box", "Sphere", "Capsule", "Plane" };
+                int currentShapeItem = static_cast<int>(currentShapeType);
+                if (ImGui::Combo("Shape Type", &currentShapeItem, shapeTypes, 4)) {
+                    collider->setShapeType(static_cast<ShapeType>(currentShapeItem));
+                }
+                if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("Shape of the collision volume");
+                }
+
+                // Shape-specific properties
+                switch (currentShapeType) {
+                case ShapeType::Box: {
+                    glm::vec3 boxExtents = collider->getBoxHalfExtents();
+                    if (ImGui::DragFloat3("Box Half Extents", glm::value_ptr(boxExtents), 0.1f, 0.1f, 10.0f)) {
+                        collider->setBoxHalfExtents(boxExtents);
+                    }
+                    if (ImGui::IsItemHovered()) {
+                        ImGui::SetTooltip("Half extents of the box shape (X, Y, Z)");
+                    }
+                    break;
+                }
+                case ShapeType::Sphere: {
+                    float radius = collider->getSphereRadius();
+                    if (ImGui::DragFloat("Sphere Radius", &radius, 0.1f, 0.1f, 10.0f)) {
+                        collider->setSphereRadius(radius);
+                    }
+                    if (ImGui::IsItemHovered()) {
+                        ImGui::SetTooltip("Radius of the sphere shape");
+                    }
+                    break;
+                }
+                case ShapeType::Capsule: {
+                    float capsuleRadius = collider->getCapsuleRadius();
+                    float capsuleHalfHeight = collider->getCapsuleHalfHeight();
+
+                    if (ImGui::DragFloat("Capsule Radius", &capsuleRadius, 0.1f, 0.1f, 10.0f)) {
+                        collider->setCapsuleRadius(capsuleRadius);
+                    }
+                    if (ImGui::IsItemHovered()) {
+                        ImGui::SetTooltip("Radius of the capsule shape");
+                    }
+
+                    if (ImGui::DragFloat("Capsule Half Height", &capsuleHalfHeight, 0.1f, 0.1f, 10.0f)) {
+                        collider->setCapsuleHalfHeight(capsuleHalfHeight);
+                    }
+                    if (ImGui::IsItemHovered()) {
+                        ImGui::SetTooltip("Half height of the capsule shape");
+                    }
+                    break;
+                }
+                case ShapeType::Plane: {
+                    ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "Plane shape - no additional properties");
+                    break;
+                }
+                }
+
+                ImGui::Separator();
+                ImGui::Text("Material Properties");
+
+                // Friction
+                float friction = collider->getFriction();
+                if (ImGui::DragFloat("Friction", &friction, 0.01f, 0.0f, 2.0f)) {
+                    collider->setFriction(friction);
+                }
+                if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("Friction coefficient for contact with other objects");
+                }
+
+                // Restitution
+                float restitution = collider->getRestitution();
+                if (ImGui::DragFloat("Restitution", &restitution, 0.01f, 0.0f, 1.0f)) {
+                    collider->setRestitution(restitution);
+                }
+                if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("Bounciness factor (0 = no bounce, 1 = perfect bounce)");
+                }
+
+                ImGui::Separator();
+                ImGui::Text("Trigger Properties");
+
+                // Is Trigger checkbox
+                bool isTrigger = collider->isTrigger();
+                if (ImGui::Checkbox("Is Trigger", &isTrigger)) {
+                    collider->setTrigger(isTrigger);
+                }
+                if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("Trigger shapes don't cause physical collisions but can detect overlaps");
+                }
+
+                // Show trigger status
+                if (isTrigger) {
+                    ImGui::TextColored(ImVec4(0.2f, 0.8f, 0.2f, 1.0f), "✓ Trigger Active");
+                    ImGui::Text("Objects should pass through this collider");
+                } else {
+                    ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.2f, 1.0f), "⚫ Solid Collider");
+                    ImGui::Text("Objects will collide and stop");
+                }
+
+                ImGui::Separator();
+                ImGui::Text("Collision Filters");
+
+                // Layer configuration
+                physx::PxU32 currentLayer = collider->getLayer();
+                physx::PxU32 currentLayerMask = collider->getLayerMask();
+
+                ImGui::Text("Layer (Word0): %u", currentLayer);
+                ImGui::Text("Layer Mask (Word1): %u", currentLayerMask);
+
+                // Debug collision filters button
+                if (ImGui::Button("Debug Collision Filters")) {
+                    collider->debugCollisionFilters();
+                }
+
+                // Setup as trigger button
+                if (ImGui::Button("Setup as Trigger")) {
+                    collider->setupAsTrigger();
+                }
+                if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("Quick setup as a trigger with default player collision");
+                }
+
+                // Force transform update button (for debugging)
+                ImGui::SameLine();
+                if (ImGui::Button("Update Transform")) {
+                    collider->forceTransformUpdate();
+                }
+                if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("Force update of collider position to match GameObject");
+                }
+                
+                // Mark transform dirty button (for when GameObject moves)
+                ImGui::SameLine();
+                if (ImGui::Button("Mark Dirty")) {
+                    collider->markTransformDirty();
+                }
+                if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("Mark transform as needing update (will update on next frame)");
+                }
+
+                // Debug trigger configuration
+                if (ImGui::Button("Test Trigger Config")) {
+                    std::cout << "[Inspector] Testing trigger configuration for " << go->Name << std::endl;
+                    collider->forceUpdateCollisionFilters();
+                    collider->verifyTriggerSetup();
+                    
+                    // Also suggest checking the other object
+                    std::cout << "[Inspector] Remember to check that the other object can collide with this trigger!" << std::endl;
+                    std::cout << "[Inspector] The other object should have layer mask that includes this trigger's layer." << std::endl;
+                }
+                if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("Debug trigger configuration and print status to console");
+                }
+                
+                // Force recreation button for problematic triggers
+                ImGui::SameLine();
+                if (ImGui::Button("Force Recreate")) {
+                    std::cout << "[Inspector] Forcing shape recreation for " << go->Name << std::endl;
+                    collider->recreateShapeSafely();
+                }
+                if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("Force recreation of the collision shape (fixes shared shape issues)");
+                }
+            }
+            ImGui::TreePop();
+        }
+        if (removeComponent) {
+            go->removeComponent<Collider>();
         }
     }
 }

@@ -11,4 +11,4 @@ public:
     static bool LoadScene(const std::string& filepath);
 
     static Scene* MakeNewScene(std::string sceneName);
-}; 
+};

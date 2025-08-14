@@ -30,7 +30,6 @@ RenderPipeline::RenderPipeline(Camera* cam, DefaultShaders* shd)
       frustumCullingEnabled(true), shadowsEnabled(true), shadowManager(nullptr), visibleObjectsCount(0), totalObjectsCount(0), materialsDirty(false) {
 
     // FreeType is now handled by Canvas2D
-    std::cout << "FreeType will be initialized by Canvas2D" << std::endl;
     
     int initialWidth = 1920;
     int initialHeight = 1080;
@@ -42,22 +41,18 @@ RenderPipeline::RenderPipeline(Camera* cam, DefaultShaders* shd)
         if (w > 0 && h > 0) {
             initialWidth = w;
             initialHeight = h;
-            std::cout << "Canvas initialized with actual window size: " << w << "x" << h << std::endl;
         }
     }
     
     // Get current working directory for debugging
     char cwd[1024];
     if (_getcwd(cwd, sizeof(cwd)) != NULL) {
-        std::cout << "Current working directory: " << cwd << std::endl;
-    } else {
-        std::cerr << "Failed to get current working directory" << std::endl;
+        // Current working directory available if needed
     }
     
     // Initialize shadow manager
     shadowManager = new ShadowManager();
     shadowManager->initialize(4096); // 4096x4096 shadow maps para mejor calidad
-    std::cout << "ShadowManager initialized successfully" << std::endl;
 }
 
 RenderPipeline::~RenderPipeline() {
@@ -361,28 +356,17 @@ void RenderPipeline::renderInstanced() {
     for (GameObject* obj : sceneObjects) {
         // Skip objects without geometry
         if (!obj->hasGeometry()) {
-            std::cout << "RenderPipeline: Object '" << obj->Name << "' has no geometry, skipping..." << std::endl;
             continue;
         }
         
         // Validar que el objeto tenga un material válido
         auto material = obj->getMaterial();
         if (!material) {
-            std::cout << "RenderPipeline: Object '" << obj->Name << "' has no material, skipping..." << std::endl;
             continue;
         }
         
         if (!material->isValid()) {
-            std::cout << "RenderPipeline: Object '" << obj->Name << "' has invalid material '" << material->getName() << "', skipping..." << std::endl;
             continue;
-        }
-        
-        // CORREGIDO: No requerir textura de albedo, solo verificar que el material sea válido
-        // Los materiales sin texturas pueden usar colores sólidos
-        if (material->hasAlbedoTexture()) {
-            std::cout << "RenderPipeline: Object '" << obj->Name << "' material '" << material->getName() << "' has albedo texture" << std::endl;
-        } else {
-            std::cout << "RenderPipeline: Object '" << obj->Name << "' material '" << material->getName() << "' using solid color (no albedo texture)" << std::endl;
         }
         
         // Realizar frustum culling
@@ -409,10 +393,8 @@ void RenderPipeline::renderInstanced() {
         
         // 1. Configurar material primero - ALWAYS configure material to ensure fresh state
         if (key.material) {
-            std::cout << "RenderPipeline: Configuring material '" << key.material->getName() << "' for " << objects.size() << " objects" << std::endl;
             configureMaterial(key.material.get());
         } else {
-            std::cout << "RenderPipeline: Using default material for " << objects.size() << " objects" << std::endl;
             configureDefaultMaterial();
         }
         
@@ -455,7 +437,6 @@ void RenderPipeline::renderInstanced() {
             // CORREGIDO: Asegurar que las texturas estén correctamente vinculadas antes del renderizado instanciado
             if (key.material && key.material->hasAnyValidTextures()) {
                 key.material->bindTextures();
-                std::cout << "RenderPipeline: Re-binding textures before instanced rendering for " << objects.size() << " objects" << std::endl;
             }
             
             geometry->updateInstanceBuffer(modelMatrices);
@@ -468,7 +449,6 @@ void RenderPipeline::renderInstanced() {
             // CORREGIDO: Asegurar que las texturas estén correctamente vinculadas antes del renderizado instanciado
             if (key.material && key.material->hasAnyValidTextures()) {
                 key.material->bindTextures();
-                std::cout << "RenderPipeline: Re-binding textures before instanced rendering for single object" << std::endl;
             }
             
             std::vector<glm::mat4> singleInstance = { model };
@@ -496,15 +476,7 @@ void RenderPipeline::configureMaterial(Material* material) {
     // Always ensure we're using the correct shader program
     glUseProgram(program);
     
-    // Log del material que se está configurando
-    std::cout << "RenderPipeline: Configuring material '" << material->getName() << "'" << std::endl;
-    
-    // Check if material has any valid textures
-    if (!material->hasAnyValidTextures()) {
-        std::cout << "RenderPipeline: WARNING - Material '" << material->getName() << "' has no valid textures!" << std::endl;
-        std::cout << "  This material will use solid colors instead of textures." << std::endl;
-        std::cout << "  Albedo: " << material->getAlbedo().r << ", " << material->getAlbedo().g << ", " << material->getAlbedo().b << std::endl;
-    }
+    // Check if material has any valid textures - silent validation
     
     // Configurar propiedades del material
     glUniform3fv(glGetUniformLocation(program, "uAlbedo"), 1, glm::value_ptr(material->getAlbedo()));
@@ -703,21 +675,15 @@ std::shared_ptr<AssimpGeometry> RenderPipeline::loadModel(const std::string& pat
     // Verificar si ya está en cache
     auto it = modelCache.find(path);
     if (it != modelCache.end()) {
-        std::cout << "Model loaded from cache: " << path << std::endl;
         return it->second;
     }
-    
-    // Cargar modelo nuevo
-    std::cout << "Loading new model: " << path << std::endl;
     auto model = std::make_shared<AssimpGeometry>(path);
     
     if (model && model->isLoaded()) {
         // Guardar en cache solo si se cargó correctamente
         modelCache[path] = model;
-        std::cout << "Model loaded and cached by RenderPipeline: " << path << std::endl;
         return model;
     } else {
-        std::cerr << "RenderPipeline failed to load model: " << path << std::endl;
         return nullptr;
     }
 }
@@ -736,7 +702,6 @@ std::shared_ptr<Material> RenderPipeline::createMaterial(const glm::vec3& albedo
     auto material = std::make_shared<Material>(name);
     material->setAlbedo(albedo);
     materialPool.push_back(material);
-    std::cout << "Material '" << name << "' created by RenderPipeline (Total: " << materialPool.size() << ")" << std::endl;
     return material;
 }
 
@@ -750,7 +715,6 @@ std::shared_ptr<Material> RenderPipeline::createMaterial() {
 
 void RenderPipeline::clearModelCache() {
     modelCache.clear();
-    std::cout << "RenderPipeline model cache cleared" << std::endl;
 }
 
 void RenderPipeline::listLoadedModels() const {
@@ -800,15 +764,11 @@ void RenderPipeline::updateCanvasSize(int width, int height) {
                 auto [bufferWidth, bufferHeight] = camera->getBufferSize();
                 if (bufferWidth > 0 && bufferHeight > 0) {
                     canvas->setUISize(bufferWidth, bufferHeight);
-                    std::cout << "Canvas size updated to camera buffer size: "
-                        << bufferWidth << "x" << bufferHeight << std::endl;
                     continue;
                 }
             }
             // Fallback to window size if no camera buffer
             canvas->setUISize(width, height);
-            std::cout << "Canvas size updated to window size: "
-                << width << "x" << height << std::endl;
         }
     }
 }
@@ -821,8 +781,6 @@ void RenderPipeline::updateCanvasFromCameraBuffer() {
             auto [bufferWidth, bufferHeight] = camera->getBufferSize();
             if (bufferWidth > 0 && bufferHeight > 0) {
                 canvas->setUISize(bufferWidth, bufferHeight);
-                std::cout << "Canvas updated to camera buffer size: "
-                    << bufferWidth << "x" << bufferHeight << std::endl;
             }
         }
     }
@@ -839,22 +797,15 @@ Canvas2D* RenderPipeline::addCanvas(int width, int height) {
         };
 
         for (const char* path : fontPaths) {
-            std::cout << "Trying path: " << path << std::endl;
             if (std::filesystem::exists(path)) {
-                std::cout << "File exists: " << path << std::endl;
                 if (new_Canvas->loadFont(path, 32)) {
-                    std::cout << "Font loaded successfully from: " << path << std::endl;
                     break;
                 }
-            }
-            else {
-                std::cout << "File does not exist: " << path << std::endl;
             }
         }
 
         // Only add to vector if creation was successful
         _canvas.push_back(new_Canvas);
-        std::cout << "Canvas added: " << width << "x" << height << " (Total: " << _canvas.size() << ")" << std::endl;
         return new_Canvas;
         
     } catch (const std::exception& e) {
@@ -877,10 +828,6 @@ void RenderPipeline::removeCanvas(size_t index) {
     if (index < _canvas.size()) {
         delete _canvas[index];
         _canvas.erase(_canvas.begin() + static_cast<std::ptrdiff_t>(index));
-        std::cout << "Canvas removed at index " << index << " (Total: " << _canvas.size() << ")" << std::endl;
-    }
-    else {
-        std::cerr << "Canvas index " << index << " out of range!" << std::endl;
     }
 }
 
@@ -898,9 +845,6 @@ size_t RenderPipeline::getCanvasCount() const {
 // Shadow pass rendering
 void RenderPipeline::renderShadowPass() {
     if (!shadowManager || !shadowManager->isInitialized() || !camera) {
-        std::cout << "RenderPipeline: Cannot render shadows - shadowManager: " << (shadowManager ? "valid" : "null") 
-                  << ", initialized: " << (shadowManager ? shadowManager->isInitialized() : false) 
-                  << ", camera: " << (camera ? "valid" : "null") << std::endl;
         return;
     }
     
@@ -932,7 +876,6 @@ void RenderPipeline::renderShadowPass() {
     bool hasPointLights = !pointLightsForShadows.empty();
     
     if (hasSpotLights) {
-        std::cout << "RenderPipeline: Initializing spot shadow pass for " << spotLightsForShadows.size() << " lights" << std::endl;
         shadowManager->beginSpotShadowPass(spotLightsForShadows, camera);
     }
     
@@ -961,7 +904,6 @@ void RenderPipeline::renderShadowPass() {
     
     // 3. Point light shadow maps - HABILITADO CON RENDIMIENTO OPTIMIZADO
     if (!pointLightsForShadows.empty()) {
-        std::cout << "RenderPipeline: Rendering " << pointLightsForShadows.size() << " point light shadow maps" << std::endl;
         for (size_t i = 0; i < pointLightsForShadows.size() && i < 4; i++) {
             auto& light = pointLightsForShadows[i];
             glm::vec3 lightPos = light->getPosition();
@@ -972,14 +914,11 @@ void RenderPipeline::renderShadowPass() {
             for (int face = 0; face < 6; face++) {
                 glm::mat4 lightSpaceMatrix = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, farPlane) * viewMatrices[face];
                 
-                std::cout << "RenderPipeline: Rendering point light " << i << " face " << face << " shadow map" << std::endl;
                 shadowManager->beginSinglePointShadowRender(i, face, lightSpaceMatrix);
                 renderShadowGeometry();
                 shadowManager->endSinglePointShadowRender();
             }
         }
-    } else {
-        std::cout << "RenderPipeline: No point lights for shadows, skipping point shadow maps" << std::endl;
     }
     
     // End shadow passes (solo si se iniciaron)
@@ -1008,7 +947,7 @@ void RenderPipeline::renderShadowGeometry() {
         validObjects++;
     }
     
-    std::cout << "RenderPipeline: Shadow pass rendering " << validObjects << " objects in " << geometryGroups.size() << " groups" << std::endl;
+    // Shadow pass rendering objects in groups
     
     // Render each geometry group with instanced rendering
     for (auto& group : geometryGroups) {
@@ -1024,7 +963,6 @@ void RenderPipeline::renderShadowGeometry() {
             
             geometry->updateInstanceBuffer(modelMatrices);
             geometry->drawInstanced(modelMatrices);
-            std::cout << "RenderPipeline: Shadow pass rendered " << objects.size() << " instanced objects" << std::endl;
         } else if (!objects.empty()) {
             // Single object
             GameObject* obj = objects[0];
@@ -1033,7 +971,6 @@ void RenderPipeline::renderShadowGeometry() {
             std::vector<glm::mat4> singleInstance = { model };
             geometry->updateInstanceBuffer(singleInstance);
             geometry->drawInstanced(singleInstance);
-            std::cout << "RenderPipeline: Shadow pass rendered 1 object" << std::endl;
         }
     }
 }
@@ -1041,7 +978,6 @@ void RenderPipeline::renderShadowGeometry() {
 // Shadow mapping methods
 void RenderPipeline::enableShadows(bool enabled) {
     shadowsEnabled = enabled;
-    std::cout << "Shadows " << (enabled ? "enabled" : "disabled") << std::endl;
 }
 
 bool RenderPipeline::getShadowsEnabled() const {
@@ -1052,7 +988,6 @@ void RenderPipeline::setShadowMapSize(int size) {
     if (shadowManager) {
         shadowManager->cleanup();
         shadowManager->initialize(size);
-        std::cout << "Shadow map size set to " << size << "x" << size << std::endl;
     }
 }
 
@@ -1081,7 +1016,6 @@ float RenderPipeline::getShadowStrength() const {
 }
 
 void RenderPipeline::forceMaterialRefresh() {
-    std::cout << "RenderPipeline: Forcing material refresh..." << std::endl;
     materialsDirty = true;
     
     // Force OpenGL state reset for materials
@@ -1094,12 +1028,9 @@ void RenderPipeline::forceMaterialRefresh() {
         glBindTexture(GL_TEXTURE_2D, 0);
     }
     glActiveTexture(GL_TEXTURE0);
-    
-    std::cout << "RenderPipeline: OpenGL texture state reset complete" << std::endl;
 }
 
 void RenderPipeline::markMaterialsDirty() {
     materialsDirty = true;
-    std::cout << "RenderPipeline: Materials marked as dirty, will refresh on next render" << std::endl;
 }
 

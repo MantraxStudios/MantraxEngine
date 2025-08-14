@@ -634,36 +634,8 @@ void PhysicalObject::setTrigger(bool isTrigger) {
 
     if (shape && rigidActor) {
         try {
-            // Configure shape flags for custom filter shader
-            if (isTriggerShape) {
-                shape->setFlag(physx::PxShapeFlag::eTRIGGER_SHAPE, true);
-                shape->setFlag(physx::PxShapeFlag::eSIMULATION_SHAPE, false);
-                shape->setFlag(physx::PxShapeFlag::eSCENE_QUERY_SHAPE, true);
-                
-                // Asegurarse de que el actor tenga la configuración correcta para triggers
-                if (dynamicActor) {
-                    // Para objetos dinámicos, asegurarse de que no colisionen pero sigan recibiendo eventos
-                    dynamicActor->setActorFlag(physx::PxActorFlag::eDISABLE_SIMULATION, true);
-                }
-                std::cout << "Trigger flags set successfully" << std::endl;
-            } else {
-                shape->setFlag(physx::PxShapeFlag::eTRIGGER_SHAPE, false);
-                shape->setFlag(physx::PxShapeFlag::eSIMULATION_SHAPE, true);
-                shape->setFlag(physx::PxShapeFlag::eSCENE_QUERY_SHAPE, true);
-                
-                // Restaurar la configuración normal para colisiones
-                if (dynamicActor) {
-                    dynamicActor->setActorFlag(physx::PxActorFlag::eDISABLE_SIMULATION, false);
-                }
-                std::cout << "Normal collision flags set successfully" << std::endl;
-            }
-
-            // Update filter data for custom filter shader
-            physx::PxFilterData filterData = shape->getSimulationFilterData();
-            filterData.word2 = isTriggerShape ? 0x1 : 0x0;  // Trigger flag
-            shape->setSimulationFilterData(filterData);
-            shape->setQueryFilterData(filterData);
-            std::cout << "Filter data updated successfully" << std::endl;
+            configureTriggerFlags();
+            std::cout << "Trigger configuration completed successfully" << std::endl;
             
         } catch (const std::exception& e) {
             std::cerr << "Error in setTrigger: " << e.what() << std::endl;
@@ -677,6 +649,52 @@ void PhysicalObject::setTrigger(bool isTrigger) {
     }
     
     std::cout << "==========================" << std::endl;
+}
+
+// Nueva función helper para configurar triggers correctamente
+void PhysicalObject::configureTriggerFlags() {
+    if (!shape) return;
+    
+    if (isTriggerShape) {
+        // CONFIGURACIÓN CORRECTA PARA TRIGGERS:
+        // 1. El shape debe ser trigger y NO participar en simulación de colisiones
+        shape->setFlag(physx::PxShapeFlag::eTRIGGER_SHAPE, true);
+        shape->setFlag(physx::PxShapeFlag::eSIMULATION_SHAPE, false);
+        shape->setFlag(physx::PxShapeFlag::eSCENE_QUERY_SHAPE, true);
+        
+        // 2. CRÍTICO: Solo para actores DINÁMICOS se configura eDISABLE_SIMULATION
+        //    Los actores ESTÁTICOS NO necesitan esta configuración
+        if (dynamicActor) {
+            // Para triggers dinámicos: El actor debe seguir participando en la simulación
+            // para poder detectar eventos de trigger. NO usar eDISABLE_SIMULATION!
+            dynamicActor->setActorFlag(physx::PxActorFlag::eDISABLE_SIMULATION, false);
+            std::cout << "[PhysicalObject] Dynamic trigger actor: simulation ENABLED for trigger detection" << std::endl;
+        } else if (staticActor) {
+            // Para actores estáticos: NO necesitan configuración adicional
+            // Los triggers estáticos funcionan automáticamente con solo los flags del shape
+            std::cout << "[PhysicalObject] Static trigger actor: no additional configuration needed" << std::endl;
+        }
+        
+        std::cout << "[PhysicalObject] Trigger flags configured: objects can now pass through" << std::endl;
+    } else {
+        // Configuración normal para colisiones sólidas
+        shape->setFlag(physx::PxShapeFlag::eTRIGGER_SHAPE, false);
+        shape->setFlag(physx::PxShapeFlag::eSIMULATION_SHAPE, true);
+        shape->setFlag(physx::PxShapeFlag::eSCENE_QUERY_SHAPE, true);
+        
+        // Solo configurar actores dinámicos (los estáticos no necesitan esta flag)
+        if (dynamicActor) {
+            dynamicActor->setActorFlag(physx::PxActorFlag::eDISABLE_SIMULATION, false);
+        }
+        
+        std::cout << "[PhysicalObject] Normal collision flags configured: solid collisions enabled" << std::endl;
+    }
+
+    // Update filter data for custom filter shader
+    physx::PxFilterData filterData = shape->getSimulationFilterData();
+    filterData.word2 = isTriggerShape ? 0x1 : 0x0;  // Trigger flag
+    shape->setSimulationFilterData(filterData);
+    shape->setQueryFilterData(filterData);
 }
 
 
@@ -865,26 +883,8 @@ void PhysicalObject::setupAsSceneChangeTrigger(const std::string& targetSceneNam
 void PhysicalObject::forceUpdateCollisionFilters() {
     if (shape) {
         try {
-                // Configure shape flags for custom filter shader
-    if (isTriggerShape) {
-        shape->setFlag(physx::PxShapeFlag::eTRIGGER_SHAPE, true);
-        shape->setFlag(physx::PxShapeFlag::eSIMULATION_SHAPE, false);
-        shape->setFlag(physx::PxShapeFlag::eSCENE_QUERY_SHAPE, true);
-    } else {
-        shape->setFlag(physx::PxShapeFlag::eTRIGGER_SHAPE, false);
-        shape->setFlag(physx::PxShapeFlag::eSIMULATION_SHAPE, true);
-        shape->setFlag(physx::PxShapeFlag::eSCENE_QUERY_SHAPE, true);
-    }
-    
-    // Set filter data for custom filter shader
-    physx::PxFilterData filterData;
-    filterData.word0 = currentLayer;  // Collision group
-    filterData.word1 = currentLayerMask;  // Collision mask
-    filterData.word2 = isTriggerShape ? 0x1 : 0x0;  // Trigger flag
-    filterData.word3 = 0;
-    
-    shape->setSimulationFilterData(filterData);
-    shape->setQueryFilterData(filterData);
+            // Usar la nueva función helper para configuración consistente
+            configureTriggerFlags();
             
         } catch (const std::exception& e) {
             std::cerr << "Error updating collision filters: " << e.what() << std::endl;

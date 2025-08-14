@@ -25,6 +25,8 @@
     <ClCompile Include="..\src\components\LightComponent.cpp" />
     <ClCompile Include="..\src\components\ModelScene.cpp" />
     <ClCompile Include="..\src\components\PhysicalObject.cpp" />
+    <ClCompile Include="..\src\components\Rigidbody.cpp" />
+    <ClCompile Include="..\src\components\Collider.cpp" />
     <ClCompile Include="..\src\components\SceneManager.cpp" />
     <ClCompile Include="..\src\components\Scene.cpp" />
     <ClCompile Include="..\src\components\ScriptExecutor.cpp" />
@@ -39,6 +41,7 @@
     <ClCompile Include="..\src\core\PhysicsEventCallback.cpp" />
     <ClCompile Include="..\src\core\PhysicsEventHandler.cpp" />
     <ClCompile Include="..\src\core\PhysicsManager.cpp" />
+    <ClCompile Include="..\src\core\RaycastSystem.cpp" />
     <ClCompile Include="..\src\core\UIDGenerator.cpp" />
     <ClCompile Include="..\src\main\MantraxEngine.cpp" />
     <ClCompile Include="..\src\mpak\MantraxCorePackBuilder.cpp" />
@@ -69,6 +72,8 @@
     <ClInclude Include="..\src\components\LightComponent.h" />
     <ClInclude Include="..\src\components\ModelScene.h" />
     <ClInclude Include="..\src\components\PhysicalObject.h" />
+    <ClInclude Include="..\src\components\Rigidbody.h" />
+    <ClInclude Include="..\src\components\Collider.h" />
     <ClInclude Include="..\src\components\Scene.h" />
     <ClInclude Include="..\src\components\SceneManager.h" />
     <ClInclude Include="..\src\components\ScriptExecutor.h" />
@@ -85,6 +90,7 @@
     <ClInclude Include="..\src\core\PhysicsEventHandler.h" />
     <ClInclude Include="..\src\core\PhysicsEvents.h" />
     <ClInclude Include="..\src\core\PhysicsManager.h" />
+    <ClInclude Include="..\src\core\RaycastSystem.h" />
     <ClInclude Include="..\src\core\Time.h" />
     <ClInclude Include="..\src\core\UIDGenerator.h" />
     <ClInclude Include="..\src\input\InputAction.h" />

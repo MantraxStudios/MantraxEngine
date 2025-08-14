@@ -3,6 +3,8 @@
 #include "../../src/components/GameObject.h"
 #include "../../src/components/LightComponent.h"
 #include "../../src/components/PhysicalObject.h"
+#include "../../src/components/Rigidbody.h"
+#include "../../src/components/Collider.h"
 #include "../../src/components/ScriptExecutor.h"
 #include "../../src/components/CharacterController.h"
 #include "../../src/components/SpriteAnimator.h"
@@ -283,6 +285,8 @@ void Inspector::RenderComponentsSection(GameObject* go) {
     ComponentSerializer::RenderLightComponent(go);
     ComponentSerializer::RenderSpriteAnimatorComponent(go);
     ComponentSerializer::RenderPhysicalObjectComponent(go);
+    ComponentSerializer::RenderRigidbodyComponent(go);
+    ComponentSerializer::RenderColliderComponent(go);
     ComponentSerializer::RenderScriptExecutorComponent(go);
     ComponentSerializer::RenderCharacterControllerComponent(go);
 }
@@ -422,7 +426,45 @@ void Inspector::RenderAddComponentSection(GameObject* go) {
                 ImGui::CloseCurrentPopup();
             }
             if (ImGui::IsItemHovered()) {
-                ImGui::SetTooltip("Adds both collisions and rigid objects");
+                ImGui::SetTooltip("Adds both collisions and rigid objects (legacy)");
+            }
+        }
+
+        if (!go->getComponent<Rigidbody>()) {
+            if (ImGui::MenuItem("[Rigidbody]", "Add physics body")) {
+                auto rigidbody = go->addComponent<Rigidbody>(go);
+                if (rigidbody) {
+                    rigidbody->initializePhysics();
+                    
+                    // Auto-attach existing collider if present
+                    auto collider = go->getComponent<Collider>();
+                    if (collider) {
+                        collider->attachToRigidbody(rigidbody);
+                    }
+                }
+                ImGui::CloseCurrentPopup();
+            }
+            if (ImGui::IsItemHovered()) {
+                ImGui::SetTooltip("Adds physics simulation for dynamic/static/kinematic bodies");
+            }
+        }
+
+        if (!go->getComponent<Collider>()) {
+            if (ImGui::MenuItem("[Collider]", "Add collision detection")) {
+                auto collider = go->addComponent<Collider>(go);
+                if (collider) {
+                    collider->initializeCollider();
+                    
+                    // Auto-attach to rigidbody if present
+                    auto rigidbody = go->getComponent<Rigidbody>();
+                    if (rigidbody) {
+                        collider->attachToRigidbody(rigidbody);
+                    }
+                }
+                ImGui::CloseCurrentPopup();
+            }
+            if (ImGui::IsItemHovered()) {
+                ImGui::SetTooltip("Adds collision shapes and detection (Box, Sphere, Capsule, Plane)");
             }
         }
 
@@ -452,6 +494,22 @@ void Inspector::RenderAddComponentSection(GameObject* go) {
             if (ImGui::IsItemHovered()) {
                 ImGui::SetTooltip("Add script execution capabilities to this object");
             }
+        }
+
+        RenderStyledSeparator();
+        
+        ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(150, 150, 150, 255));  // textGray
+        ImGui::Text("UTILITIES");
+        ImGui::PopStyleColor();
+        
+        RenderStyledSeparator();
+        
+        if (ImGui::MenuItem("[Raycast Tool]", "Test raycast from this object")) {
+            // This opens a raycast testing tool
+            // TODO: Implement raycast testing window
+        }
+        if (ImGui::IsItemHovered()) {
+            ImGui::SetTooltip("Test raycast functionality from this object's position");
         }
 
         RenderStyledSeparator();

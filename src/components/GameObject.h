@@ -43,6 +43,8 @@
 #define LAYER_ENEMY (1 << 22)
 #define LAYER_ENVIRONMENT (1 << 23)
 #define LAYER_SENSOR (1 << 24)
+#define LAYER_STATIC LAYER_0
+#define LAYER_DYNAMIC LAYER_1
 
 // Forward declaration
 class AssimpGeometry;
