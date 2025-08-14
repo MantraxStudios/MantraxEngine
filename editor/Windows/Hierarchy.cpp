@@ -269,4 +269,9 @@ void Hierarchy::OnRenderGUI() {
     }
 
     ImGui::End();
+
+    if (ImGui::IsKeyPressed(ImGuiKey_Delete) && Selection::GameObjectSelect != nullptr) {
+        SceneManager::getInstance().getActiveScene()->removeGameObject(Selection::GameObjectSelect);
+        Selection::GameObjectSelect = nullptr;
+    }
 }

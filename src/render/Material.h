@@ -17,6 +17,7 @@ public:
     // Propiedades del material
     void setName(const std::string& materialName);
     void setAlbedo(const glm::vec3& color);
+    void setAlpha(float value);
     void setMetallic(float value);
     void setRoughness(float value);
     void setEmissive(const glm::vec3& color);
@@ -44,6 +45,7 @@ public:
 
     // Getters
     glm::vec3 getAlbedo() const { return albedo; }
+    float getAlpha() const { return alpha; }
     float getMetallic() const { return metallic; }
     float getRoughness() const { return roughness; }
     glm::vec3 getEmissive() const { return emissive; }
@@ -83,6 +85,7 @@ private:
     
     // Propiedades del material
     glm::vec3 albedo;
+    float alpha;
     float metallic;
     float roughness;
     glm::vec3 emissive;

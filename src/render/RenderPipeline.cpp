@@ -508,6 +508,7 @@ void RenderPipeline::configureMaterial(Material* material) {
     
     // Configurar propiedades del material
     glUniform3fv(glGetUniformLocation(program, "uAlbedo"), 1, glm::value_ptr(material->getAlbedo()));
+    glUniform1f(glGetUniformLocation(program, "uAlpha"), material->getAlpha());
     glUniform1f(glGetUniformLocation(program, "uMetallic"), material->getMetallic());
     glUniform1f(glGetUniformLocation(program, "uRoughness"), material->getRoughness());
     glUniform3fv(glGetUniformLocation(program, "uEmissive"), 1, glm::value_ptr(material->getEmissive()));
@@ -566,6 +567,7 @@ void RenderPipeline::configureDefaultMaterial() {
     
     // Material por defecto
     glUniform3f(glGetUniformLocation(program, "uAlbedo"), 1.0f, 1.0f, 1.0f);
+    glUniform1f(glGetUniformLocation(program, "uAlpha"), 1.0f);
     glUniform1f(glGetUniformLocation(program, "uMetallic"), 0.0f);
     glUniform1f(glGetUniformLocation(program, "uRoughness"), 0.5f);
     glUniform3f(glGetUniformLocation(program, "uEmissive"), 0.0f, 0.0f, 0.0f);

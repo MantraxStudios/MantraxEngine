@@ -47,6 +47,10 @@ bool MaterialManager::loadMaterialsFromConfig(const std::string& configPath) {
                 material->setAlbedo(albedoColor);
             }
             
+            if (materialData.contains("alpha")) {
+                material->setAlpha(materialData["alpha"]);
+            }
+            
             if (materialData.contains("metallic")) {
                 material->setMetallic(materialData["metallic"]);
             }

@@ -6,6 +6,7 @@
 #include "../../src/components/ScriptExecutor.h"
 #include "../../src/components/CharacterController.h"
 #include "../../src/components/SpriteAnimator.h"
+#include "../../src/components/TileComponent.h"
 
 #include "../../src/render/Texture.h"
 
@@ -353,6 +354,18 @@ void Inspector::RenderAddComponentSection(GameObject* go) {
             }
             if (ImGui::IsItemHovered()) {
                 ImGui::SetTooltip("Add audio playback capabilities to this object");
+            }
+        }
+
+        RenderStyledSeparator();
+
+        if (!go->getComponent<TileComponent>()) {
+            if (ImGui::MenuItem("[Tile Component]", "Add and draw")) {
+                go->addComponent<TileComponent>();
+                ImGui::CloseCurrentPopup();
+            }
+            if (ImGui::IsItemHovered()) {
+                ImGui::SetTooltip("Use it to draw 2D maps more quickly and efficiently.");
             }
         }
 

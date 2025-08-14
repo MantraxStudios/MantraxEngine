@@ -7,12 +7,12 @@
 #include <locale>
 
 Material::Material()
-    : name("Default Material"), albedo(1.0f), metallic(0.0f), roughness(0.5f), 
+    : name("Default Material"), albedo(1.0f), alpha(1.0f), metallic(0.0f), roughness(0.5f), 
       emissive(0.0f), tiling(0.3f), normalStrength(1.0f) {
 }
 
 Material::Material(const std::string& materialName)
-    : name(materialName), albedo(1.0f), metallic(0.0f), roughness(0.5f), 
+    : name(materialName), albedo(1.0f), alpha(1.0f), metallic(0.0f), roughness(0.5f), 
       emissive(0.0f), tiling(0.2f), normalStrength(1.0f) {
 }
 
@@ -25,6 +25,10 @@ void Material::setName(const std::string& materialName) {
 
 void Material::setAlbedo(const glm::vec3& color) {
     albedo = color;
+}
+
+void Material::setAlpha(float value) {
+    alpha = std::clamp(value, 0.0f, 1.0f);
 }
 
 void Material::setMetallic(float value) {

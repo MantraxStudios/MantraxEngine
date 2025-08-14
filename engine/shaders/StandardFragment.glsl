@@ -8,6 +8,7 @@ in mat3 TBN;
 
 // Material properties
 uniform vec3 uAlbedo;
+uniform float uAlpha;
 uniform float uMetallic;
 uniform float uRoughness;
 uniform vec3 uEmissive;
@@ -154,12 +155,12 @@ void main() {
     vec2 texCoord = TexCoord * uTiling;
 
     // Sample material properties
-    float alpha = 1.0;
+    float alpha = uAlpha;
     vec3 albedo = uAlbedo;
     if (uHasAlbedoTexture) {
         vec4 albedoSample = texture(uAlbedoTexture, texCoord);
         albedo *= albedoSample.rgb;
-        alpha = albedoSample.a; // Usar el canal alpha de la textura
+        alpha *= albedoSample.a; // Combinar alpha del material con alpha de la textura
     }
 
     float metallic = uMetallic;

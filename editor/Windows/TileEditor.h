@@ -26,6 +26,7 @@ struct TileData {
         material = std::make_shared<Material>(name);
         material->setAlbedoTexture(texturePath);
         material->setAlbedo(glm::vec3(1.0f, 1.0f, 1.0f));
+        material->setAlpha(1.0f);
         material->setMetallic(0.0f);
         material->setRoughness(0.5f);
         material->setEmissive(glm::vec3(0.0f, 0.0f, 0.0f));
@@ -70,6 +71,10 @@ public:
     
     // Cleanup method for texture cache
     void cleanupTextureCache();
+    
+    // Métodos para guardar y cargar tiles de/desde JSON
+    nlohmann::json serializeTilesToJson() const;
+    bool loadTilesFromJson(const nlohmann::json& tileDataArray);
     
     // Variables para el popup de preview
     bool showTilePreview = false;

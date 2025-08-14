@@ -29,7 +29,6 @@ void MainBar::OnRenderGUI() {
 		}
 
 		if (ImGui::MenuItem("Save")) {
-
 			if (!FileSystem::fileExists(EditorInfo::currentScenePath)) {
 				boolOpenedPopup = true;
 			}

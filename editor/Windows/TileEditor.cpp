@@ -11,6 +11,7 @@ using namespace ImGuizmo;
 #include "../EUI/UIBuilder.h"
 #include "components/EventSystem.h"
 #include "../EUI/EditorInfo.h"
+#include <render/MaterialManager.h>
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
@@ -26,6 +27,113 @@ void TileEditor::cleanupTextureCache() {
     textureCache.clear();
     // Si tienes un storage de objetos Texture, también lo puedes limpiar aquí
     // texturesStorage.clear();
+}
+
+nlohmann::json TileEditor::serializeTilesToJson() const {
+    nlohmann::json tileDataArray = nlohmann::json::array();
+    
+    for (const auto& tile : savedTiles) {
+        nlohmann::json tileJson;
+        tileJson["name"] = tile.name;
+        tileJson["texturePath"] = tile.texturePath;
+        
+        // Guardar propiedades del material
+        if (tile.material) {
+            nlohmann::json materialJson;
+            materialJson["albedo"] = {
+                tile.material->getAlbedo().x,
+                tile.material->getAlbedo().y,
+                tile.material->getAlbedo().z
+            };
+            materialJson["alpha"] = tile.material->getAlpha();
+            materialJson["emissive"] = {
+                tile.material->getEmissive().x,
+                tile.material->getEmissive().y,
+                tile.material->getEmissive().z
+            };
+            materialJson["metallic"] = tile.material->getMetallic();
+            materialJson["roughness"] = tile.material->getRoughness();
+            materialJson["tiling"] = {
+                tile.material->getTiling().x,
+                tile.material->getTiling().y
+            };
+            tileJson["material"] = materialJson;
+        }
+        
+        tileDataArray.push_back(tileJson);
+    }
+    
+    return tileDataArray;
+}
+
+bool TileEditor::loadTilesFromJson(const nlohmann::json& tileDataArray) {
+    try {
+        // Limpiar tiles existentes
+        savedTiles.clear();
+        selectedTileIndex = -1;
+        cleanupTextureCache();
+        
+        std::cout << "Loading tiles from JSON - Current MaterialManager count: " 
+                  << MaterialManager::getInstance().getMaterialCount() << std::endl;
+        
+        for (const auto& tileJson : tileDataArray) {
+            if (tileJson.contains("name") && tileJson.contains("texturePath")) {
+                std::string tileName = tileJson["name"];
+                std::string texturePath = tileJson["texturePath"];
+                
+                // Crear nuevo tile
+                TileData newTile(tileName, texturePath);
+                
+                // Restaurar propiedades del material si existen
+                if (tileJson.contains("material")) {
+                    const nlohmann::json& materialJson = tileJson["material"];
+                    
+                    if (materialJson.contains("albedo")) {
+                        auto albedo = materialJson["albedo"];
+                        newTile.material->setAlbedo(glm::vec3(albedo[0], albedo[1], albedo[2]));
+                    }
+                    
+                    if (materialJson.contains("alpha")) {
+                        newTile.material->setAlpha(materialJson["alpha"]);
+                    }
+                    
+                    if (materialJson.contains("emissive")) {
+                        auto emissive = materialJson["emissive"];
+                        newTile.material->setEmissive(glm::vec3(emissive[0], emissive[1], emissive[2]));
+                    }
+                    
+                    if (materialJson.contains("metallic")) {
+                        newTile.material->setMetallic(materialJson["metallic"]);
+                    }
+                    
+                    if (materialJson.contains("roughness")) {
+                        newTile.material->setRoughness(materialJson["roughness"]);
+                    }
+                    
+                    if (materialJson.contains("tiling")) {
+                        auto tiling = materialJson["tiling"];
+                        newTile.material->setTiling(glm::vec2(tiling[0], tiling[1]));
+                    }
+                }
+                
+                savedTiles.push_back(newTile);
+                
+                // Registrar el material en el MaterialManager para que esté disponible globalmente
+                MaterialManager::getInstance().addMaterial(newTile.material->getName(), newTile.material);
+            }
+        }
+        
+        std::cout << "Loaded " << savedTiles.size() << " tiles into TileEditor and registered materials" << std::endl;
+        std::cout << "MaterialManager now has " << MaterialManager::getInstance().getMaterialCount() << " materials" << std::endl;
+        
+        // Mostrar lista de materiales para debugging
+        MaterialManager::getInstance().listMaterials();
+        
+        return true;
+    } catch (const std::exception& e) {
+        std::cerr << "Error loading tiles from JSON: " << e.what() << std::endl;
+        return false;
+    }
 }
 
 // Implementación de la función applyGridSnap
@@ -69,6 +177,10 @@ void TileEditor::OnRenderGUI() {
         if (!newTileName.empty() && !newTexturePath.empty()) {
             TileData newTile(newTileName, newTexturePath);
             savedTiles.push_back(newTile);
+            
+            // Registrar el material en el MaterialManager para que esté disponible globalmente
+            MaterialManager::getInstance().addMaterial(newTile.material->getName(), newTile.material);
+            std::cout << "Registered new tile material: " << newTile.material->getName() << std::endl;
             
             // Limpiar campos
             newTileName = "New Tile";
@@ -217,6 +329,38 @@ void TileEditor::OnRenderGUI() {
             
             ImGui::Spacing();
             
+            // Material Properties Editor
+            ImGui::Separator();
+            ImGui::Text("Material Properties");
+            
+            auto& selectedMaterial = savedTiles[selectedTileIndex].material;
+            
+            // Alpha/Transparency slider
+            float alpha = selectedMaterial->getAlpha();
+            if (ImGui::SliderFloat("Transparency", &alpha, 0.0f, 1.0f, "%.2f")) {
+                selectedMaterial->setAlpha(alpha);
+                // Re-register material with updated properties
+                MaterialManager::getInstance().addMaterial(selectedMaterial->getName(), selectedMaterial);
+            }
+            
+            // Color tint
+            glm::vec3 albedo = selectedMaterial->getAlbedo();
+            float albedoArray[3] = { albedo.x, albedo.y, albedo.z };
+            if (ImGui::ColorEdit3("Color Tint", albedoArray)) {
+                selectedMaterial->setAlbedo(glm::vec3(albedoArray[0], albedoArray[1], albedoArray[2]));
+                MaterialManager::getInstance().addMaterial(selectedMaterial->getName(), selectedMaterial);
+            }
+            
+            // Tiling
+            glm::vec2 tiling = selectedMaterial->getTiling();
+            float tilingArray[2] = { tiling.x, tiling.y };
+            if (ImGui::DragFloat2("Tiling", tilingArray, 0.1f, 0.1f, 10.0f)) {
+                selectedMaterial->setTiling(glm::vec2(tilingArray[0], tilingArray[1]));
+                MaterialManager::getInstance().addMaterial(selectedMaterial->getName(), selectedMaterial);
+            }
+            
+            ImGui::Spacing();
+            
             if (ImGui::Button("Instantiate Selected Tile")) {
                 // Crear objeto con el tile seleccionado
                 GameObject* newObject = new GameObject("Cube.fbx");
@@ -236,8 +380,11 @@ void TileEditor::OnRenderGUI() {
             }
             
             if (ImGui::Button("Delete Selected Tile")) {
+                // Remover material del MaterialManager antes de eliminar el tile
+                std::string materialName = savedTiles[selectedTileIndex].material->getName();
                 savedTiles.erase(savedTiles.begin() + selectedTileIndex);
                 selectedTileIndex = -1;
+                std::cout << "Removed tile and its material: " << materialName << std::endl;
             }
             
             if (ImGui::Button("Clear Selection")) {
@@ -255,6 +402,11 @@ void TileEditor::OnRenderGUI() {
                 for (const auto& tile : savedTiles) {
                     getCachedTexture(tile.texturePath);
                 }
+            }
+            
+            ImGui::SameLine();
+            if (ImGui::Button("List Materials")) {
+                MaterialManager::getInstance().listMaterials();
             }
         }
 

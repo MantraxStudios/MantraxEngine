@@ -13,6 +13,8 @@
 #include "render/DefaultShaders.h"
 #include "EUI/EditorInfo.h"
 #include "Windows/FileExplorer.h"
+#include "Windows/TileEditor.h"
+#include "Windows/RenderWindows.h"
 #include <glm/glm.hpp>
 #include <cmath> 
 
@@ -81,7 +83,19 @@ bool SceneSaver::SaveScene(const Scene* scene, const std::string& filepath) {
     }
 
 
-    //MainJson["TileData"][]
+    // Guardar datos de tiles del TileEditor
+    try {
+        TileEditor* tileEditor = RenderWindows::getInstance().GetWindow<TileEditor>();
+        if (tileEditor && !tileEditor->savedTiles.empty()) {
+            MainJson["TileData"] = tileEditor->serializeTilesToJson();
+            std::cout << "Saved " << tileEditor->savedTiles.size() << " tiles to scene" << std::endl;
+        } else {
+            MainJson["TileData"] = json::array();
+        }
+    } catch (const std::exception& e) {
+        std::cerr << "Error saving tile data: " << e.what() << std::endl;
+        MainJson["TileData"] = json::array();
+    }
 
     const auto& gameObjects = activeScene->getGameObjects();
     for (size_t i = 0; i < gameObjects.size(); i++) {
@@ -283,6 +297,25 @@ bool SceneSaver::LoadScene(const std::string& filepath) {
     }
     
     newScene->setCamera(std::move(camera));
+
+    // Cargar datos de tiles del TileEditor ANTES que los objetos
+    if (MainJson.contains("TileData") && !MainJson["TileData"].empty()) {
+        try {
+            TileEditor* tileEditor = RenderWindows::getInstance().GetWindow<TileEditor>();
+            if (tileEditor) {
+                const json& tileDataArray = MainJson["TileData"];
+                if (tileEditor->loadTilesFromJson(tileDataArray)) {
+                    std::cout << "Successfully loaded tiles into TileEditor BEFORE loading objects" << std::endl;
+                } else {
+                    std::cout << "Failed to load tiles from scene file" << std::endl;
+                }
+            }
+        } catch (const std::exception& e) {
+            std::cerr << "Error loading tile data: " << e.what() << std::endl;
+        }
+    } else {
+        std::cout << "No tile data found in scene file" << std::endl;
+    }
 
     if (!MainJson.contains("objects")) {
         std::cerr << "No hay 'objects' en el archivo de escena." << std::endl;

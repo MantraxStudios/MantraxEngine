@@ -316,6 +316,7 @@ void MaterialEditor::OnRenderGUI() {
             MaterialManager::getInstance().clearMaterials();
             MaterialManager::getInstance().loadMaterialsFromConfig("config/materials_config.json");
         }
+
         ImGui::SameLine();
         if (ImGui::Button("Reload")) {
             materialesCargados = false;

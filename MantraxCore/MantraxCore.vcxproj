@@ -32,6 +32,7 @@
     <ClCompile Include="..\src\components\TestScene.cpp" />
     <ClCompile Include="..\src\components\TexturedScene.cpp" />
     <ClCompile Include="..\src\components\EventSystem.cpp" />
+    <ClCompile Include="..\src\components\TileComponent.cpp" />
     <ClCompile Include="..\src\core\AudioManager.cpp" />
     <ClCompile Include="..\src\core\FileSystem.cpp" />
     <ClCompile Include="..\src\core\InputConfigLoader.cpp" />
@@ -75,6 +76,7 @@
     <ClInclude Include="..\src\components\TestScene.h" />
     <ClInclude Include="..\src\components\TexturedScene.h" />
     <ClInclude Include="..\src\components\EventSystem.h" />
+    <ClInclude Include="..\src\components\TileComponent.h" />
     <ClInclude Include="..\src\core\AudioManager.h" />
     <ClInclude Include="..\src\core\CoreExporter.h" />
     <ClInclude Include="..\src\core\FileSystem.h" />

@@ -1,0 +1,91 @@
+{
+    "name": "TestSceneWithTiles",
+    "Camera": {
+        "Position": [0.0, 5.0, 10.0],
+        "Forward": [0.0, 0.0, -1.0],
+        "ProjectionType": 0,
+        "FOV": 65.0,
+        "OrthographicSize": 10.0,
+        "NearPlane": 0.1,
+        "FarPlane": 1000.0
+    },
+    "Settings": {
+        "CameraType": 0,
+        "CameraFov": 10.0,
+        "AmbientIntensity": 0.3,
+        "LowAmbient": 0.1,
+        "LightType": true,
+        "FrustrumOn": true,
+        "PostProcessing": {
+            "Exposure": 1.0,
+            "Saturation": 1.0,
+            "Smoothness": 0.5
+        }
+    },
+    "TileData": [
+        {
+            "name": "GrassTile",
+            "texturePath": "Sprites/grass.png",
+            "material": {
+                "albedo": [0.2, 0.8, 0.3],
+                "alpha": 1.0,
+                "emissive": [0.0, 0.0, 0.0],
+                "metallic": 0.0,
+                "roughness": 0.8,
+                "tiling": [1.0, 1.0]
+            }
+        },
+        {
+            "name": "StoneTile",
+            "texturePath": "Sprites/stone.png",
+            "material": {
+                "albedo": [0.6, 0.6, 0.6],
+                "alpha": 1.0,
+                "emissive": [0.0, 0.0, 0.0],
+                "metallic": 0.1,
+                "roughness": 0.9,
+                "tiling": [2.0, 2.0]
+            }
+        },
+        {
+            "name": "GlassTile",
+            "texturePath": "Sprites/glass.png",
+            "material": {
+                "albedo": [0.8, 0.9, 1.0],
+                "alpha": 0.3,
+                "emissive": [0.0, 0.0, 0.0],
+                "metallic": 0.0,
+                "roughness": 0.1,
+                "tiling": [1.0, 1.0]
+            }
+        },
+        {
+            "name": "WaterTile",
+            "texturePath": "Sprites/water.png",
+            "material": {
+                "albedo": [0.1, 0.4, 0.8],
+                "alpha": 0.6,
+                "emissive": [0.0, 0.0, 0.0],
+                "metallic": 0.0,
+                "roughness": 0.2,
+                "tiling": [2.0, 2.0]
+            }
+        }
+    ],
+    "objects": [
+        {
+            "Name": "TestObject",
+            "Tag": "",
+            "ObjectID": "obj_001",
+            "position": [0.0, 0.0, 0.0],
+            "rotation": [0.0, 0.0, 0.0],
+            "scale": [1.0, 1.0, 1.0],
+            "components": {
+                "Geometry": {
+                    "modelPath": "Cube.fbx"
+                },
+                "MaterialName": "GrassTile"
+            }
+        }
+    ]
+}

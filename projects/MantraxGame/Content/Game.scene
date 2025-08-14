@@ -3,29 +3,29 @@
         "FOV": 65.0,
         "FarPlane": 1000.0,
         "Forward": [
-            -0.4943215250968933,
-            -0.29904091358184814,
-            -0.8162236213684082
+            -0.06642419844865799,
+            -0.3321585953235626,
+            -0.9408818483352661
         ],
         "NearPlane": 0.10000000149011612,
-        "OrthographicSize": 15.079999923706055,
+        "OrthographicSize": 5.0,
         "Position": [
-            0.5328508615493774,
-            7.230751037597656,
-            7.204890251159668
+            0.16376431286334991,
+            12.249868392944336,
+            12.099479675292969
         ],
-        "ProjectionType": 0
+        "ProjectionType": 1
     },
     "Settings": {
-        "AmbientIntensity": 1.0,
-        "CameraFov": 15.079999923706055,
-        "CameraType": 0,
+        "AmbientIntensity": 2.0,
+        "CameraFov": 5.0,
+        "CameraType": 1,
         "FrustrumOn": true,
         "LightType": true,
         "LowAmbient": false,
         "PostProcessing": {
-            "Exposure": 1.3600000143051147,
-            "Saturation": 1.2799999713897705,
+            "Exposure": 1.600000023841858,
+            "Saturation": 1.0,
             "Smoothness": 1.0
         }
     },
@@ -33,16 +33,16 @@
     "objects": [
         {
             "Name": "New Tile_Instance",
-            "ObjectID": "3",
+            "ObjectID": "1",
             "Tag": "Default",
             "components": {
                 "Geometry": {
-                    "modelPath": "Plane.fbx"
+                    "modelPath": "Cube.fbx"
                 }
             },
             "position": [
-                -8.0,
-                7.0,
+                -5.0,
+                5.0,
                 0.0
             ],
             "rotation": [
@@ -51,9 +51,59 @@
                 0.0
             ],
             "scale": [
-                1.0,
-                1.0,
-                1.0
+                0.009999999776482582,
+                0.009999999776482582,
+                0.009999999776482582
+            ]
+        },
+        {
+            "Name": "New Tile_Instance",
+            "ObjectID": "2",
+            "Tag": "Default",
+            "components": {
+                "Geometry": {
+                    "modelPath": "Cube.fbx"
+                }
+            },
+            "position": [
+                -3.0,
+                5.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                -0.0,
+                0.0
+            ],
+            "scale": [
+                0.009999999776482582,
+                0.008351384662091732,
+                0.009999999776482582
+            ]
+        },
+        {
+            "Name": "New Tile_Instance",
+            "ObjectID": "3",
+            "Tag": "Default",
+            "components": {
+                "Geometry": {
+                    "modelPath": "Cube.fbx"
+                }
+            },
+            "position": [
+                -1.0,
+                5.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                -0.0,
+                0.0
+            ],
+            "scale": [
+                0.009999999776482582,
+                0.008879786357283592,
+                0.009999999776482582
             ]
         },
         {
@@ -62,12 +112,12 @@
             "Tag": "Default",
             "components": {
                 "Geometry": {
-                    "modelPath": "Plane.fbx"
+                    "modelPath": "Cube.fbx"
                 }
             },
             "position": [
-                -6.0,
-                7.0,
+                1.0,
+                5.0,
                 0.0
             ],
             "rotation": [
@@ -76,9 +126,9 @@
                 0.0
             ],
             "scale": [
-                1.0,
-                1.0,
-                1.0
+                0.011105713434517384,
+                0.009999999776482582,
+                0.009999999776482582
             ]
         },
         {
@@ -87,12 +137,12 @@
             "Tag": "Default",
             "components": {
                 "Geometry": {
-                    "modelPath": "Plane.fbx"
+                    "modelPath": "Cube.fbx"
                 }
             },
             "position": [
-                -4.0,
-                7.0,
+                3.0,
+                5.0,
                 0.0
             ],
             "rotation": [
@@ -101,9 +151,9 @@
                 0.0
             ],
             "scale": [
-                1.0,
-                1.0,
-                1.0
+                0.009999999776482582,
+                0.009999999776482582,
+                0.009999999776482582
             ]
         },
         {
@@ -112,12 +162,12 @@
             "Tag": "Default",
             "components": {
                 "Geometry": {
-                    "modelPath": "Plane.fbx"
+                    "modelPath": "Cube.fbx"
                 }
             },
             "position": [
-                0.0,
-                1.0,
+                5.0,
+                5.0,
                 0.0
             ],
             "rotation": [
@@ -126,24 +176,70 @@
                 0.0
             ],
             "scale": [
-                1.0,
-                1.0,
-                1.0
+                0.009999999776482582,
+                0.009999999776482582,
+                0.009999999776482582
             ]
         },
         {
-            "Name": "New Tile_Instance",
+            "Name": "New Object",
             "ObjectID": "7",
             "Tag": "Default",
             "components": {
                 "Geometry": {
-                    "modelPath": "Plane.fbx"
-                }
+                    "modelPath": "Cube.fbx"
+                },
+                "Material": {
+                    "exists": true
+                },
+                "MaterialName": "Default_Material",
+                "component": [
+                    {
+                        "angularVelocity": [
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "bodyType": 0,
+                        "boxHalfExtents": [
+                            10.0,
+                            1.0,
+                            10.0
+                        ],
+                        "capsuleHalfHeight": 0.5,
+                        "capsuleRadius": 0.5,
+                        "csharpBridgeEnabled": false,
+                        "csharpObjectName": "Unknown",
+                        "currentLayer": 1,
+                        "currentLayerMask": 33554431,
+                        "damping": 0.0,
+                        "friction": 0.5,
+                        "gravityDisabled": false,
+                        "gravityFactor": 1.0,
+                        "hasContactCallback": true,
+                        "hasTriggerCallback": false,
+                        "initialized": false,
+                        "isAwake": true,
+                        "isKinematic": false,
+                        "isTrigger": false,
+                        "mass": 1.0,
+                        "restitution": 0.10000000149011612,
+                        "shapeType": 0,
+                        "simulationDisabled": false,
+                        "sphereRadius": 0.5,
+                        "type": "PhysicalObject",
+                        "velocity": [
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    }
+                ]
             },
             "position": [
-                2.0,
-                1.0,
-                0.0
+                0.0,
+                5.0,
+                -1.0
             ],
             "rotation": [
                 0.0,
@@ -151,23 +247,110 @@
                 0.0
             ],
             "scale": [
-                1.0,
-                1.0,
-                1.0
+                0.06055087596178055,
+                0.009999999776482582,
+                0.009999999776482582
+            ]
+        },
+        {
+            "Name": "New Object",
+            "ObjectID": "18",
+            "Tag": "Default",
+            "components": {
+                "Geometry": {
+                    "modelPath": "Cube.fbx"
+                },
+                "Material": {
+                    "exists": true
+                },
+                "MaterialName": "BG",
+                "component": [
+                    {
+                        "angularVelocity": [
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "bodyType": 1,
+                        "boxHalfExtents": [
+                            0.5,
+                            0.5,
+                            0.5
+                        ],
+                        "capsuleHalfHeight": 0.5,
+                        "capsuleRadius": 0.5,
+                        "csharpBridgeEnabled": false,
+                        "csharpObjectName": "Unknown",
+                        "currentLayer": 1,
+                        "currentLayerMask": 33554431,
+                        "damping": 0.0,
+                        "filterData": {
+                            "word0": 1,
+                            "word1": 33554431,
+                            "word2": 0,
+                            "word3": 0
+                        },
+                        "friction": 0.5,
+                        "gravityDisabled": false,
+                        "gravityFactor": 1.0,
+                        "hasContactCallback": true,
+                        "hasTriggerCallback": false,
+                        "initialized": true,
+                        "isAwake": true,
+                        "isKinematic": false,
+                        "isTrigger": false,
+                        "mass": 1.0,
+                        "restitution": 0.10000000149011612,
+                        "shapeFlags": {
+                            "isSceneQuery": true,
+                            "isSimulation": true,
+                            "isTrigger": false,
+                            "isVisualization": true
+                        },
+                        "shapeType": 0,
+                        "simulationDisabled": false,
+                        "sphereRadius": 0.5,
+                        "type": "PhysicalObject",
+                        "velocity": [
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    }
+                ]
+            },
+            "position": [
+                -0.0002487359452061355,
+                12.30061149597168,
+                0.001598321832716465
+            ],
+            "rotation": [
+                0.0004340288869570941,
+                0.004294625949114561,
+                -0.00013766596384812146
+            ],
+            "scale": [
+                0.009999999776482582,
+                0.009999999776482582,
+                0.009999999776482582
             ]
         },
         {
             "Name": "New Tile_Instance",
-            "ObjectID": "8",
+            "ObjectID": "11",
             "Tag": "Default",
             "components": {
                 "Geometry": {
-                    "modelPath": "Plane.fbx"
-                }
+                    "modelPath": "Cube.fbx"
+                },
+                "Material": {
+                    "exists": true
+                },
+                "MaterialName": "New Tile"
             },
             "position": [
-                4.0,
-                1.0,
+                -4.0,
+                14.0,
                 0.0
             ],
             "rotation": [
@@ -176,9 +359,299 @@
                 0.0
             ],
             "scale": [
+                0.009999999776482582,
+                0.009999999776482582,
+                0.009999999776482582
+            ]
+        },
+        {
+            "Name": "New Tile_Instance",
+            "ObjectID": "12",
+            "Tag": "Default",
+            "components": {
+                "Geometry": {
+                    "modelPath": "Cube.fbx"
+                },
+                "Material": {
+                    "exists": true
+                },
+                "MaterialName": "New Tile"
+            },
+            "position": [
+                -2.0,
+                13.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                -0.0,
+                0.0
+            ],
+            "scale": [
+                0.009999999776482582,
+                0.009999999776482582,
+                0.009999999776482582
+            ]
+        },
+        {
+            "Name": "New Tile_Instance",
+            "ObjectID": "13",
+            "Tag": "Default",
+            "components": {
+                "Geometry": {
+                    "modelPath": "Cube.fbx"
+                },
+                "Material": {
+                    "exists": true
+                },
+                "MaterialName": "New Tile"
+            },
+            "position": [
+                2.0,
+                12.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                -0.0,
+                0.0
+            ],
+            "scale": [
+                0.009999999776482582,
+                0.009999999776482582,
+                0.009999999776482582
+            ]
+        },
+        {
+            "Name": "New Tile_Instance",
+            "ObjectID": "14",
+            "Tag": "Default",
+            "components": {
+                "Geometry": {
+                    "modelPath": "Cube.fbx"
+                },
+                "Material": {
+                    "exists": true
+                },
+                "MaterialName": "New Tile"
+            },
+            "position": [
+                5.0,
+                11.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                -0.0,
+                0.0
+            ],
+            "scale": [
+                0.009999999776482582,
+                0.009999999776482582,
+                0.009999999776482582
+            ]
+        },
+        {
+            "Name": "New Tile_Instance",
+            "ObjectID": "15",
+            "Tag": "Default",
+            "components": {
+                "Geometry": {
+                    "modelPath": "Cube.fbx"
+                },
+                "Material": {
+                    "exists": true
+                },
+                "MaterialName": "New Tile"
+            },
+            "position": [
                 1.0,
-                1.0,
-                1.0
+                12.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                -0.0,
+                0.0
+            ],
+            "scale": [
+                0.009999999776482582,
+                0.009999999776482582,
+                0.009999999776482582
+            ]
+        },
+        {
+            "Name": "New Tile_Instance",
+            "ObjectID": "16",
+            "Tag": "Default",
+            "components": {
+                "Geometry": {
+                    "modelPath": "Cube.fbx"
+                },
+                "Material": {
+                    "exists": true
+                },
+                "MaterialName": "New Tile"
+            },
+            "position": [
+                -2.0,
+                12.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                -0.0,
+                0.0
+            ],
+            "scale": [
+                0.009999999776482582,
+                0.009999999776482582,
+                0.009999999776482582
+            ]
+        },
+        {
+            "Name": "New Tile_Instance",
+            "ObjectID": "17",
+            "Tag": "Default",
+            "components": {
+                "Geometry": {
+                    "modelPath": "Cube.fbx"
+                },
+                "Material": {
+                    "exists": true
+                },
+                "MaterialName": "New Tile"
+            },
+            "position": [
+                -3.0,
+                12.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                -0.0,
+                0.0
+            ],
+            "scale": [
+                0.009999999776482582,
+                0.009999999776482582,
+                0.009999999776482582
+            ]
+        },
+        {
+            "Name": "New Tile_Instance",
+            "ObjectID": "18",
+            "Tag": "Default",
+            "components": {
+                "Geometry": {
+                    "modelPath": "Cube.fbx"
+                },
+                "Material": {
+                    "exists": true
+                },
+                "MaterialName": "New Tile"
+            },
+            "position": [
+                0.0,
+                11.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                -0.0,
+                0.0
+            ],
+            "scale": [
+                0.009999999776482582,
+                0.009999999776482582,
+                0.009999999776482582
+            ]
+        },
+        {
+            "Name": "New Tile_Instance",
+            "ObjectID": "19",
+            "Tag": "Default",
+            "components": {
+                "Geometry": {
+                    "modelPath": "Cube.fbx"
+                },
+                "Material": {
+                    "exists": true
+                },
+                "MaterialName": "New Tile"
+            },
+            "position": [
+                2.0,
+                11.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                -0.0,
+                0.0
+            ],
+            "scale": [
+                0.009999999776482582,
+                0.009999999776482582,
+                0.009999999776482582
+            ]
+        },
+        {
+            "Name": "New Tile_Instance",
+            "ObjectID": "20",
+            "Tag": "Default",
+            "components": {
+                "Geometry": {
+                    "modelPath": "Cube.fbx"
+                },
+                "Material": {
+                    "exists": true
+                },
+                "MaterialName": "New Tile"
+            },
+            "position": [
+                -3.0,
+                11.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                -0.0,
+                0.0
+            ],
+            "scale": [
+                0.009999999776482582,
+                0.009999999776482582,
+                0.009999999776482582
+            ]
+        },
+        {
+            "Name": "New Tile_Instance",
+            "ObjectID": "21",
+            "Tag": "Default",
+            "components": {
+                "Geometry": {
+                    "modelPath": "Cube.fbx"
+                },
+                "Material": {
+                    "exists": true
+                },
+                "MaterialName": "New Tile"
+            },
+            "position": [
+                -5.0,
+                12.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                -0.0,
+                0.0
+            ],
+            "scale": [
+                0.009999999776482582,
+                0.009999999776482582,
+                0.009999999776482582
             ]
         }
     ]

@@ -65,7 +65,7 @@ void AssimpGeometry::loadModel(const std::string& path) {
         | aiProcess_ImproveCacheLocality
         | aiProcess_OptimizeMeshes
         | aiProcess_PreTransformVertices
-        | aiProcess_FlipWindingOrder;  // <— clave si hay espejos/handedness
+        | aiProcess_FlipWindingOrder;
 
     std::cout << "Loading model from: " << path << std::endl;
 
@@ -100,13 +100,11 @@ void AssimpGeometry::loadModel(const std::string& path) {
 }
 
 void AssimpGeometry::processNode(aiNode* node, const aiScene* scene) {
-    // Procesar todos los meshes del nodo
     for (unsigned int i = 0; i < node->mNumMeshes; i++) {
         aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
         processMesh(mesh, scene);
     }
 
-    // Procesar recursivamente todos los nodos hijos
     for (unsigned int i = 0; i < node->mNumChildren; i++) {
         processNode(node->mChildren[i], scene);
     }
@@ -115,16 +113,13 @@ void AssimpGeometry::processNode(aiNode* node, const aiScene* scene) {
 void AssimpGeometry::processMesh(aiMesh* mesh, const aiScene* scene) {
     unsigned int vertexOffset = vertices.size();
 
-    // Procesar vértices
     for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
         Vertex vertex;
 
-        // Posición
         vertex.position.x = mesh->mVertices[i].x;
         vertex.position.y = mesh->mVertices[i].y;
         vertex.position.z = mesh->mVertices[i].z;
 
-        // Normales
         if (mesh->mNormals) {
             vertex.normal.x = mesh->mNormals[i].x;
             vertex.normal.y = mesh->mNormals[i].y;
@@ -134,7 +129,6 @@ void AssimpGeometry::processMesh(aiMesh* mesh, const aiScene* scene) {
             vertex.normal = glm::vec3(0.0f, 1.0f, 0.0f);
         }
 
-        // Coordenadas de textura (solo el primer conjunto)
         if (mesh->mTextureCoords[0]) {
             vertex.texCoords.x = mesh->mTextureCoords[0][i].x;
             vertex.texCoords.y = mesh->mTextureCoords[0][i].y;
@@ -143,7 +137,6 @@ void AssimpGeometry::processMesh(aiMesh* mesh, const aiScene* scene) {
             vertex.texCoords = glm::vec2(0.0f);
         }
 
-        // Tangentes
         if (mesh->mTangents) {
             vertex.tangent.x = mesh->mTangents[i].x;
             vertex.tangent.y = mesh->mTangents[i].y;
@@ -153,7 +146,6 @@ void AssimpGeometry::processMesh(aiMesh* mesh, const aiScene* scene) {
             vertex.tangent = glm::vec3(1.0f, 0.0f, 0.0f);
         }
 
-        // Bitangentes
         if (mesh->mBitangents) {
             vertex.bitangent.x = mesh->mBitangents[i].x;
             vertex.bitangent.y = mesh->mBitangents[i].y;

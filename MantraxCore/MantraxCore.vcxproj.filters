@@ -177,6 +177,9 @@
     <ClCompile Include="..\src\ui\UIBehaviour.cpp">
       <Filter>03_UI\UIElement</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\components\TileComponent.cpp">
+      <Filter>01_Core\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\core\CoreExporter.h">
@@ -339,6 +342,9 @@
     </ClInclude>
     <ClInclude Include="..\src\ui\UIBehaviour.h">
       <Filter>03_UI\UIElement</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\components\TileComponent.h">
+      <Filter>01_Core\Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
