@@ -62,6 +62,7 @@
     <ClCompile Include="..\src\render\Texture.cpp" />
     <ClCompile Include="..\src\ui\Canvas.cpp" />
     <ClCompile Include="..\src\ui\UIBehaviour.cpp" />
+    <ClCompile Include="..\src\ui\UIDragSystem.cpp" />
     <ClCompile Include="..\src\ui\UIElements\UIText.cpp" />
     <ClCompile Include="..\src\wrapper\CoreWrapper.cpp" />
   </ItemGroup>
@@ -114,6 +115,7 @@
     <ClInclude Include="..\src\render\Texture.h" />
     <ClInclude Include="..\src\ui\Canvas.h" />
     <ClInclude Include="..\src\ui\UIBehaviour.h" />
+    <ClInclude Include="..\src\ui\UIDragSystem.h" />
     <ClInclude Include="..\src\ui\UIElements\UIText.h" />
     <ClInclude Include="..\src\wrapper\CoreWrapper.h" />
     <ClInclude Include="..\vendors\includes\fmod\fmod.h" />

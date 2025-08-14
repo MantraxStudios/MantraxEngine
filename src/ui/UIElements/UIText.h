@@ -207,7 +207,7 @@ public:
         glEnable(GL_DEPTH_TEST);
     }
 
-    std::pair<int, int> calculateTextSize(const std::string& msg) {
+    std::pair<int, int> calculateTextSize(const std::string& msg) const {
         if (!currentFont) {
             return { 0, 0 };
         }
@@ -359,4 +359,15 @@ public:
         auto it = characterTextures.find(c);
         return (it != characterTextures.end()) ? it->second : 0;
     }
+    
+    // Override drag methods from UIBehaviour for better text drag support
+    glm::vec4 getBounds() const override;
+    glm::vec2 getPosition() const override;
+    void setPosition(const glm::vec2& position) override;
+    
+protected:
+    // Override drag event handlers for custom text drag behavior
+    void onDragStarted(const UIDragEvent& event) override;
+    void onDragUpdated(const UIDragEvent& event) override;
+    void onDragEnded(const UIDragEvent& event) override;
 };

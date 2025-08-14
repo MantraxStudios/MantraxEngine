@@ -5,6 +5,7 @@
 #include "../render/Camera.h"
 #include "../render/Framebuffer.h"
 #include "../render/AspectRatioManager.h"
+#include "UIDragSystem.h"
 
 // Constructor
 Canvas2D::Canvas2D(int w, int h)
@@ -44,6 +45,9 @@ Canvas2D::Canvas2D(int w, int h)
             std::cerr << "Could not init FreeType Library" << std::endl;
             ftLibrary = nullptr;
         }
+        
+        // Set this canvas in the drag system
+        UIDragSystem::getInstance().setCanvas(this);
     } catch (const std::exception& e) {
         std::cerr << "Error initializing Canvas2D: " << e.what() << std::endl;
         // Clean up any partially initialized resources
@@ -314,6 +318,9 @@ void Canvas2D::DrawElements() {
         std::cout << "[Canvas2D] Updating UI element" << std::endl;
         Behaviour->update();
     }
+    
+    // Update drag system
+    UIDragSystem::getInstance().update(0.016f); // Asumimos 60 FPS
 }
 
 GLuint Canvas2D::getShader() const { return shaderProgram; }
