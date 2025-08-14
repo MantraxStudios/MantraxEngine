@@ -13,6 +13,7 @@
 #include "UIBehaviour.h"
 #include "UIElements/UIText.h"
 #include "../core/CoreExporter.h"
+#include "../render/AspectRatioManager.h"
 
 class MANTRAXCORE_API Canvas2D {
 public:
@@ -30,6 +31,11 @@ public:
     // Set UI size independently of screen size
     void setUISize(int w, int h);
     void clear(glm::vec3 color = glm::vec3(0.2f, 0.2f, 0.2f));
+    
+    // Aspect ratio management
+    void setAspectRatioMode(AspectRatioMode mode);
+    void updateAspectRatio(int screenWidth, int screenHeight);
+    glm::vec2 getUIScale() const;
 
     // Internal drawQuad method (without anchor)
     void drawQuadInternal(float x, float y, float w, float h, glm::vec3 color);

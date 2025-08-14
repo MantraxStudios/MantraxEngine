@@ -189,6 +189,9 @@
     <ClCompile Include="..\src\components\Rigidbody.cpp">
       <Filter>01_Core</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\render\AspectRatioManager.cpp">
+      <Filter>03_UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\core\CoreExporter.h">
@@ -363,6 +366,9 @@
     </ClInclude>
     <ClInclude Include="..\src\core\RaycastSystem.h">
       <Filter>01_Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\render\AspectRatioManager.h">
+      <Filter>03_UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

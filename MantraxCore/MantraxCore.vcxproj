@@ -46,6 +46,7 @@
     <ClCompile Include="..\src\main\MantraxEngine.cpp" />
     <ClCompile Include="..\src\mpak\MantraxCorePackBuilder.cpp" />
     <ClCompile Include="..\src\mpak\MantraxCorePackReader.cpp" />
+    <ClCompile Include="..\src\render\AspectRatioManager.cpp" />
     <ClCompile Include="..\src\render\AssimpGeometry.cpp" />
     <ClCompile Include="..\src\render\Camera.cpp" />
     <ClCompile Include="..\src\render\DefaultShaders.cpp" />
@@ -97,6 +98,7 @@
     <ClInclude Include="..\src\input\InputSystem.h" />
     <ClInclude Include="..\src\mpak\MantraxCorePackBuilder.h" />
     <ClInclude Include="..\src\mpak\MantraxCorePackReader.h" />
+    <ClInclude Include="..\src\render\AspectRatioManager.h" />
     <ClInclude Include="..\src\render\AssimpGeometry.h" />
     <ClInclude Include="..\src\render\Camera.h" />
     <ClInclude Include="..\src\render\DefaultShaders.h" />

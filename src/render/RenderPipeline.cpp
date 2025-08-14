@@ -763,12 +763,12 @@ void RenderPipeline::updateCanvasSize(int width, int height) {
             if (camera && camera->isFramebufferEnabled()) {
                 auto [bufferWidth, bufferHeight] = camera->getBufferSize();
                 if (bufferWidth > 0 && bufferHeight > 0) {
-                    canvas->setUISize(bufferWidth, bufferHeight);
+                    canvas->updateAspectRatio(bufferWidth, bufferHeight);
                     continue;
                 }
             }
             // Fallback to window size if no camera buffer
-            canvas->setUISize(width, height);
+            canvas->updateAspectRatio(width, height);
         }
     }
 }
@@ -780,7 +780,7 @@ void RenderPipeline::updateCanvasFromCameraBuffer() {
         if (canvas && camera->isFramebufferEnabled()) {
             auto [bufferWidth, bufferHeight] = camera->getBufferSize();
             if (bufferWidth > 0 && bufferHeight > 0) {
-                canvas->setUISize(bufferWidth, bufferHeight);
+                canvas->updateAspectRatio(bufferWidth, bufferHeight);
             }
         }
     }
@@ -793,15 +793,32 @@ Canvas2D* RenderPipeline::addCanvas(int width, int height) {
         new_Canvas = new Canvas2D(width, height);
         
         const char* fontPaths[] = {
-        "C:/Users/tupap/source/repos/MantraxEngine/engine/fonts/Ubuntu-Regular.ttf"
+            "engine/fonts/Ubuntu-Regular.ttf",           // Relative to project root
+            "./engine/fonts/Ubuntu-Regular.ttf",         // Current directory
+            "../engine/fonts/Ubuntu-Regular.ttf",        // Parent directory  
+            "C:/Users/tupap/source/repos/MantraxEngine/engine/fonts/Ubuntu-Regular.ttf",  // Fallback
+            "fonts/Ubuntu-Regular.ttf"                   // Alternative path
         };
 
+        bool fontLoaded = false;
         for (const char* path : fontPaths) {
+            std::cout << "[RenderPipeline] Trying font path: " << path << std::endl;
             if (std::filesystem::exists(path)) {
+                std::cout << "[RenderPipeline] Font file exists, loading..." << std::endl;
                 if (new_Canvas->loadFont(path, 32)) {
+                    std::cout << "[RenderPipeline] Font loaded successfully from: " << path << std::endl;
+                    fontLoaded = true;
                     break;
+                } else {
+                    std::cout << "[RenderPipeline] Failed to load font from: " << path << std::endl;
                 }
+            } else {
+                std::cout << "[RenderPipeline] Font file does not exist: " << path << std::endl;
             }
+        }
+        
+        if (!fontLoaded) {
+            std::cerr << "[RenderPipeline] WARNING: No font could be loaded! Text rendering may not work." << std::endl;
         }
 
         // Only add to vector if creation was successful

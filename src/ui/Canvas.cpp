@@ -4,6 +4,7 @@
 #include "../components/SceneManager.h"
 #include "../render/Camera.h"
 #include "../render/Framebuffer.h"
+#include "../render/AspectRatioManager.h"
 
 // Constructor
 Canvas2D::Canvas2D(int w, int h)
@@ -244,6 +245,8 @@ std::pair<int, int> Canvas2D::drawTextInternal(const std::string& msg, float x, 
 
 
 void Canvas2D::DrawElements() {
+    std::cout << "[Canvas2D] DrawElements called with " << RenderElements.size() << " elements" << std::endl;
+    
     // Use camera framebuffer size instead of window size
     int canvasWidth = width;
     int canvasHeight = height;
@@ -308,6 +311,7 @@ void Canvas2D::DrawElements() {
         }
         
         // Always call update() here (only once per frame)
+        std::cout << "[Canvas2D] Updating UI element" << std::endl;
         Behaviour->update();
     }
 }
@@ -746,4 +750,37 @@ UIText* Canvas2D::MakeNewText(std::string Text) {
     std::cout << "Canvas2D: Created new UIText with canvas size " << this->width << "x" << this->height 
               << " and relative position (" << _Text->relativePosition.x << ", " << _Text->relativePosition.y << ")" << std::endl;
     return _Text;
+}
+
+// Aspect ratio management methods
+void Canvas2D::setAspectRatioMode(AspectRatioMode mode) {
+    auto& aspectManager = AspectRatioManager::getInstance();
+    AspectRatioSettings settings = aspectManager.getSettings();
+    settings.mode = mode;
+    aspectManager.setSettings(settings);
+    
+    std::cout << "[Canvas2D] Aspect ratio mode set to: " << static_cast<int>(mode) << std::endl;
+}
+
+void Canvas2D::updateAspectRatio(int screenWidth, int screenHeight) {
+    auto& aspectManager = AspectRatioManager::getInstance();
+    aspectManager.updateScreenSize(screenWidth, screenHeight);
+    
+    // Calcular nuevo tamaño de UI basado en aspect ratio
+    glm::vec2 uiScale = aspectManager.getCurrentUIScale();
+    glm::ivec4 viewport = aspectManager.getCurrentViewport();
+    
+    // Actualizar tamaño del canvas basado en el viewport efectivo
+    int newWidth = viewport.z;
+    int newHeight = viewport.w;
+    
+    if (newWidth != width || newHeight != height) {
+        setUISize(newWidth, newHeight);
+        std::cout << "[Canvas2D] Updated canvas size to " << newWidth << "x" << newHeight 
+                  << " based on aspect ratio (scale: " << uiScale.x << "," << uiScale.y << ")" << std::endl;
+    }
+}
+
+glm::vec2 Canvas2D::getUIScale() const {
+    return AspectRatioManager::getInstance().getCurrentUIScale();
 }
