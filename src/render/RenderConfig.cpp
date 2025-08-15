@@ -35,82 +35,137 @@ RenderConfig::RenderConfig(int width, int height, float fov)
 
 RenderConfig::~RenderConfig() {
     if (renderer) SDL_DestroyRenderer(renderer);
-    if (glContext) SDL_GL_DeleteContext(glContext);
+    if (glContext) SDL_GL_DestroyContext(glContext);
     if (window) SDL_DestroyWindow(window);
     SDL_Quit();
 }
 
 bool RenderConfig::initContext() {
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+    // Inicializar SDL3 - sintaxis correcta para SDL3
+    if (!SDL_Init(SDL_INIT_VIDEO)) {
         std::cerr << "SDL_Init error: " << SDL_GetError() << std::endl;
         return false;
     }
 
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-    
-    // Configure antialiasing
-    if (antialiasingSamples > 1) {
-        SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
-        SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, antialiasingSamples);
-        std::cout << "Antialiasing enabled with " << antialiasingSamples << " samples" << std::endl;
-    } else {
-        SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 0);
-        SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 0);
-        std::cout << "Antialiasing disabled" << std::endl;
+    // Atributos de OpenGL - sintaxis SDL3
+    if (!SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3)) {
+        std::cerr << "Error setting OpenGL major version: " << SDL_GetError() << std::endl;
+        return false;
     }
-
-    window = SDL_CreateWindow("MantraxEngine",
-        SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-        screenWidth, screenHeight, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE
-    );
-    if (!window) {
-        std::cerr << "SDL_CreateWindow error: " << SDL_GetError() << std::endl;
+    if (!SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3)) {
+        std::cerr << "Error setting OpenGL minor version: " << SDL_GetError() << std::endl;
+        return false;
+    }
+    if (!SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE)) {
+        std::cerr << "Error setting OpenGL profile: " << SDL_GetError() << std::endl;
         return false;
     }
 
-    // SDL_Renderer disabled - causes conflicts with OpenGL
-    // renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-    renderer = nullptr;
+    // Configurar buffer de profundidad
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
+    // Antialiasing
+    if (antialiasingSamples > 1) {
+        if (!SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1)) {
+            std::cerr << "Warning: Could not set multisample buffers: " << SDL_GetError() << std::endl;
+        }
+        if (!SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, antialiasingSamples)) {
+            std::cerr << "Warning: Could not set multisample samples: " << SDL_GetError() << std::endl;
+        }
+        std::cout << "Antialiasing enabled with " << antialiasingSamples << " samples\n";
+    }
+    else {
+        SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 0);
+        SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 0);
+        std::cout << "Antialiasing disabled\n";
+    }
+
+    // Crear ventana SDL3 - sintaxis corregida
+    window = SDL_CreateWindow("MantraxEngine",
+        screenWidth,
+        screenHeight,
+        SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+    if (!window) {
+        std::cerr << "SDL_CreateWindow error: " << SDL_GetError() << std::endl;
+        SDL_Quit();
+        return false;
+    }
+
+    // Crear contexto OpenGL
     glContext = SDL_GL_CreateContext(window);
     if (!glContext) {
         std::cerr << "SDL_GL_CreateContext error: " << SDL_GetError() << std::endl;
+        SDL_DestroyWindow(window);
+        window = nullptr;
+        SDL_Quit();
         return false;
     }
 
-    // Make the OpenGL context current
-    if (SDL_GL_MakeCurrent(window, glContext) != 0) {
+    // Activar contexto - en SDL3 devuelve bool
+    if (!SDL_GL_MakeCurrent(window, glContext)) {
         std::cerr << "SDL_GL_MakeCurrent error: " << SDL_GetError() << std::endl;
+        SDL_GL_DestroyContext(glContext);
+        glContext = nullptr;
+        SDL_DestroyWindow(window);
+        window = nullptr;
+        SDL_Quit();
         return false;
     }
 
+    // Sincronizar con VSync - en SDL3 devuelve bool
+    if (!SDL_GL_SetSwapInterval(1)) {
+        std::cerr << "Warning: VSync not supported: " << SDL_GetError() << std::endl;
+    }
+
+    // Inicializar GLEW
     glewExperimental = GL_TRUE;
-    if (glewInit() != GLEW_OK) {
-        std::cerr << "GLEW init error" << std::endl;
+    GLenum glewError = glewInit();
+    if (glewError != GLEW_OK) {
+        std::cerr << "GLEW init error: " << glewGetErrorString(glewError) << std::endl;
         return false;
     }
 
+    // Limpiar cualquier error de OpenGL generado por GLEW
+    glGetError();
+
+    // Verificar versión de OpenGL
+    std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
+    std::cout << "GLSL Version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
+
+    // Configuración OpenGL
     glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
+
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    
-    // Enable/disable antialiasing in OpenGL
+
     if (antialiasingSamples > 1) {
         glEnable(GL_MULTISAMPLE);
-        std::cout << "OpenGL multisample antialiasing enabled" << std::endl;
-    } else {
-        glDisable(GL_MULTISAMPLE);
-        std::cout << "OpenGL multisample antialiasing disabled" << std::endl;
     }
-    
+    else {
+        glDisable(GL_MULTISAMPLE);
+    }
+
+    // Establecer viewport inicial
+    glViewport(0, 0, screenWidth, screenHeight);
+
+    // Verificar errores de OpenGL
+    GLenum error = glGetError();
+    if (error != GL_NO_ERROR) {
+        std::cerr << "OpenGL error during initialization: " << error << std::endl;
+        return false;
+    }
+
+    std::cout << "OpenGL context created successfully!" << std::endl;
     return true;
 }
 
 void RenderConfig::setWindowTitle(const std::string& title) {
     if (window) {
-        SDL_SetWindowTitle(window, title.c_str());
+        if (!SDL_SetWindowTitle(window, title.c_str())) {
+            std::cerr << "Error setting window title: " << SDL_GetError() << std::endl;
+        }
     }
 }
 
@@ -126,11 +181,19 @@ void RenderConfig::resizeViewport(int width, int height) {
 
     // Resize SDL window if it exists
     if (window) {
-        SDL_SetWindowSize(window, width, height);
+        if (!SDL_SetWindowSize(window, width, height)) {
+            std::cerr << "Error resizing window: " << SDL_GetError() << std::endl;
+        }
     }
 
     // Update OpenGL viewport
     glViewport(0, 0, width, height);
+
+    // Check for OpenGL errors
+    GLenum error = glGetError();
+    if (error != GL_NO_ERROR) {
+        std::cerr << "OpenGL error setting viewport: " << error << std::endl;
+    }
 }
 
 void RenderConfig::setAntialiasing(int samples) {
@@ -138,9 +201,14 @@ void RenderConfig::setAntialiasing(int samples) {
         std::cerr << "Invalid antialiasing samples: " << samples << ". Must be between 0 and 16." << std::endl;
         return;
     }
-    
+
+    // Validar que sea potencia de 2
+    if (samples > 1 && (samples & (samples - 1)) != 0) {
+        std::cerr << "Warning: Antialiasing samples should be a power of 2 (2, 4, 8, 16)" << std::endl;
+    }
+
     antialiasingSamples = samples;
-    
+
     // If context is already created, we need to recreate it with new antialiasing settings
     if (glContext) {
         std::cout << "Antialiasing changed to " << samples << " samples. Context will be recreated on next initialization." << std::endl;

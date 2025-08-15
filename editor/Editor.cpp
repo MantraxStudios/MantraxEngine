@@ -43,7 +43,7 @@
 
 // ==== ImGui ====
 #include <imgui/imgui.h>
-#include <imgui/imgui_impl_sdl2.h>
+#include <imgui/imgui_impl_sdl3.h>
 #include <imgui/imgui_impl_opengl3.h>
 #include "Windows/Selection.h"
 #include "Windows/ProjectHub.h"
@@ -292,51 +292,48 @@ int main() {
         while (SDL_PollEvent(&event)) {
             ImGuiLoader::ImGuiEventPoll(&event);
 
-            if (event.type == SDL_QUIT) {
+            if (event.type == SDL_EVENT_QUIT) {
                 g_running = false;
                 break;
             }
 
+            // Manejo de mouse capture toggle
+            if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN &&
+                event.button.button == SDL_BUTTON_RIGHT &&
+                EditorInfo::IsHoveringScene) {
 
-
-            //// Show startup banner with 'B' key
-            //if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_b) {
-            //    showStartupBanner = true;
-            //    bannerStartTime = 0.0f; // Reset timer
-            //    std::cout << "Startup banner triggered" << std::endl;
-            //    continue;
-            //}
-
-            // Handle mouse capture toggle
-            if (event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_RIGHT && EditorInfo::IsHoveringScene) {
                 mouseCaptured = true;
-                SDL_SetRelativeMouseMode(SDL_TRUE);
-                // Obtener el centro de la ventana
+                SDL_SetWindowRelativeMouseMode(window, true); // <-- cambio aquí
+
                 int windowWidth, windowHeight;
                 SDL_GetWindowSize(window, &windowWidth, &windowHeight);
+
                 SDL_WarpMouseInWindow(window, windowWidth / 2, windowHeight / 2);
             }
-            else if (event.type == SDL_MOUSEBUTTONUP && event.button.button == SDL_BUTTON_RIGHT) {
+            else if (event.type == SDL_EVENT_MOUSE_BUTTON_UP &&
+                event.button.button == SDL_BUTTON_RIGHT) {
+
                 mouseCaptured = false;
-                SDL_SetRelativeMouseMode(SDL_FALSE);
-                SDL_ShowCursor(SDL_ENABLE);
+                SDL_SetWindowRelativeMouseMode(window, false); // <-- cambio aquí
+                SDL_ShowCursor(); // <-- ahora bool nativo
             }
 
-            // Handle escape to release mouse
-            if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE && mouseCaptured) {
+            // Escape para liberar mouse
+            if (event.type == SDL_EVENT_KEY_DOWN &&
+                event.key.key == SDLK_ESCAPE &&
+                mouseCaptured) {
+
                 mouseCaptured = false;
-                SDL_SetRelativeMouseMode(SDL_FALSE);
-                SDL_ShowCursor(SDL_ENABLE);
+                SDL_SetWindowRelativeMouseMode(window, false);
+                SDL_ShowCursor();
             }
 
-            // Process input through InputSystem only when mouse is captured
+            // Procesar input
             if (mouseCaptured) {
-                // Solo procesar movimiento del mouse cuando está capturado
                 InputSystem::getInstance().processInput(event);
             }
             else {
-                // Procesar todos los eventos excepto movimiento del mouse cuando no está capturado
-                if (event.type != SDL_MOUSEMOTION) {
+                if (event.type != SDL_EVENT_MOUSE_MOTION) {
                     InputSystem::getInstance().processInput(event);
                 }
             }

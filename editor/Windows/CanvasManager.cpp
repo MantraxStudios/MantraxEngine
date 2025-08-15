@@ -119,25 +119,25 @@ void CanvasManager::setupInputActions() {
     // Movement actions
     moveLeftAction = inputSystem.registerAction("canvas_move_left", InputType::Button);
     if (moveLeftAction) {
-        moveLeftAction->addKeyBinding(SDLK_a);
+        moveLeftAction->addKeyBinding(SDLK_A);
         moveLeftAction->addKeyBinding(SDLK_LEFT);
     }
     
     moveRightAction = inputSystem.registerAction("canvas_move_right", InputType::Button);
     if (moveRightAction) {
-        moveRightAction->addKeyBinding(SDLK_d);
+        moveRightAction->addKeyBinding(SDLK_D);
         moveRightAction->addKeyBinding(SDLK_RIGHT);
     }
     
     moveUpAction = inputSystem.registerAction("canvas_move_up", InputType::Button);
     if (moveUpAction) {
-        moveUpAction->addKeyBinding(SDLK_w);
+        moveUpAction->addKeyBinding(SDLK_W);
         moveUpAction->addKeyBinding(SDLK_UP);
     }
     
     moveDownAction = inputSystem.registerAction("canvas_move_down", InputType::Button);
     if (moveDownAction) {
-        moveDownAction->addKeyBinding(SDLK_s);
+        moveDownAction->addKeyBinding(SDLK_S);
         moveDownAction->addKeyBinding(SDLK_DOWN);
     }
     
@@ -154,28 +154,28 @@ void CanvasManager::updateSelectedElement() {
     if (!selectedElement || !isRealTimeMovement) return;
     
     // Get current key states
-    const Uint8* keyState = SDL_GetKeyboardState(nullptr);
-    
+    const bool* keystates = SDL_GetKeyboardState(NULL);
+
     float currentMoveSpeed = moveSpeed;
-    
+
     // Check for fast move modifier
-    if (keyState[SDL_SCANCODE_LSHIFT] || keyState[SDL_SCANCODE_RSHIFT]) {
+    if (keystates[SDL_SCANCODE_LSHIFT] || keystates[SDL_SCANCODE_RSHIFT]) {
         currentMoveSpeed *= 3.0f;
     }
     
     // Calculate movement
     float deltaX = 0.0f, deltaY = 0.0f;
     
-    if (keyState[SDL_SCANCODE_A] || keyState[SDL_SCANCODE_LEFT]) {
+    if (keystates[SDL_SCANCODE_A] || keystates[SDL_SCANCODE_LEFT]) {
         deltaX -= currentMoveSpeed;
     }
-    if (keyState[SDL_SCANCODE_D] || keyState[SDL_SCANCODE_RIGHT]) {
+    if (keystates[SDL_SCANCODE_D] || keystates[SDL_SCANCODE_RIGHT]) {
         deltaX += currentMoveSpeed;
     }
-    if (keyState[SDL_SCANCODE_W] || keyState[SDL_SCANCODE_UP]) {
+    if (keystates[SDL_SCANCODE_W] || keystates[SDL_SCANCODE_UP]) {
         deltaY -= currentMoveSpeed;
     }
-    if (keyState[SDL_SCANCODE_S] || keyState[SDL_SCANCODE_DOWN]) {
+    if (keystates[SDL_SCANCODE_S] || keystates[SDL_SCANCODE_DOWN]) {
         deltaY += currentMoveSpeed;
     }
     

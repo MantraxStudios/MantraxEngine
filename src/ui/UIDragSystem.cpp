@@ -75,8 +75,13 @@ void UIDragSystem::setConstrainToParent(UIBehaviour* element, bool constrain) {
 
 void UIDragSystem::update(float deltaTime) {
     // Obtener posición actual del mouse
-    int mouseX, mouseY;
+    float mouseX, mouseY;
     SDL_GetMouseState(&mouseX, &mouseY);
+
+    // Convertir a enteros si es necesario
+    int intMouseX = (int)mouseX;
+    int intMouseY = (int)mouseY;
+
     glm::vec2 mousePos(static_cast<float>(mouseX), static_cast<float>(mouseY));
     
     // Convertir a coordenadas del canvas si es necesario
@@ -87,7 +92,7 @@ void UIDragSystem::update(float deltaTime) {
     
     // Obtener estado de los botones del mouse
     Uint32 mouseState = SDL_GetMouseState(nullptr, nullptr);
-    bool mousePressed = (mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)) != 0;
+    bool mousePressed = (mouseState & SDL_BUTTON_MASK(SDL_BUTTON_LEFT)) != 0;
     
     // Detectar si se acaba de soltar
     static bool wasPressed = false;

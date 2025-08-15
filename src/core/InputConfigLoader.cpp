@@ -4,32 +4,32 @@
 
 SDL_Keycode InputConfigLoader::stringToKeycode(const std::string& keyString) {
     // Teclas alfanuméricas
-    if (keyString == "SDLK_a") return SDLK_a;
-    if (keyString == "SDLK_b") return SDLK_b;
-    if (keyString == "SDLK_c") return SDLK_c;
-    if (keyString == "SDLK_d") return SDLK_d;
-    if (keyString == "SDLK_e") return SDLK_e;
-    if (keyString == "SDLK_f") return SDLK_f;
-    if (keyString == "SDLK_g") return SDLK_g;
-    if (keyString == "SDLK_h") return SDLK_h;
-    if (keyString == "SDLK_i") return SDLK_i;
-    if (keyString == "SDLK_j") return SDLK_j;
-    if (keyString == "SDLK_k") return SDLK_k;
-    if (keyString == "SDLK_l") return SDLK_l;
-    if (keyString == "SDLK_m") return SDLK_m;
-    if (keyString == "SDLK_n") return SDLK_n;
-    if (keyString == "SDLK_o") return SDLK_o;
-    if (keyString == "SDLK_p") return SDLK_p;
-    if (keyString == "SDLK_q") return SDLK_q;
-    if (keyString == "SDLK_r") return SDLK_r;
-    if (keyString == "SDLK_s") return SDLK_s;
-    if (keyString == "SDLK_t") return SDLK_t;
-    if (keyString == "SDLK_u") return SDLK_u;
-    if (keyString == "SDLK_v") return SDLK_v;
-    if (keyString == "SDLK_w") return SDLK_w;
-    if (keyString == "SDLK_x") return SDLK_x;
-    if (keyString == "SDLK_y") return SDLK_y;
-    if (keyString == "SDLK_z") return SDLK_z;
+    if (keyString == "SDLK_a") return SDLK_A;
+    if (keyString == "SDLK_b") return SDLK_B;
+    if (keyString == "SDLK_c") return SDLK_C;
+    if (keyString == "SDLK_d") return SDLK_D;
+    if (keyString == "SDLK_e") return SDLK_E;
+    if (keyString == "SDLK_f") return SDLK_F;
+    if (keyString == "SDLK_g") return SDLK_G;
+    if (keyString == "SDLK_h") return SDLK_H;
+    if (keyString == "SDLK_i") return SDLK_I;
+    if (keyString == "SDLK_j") return SDLK_J;
+    if (keyString == "SDLK_k") return SDLK_K;
+    if (keyString == "SDLK_l") return SDLK_L;
+    if (keyString == "SDLK_m") return SDLK_M;
+    if (keyString == "SDLK_n") return SDLK_N;
+    if (keyString == "SDLK_o") return SDLK_O;
+    if (keyString == "SDLK_p") return SDLK_P;
+    if (keyString == "SDLK_q") return SDLK_Q;
+    if (keyString == "SDLK_r") return SDLK_R;
+    if (keyString == "SDLK_s") return SDLK_S;
+    if (keyString == "SDLK_t") return SDLK_T;
+    if (keyString == "SDLK_u") return SDLK_U;
+    if (keyString == "SDLK_v") return SDLK_V;
+    if (keyString == "SDLK_w") return SDLK_W;
+    if (keyString == "SDLK_x") return SDLK_X;
+    if (keyString == "SDLK_y") return SDLK_Y;
+    if (keyString == "SDLK_z") return SDLK_Z;
     
     // Números
     if (keyString == "SDLK_0") return SDLK_0;
@@ -94,14 +94,14 @@ SDL_Keycode InputConfigLoader::stringToKeycode(const std::string& keyString) {
     if (keyString == "SDLK_COMMA") return SDLK_COMMA;
     if (keyString == "SDLK_SEMICOLON") return SDLK_SEMICOLON;
     if (keyString == "SDLK_COLON") return SDLK_COLON;
-    if (keyString == "SDLK_QUOTE") return SDLK_QUOTE;
-    if (keyString == "SDLK_QUOTEDBL") return SDLK_QUOTEDBL;
+    if (keyString == "SDLK_QUOTE") return SDLK_APOSTROPHE;
+    if (keyString == "SDLK_QUOTEDBL") return SDLK_DBLAPOSTROPHE;
     if (keyString == "SDLK_MINUS") return SDLK_MINUS;
     if (keyString == "SDLK_PLUS") return SDLK_PLUS;
     if (keyString == "SDLK_EQUALS") return SDLK_EQUALS;
     if (keyString == "SDLK_SLASH") return SDLK_SLASH;
     if (keyString == "SDLK_BACKSLASH") return SDLK_BACKSLASH;
-    if (keyString == "SDLK_BACKQUOTE") return SDLK_BACKQUOTE;
+    if (keyString == "SDLK_BACKQUOTE") return SDLK_GRAVE;
     if (keyString == "SDLK_LEFTBRACKET") return SDLK_LEFTBRACKET;
     if (keyString == "SDLK_RIGHTBRACKET") return SDLK_RIGHTBRACKET;
     if (keyString == "SDLK_LEFTPAREN") return SDLK_LEFTPAREN;
@@ -141,15 +141,15 @@ SDL_Keycode InputConfigLoader::stringToKeycode(const std::string& keyString) {
     if (keyString == "SDLK_KP_EQUALSAS400") return SDLK_KP_EQUALSAS400;
     
     // Teclas multimedia
-    if (keyString == "SDLK_AUDIOPLAY") return SDLK_AUDIOPLAY;
-    if (keyString == "SDLK_AUDIOSTOP") return SDLK_AUDIOSTOP;
-    if (keyString == "SDLK_AUDIOPREV") return SDLK_AUDIOPREV;
-    if (keyString == "SDLK_AUDIONEXT") return SDLK_AUDIONEXT;
-    if (keyString == "SDLK_AUDIOMUTE") return SDLK_AUDIOMUTE;
+    if (keyString == "SDLK_AUDIOPLAY") return SDLK_MEDIA_PLAY;
+    if (keyString == "SDLK_AUDIOSTOP") return SDLK_MEDIA_STOP;
+    if (keyString == "SDLK_AUDIOPREV") return SDLK_MEDIA_PREVIOUS_TRACK;
+    if (keyString == "SDLK_AUDIONEXT") return SDLK_MEDIA_NEXT_TRACK;
+    if (keyString == "SDLK_AUDIOMUTE") return SDLK_MUTE;
     if (keyString == "SDLK_VOLUMEUP") return SDLK_VOLUMEUP;
     if (keyString == "SDLK_VOLUMEDOWN") return SDLK_VOLUMEDOWN;
     if (keyString == "SDLK_MUTE") return SDLK_MUTE;
-    if (keyString == "SDLK_MEDIASELECT") return SDLK_MEDIASELECT;
+    if (keyString == "SDLK_MEDIASELECT") return SDLK_MEDIA_SELECT;
     
     // Teclas de navegación web (AC = Application Control)
     if (keyString == "SDLK_AC_BACK") return SDLK_AC_BACK;
@@ -174,10 +174,6 @@ SDL_Keycode InputConfigLoader::stringToKeycode(const std::string& keyString) {
     if (keyString == "SDLK_COPY") return SDLK_COPY;
     if (keyString == "SDLK_PASTE") return SDLK_PASTE;
     if (keyString == "SDLK_FIND") return SDLK_FIND;
-    if (keyString == "SDLK_WWW") return SDLK_WWW;
-    if (keyString == "SDLK_MAIL") return SDLK_MAIL;
-    if (keyString == "SDLK_CALCULATOR") return SDLK_CALCULATOR;
-    if (keyString == "SDLK_COMPUTER") return SDLK_COMPUTER;
     
     // Teclas de función extendidas
     if (keyString == "SDLK_F13") return SDLK_F13;
@@ -195,13 +191,7 @@ SDL_Keycode InputConfigLoader::stringToKeycode(const std::string& keyString) {
     
     // Teclas adicionales del sistema
     if (keyString == "SDLK_MODE") return SDLK_MODE;
-    if (keyString == "SDLK_BRIGHTNESSDOWN") return SDLK_BRIGHTNESSDOWN;
-    if (keyString == "SDLK_BRIGHTNESSUP") return SDLK_BRIGHTNESSUP;
-    if (keyString == "SDLK_DISPLAYSWITCH") return SDLK_DISPLAYSWITCH;
-    if (keyString == "SDLK_KBDILLUMTOGGLE") return SDLK_KBDILLUMTOGGLE;
-    if (keyString == "SDLK_KBDILLUMDOWN") return SDLK_KBDILLUMDOWN;
-    if (keyString == "SDLK_KBDILLUMUP") return SDLK_KBDILLUMUP;
-    if (keyString == "SDLK_EJECT") return SDLK_EJECT;
+    if (keyString == "SDLK_EJECT") return SDLK_MEDIA_EJECT;
     if (keyString == "SDLK_SLEEP") return SDLK_SLEEP;
     
     // Teclas de estado
@@ -424,32 +414,32 @@ void InputConfigLoader::saveInputConfigToJSON(const std::string& configPath) {
 std::string InputConfigLoader::keycodeToString(SDL_Keycode keycode) {
     // This is a simplified implementation - you'd want a comprehensive mapping
     switch (keycode) {
-        case SDLK_a: return "SDLK_a";
-        case SDLK_b: return "SDLK_b";
-        case SDLK_c: return "SDLK_c";
-        case SDLK_d: return "SDLK_d";
-        case SDLK_e: return "SDLK_e";
-        case SDLK_f: return "SDLK_f";
-        case SDLK_g: return "SDLK_g";
-        case SDLK_h: return "SDLK_h";
-        case SDLK_i: return "SDLK_i";
-        case SDLK_j: return "SDLK_j";
-        case SDLK_k: return "SDLK_k";
-        case SDLK_l: return "SDLK_l";
-        case SDLK_m: return "SDLK_m";
-        case SDLK_n: return "SDLK_n";
-        case SDLK_o: return "SDLK_o";
-        case SDLK_p: return "SDLK_p";
-        case SDLK_q: return "SDLK_q";
-        case SDLK_r: return "SDLK_r";
-        case SDLK_s: return "SDLK_s";
-        case SDLK_t: return "SDLK_t";
-        case SDLK_u: return "SDLK_u";
-        case SDLK_v: return "SDLK_v";
-        case SDLK_w: return "SDLK_w";
-        case SDLK_x: return "SDLK_x";
-        case SDLK_y: return "SDLK_y";
-        case SDLK_z: return "SDLK_z";
+        case SDLK_A: return "SDLK_a";
+        case SDLK_B: return "SDLK_b";
+        case SDLK_C: return "SDLK_c";
+        case SDLK_D: return "SDLK_d";
+        case SDLK_E: return "SDLK_e";
+        case SDLK_F: return "SDLK_f";
+        case SDLK_G: return "SDLK_g";
+        case SDLK_H: return "SDLK_h";
+        case SDLK_I: return "SDLK_i";
+        case SDLK_J: return "SDLK_j";
+        case SDLK_K: return "SDLK_k";
+        case SDLK_L: return "SDLK_l";
+        case SDLK_M: return "SDLK_m";
+        case SDLK_N: return "SDLK_n";
+        case SDLK_O: return "SDLK_o";
+        case SDLK_P: return "SDLK_p";
+        case SDLK_Q: return "SDLK_q";
+        case SDLK_R: return "SDLK_r";
+        case SDLK_S: return "SDLK_s";
+        case SDLK_T: return "SDLK_t";
+        case SDLK_U: return "SDLK_u";
+        case SDLK_V: return "SDLK_v";
+        case SDLK_W: return "SDLK_w";
+        case SDLK_X: return "SDLK_x";
+        case SDLK_Y: return "SDLK_y";
+        case SDLK_Z: return "SDLK_z";
         case SDLK_0: return "SDLK_0";
         case SDLK_1: return "SDLK_1";
         case SDLK_2: return "SDLK_2";

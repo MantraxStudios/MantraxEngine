@@ -12,8 +12,12 @@ glm::vec2 EventSystem::ViewportRenderPosition = glm::vec2(0.0f, 0.0f);
 
 glm::vec2 EventSystem::screen_to_viewport(Camera *cam)
 {
-    int mouseX, mouseY;
+    float mouseX, mouseY;
     SDL_GetMouseState(&mouseX, &mouseY);
+
+    // Convertir a enteros si es necesario
+    int intMouseX = (int)mouseX;
+    int intMouseY = (int)mouseY;
 
     float viewportX = static_cast<float>(mouseX) - ViewportRenderPosition.x;
     float viewportY = static_cast<float>(mouseY) - ViewportRenderPosition.y;
@@ -39,8 +43,12 @@ glm::vec2 EventSystem::screen_to_viewport(Camera *cam)
 
 glm::vec2 EventSystem::get_mouse_position_in_viewport(glm::vec2 WindowSize, glm::vec2 ScreenSize)
 {
-    int mouseX, mouseY;
+    float mouseX, mouseY;
     SDL_GetMouseState(&mouseX, &mouseY);
+
+    // Convertir a enteros si es necesario
+    int intMouseX = (int)mouseX;
+    int intMouseY = (int)mouseY;
 
     // Obtener la posición del mouse relativa al viewport
     double windowMousePosX = mouseX - ViewportRenderPosition.x;
@@ -114,8 +122,13 @@ glm::vec2 EventSystem::get_mouse_position_in_viewport(glm::vec2 WindowSize, glm:
 
 glm::vec2 EventSystem::mouse_to_view_port_position(glm::vec2 WindowSize)
 {
-    int mouseX, mouseY;
+    float mouseX, mouseY;
     SDL_GetMouseState(&mouseX, &mouseY);
+
+    // Convertir a enteros si es necesario
+    int intMouseX = (int)mouseX;
+    int intMouseY = (int)mouseY;
+
     Camera *cam = SceneManager::getInstance().getActiveScene()->getCamera();
 
     double windowMousePosX = mouseX - ViewportRenderPosition.x;
@@ -139,8 +152,13 @@ glm::vec2 EventSystem::mouse_to_view_port_position(glm::vec2 WindowSize)
 
 glm::vec2 EventSystem::mouse_to_screen_pos(glm::vec2 WindowSize)
 {
-    int mouseX, mouseY;
+    float mouseX, mouseY;
     SDL_GetMouseState(&mouseX, &mouseY);
+
+    // Convertir a enteros si es necesario
+    int intMouseX = (int)mouseX;
+    int intMouseY = (int)mouseY;
+
     Camera* cam = SceneManager::getInstance().getActiveScene()->getCamera();
 
     double windowMousePosX = mouseX - ViewportRenderPosition.x;
