@@ -1,0 +1,185 @@
+{
+    "Camera": {
+        "FOV": 65.0,
+        "FarPlane": 1000.0,
+        "Forward": [
+            -0.4943215250968933,
+            -0.29904091358184814,
+            -0.8162236213684082
+        ],
+        "NearPlane": 0.10000000149011612,
+        "OrthographicSize": 15.079999923706055,
+        "Position": [
+            0.5328508615493774,
+            7.230751037597656,
+            7.204890251159668
+        ],
+        "ProjectionType": 0
+    },
+    "Settings": {
+        "AmbientIntensity": 1.0,
+        "CameraFov": 15.079999923706055,
+        "CameraType": 0,
+        "FrustrumOn": true,
+        "LightType": true,
+        "LowAmbient": false,
+        "PostProcessing": {
+            "Exposure": 1.3600000143051147,
+            "Saturation": 1.2799999713897705,
+            "Smoothness": 1.0
+        }
+    },
+    "name": "Game",
+    "objects": [
+        {
+            "Name": "New Tile_Instance",
+            "ObjectID": "3",
+            "Tag": "Default",
+            "components": {
+                "Geometry": {
+                    "modelPath": "Plane.fbx"
+                }
+            },
+            "position": [
+                -8.0,
+                7.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                -0.0,
+                0.0
+            ],
+            "scale": [
+                1.0,
+                1.0,
+                1.0
+            ]
+        },
+        {
+            "Name": "New Tile_Instance",
+            "ObjectID": "4",
+            "Tag": "Default",
+            "components": {
+                "Geometry": {
+                    "modelPath": "Plane.fbx"
+                }
+            },
+            "position": [
+                -6.0,
+                7.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                -0.0,
+                0.0
+            ],
+            "scale": [
+                1.0,
+                1.0,
+                1.0
+            ]
+        },
+        {
+            "Name": "New Tile_Instance",
+            "ObjectID": "5",
+            "Tag": "Default",
+            "components": {
+                "Geometry": {
+                    "modelPath": "Plane.fbx"
+                }
+            },
+            "position": [
+                -4.0,
+                7.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                -0.0,
+                0.0
+            ],
+            "scale": [
+                1.0,
+                1.0,
+                1.0
+            ]
+        },
+        {
+            "Name": "New Tile_Instance",
+            "ObjectID": "6",
+            "Tag": "Default",
+            "components": {
+                "Geometry": {
+                    "modelPath": "Plane.fbx"
+                }
+            },
+            "position": [
+                0.0,
+                1.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                -0.0,
+                0.0
+            ],
+            "scale": [
+                1.0,
+                1.0,
+                1.0
+            ]
+        },
+        {
+            "Name": "New Tile_Instance",
+            "ObjectID": "7",
+            "Tag": "Default",
+            "components": {
+                "Geometry": {
+                    "modelPath": "Plane.fbx"
+                }
+            },
+            "position": [
+                2.0,
+                1.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                -0.0,
+                0.0
+            ],
+            "scale": [
+                1.0,
+                1.0,
+                1.0
+            ]
+        },
+        {
+            "Name": "New Tile_Instance",
+            "ObjectID": "8",
+            "Tag": "Default",
+            "components": {
+                "Geometry": {
+                    "modelPath": "Plane.fbx"
+                }
+            },
+            "position": [
+                4.0,
+                1.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                -0.0,
+                0.0
+            ],
+            "scale": [
+                1.0,
+                1.0,
+                1.0
+            ]
+        }
+    ]
+}
