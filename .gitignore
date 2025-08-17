@@ -1,6 +1,7 @@
 .vs/
 x64/
+.vscode/
 MantraxEngine/
 MantraxCore/x64/
-cmake/build_app/bin/
-cmake/build_lib/bin/
+cmake/windows/build_app/bin/
+cmake/windows/build_lib/bin/
