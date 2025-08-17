@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Windows Build Instructions</title>
 </head>
 <body>
 <h1>🖥️ Windows Build Instructions</h1>
