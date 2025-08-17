@@ -1,0 +1,10 @@
+^C:\USERS\TUPAP\DOCUMENTS\GITHUB\MANTRAXENGINE\CMAKE\WINDOWS\BUILD_APP\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/tupap/Documents/GitHub/MantraxEngine/cmake/windows/build_app -BC:/Users/tupap/Documents/GitHub/MantraxEngine/cmake/windows/build_app/bin --check-stamp-file C:/Users/tupap/Documents/GitHub/MantraxEngine/cmake/windows/build_app/bin/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

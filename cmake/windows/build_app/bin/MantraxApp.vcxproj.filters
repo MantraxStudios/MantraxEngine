@@ -1,0 +1,204 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\editor\EUI\ComponentSerializer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\editor\EUI\EditorInfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\editor\EUI\ImGuiLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\editor\Editor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\editor\SceneSaver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\editor\Windows\AnimatorEditor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\editor\Windows\CanvasManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\editor\Windows\ContentBrowser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\editor\Windows\FileExplorer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\editor\Windows\FileSaveUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\editor\Windows\Gizmos.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\editor\Windows\Hierarchy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\editor\Windows\InputEditor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\editor\Windows\Inspector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\editor\Windows\MainBar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\editor\Windows\MaterialEditor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\editor\Windows\ProjectHub.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\editor\Windows\SceneView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\editor\Windows\Selection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\editor\Windows\TileEditor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\vendors\windows\includes\imgui\ImGuizmo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\vendors\windows\includes\imgui\imgui.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\vendors\windows\includes\imgui\imgui_demo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\vendors\windows\includes\imgui\imgui_draw.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\vendors\windows\includes\imgui\imgui_impl_opengl3.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\vendors\windows\includes\imgui\imgui_impl_sdl3.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\vendors\windows\includes\imgui\imgui_tables.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\vendors\windows\includes\imgui\imgui_widgets.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\editor\EUI\ComponentSerializer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\editor\EUI\EditorInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\editor\EUI\ImGuiLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\editor\EUI\ImGuiThemes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\editor\EUI\UIBuilder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\editor\SceneSaver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\editor\Windows\AnimatorEditor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\editor\Windows\CanvasManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\editor\Windows\ContentBrowser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\editor\Windows\FileExplorer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\editor\Windows\FileSaveExamples.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\editor\Windows\FileSaveUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\editor\Windows\Gizmos.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\editor\Windows\Hierarchy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\editor\Windows\InputEditor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\editor\Windows\Inspector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\editor\Windows\MainBar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\editor\Windows\MaterialEditor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\editor\Windows\ProjectHub.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\editor\Windows\RenderWindows.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\editor\Windows\SceneView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\editor\Windows\Selection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\editor\Windows\TileEditor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\editor\Windows\WindowBehaviour.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\vendors\windows\includes\imgui\ImGuizmo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\vendors\windows\includes\imgui\imconfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\vendors\windows\includes\imgui\imgui.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\vendors\windows\includes\imgui\imgui_impl_opengl3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\vendors\windows\includes\imgui\imgui_impl_opengl3_loader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\vendors\windows\includes\imgui\imgui_impl_sdl3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\vendors\windows\includes\imgui\imgui_internal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\vendors\windows\includes\imgui\imstb_rectpack.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\vendors\windows\includes\imgui\imstb_textedit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\vendors\windows\includes\imgui\imstb_truetype.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\cmake\windows\build_app\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{2B23E4F7-02C5-37F0-8E3A-EB636446BF2A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{8EA48083-DF95-3040-B2D0-7B8C7B74A827}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

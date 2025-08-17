@@ -1,0 +1,77 @@
+{
+  "input_actions": [
+    {
+      "key_bindings": [
+        {
+          "axis": 1,
+          "key": "SDLK_w",
+          "positive": true
+        },
+        {
+          "axis": 1,
+          "key": "SDLK_s",
+          "positive": false
+        },
+        {
+          "axis": 0,
+          "key": "SDLK_d",
+          "positive": true
+        },
+        {
+          "axis": 0,
+          "key": "SDLK_a",
+          "positive": false
+        }
+      ],
+      "name": "Move",
+      "type": "Vector2D"
+    },
+    {
+      "mouse_axis": "Y",
+      "name": "MouseLookY",
+      "type": "MouseAxis"
+    },
+    {
+      "key_bindings": [
+        {
+          "axis": 0,
+          "key": "SDLK_SPACE",
+          "positive": true
+        },
+        {
+          "axis": 0,
+          "key": "SDLK_LSHIFT",
+          "positive": false
+        }
+      ],
+      "name": "VerticalMove",
+      "type": "Value"
+    },
+    {
+      "key_bindings": [
+        {
+          "axis": 0,
+          "key": "SDLK_SPACE",
+          "positive": true
+        }
+      ],
+      "name": "Jump",
+      "type": "Button"
+    },
+    {
+      "mouse_axis": "X",
+      "name": "MouseLookX",
+      "type": "MouseAxis"
+    },
+    {
+      "mouse_button": "SDL_BUTTON_RIGHT",
+      "name": "MouseRight",
+      "type": "MouseButton"
+    },
+    {
+      "mouse_axis": "ScrollWheel",
+      "name": "MouseWheel",
+      "type": "MouseAxis"
+    }
+  ]
+}

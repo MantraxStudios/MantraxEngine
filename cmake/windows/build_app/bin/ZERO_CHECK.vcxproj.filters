@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\cmake\windows\build_app\bin\CMakeFiles\55cd43b4573d95ce098ff0d64e4beaa2\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{46531E1E-FDA9-39C9-B5B8-BC39F50F20C2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,347 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\cmake\windows\build_lib\bin\CMakeFiles\MantraxCore.dir\cmake_pch.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\components\AudioSource.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\components\CharacterController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\components\Collider.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\components\EventSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\components\GameObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\components\LightComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\components\ModelScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\components\PhysicalObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\components\Rigidbody.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\components\Scene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\components\SceneManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\components\ScriptExecutor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\components\SpriteAnimator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\components\SpriteAnimatorExample.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\components\TestScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\components\TexturedScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\components\TileComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\core\AudioManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\core\FileSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\core\InputConfigLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\core\PhysicsEventCallback.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\core\PhysicsEventHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\core\PhysicsManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\core\RaycastSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\core\UIDGenerator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\mpak\MantraxCorePackBuilder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\mpak\MantraxCorePackReader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\render\AspectRatioManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\render\AssimpGeometry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\render\Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\render\DefaultShaders.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\render\Framebuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\render\Frustum.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\render\Light.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\render\Material.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\render\MaterialManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\render\ModelLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\render\RenderConfig.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\render\RenderPipeline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\render\ShadowManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\render\Texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\ui\Canvas.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\ui\UIBehaviour.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\ui\UIDragSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\ui\UIElements\UIText.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\wrapper\CoreWrapper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\components\AudioSource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\components\CharacterController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\components\Collider.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\components\Component.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\components\EventSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\components\GameBehaviourFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\components\GameObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\components\LightComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\components\Loader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\components\MantraxBehaviour.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\components\ModelScene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\components\PhysicalObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\components\Rigidbody.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\components\Scene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\components\SceneManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\components\ScriptExecutor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\components\SpriteAnimator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\components\TestScene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\components\TexturedScene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\components\TileComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\components\types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\core\AudioManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\core\CoreExporter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\core\FileSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\core\InputConfigLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\core\PhysicsEventCallback.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\core\PhysicsEventHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\core\PhysicsEvents.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\core\PhysicsManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\core\RaycastSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\core\Time.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\core\UIDGenerator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\input\InputAction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\input\InputSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\mpak\MantraxCorePackBuilder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\mpak\MantraxCorePackReader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\render\AspectRatioManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\render\AssimpGeometry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\render\Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\render\DefaultShaders.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\render\Framebuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\render\Frustum.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\render\Light.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\render\Material.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\render\MaterialManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\render\ModelLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\render\RenderConfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\render\RenderPipeline.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\render\ShadowManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\render\Texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\ui\Canvas.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\ui\UIBehaviour.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\ui\UIDragSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\ui\UIElements\UIText.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\wrapper\CoreWrapper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\cmake\windows\build_lib\bin\CMakeFiles\MantraxCore.dir\Debug\cmake_pch.hxx">
+      <Filter>Precompile Header File</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\cmake\windows\build_lib\bin\CMakeFiles\MantraxCore.dir\Release\cmake_pch.hxx">
+      <Filter>Precompile Header File</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\cmake\windows\build_lib\bin\CMakeFiles\MantraxCore.dir\MinSizeRel\cmake_pch.hxx">
+      <Filter>Precompile Header File</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\cmake\windows\build_lib\bin\CMakeFiles\MantraxCore.dir\RelWithDebInfo\cmake_pch.hxx">
+      <Filter>Precompile Header File</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\cmake\windows\build_lib\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\components\SpriteAnimatorDebugTest.lua" />
+    <None Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\components\SpriteAnimatorFinalTest.lua" />
+    <None Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\components\SpriteAnimatorInspectorExample.lua" />
+    <None Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\components\SpriteAnimatorInspectorGuide.md" />
+    <None Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\components\SpriteAnimatorTest.lua" />
+    <None Include="C:\Users\tupap\Documents\GitHub\MantraxEngine\src\ui\README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{1BD95950-7E83-3964-8D91-ED00268F7D6F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Precompile Header File">
+      <UniqueIdentifier>{CB35AEE1-923A-3C1A-BCA5-5CC53A60E9CC}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{E2E65B24-96CD-3066-9C80-5AC0F7A321B1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
