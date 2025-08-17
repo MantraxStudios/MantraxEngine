@@ -1,6 +1,6 @@
 #pragma once
-#include "../../src/components/GameObject.h"
-#include "../../src/render/Light.h"
+#include <components/GameObject.h>
+#include <render/Light.h>
 
 class Selection {
 public:

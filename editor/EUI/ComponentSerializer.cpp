@@ -559,16 +559,25 @@ void ComponentSerializer::RenderSpriteAnimatorComponent(GameObject* go) {
 
                 // Add new state
                 ImGui::InputText("New State Name", state->newStateName, sizeof(state->newStateName));
-                if (ImGui::Button("Add State")) {
-                    SpriteArray newState;
-                    newState.state_name = state->newStateName;
-                    spriteAnimator->SpriteStates.push_back(newState);
-                    // Set as current state if it's the first one or if no current state is selected
-                    if (spriteAnimator->currentState == "None" || spriteAnimator->currentState.empty()) {
-                        spriteAnimator->currentState = state->newStateName;
-                    }
-                    strcpy_s(state->newStateName, "New State");
+                    if (ImGui::Button("Add State")) {
+                        SpriteArray newState;
+                        newState.state_name = state->newStateName;
+                        spriteAnimator->SpriteStates.push_back(newState);
+
+                        // Set as current state if it's the first one or if no current state is selected
+                        if (spriteAnimator->currentState == "None" || spriteAnimator->currentState.empty()) {
+                            spriteAnimator->currentState = state->newStateName;
+                        }
+
+                        // Copiar "New State" al buffer de manera portable
+                    #ifdef _WIN32
+                        strcpy_s(state->newStateName, "New State"); // Windows
+                    #else
+                        strncpy(state->newStateName, "New State", sizeof(state->newStateName)); // Linux/macOS
+                        state->newStateName[sizeof(state->newStateName) - 1] = '\0'; // asegurar terminación nula
+                    #endif
                 }
+
 
                 // Animation controls
                 if (!spriteAnimator->SpriteStates.empty()) {

@@ -1,21 +1,21 @@
 #include "Inspector.h"
-#include "../../src/components/SceneManager.h"
-#include "../../src/components/GameObject.h"
-#include "../../src/components/LightComponent.h"
-#include "../../src/components/PhysicalObject.h"
-#include "../../src/components/Rigidbody.h"
-#include "../../src/components/Collider.h"
-#include "../../src/components/ScriptExecutor.h"
-#include "../../src/components/CharacterController.h"
-#include "../../src/components/SpriteAnimator.h"
-#include "../../src/components/TileComponent.h"
+#include <components/SceneManager.h>
+#include <components/GameObject.h>
+#include <components/LightComponent.h>
+#include <components/PhysicalObject.h>
+#include <components/Rigidbody.h>
+#include <components/Collider.h>
+#include <components/ScriptExecutor.h>
+#include <components/CharacterController.h>
+#include <components/SpriteAnimator.h>
+#include <components/TileComponent.h>
+#include <components/GameBehaviourFactory.h>
+#include <render/Texture.h>
+#include <render/MaterialManager.h>
+#include <render/RenderConfig.h>
+#include <core/PhysicsManager.h>
 
-#include "../../src/render/Texture.h"
 
-#include "../../src/components/GameBehaviourFactory.h"
-#include "../../src/render/MaterialManager.h"
-#include "../../src/core/PhysicsManager.h"
-#include "../../src/render/RenderConfig.h"
 #include "Selection.h"
 #include "../EUI/UIBuilder.h"
 #include "../EUI/EditorInfo.h"

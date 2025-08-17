@@ -3,7 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <nlohmann/json.hpp>
-#include "../../src/core/InputConfigLoader.h"
+#include <core/InputConfigLoader.h>
 
 using json = nlohmann::json;
 
@@ -20,8 +20,16 @@ InputEditor::InputEditor()
     , newMouseAxis(MouseAxisType::X)
     , newMouseButton(SDL_BUTTON_LEFT)
 {
+#ifdef _WIN32
     strcpy_s(newInputNameBuffer, "NewInput");
     strcpy_s(editingNameBuffer, "");
+#else
+    strncpy(newInputNameBuffer, "NewInput", sizeof(newInputNameBuffer));
+    newInputNameBuffer[sizeof(newInputNameBuffer) - 1] = '\0';
+
+    strncpy(editingNameBuffer, "", sizeof(editingNameBuffer));
+    editingNameBuffer[sizeof(editingNameBuffer) - 1] = '\0';
+#endif
 }
 
 void InputEditor::OnRenderGUI() {
@@ -87,12 +95,19 @@ void InputEditor::renderInputActionsList() {
         if (ImGui::Selectable(actionName.c_str(), isSelected)) {
             selectedActionIndex = static_cast<int>(i);
             selectedAction = action;
-            
+
             // Initialize editing state
+        #ifdef _WIN32
             strcpy_s(editingNameBuffer, actionName.c_str());
+        #else
+            strncpy(editingNameBuffer, actionName.c_str(), sizeof(editingNameBuffer));
+            editingNameBuffer[sizeof(editingNameBuffer) - 1] = '\0';
+        #endif
+
             editingType = action->getType();
             editingBindings = action->getBindings();
         }
+
         
         // Show action type as a small label
         ImGui::SameLine();
@@ -240,13 +255,19 @@ void InputEditor::renderAddNewInput() {
         if (ImGui::Button("Create")) {
             auto& inputSystem = InputSystem::getInstance();
             auto newAction = inputSystem.registerAction(newInputNameBuffer, newInputType);
-            
+
             // Reset form
+        #ifdef _WIN32
             strcpy_s(newInputNameBuffer, "NewInput");
+        #else
+            strncpy(newInputNameBuffer, "NewInput", sizeof(newInputNameBuffer));
+            newInputNameBuffer[sizeof(newInputNameBuffer) - 1] = '\0';
+        #endif
+
             newInputType = InputType::Button;
             showAddNewInput = false;
         }
-        
+
         ImGui::SameLine();
         if (ImGui::Button("Cancel")) {
             showAddNewInput = false;

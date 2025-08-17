@@ -167,7 +167,12 @@ void AnimatorEditor::LoadAnimator(const std::string& filePath) {
 void AnimatorEditor::CreateNewAnimator() {
     currentAnimator = std::make_shared<SpriteAnimator>();
     currentAnimatorName = "NewAnimator";
-    strcpy_s(animatorNameBuffer, currentAnimatorName.c_str());
+#ifdef _WIN32
+    strcpy_s(animatorNameBuffer, currentAnimatorName.c_str()); // Windows
+#else
+    strncpy(animatorNameBuffer, currentAnimatorName.c_str(), sizeof(animatorNameBuffer)); // Linux/macOS
+    animatorNameBuffer[sizeof(animatorNameBuffer) - 1] = '\0'; // asegurar terminación nula
+#endif
     
     // Add to list if not already present
     if (std::find(animatorNames.begin(), animatorNames.end(), currentAnimatorName) == animatorNames.end()) {

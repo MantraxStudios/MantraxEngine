@@ -4,8 +4,9 @@
 #include <string>
 #include <vector>
 #include <memory>
-#include "../../src/input/InputAction.h"
-#include "../../src/input/InputSystem.h"
+#include <input/InputAction.h>
+#include <input/InputSystem.h>
+
 
 class InputEditor : public WindowBehaviour {
 public:

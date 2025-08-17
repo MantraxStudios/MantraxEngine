@@ -1,9 +1,9 @@
 #pragma once
 #include "WindowBehaviour.h"
-#include "../../src/ui/UIBehaviour.h"
-#include "../../src/ui/UIElements/UIText.h"
-#include "../../src/render/RenderPipeline.h"
-#include "../../src/input/InputSystem.h"
+#include <ui/UIBehaviour.h>
+#include <ui/UIElements/UIText.h>
+#include <render/RenderPipeline.h>
+#include <input/InputSystem.h>
 #include <vector>
 #include <memory>
 #include <string>

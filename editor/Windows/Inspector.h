@@ -1,10 +1,10 @@
 #pragma once
 #include "WindowBehaviour.h"
-#include "../../src/components/GameObject.h"
-#include "../../src/components/AudioSource.h"
-#include "../../src/components/PhysicalObject.h"
+#include <components/GameObject.h>
+#include <components/AudioSource.h>
+#include <components/PhysicalObject.h>
+#include <core/PhysicsManager.h>
 
-#include "../../src/core/PhysicsManager.h"
 #include "render/Light.h"
 #include <memory>
 

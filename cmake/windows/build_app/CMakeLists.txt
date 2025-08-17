@@ -28,7 +28,7 @@ find_package(OpenGL REQUIRED)
 # =================== INCLUIR DIRECTORIOS ===================
 target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../vendors/windows/includes/
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../engine/
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../vendors/windows/includes/SDL3/
     ${OPENGL_INCLUDE_DIRS}
 )

@@ -345,19 +345,37 @@ void CanvasManager::renderTextEditControls() {
     
     // Quick text presets
     ImGui::Text("Quick Presets:");
+
     if (ImGui::Button("Hello World")) {
         textElement->Text = "Hello World";
+    #ifdef _WIN32
         strcpy_s(textEditBuffer, sizeof(textEditBuffer), "Hello World");
+    #else
+        strncpy(textEditBuffer, "Hello World", sizeof(textEditBuffer));
+        textEditBuffer[sizeof(textEditBuffer) - 1] = '\0';
+    #endif
     }
+
     ImGui::SameLine();
     if (ImGui::Button("UI Element")) {
         textElement->Text = "UI Element";
+    #ifdef _WIN32
         strcpy_s(textEditBuffer, sizeof(textEditBuffer), "UI Element");
+    #else
+        strncpy(textEditBuffer, "UI Element", sizeof(textEditBuffer));
+        textEditBuffer[sizeof(textEditBuffer) - 1] = '\0';
+    #endif
     }
+
     ImGui::SameLine();
     if (ImGui::Button("Test Text")) {
         textElement->Text = "Test Text";
+    #ifdef _WIN32
         strcpy_s(textEditBuffer, sizeof(textEditBuffer), "Test Text");
+    #else
+        strncpy(textEditBuffer, "Test Text", sizeof(textEditBuffer));
+        textEditBuffer[sizeof(textEditBuffer) - 1] = '\0';
+    #endif
     }
 }
 

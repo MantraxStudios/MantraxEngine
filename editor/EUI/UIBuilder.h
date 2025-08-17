@@ -56,7 +56,13 @@ public:
     static std::string InputText(const std::string& Name, const std::string& value, ImVec2 size = ImVec2(-1, 30))
     {
         char GetName[128];
-        strcpy_s(GetName, value.c_str());
+
+    #ifdef _WIN32
+        strcpy_s(GetName, value.c_str()); // Windows
+    #else
+        strncpy(GetName, value.c_str(), sizeof(GetName)); // Linux/macOS
+        GetName[sizeof(GetName) - 1] = '\0'; // asegurar terminación nula
+    #endif
 
         ImGui::SetNextItemWidth(size.x);
 

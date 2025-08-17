@@ -1,3 +1,0 @@
-C:/Users/tupap/Documents/GitHub/MantraxEngine/cmake/windows/build_app/bin/CMakeFiles/MantraxApp.dir
-C:/Users/tupap/Documents/GitHub/MantraxEngine/cmake/windows/build_app/bin/CMakeFiles/ALL_BUILD.dir
-C:/Users/tupap/Documents/GitHub/MantraxEngine/cmake/windows/build_app/bin/CMakeFiles/ZERO_CHECK.dir
