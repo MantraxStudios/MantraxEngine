@@ -2,5 +2,5 @@
 x64/
 MantraxEngine/
 MantraxCore/x64/
-build_app/bin/
-build_lib/bin/
+cmake/build_app/bin/
+cmake/build_lib/bin/

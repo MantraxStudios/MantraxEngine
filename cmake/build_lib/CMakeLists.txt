@@ -11,7 +11,7 @@ if (MSVC)
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MDd")
 endif()
 
-set(MANTRAX_SRC_DIR "${CMAKE_CURRENT_LIST_DIR}/../src")
+set(MANTRAX_SRC_DIR "${CMAKE_CURRENT_LIST_DIR}/../../src")
 
 file(GLOB_RECURSE MANTRAX_COMPONENTS_SOURCES   CONFIGURE_DEPENDS "${MANTRAX_SRC_DIR}/components/*")
 file(GLOB_RECURSE MANTRAX_COREMODULE_SOURCES   CONFIGURE_DEPENDS "${MANTRAX_SRC_DIR}/core/*")
@@ -56,8 +56,8 @@ find_package(OpenGL REQUIRED)
 
 # =================== INCLUIR DIRECTORIOS ===================
 target_include_directories(${Project_Name} PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/../vendors/includes/
-    ${CMAKE_CURRENT_SOURCE_DIR}/../vendors/includes/SDL3/
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../vendors/includes/
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../vendors/includes/SDL3/
     ${OPENGL_INCLUDE_DIRS}
 )
 
@@ -65,7 +65,7 @@ target_include_directories(${Project_Name} PRIVATE
 
 # Bibliotecas de tu proyecto
 file(GLOB_RECURSE GARIN_LIBS
-    "../vendors/libs/*.lib"
+    "../../vendors/libs/*.lib"
 )
 
 # Bibliotecas del sistema Windows para OpenGL
@@ -79,7 +79,7 @@ set(WINDOWS_SYSTEM_LIBS
 )
 
 # Si usas SDL3 con OpenGL, también necesitas estas:
-if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../vendors/includes/SDL3/")
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../../vendors/includes/SDL3/")
     list(APPEND WINDOWS_SYSTEM_LIBS
         ole32.lib         # OLE para SDL
         oleaut32.lib      # OLE Automation

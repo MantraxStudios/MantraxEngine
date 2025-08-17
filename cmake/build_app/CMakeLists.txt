@@ -10,8 +10,8 @@ if (MSVC)
 endif()
 
 # Directorio de código fuente del ejecutable
-set(MANTRAX_APP_SRC_DIR "${CMAKE_CURRENT_LIST_DIR}/../editor/")
-set(MANTRAX_INCLUDES_SRC_DIR "${CMAKE_CURRENT_LIST_DIR}/../vendors/")
+set(MANTRAX_APP_SRC_DIR "${CMAKE_CURRENT_LIST_DIR}/../../editor/")
+set(MANTRAX_INCLUDES_SRC_DIR "${CMAKE_CURRENT_LIST_DIR}/../../vendors/")
 
 # Archivos fuente del ejecutable
 file(GLOB_RECURSE MANTRAX_APP_SOURCES CONFIGURE_DEPENDS
@@ -27,15 +27,15 @@ find_package(OpenGL REQUIRED)
 
 # =================== INCLUIR DIRECTORIOS ===================
 target_include_directories(${PROJECT_NAME} PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/../vendors/includes/
-    ${CMAKE_CURRENT_SOURCE_DIR}/../src/
-    ${CMAKE_CURRENT_SOURCE_DIR}/../vendors/includes/SDL3/
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../vendors/includes/
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../src/
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../vendors/includes/SDL3/
     ${OPENGL_INCLUDE_DIRS}
 )
 
 # =================== LIBRERÍAS ===================
 file(GLOB_RECURSE GARIN_LIBS
-    "../vendors/libs/*.lib"
+    "../../vendors/libs/*.lib"
 )
 
 # MantraxCore precompilada
@@ -51,7 +51,7 @@ set(WINDOWS_SYSTEM_LIBS
     winmm.lib
 )
 
-if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../vendors/includes/SDL3/")
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../../vendors/includes/SDL3/")
     list(APPEND WINDOWS_SYSTEM_LIBS
         ole32.lib
         oleaut32.lib
