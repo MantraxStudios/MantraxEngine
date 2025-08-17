@@ -31,7 +31,7 @@ def run_linux_build():
 def main():
     print("=== Build Menu ===")
     print("1. Compile on Windows (Visual Studio)")
-    print("2. Compile on Linux (Make)")
+    print("2. Compile on Linux (Working on it for Linux, not yet compatible)")
     choice = input("Select an option (1 or 2): ")
 
     if choice == '1':
