@@ -14,6 +14,8 @@
 #include "../components/LightComponent.h"
 #include "../components/AudioSource.h"
 #include "../components/ScriptExecutor.h"
+#include "../components/Rigidbody.h"
+#include "../components/Collider.h"
 #include "../render/Light.h"
 #include "../render/Camera.h"
 
@@ -197,21 +199,112 @@ void CoreWrapper::RegisterGameObject(sol::state& lua) {
 }
 
 void CoreWrapper::RegisterPhysicalObject(sol::state& lua) {
-    lua["ForceMode"] = lua.create_table_with(
-        "Force", physx::PxForceMode::eFORCE,
-        "Impulse", physx::PxForceMode::eIMPULSE
+    // BodyType
+    lua.new_enum<BodyType>("BodyType", {
+        {"Static",   BodyType::Static},
+        {"Dynamic",  BodyType::Dynamic},
+        {"Kinematic",BodyType::Kinematic}
+    });
+
+    // ShapeType
+    lua.new_enum<ShapeType>("ShapeType", {
+        {"Box",     ShapeType::Box},
+        {"Sphere",  ShapeType::Sphere},
+        {"Capsule", ShapeType::Capsule},
+        {"Plane",   ShapeType::Plane}
+    });
+
+    lua.new_enum<physx::PxForceMode::Enum>("ForceMode", {
+        {"Force",      physx::PxForceMode::eFORCE},
+        {"Impulse",    physx::PxForceMode::eIMPULSE},
+        {"Velocity",   physx::PxForceMode::eVELOCITY_CHANGE},
+        {"Acceleration", physx::PxForceMode::eACCELERATION}
+    });
+
+    lua.new_usertype<Collider>("Collider",
+        // Nombre del componente
+        "getComponentName", &Collider::getComponentName,
+
+        // Shape
+        "setShapeType", &Collider::setShapeType,
+        "getShapeType", &Collider::getShapeType,
+        "getShapeTypeString", &Collider::getShapeTypeString,
+
+        // Caja
+        "setBoxHalfExtents", &Collider::setBoxHalfExtents,
+        "getBoxHalfExtents", &Collider::getBoxHalfExtents,
+
+        // Esfera
+        "setSphereRadius", &Collider::setSphereRadius,
+        "getSphereRadius", &Collider::getSphereRadius,
+
+        // Cápsula
+        "setCapsuleRadius", &Collider::setCapsuleRadius,
+        "getCapsuleRadius", &Collider::getCapsuleRadius,
+        "setCapsuleHalfHeight", &Collider::setCapsuleHalfHeight,
+        "getCapsuleHalfHeight", &Collider::getCapsuleHalfHeight,
+
+        // Material
+        "setFriction", &Collider::setFriction,
+        "getFriction", &Collider::getFriction,
+        "setRestitution", &Collider::setRestitution,
+        "getRestitution", &Collider::getRestitution,
+
+        // Trigger
+        "setTrigger", &Collider::setTrigger,
+        "isTrigger", &Collider::isTrigger,
+        "setTriggerCallback", &Collider::setTriggerCallback,
+
+        // Contactos
+        "setContactCallback", &Collider::setContactCallback,
+
+        // Colisiones
+        "setCollisionGroup", &Collider::setCollisionGroup,
+        "setCollisionMask", &Collider::setCollisionMask,
+        "setLayer", &Collider::setLayer,
+        "setLayerMask", &Collider::setLayerMask,
+        "getLayer", &Collider::getLayer,
+        "getLayerMask", &Collider::getLayerMask,
+        "debugCollisionFilters", &Collider::debugCollisionFilters
     );
 
-    lua.new_usertype<PhysicalObject>("PhysicalObject",
-        "addForce", &PhysicalObject::addForce,
-        "setTrigger", &PhysicalObject::setTrigger,
-        "getVelocity", &PhysicalObject::getVelocity,
-        "setVelocity", &PhysicalObject::setVelocity,
-        "setShapeAsBox", [](PhysicalObject& self) { self.setShapeType(ShapeType::Box); },
-        "setShapeAsSphere", [](PhysicalObject& self) { self.setShapeType(ShapeType::Sphere); },
-        "setShapeAsCapsule", [](PhysicalObject& self) { self.setShapeType(ShapeType::Capsule); }
+    lua.new_usertype<Rigidbody>("Rigidbody",
+        // Nombre del componente
+        "getComponentName", &Rigidbody::getComponentName,
+
+        // Propiedades físicas
+        "setMass", &Rigidbody::setMass,
+        "getMass", &Rigidbody::getMass,
+
+        "setVelocity", &Rigidbody::setVelocity,
+        "getVelocity", &Rigidbody::getVelocity,
+
+        "setDamping", &Rigidbody::setDamping,
+        "getDamping", &Rigidbody::getDamping,
+
+        "setGravityFactor", &Rigidbody::setGravityFactor,
+        "getGravityFactor", &Rigidbody::getGravityFactor,
+
+        // Tipo de cuerpo
+        "setBodyType", &Rigidbody::setBodyType,
+        "getBodyType", &Rigidbody::getBodyType,
+
+        // Fuerzas / impulsos
+        "addForce", &Rigidbody::addForce,
+        "addTorque", &Rigidbody::addTorque,
+        "addImpulse", &Rigidbody::addImpulse,
+
+        // Estado
+        "wakeUp", &Rigidbody::wakeUp,
+        "isAwake", &Rigidbody::isAwake,
+
+        // Activación
+        "enable", &Rigidbody::enable,
+        "disable", &Rigidbody::disable,
+        "isActive", &Rigidbody::isActive
     );
 }
+
 
 void CoreWrapper::RegisterInput(sol::state& lua) {
     lua.set_function("ChangeScene", [](const std::string& sceneName) {

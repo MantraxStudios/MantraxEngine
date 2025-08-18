@@ -10,14 +10,7 @@ using json = nlohmann::json;
 
 
 void AudioSource::defines() {
-    set_var("Volumen", &volume);          
-    set_var("3D", &is3D);                
-    set_var("Loop", &isLooping);         
-    set_var("Stream", &isStream);        
-    set_var("Play", &shouldPlay);       
-    set_var("Min Distancia", &minDistance);    
-    set_var("Max Distancia", &maxDistance);     
-    set_var("SoundPath", &soundPath);    
+
 }
 
 void AudioSource::setOwner(GameObject* owner) {
