@@ -9,30 +9,6 @@
 #include <any>
 #include <chrono>
 
-/*
- * SimpleNodeEditor - Sistema de nodos visual con Lambda Factory (Estilo Blender)
- *
- * Ejemplo de uso:
- *
- * // Crear nodos simples usando la lambda factory
- * auto printNode = editor.CreatePrintNode(ImVec2(200, 100));
- * auto stringNode = editor.CreateStringNode("Mi mensaje", ImVec2(50, 200));
- *
- * // Crear nodos personalizados
- * auto customNode = editor.CreateNode(
- *     "Mi Nodo",                          // título
- *     [](CustomNode* node) {              // lambda de ejecución
- *         std::string input = node->GetInputValue<std::string>(0);
- *         node->SetOutputValue<std::string>(0, "Processed: " + input);
- *     },
- *     true,                               // hasExecInput
- *     true,                               // hasExecOutput
- *     {{"Input", std::string("default")}}, // pines de entrada
- *     {{"Output", std::string("")}},       // pines de salida
- *     ImVec2(100, 100)                    // posición
- * );
- */
-
 static int NodeID = 0;
 
 inline ImVec2 operator+(const ImVec2 &a, const ImVec2 &b) { return ImVec2(a.x + b.x, a.y + b.y); }
@@ -493,7 +469,7 @@ public:
         std::vector<std::pair<std::string, std::any>> inputPins = {},
         std::vector<std::pair<std::string, std::any>> outputPins = {},
         ImVec2 position = ImVec2(100, 100),
-        ImVec2 size = ImVec2(180, 80))
+        ImVec2 size = ImVec2(250, 80))
     {
         // Llamar a la versión principal con categoría por defecto
         return CreateNode(title, executeFunc, INPUT_OUTPUT, hasExecInput, hasExecOutput, inputPins, outputPins, position, size);
@@ -1039,16 +1015,20 @@ public:
                         std::string pinName = (nameIt != cn->inputNames.end()) ? nameIt->second : ("Pin " + std::to_string(pinIndex));
 
                         // Dibujar etiqueta del pin con mejor posicionamiento
-                        ImVec2 labelPos = ImVec2(min.x + 18, min.y + currentY - 3);
+                        ImVec2 labelPos = ImVec2(min.x + 8, min.y + currentY + 2);
                         draw_list->AddText(labelPos, IM_COL32(200, 200, 200, 255), pinName.c_str());
 
                         // Campo de entrada solo si no hay conexión
                         bool hasConnection = HasConnection(n.id, (int)pinIndex, true);
                         if (!hasConnection)
                         {
-                            ImVec2 inputPos = ImVec2(min.x + 8, min.y + currentY + 12);
+                            // Calcular el ancho disponible para el campo de entrada
+                            // Dejar espacio para la etiqueta del pin (aproximadamente 80px) + márgenes
+                            float availableWidth = n.size.x - 88.0f; // 80px para etiqueta + 8px de margen derecho
+
+                            ImVec2 inputPos = ImVec2(min.x + 80, min.y + currentY + 2);
                             ImGui::SetCursorScreenPos(inputPos);
-                            ImGui::PushItemWidth(n.size.x - 25);
+                            ImGui::PushItemWidth(availableWidth);
 
                             std::string inputId = "##" + std::to_string(n.id) + "_input_" + std::to_string(pinIndex);
 
@@ -1120,8 +1100,8 @@ public:
 
                         // Etiqueta alineada a la derecha
                         ImVec2 text_size = ImGui::CalcTextSize(pinName.c_str());
-                        ImVec2 labelPos = ImVec2(max.x - text_size.x - 18, min.y + outputY - 3);
-                        draw_list->AddText(labelPos, IM_COL32(200, 200, 200, 255), pinName.c_str());
+                        ImVec2 labelPos = ImVec2(max.x - text_size.x - 8, min.y + outputY + 2);
+                        // draw_list->AddText(labelPos, IM_COL32(200, 200, 200, 255), pinName.c_str());
                     }
 
                     outputY += 28.0f;
