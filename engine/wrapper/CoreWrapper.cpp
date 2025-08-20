@@ -177,6 +177,8 @@ void CoreWrapper::RegisterGameObject(sol::state& lua) {
         "getLight", [](GameObject& obj) { return obj.getComponent<LightComponent>(); },
         "getSpriteAnimator", [](GameObject& obj) { return obj.getComponent<SpriteAnimator>(); },
         "getCC", [](GameObject& obj) { return obj.getComponent<CharacterController>(); },
+        "getRB", [](GameObject& obj) { return obj.getComponent<Rigidbody>(); },
+        "getCL", [](GameObject& obj) { return obj.getComponent<Collider>(); },
 
         // --- Render/State ---
         "isRenderEnabled", &GameObject::isRenderEnabled,
