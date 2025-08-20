@@ -12,12 +12,13 @@
 #include "TileEditor.h"
 #include "InputEditor.h"
 #include "CanvasManager.h"
-
+#include "../SimpleNodeEditor.h"
 
 
 class RenderWindows {
 private:
     std::vector<std::unique_ptr<WindowBehaviour>> m_windows;
+    SimpleNodeEditor editor;
 
 public:
     RenderWindows() {
@@ -32,7 +33,9 @@ public:
         m_windows.push_back(std::make_unique<InputEditor>());
         m_windows.push_back(std::make_unique<CanvasManager>());
 
-
+        editor.AddStartNode(1, ImVec2(50, 100));
+        editor.AddStringNode(2, ImVec2(50, 200), "Mi mensaje!");  
+        editor.AddPrintNode(3, ImVec2(250, 150));
     }
     
     // Delete copy constructor and assignment operator
@@ -45,6 +48,18 @@ public:
     }
 
     void RenderUI() {
+        ImGui::Begin("Node Editor");
+
+        editor.Draw();
+
+        // Ejecutar desde nodo de ejecución
+        if(ImGui::Button("Ejecutar"))
+        {
+            editor.ExecuteGraph();
+        }
+
+        ImGui::End();
+
         for (auto& window : m_windows) {
             if (window && window->isOpen) {
                 window->OnRenderGUI();
