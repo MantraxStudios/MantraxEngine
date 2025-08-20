@@ -227,6 +227,12 @@ public:
     int editingNodeId = -1;    // ID del nodo que se está editando
     char textBuffer[256] = ""; // Buffer para el texto de entrada
     bool isConnecting = false; // Flag para indicar si estamos en modo conexión
+    
+    // Variables para el movimiento del panel (estilo Unreal)
+    ImVec2 panelOffset = ImVec2(0, 0);     // Offset del panel
+    float panelZoom = 1.0f;                 // Zoom del panel (1.0 = 100%)
+    ImVec2 lastMousePos = ImVec2(0, 0);    // Última posición del ratón para pan
+    bool isPanning = false;                 // Flag para indicar si estamos haciendo pan
 
     // Colores estilo Blender
     struct BlenderColors
@@ -316,7 +322,7 @@ public:
         newNode.n.outputs.clear();
 
         // Configurar pins de entrada - posicionados a la izquierda del nodo
-        float inputY = 35.0f; // Ajustado para el nuevo diseño
+        float inputY = 37.0f; // Ajustado para alinear con los campos de entrada
         for (size_t i = 0; i < config.inputPins.size(); i++)
         {
             const auto &pinConfig = config.inputPins[i];
@@ -345,7 +351,7 @@ public:
         }
 
         // Configurar pins de salida - posicionados a la derecha del nodo
-        float outputY = 35.0f;
+        float outputY = 37.0f; // Ajustado para alinear con los campos de entrada
         for (size_t i = 0; i < config.outputPins.size(); i++)
         {
             const auto &pinConfig = config.outputPins[i];
@@ -836,35 +842,38 @@ public:
                         auto nameIt = targetNode->inputNames.find(pinId);
                         if (nameIt != targetNode->inputNames.end())
                         {
-                                                    // Buscar el valor por defecto en la configuración del nodo
-                        auto defaultIt = targetNode->defaultValues.find(pinId);
-                        if (defaultIt != targetNode->defaultValues.end())
-                        {
-                            // Restaurar el valor por defecto almacenado
-                            targetNode->inputValues[pinId] = defaultIt->second;
-                            
-                            // Para nodos String, también actualizar el valor de salida
-                            if (targetNode->n.title == "String" && pinId == 0)
+                            // Buscar el valor por defecto en la configuración del nodo
+                            auto defaultIt = targetNode->defaultValues.find(pinId);
+                            if (defaultIt != targetNode->defaultValues.end())
                             {
-                                try {
-                                    std::string defaultValue = std::any_cast<std::string>(defaultIt->second);
-                                    targetNode->SetOutputValue<std::string>(0, defaultValue);
-                                    std::cout << "[DISCONNECT] Restored String node to default value: " << defaultValue << std::endl;
-                                } catch (...) {
-                                    std::cout << "[DISCONNECT] Failed to restore String node default value" << std::endl;
+                                // Restaurar el valor por defecto almacenado
+                                targetNode->inputValues[pinId] = defaultIt->second;
+
+                                // Para nodos String, también actualizar el valor de salida
+                                if (targetNode->n.title == "String" && pinId == 0)
+                                {
+                                    try
+                                    {
+                                        std::string defaultValue = std::any_cast<std::string>(defaultIt->second);
+                                        targetNode->SetOutputValue<std::string>(0, defaultValue);
+                                        std::cout << "[DISCONNECT] Restored String node to default value: " << defaultValue << std::endl;
+                                    }
+                                    catch (...)
+                                    {
+                                        std::cout << "[DISCONNECT] Failed to restore String node default value" << std::endl;
+                                    }
+                                }
+                                else
+                                {
+                                    std::cout << "[DISCONNECT] Restored node " << nodeId << " pin " << pinId << " to default value" << std::endl;
                                 }
                             }
                             else
                             {
-                                std::cout << "[DISCONNECT] Restored node " << nodeId << " pin " << pinId << " to default value" << std::endl;
+                                // Si no hay valor por defecto, limpiar el valor
+                                targetNode->inputValues.erase(pinId);
+                                std::cout << "[DISCONNECT] Cleared input value for node " << nodeId << " pin " << pinId << " (no default)" << std::endl;
                             }
-                        }
-                        else
-                        {
-                            // Si no hay valor por defecto, limpiar el valor
-                            targetNode->inputValues.erase(pinId);
-                            std::cout << "[DISCONNECT] Cleared input value for node " << nodeId << " pin " << pinId << " (no default)" << std::endl;
-                        }
                         }
                     }
                 }
@@ -994,6 +1003,8 @@ public:
     // Método para ejecutar desde un nodo Start
     void ExecuteGraph()
     {
+        ForceUpdateAllNodeInputs();
+
         for (auto &node : customNodes)
         {
             if (node.n.title == "Start")
@@ -1156,7 +1167,7 @@ public:
             if (CustomNode *cn = GetCustomNodeById(n.id))
             {
                 // Dibujar campos editables para pins de entrada
-                float currentY = 35.0f;
+                float currentY = 37.0f; // Ajustado para alinear con los pins
                 for (size_t pinIndex = 0; pinIndex < n.inputs.size(); pinIndex++)
                 {
                     const Pin &pin = n.inputs[pinIndex];
@@ -1249,7 +1260,7 @@ public:
                 }
 
                 // Dibujar etiquetas para pins de salida
-                float outputY = 35.0f;
+                float outputY = 37.0f; // Ajustado para alinear con los pins
                 for (size_t pinIndex = 0; pinIndex < n.outputs.size(); pinIndex++)
                 {
                     const Pin &pin = n.outputs[pinIndex];
@@ -1464,9 +1475,9 @@ public:
         {
             ForceUpdateAllNodeInputs();
         }
-        
+
         ImGui::SameLine();
-        
+
         if (ImGui::Button("Test Disconnect"))
         {
             // Buscar nodos String y Print conectados para probar desconexión
@@ -1474,8 +1485,8 @@ public:
             {
                 CustomNode *sourceNode = GetCustomNodeById(connection.fromNodeId);
                 CustomNode *targetNode = GetCustomNodeById(connection.toNodeId);
-                
-                if (sourceNode && targetNode && 
+
+                if (sourceNode && targetNode &&
                     sourceNode->n.title == "String" && targetNode->n.title == "Print Console")
                 {
                     std::cout << "[TEST DISCONNECT] Found String-Print connection" << std::endl;
