@@ -180,6 +180,13 @@ int main() {
     SDL_Window* window = config.getWindow();
     SDL_GLContext gl_context = SDL_GL_GetCurrentContext();
 
+    SDL_Surface* icon = SDL_LoadBMP("engine/icons/icon_engine.bmp");
+    if (icon) {
+        SDL_SetWindowIcon(window, icon);
+    } else {
+        SDL_Log("No se pudo cargar el icono: %s", SDL_GetError());
+    }
+
     ImGuiLoader::StartContext(window, gl_context);
 
     // Inicializar FMOD
