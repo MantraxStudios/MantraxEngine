@@ -108,13 +108,12 @@ void Inspector::RenderModelSection(GameObject* go) {
     static bool openMaterialPicker = false;
     static std::string selectedModelPath;
 
-    RenderStyledButton("Choose Model...");
+    RenderStyledButton("Choose Model...", ImVec2(-1, 30));
     if (ImGui::IsItemClicked()) {
         openModelPicker = true;
     }
 
-    ImGui::SameLine();
-    RenderStyledButton("Choose Material...");
+    RenderStyledButton("Choose Material...", ImVec2(-1, 30));
     if (ImGui::IsItemClicked()) {
         openMaterialPicker = true;
     }
@@ -240,46 +239,46 @@ void Inspector::RenderComponentsSection(GameObject* go) {
         ImGui::PopStyleColor();
     }
 
-    auto material = go->getMaterial();
-    if (material) {
-        ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(51, 204, 51, 255));  
-        ImGui::Text("[Material]");
-        ImGui::PopStyleColor();
+    // auto material = go->getMaterial();
+    // if (material) {
+    //     ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(51, 204, 51, 255));  
+    //     ImGui::Text("[Material]");
+    //     ImGui::PopStyleColor();
         
-        // Botón de debug del material
-        if (ImGui::Button("Debug Material")) {
-            go->debugMaterialState();
-        }
-        if (ImGui::IsItemHovered()) {
-            ImGui::SetTooltip("Debug material properties and state");
-        }
-        ImGui::SameLine();
-        // Botón para debug de texturas
-        if (ImGui::Button("Debug Textures")) {
-            auto material = go->getMaterial();
-            if (material) {
-                material->debugTextureState();
-            } else {
-                std::cout << "Inspector: No material to debug textures for" << std::endl;
-            }
-        }
-        if (ImGui::IsItemHovered()) {
-            ImGui::SetTooltip("Debug texture loading and binding state");
-        }
-        ImGui::SameLine();
-        // Botón para forzar refresh del material
-        if (ImGui::Button("Force Material Refresh")) {
-            if (EditorInfo::pipeline) {
-                EditorInfo::pipeline->forceMaterialRefresh();
-                std::cout << "Inspector: Forced material refresh requested" << std::endl;
-            } else {
-                std::cout << "Inspector: Warning - No RenderPipeline access for forced refresh" << std::endl;
-            }
-        }
-        if (ImGui::IsItemHovered()) {
-            ImGui::SetTooltip("Force immediate material refresh in rendering pipeline");
-        }
-    }
+    //     // Botón de debug del material
+    //     if (ImGui::Button("Debug Material")) {
+    //         go->debugMaterialState();
+    //     }
+    //     if (ImGui::IsItemHovered()) {
+    //         ImGui::SetTooltip("Debug material properties and state");
+    //     }
+    //     ImGui::SameLine();
+    //     // Botón para debug de texturas
+    //     if (ImGui::Button("Debug Textures")) {
+    //         auto material = go->getMaterial();
+    //         if (material) {
+    //             material->debugTextureState();
+    //         } else {
+    //             std::cout << "Inspector: No material to debug textures for" << std::endl;
+    //         }
+    //     }
+    //     if (ImGui::IsItemHovered()) {
+    //         ImGui::SetTooltip("Debug texture loading and binding state");
+    //     }
+    //     ImGui::SameLine();
+    //     // Botón para forzar refresh del material
+    //     if (ImGui::Button("Force Material Refresh")) {
+    //         if (EditorInfo::pipeline) {
+    //             EditorInfo::pipeline->forceMaterialRefresh();
+    //             std::cout << "Inspector: Forced material refresh requested" << std::endl;
+    //         } else {
+    //             std::cout << "Inspector: Warning - No RenderPipeline access for forced refresh" << std::endl;
+    //         }
+    //     }
+    //     if (ImGui::IsItemHovered()) {
+    //         ImGui::SetTooltip("Force immediate material refresh in rendering pipeline");
+    //     }
+    // }
 
     ComponentSerializer::RenderAudioSourceComponent(go);
     ComponentSerializer::RenderLightComponent(go);
