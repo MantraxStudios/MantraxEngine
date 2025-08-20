@@ -10,7 +10,7 @@
 #include <chrono>
 
 /*
- * SimpleNodeEditor - Sistema de nodos visual con Lambda Factory
+ * SimpleNodeEditor - Sistema de nodos visual con Lambda Factory (Estilo Blender)
  *
  * Ejemplo de uso:
  *
@@ -52,6 +52,20 @@ enum PinType
     Output
 };
 
+enum NodeCategory
+{
+    INPUT_OUTPUT,
+    MATH,
+    CONVERTER,
+    VECTOR,
+    SHADER,
+    TEXTURE,
+    COLOR,
+    SCRIPT,
+    GROUP,
+    LAYOUT
+};
+
 struct Pin
 {
     int id;
@@ -68,11 +82,14 @@ struct Node
     std::string title;
     std::vector<Pin> inputs;
     std::vector<Pin> outputs;
+    NodeCategory category = INPUT_OUTPUT;
 
     // Para nodos de ejecución
     std::string data;                     // para String node
     std::function<void(Node *)> execFunc; // para nodos de ejecución
     bool isEditing = false;               // Para controlar si está en modo edición
+    bool isSelected = false;              // Para indicar si está seleccionado
+    bool isActive = false;                // Para indicar si está ejecutándose
 };
 
 // Conexión
@@ -109,12 +126,13 @@ struct NodeConfig
 {
     std::string title;
     ImVec2 size;
+    NodeCategory category;
     std::vector<PinConfig> inputPins;
     std::vector<PinConfig> outputPins;
     std::function<void(CustomNode *)> executeFunction;
 
-    NodeConfig(const std::string &t, ImVec2 s = ImVec2(220, 100))
-        : title(t), size(s) {}
+    NodeConfig(const std::string &t, NodeCategory cat = INPUT_OUTPUT, ImVec2 s = ImVec2(220, 100))
+        : title(t), category(cat), size(s) {}
 };
 
 // Definición de CustomNode ANTES de SimpleNodeEditor
@@ -143,12 +161,12 @@ public:
         n.title = "Print";
         n.data = "Hello";
 
-        // Pin de ejecución de entrada (rojo) - posición ajustada
-        n.inputs.push_back({0, ImVec2(0, 45), true});
-        // Pin de datos de entrada para el texto (amarillo) - posición ajustada
-        n.inputs.push_back({1, ImVec2(0, 70), false});
-        // Pin de ejecución de salida (rojo) - posición ajustada
-        n.outputs.push_back({0, ImVec2(140, 45), true});
+        // Pin de ejecución de entrada (rojo) - posición ajustada fuera del nodo
+        n.inputs.push_back({0, ImVec2(-15, 45), true});
+        // Pin de datos de entrada para el texto (amarillo) - posición ajustada fuera del nodo
+        n.inputs.push_back({1, ImVec2(-15, 70), false});
+        // Pin de ejecución de salida (rojo) - posición ajustada fuera del nodo
+        n.outputs.push_back({0, ImVec2(155, 45), true});
 
         // Función de ejecución
         n.execFunc = [](Node *node)
@@ -233,6 +251,63 @@ public:
     char textBuffer[256] = ""; // Buffer para el texto de entrada
     bool isConnecting = false; // Flag para indicar si estamos en modo conexión
 
+    // Colores estilo Blender
+    struct BlenderColors
+    {
+        static ImU32 GetCategoryColor(NodeCategory category)
+        {
+            switch (category)
+            {
+            case INPUT_OUTPUT:
+                return IM_COL32(35, 35, 35, 255); // Naranja rojizo (Header 1)
+            case MATH:
+                return IM_COL32(95, 145, 185, 255); // Azul
+            case CONVERTER:
+                return IM_COL32(185, 165, 95, 255); // Amarillo
+            case VECTOR:
+                return IM_COL32(125, 185, 95, 255); // Verde
+            case SHADER:
+                return IM_COL32(95, 185, 145, 255); // Verde azulado
+            case TEXTURE:
+                return IM_COL32(185, 95, 145, 255); // Rosa
+            case COLOR:
+                return IM_COL32(145, 95, 185, 255); // Púrpura
+            case SCRIPT:
+                return IM_COL32(185, 125, 95, 255); // Naranja
+            case GROUP:
+                return IM_COL32(95, 125, 185, 255); // Azul oscuro
+            case LAYOUT:
+                return IM_COL32(125, 125, 125, 255); // Gris
+            default:
+                return IM_COL32(125, 125, 125, 255); // Gris por defecto
+            }
+        }
+
+        static ImU32 GetCategoryColorDark(NodeCategory category)
+        {
+            ImU32 color = GetCategoryColor(category);
+            // Hacer más oscuro reduciendo cada componente
+            return IM_COL32(
+                (color >> IM_COL32_R_SHIFT & 0xFF) * 0.7f,
+                (color >> IM_COL32_G_SHIFT & 0xFF) * 0.7f,
+                (color >> IM_COL32_B_SHIFT & 0xFF) * 0.7f,
+                255);
+        }
+
+        static constexpr ImU32 NodeBackground = IM_COL32(62, 62, 66, 240);
+        static constexpr ImU32 NodeBackgroundSelected = IM_COL32(90, 90, 94, 255);
+        static constexpr ImU32 NodeBorder = IM_COL32(80, 80, 84, 255);
+        static constexpr ImU32 NodeBorderSelected = IM_COL32(255, 190, 60, 255);
+        static constexpr ImU32 NodeHeaderText = IM_COL32(220, 220, 220, 255);
+        static constexpr ImU32 PinExec = IM_COL32(255, 255, 255, 255);
+        static constexpr ImU32 PinFloat = IM_COL32(160, 160, 164, 255);
+        static constexpr ImU32 PinVector = IM_COL32(100, 200, 200, 255);
+        static constexpr ImU32 PinColor = IM_COL32(255, 255, 100, 255);
+        static constexpr ImU32 PinString = IM_COL32(100, 200, 100, 255);
+        static constexpr ImU32 ConnectionLine = IM_COL32(180, 180, 180, 200);
+        static constexpr ImU32 ConnectionLineSelected = IM_COL32(255, 255, 255, 255);
+    };
+
     CustomNode *GetNodeById(int id)
     {
         for (auto &n : customNodes)
@@ -257,19 +332,20 @@ public:
         newNode.n.title = config.title;
         newNode.n.size = config.size;
         newNode.n.pos = position;
+        newNode.n.category = config.category;
 
         // Limpiar pins existentes
         newNode.n.inputs.clear();
         newNode.n.outputs.clear();
 
-        // Configurar pins de entrada
-        float inputY = 45.0f; // Movido más abajo desde 30.0f
+        // Configurar pins de entrada - posicionados a la izquierda del nodo
+        float inputY = 35.0f; // Ajustado para el nuevo diseño
         for (size_t i = 0; i < config.inputPins.size(); i++)
         {
             const auto &pinConfig = config.inputPins[i];
             Pin inputPin;
             inputPin.id = (int)i;
-            inputPin.pos = ImVec2(0, inputY);
+            inputPin.pos = ImVec2(-8, inputY); // Más cerca del borde
             inputPin.isExec = (pinConfig.type == ExecuteInput);
             newNode.n.inputs.push_back(inputPin);
 
@@ -282,24 +358,24 @@ public:
                 newNode.inputValues[i] = pinConfig.defaultValue;
             }
 
-            inputY += 30.0f; // Aumentar espaciado entre pins
+            inputY += 28.0f; // Espaciado más compacto
         }
 
-        // Configurar pins de salida
-        float outputY = 45.0f; // Movido más abajo desde 30.0f
+        // Configurar pins de salida - posicionados a la derecha del nodo
+        float outputY = 35.0f;
         for (size_t i = 0; i < config.outputPins.size(); i++)
         {
             const auto &pinConfig = config.outputPins[i];
             Pin outputPin;
             outputPin.id = (int)i;
-            outputPin.pos = ImVec2(config.size.x, outputY);
+            outputPin.pos = ImVec2(config.size.x + 8, outputY); // Más cerca del borde
             outputPin.isExec = (pinConfig.type == ExecuteOutput);
             newNode.n.outputs.push_back(outputPin);
 
             // Guardar el nombre del pin
             newNode.outputNames[i] = pinConfig.name;
 
-            outputY += 30.0f; // Aumentar espaciado entre pins
+            outputY += 28.0f; // Espaciado más compacto
         }
 
         // Configurar función de ejecución
@@ -323,7 +399,7 @@ public:
         float maxPins = std::max(config.inputPins.size(), config.outputPins.size());
         if (maxPins > 0)
         {
-            newNode.n.size.y = std::max(100.0f, 45.0f + maxPins * 30.0f + 20.0f);
+            newNode.n.size.y = std::max(80.0f, 60.0f + maxPins * 28.0f);
         }
 
         customNodes.push_back(newNode);
@@ -364,23 +440,24 @@ public:
         }
     }
 
-    // Lambda Factory para crear nodos de manera simple
+    // Lambda Factory para crear nodos de manera simple (Nueva versión con NodeCategory)
     CustomNode *CreateNode(
         const std::string &title,
         std::function<void(CustomNode *)> executeFunc,
+        NodeCategory category = INPUT_OUTPUT,
         bool hasExecInput = false,
         bool hasExecOutput = false,
         std::vector<std::pair<std::string, std::any>> inputPins = {},
         std::vector<std::pair<std::string, std::any>> outputPins = {},
         ImVec2 position = ImVec2(100, 100),
-        ImVec2 size = ImVec2(220, 100))
+        ImVec2 size = ImVec2(180, 80))
     {
-        NodeConfig config(title, size);
+        NodeConfig config(title, category, size);
 
         // Agregar pin de ejecución de entrada si se necesita
         if (hasExecInput)
         {
-            config.inputPins.push_back(PinConfig("Exec", ExecuteInput));
+            config.inputPins.push_back(PinConfig("", ExecuteInput));
         }
 
         // Agregar pins de entrada de datos
@@ -392,7 +469,7 @@ public:
         // Agregar pin de ejecución de salida si se necesita
         if (hasExecOutput)
         {
-            config.outputPins.push_back(PinConfig("Exec", ExecuteOutput));
+            config.outputPins.push_back(PinConfig("", ExecuteOutput));
         }
 
         // Agregar pins de salida de datos
@@ -407,6 +484,21 @@ public:
         return CreateCustomNode(config, position);
     }
 
+    // Versión de compatibilidad para código existente (sin NodeCategory)
+    CustomNode *CreateNode(
+        const std::string &title,
+        std::function<void(CustomNode *)> executeFunc,
+        bool hasExecInput,
+        bool hasExecOutput,
+        std::vector<std::pair<std::string, std::any>> inputPins = {},
+        std::vector<std::pair<std::string, std::any>> outputPins = {},
+        ImVec2 position = ImVec2(100, 100),
+        ImVec2 size = ImVec2(180, 80))
+    {
+        // Llamar a la versión principal con categoría por defecto
+        return CreateNode(title, executeFunc, INPUT_OUTPUT, hasExecInput, hasExecOutput, inputPins, outputPins, position, size);
+    }
+
     // Funciones de conveniencia usando el lambda factory
     CustomNode *CreatePrintNode(ImVec2 position = ImVec2(200, 100))
     {
@@ -417,6 +509,7 @@ public:
                 std::string message = node->GetInputValue<std::string>(1, "Hello World");
                 std::cout << "[CONSOLE] " << message << std::endl;
             },
+            SCRIPT,                                    // category
             true,                                      // hasExecInput
             true,                                      // hasExecOutput
             {{"Message", std::string("Hello World")}}, // inputPins
@@ -433,10 +526,11 @@ public:
                 node->SetOutputValue<std::string>(0, value);
                 std::cout << "[STRING] Output: " << value << std::endl;
             },
-            false,             // hasExecInput
-            false,             // hasExecOutput
-            {},                // inputPins
-            {{"Text", value}}, // outputPins
+            INPUT_OUTPUT,       // category
+            false,              // hasExecInput
+            false,              // hasExecOutput
+            {},                 // inputPins
+            {{"Value", value}}, // outputPins
             position);
     }
 
@@ -452,6 +546,7 @@ public:
                 node->SetOutputValue<float>(0, result);
                 std::cout << "[MATH] " << a << " + " << b << " = " << result << std::endl;
             },
+            MATH,                       // category
             false,                      // hasExecInput
             false,                      // hasExecOutput
             {{"A", 0.0f}, {"B", 0.0f}}, // inputPins
@@ -474,6 +569,7 @@ public:
                 node->nodeData["started"] = true;
                 node->nodeData["startTime"] = std::chrono::steady_clock::now();
             },
+            INPUT_OUTPUT,        // category
             false,               // hasExecInput
             true,                // hasExecOutput
             {},                  // inputPins
@@ -508,6 +604,7 @@ public:
                           << " | DeltaTime: " << deltaTime
                           << "s | Elapsed: " << elapsed << "s" << std::endl;
             },
+            SCRIPT,                                                       // category
             true,                                                         // hasExecInput
             true,                                                         // hasExecOutput
             {{"DeltaTime", 0.016f}, {"FrameCount", 0}},                   // inputPins
@@ -541,6 +638,7 @@ public:
 
                 node->SetOutputValue<float>(1, elapsed);
             },
+            SCRIPT,                                    // category
             true,                                      // hasExecInput
             true,                                      // hasExecOutput
             {{"Interval", interval}},                  // inputPins
@@ -583,6 +681,7 @@ public:
                     node->SetOutputValue<bool>(2, false);
                 }
             },
+            SCRIPT,                                                                      // category
             true,                                                                        // hasExecInput
             true,                                                                        // hasExecOutput
             {{"DelayTime", delayTime}},                                                  // inputPins
@@ -601,6 +700,7 @@ public:
                 node->SetOutputValue<bool>(0, value);
                 std::cout << "[BOOL] Value: " << (value ? "true" : "false") << std::endl;
             },
+            INPUT_OUTPUT,               // category
             false,                      // hasExecInput
             false,                      // hasExecOutput
             {{"Value", initialValue}},  // inputPins
@@ -618,6 +718,7 @@ public:
                 node->SetOutputValue<int>(0, value);
                 std::cout << "[INT] Value: " << value << std::endl;
             },
+            MATH,                       // category
             false,                      // hasExecInput
             false,                      // hasExecOutput
             {{"Value", initialValue}},  // inputPins
@@ -635,6 +736,7 @@ public:
                 node->SetOutputValue<float>(0, value);
                 std::cout << "[FLOAT] Value: " << value << std::endl;
             },
+            MATH,                       // category
             false,                      // hasExecInput
             false,                      // hasExecOutput
             {{"Value", initialValue}},  // inputPins
@@ -766,6 +868,9 @@ public:
         if (!node || !node->execFunc)
             return;
 
+        // Marcar nodo como activo durante la ejecución
+        node->isActive = true;
+
         // Si es un nodo Print, verificar si tiene datos conectados
         if (node->title == "Print")
         {
@@ -787,6 +892,9 @@ public:
                     ExecuteFrom(next);
             }
         }
+
+        // Desmarcar nodo como activo
+        node->isActive = false;
     }
 
     // Método para ejecutar desde un nodo Start
@@ -802,13 +910,33 @@ public:
         }
     }
 
+    // Función para obtener el color de un pin según su tipo
+    ImU32 GetPinColor(bool isExec, const std::any *value = nullptr)
+    {
+        if (isExec)
+            return BlenderColors::PinExec;
+
+        if (!value)
+            return BlenderColors::PinFloat;
+
+        // Determinar color por tipo de datos
+        if (value->type() == typeid(std::string))
+            return BlenderColors::PinString;
+        else if (value->type() == typeid(float) || value->type() == typeid(int))
+            return BlenderColors::PinFloat;
+        else if (value->type() == typeid(bool))
+            return BlenderColors::PinColor;
+
+        return BlenderColors::PinFloat;
+    }
+
     void Draw()
     {
         ImDrawList *draw_list = ImGui::GetWindowDrawList();
         ImVec2 window_pos = ImGui::GetWindowPos();
         ImVec2 mousePos = ImGui::GetIO().MousePos - window_pos;
 
-        // Dibujar conexiones
+        // Dibujar conexiones con estilo Blender
         for (auto &c : connections)
         {
             Node *fromNode = &GetNodeById(c.fromNodeId)->n;
@@ -822,15 +950,27 @@ public:
             ImVec2 p1 = window_pos + fromNode->pos + fromNode->outputs[c.fromPinId].pos;
             ImVec2 p2 = window_pos + toNode->pos + toNode->inputs[c.toPinId].pos;
 
-            // Línea más gruesa y con mejor apariencia
+            // Color de la línea según el tipo de pin
+            bool isExec = fromNode->outputs[c.fromPinId].isExec;
+            ImU32 lineColor = isExec ? BlenderColors::PinExec : BlenderColors::ConnectionLine;
+
+            // Línea más gruesa para conexiones de ejecución
+            float thickness = isExec ? 3.0f : 2.0f;
+
+            // Dibujar sombra de la línea
             draw_list->AddBezierCubic(
                 p1, p1 + ImVec2(50, 0),
                 p2 - ImVec2(50, 0), p2,
-                fromNode->outputs[c.fromPinId].isExec ? IM_COL32(255, 80, 80, 255) : IM_COL32(255, 200, 80, 255),
-                3.5f);
+                IM_COL32(0, 0, 0, 80), thickness + 1.0f);
+
+            // Dibujar línea principal
+            draw_list->AddBezierCubic(
+                p1, p1 + ImVec2(50, 0),
+                p2 - ImVec2(50, 0), p2,
+                lineColor, thickness);
         }
 
-        // Dibujar nodos
+        // Dibujar nodos con estilo Blender
         for (auto &d : customNodes)
         {
             auto &n = d.n;
@@ -839,66 +979,85 @@ public:
             ImVec2 min = window_pos + n.pos;
             ImVec2 max = window_pos + n.pos + n.size;
 
-            // Colores mejorados y más modernos
-            ImU32 nodeColor, headerColor, borderColor;
-            nodeColor = IM_COL32(45, 45, 45, 255);
-            headerColor = IM_COL32(60, 60, 60, 255);
-            borderColor = IM_COL32(80, 80, 80, 255);
+            // Colores según categoría y estado
+            ImU32 headerColor = BlenderColors::GetCategoryColor(n.category);
+            ImU32 nodeColor = n.isSelected ? BlenderColors::NodeBackgroundSelected : BlenderColors::NodeBackground;
+            ImU32 borderColor = n.isSelected ? BlenderColors::NodeBorderSelected : BlenderColors::NodeBorder;
 
-            // Fondo del nodo con bordes menos redondeados
-            draw_list->AddRectFilled(min, max, nodeColor, 3.0f);
+            // Efecto de activación
+            if (n.isActive)
+            {
+                headerColor = IM_COL32(255, 255, 255, 255);
+                borderColor = IM_COL32(255, 255, 255, 255);
+            }
 
-            // Header del nodo
-            ImVec2 headerMax = ImVec2(max.x, min.y + 22);
-            draw_list->AddRectFilled(min, headerMax, headerColor, 3.0f, ImDrawFlags_RoundCornersTop);
+            // Sombra del nodo
+            draw_list->AddRectFilled(
+                min + ImVec2(2, 2), max + ImVec2(2, 2),
+                IM_COL32(0, 0, 0, 60), 6.0f);
+
+            // Fondo del nodo con esquinas redondeadas estilo Blender
+            draw_list->AddRectFilled(min, max, nodeColor, 6.0f);
+
+            // Header del nodo con gradiente sutil
+            ImVec2 headerMax = ImVec2(max.x, min.y + 26);
+
+            // Primero dibujamos el header con esquinas superiores redondeadas
+            draw_list->AddRectFilled(min, headerMax, headerColor, 6.0f, ImDrawFlags_RoundCornersTop);
+
+            // Luego añadimos el gradiente oscuro en la parte inferior del header
+            draw_list->AddRectFilledMultiColor(
+                ImVec2(min.x, min.y + 13), headerMax, // mitad inferior del header
+                BlenderColors::GetCategoryColorDark(n.category),
+                BlenderColors::GetCategoryColorDark(n.category),
+                BlenderColors::GetCategoryColorDark(n.category),
+                BlenderColors::GetCategoryColorDark(n.category));
 
             // Borde del nodo
-            draw_list->AddRect(min, max, borderColor, 3.0f, 0, 1.5f);
+            draw_list->AddRect(min, max, borderColor, 6.0f, 0, n.isSelected ? 2.0f : 1.0f);
 
-            // Título del nodo
+            // Título del nodo con mejor tipografía
             ImVec2 text_size = ImGui::CalcTextSize(n.title.c_str());
-            draw_list->AddText(min + ImVec2((n.size.x - text_size.x) * 0.5f, 3), IM_COL32(255, 255, 255, 255), n.title.c_str());
+            draw_list->AddText(
+                min + ImVec2((n.size.x - text_size.x) * 0.5f, 5),
+                BlenderColors::NodeHeaderText,
+                n.title.c_str());
 
+            // Dibujar contenido del nodo
             if (CustomNode *cn = GetCustomNodeById(n.id))
             {
-                // Dibujar campos editables para pins de entrada que no son de ejecución
-                float currentY = 45.0f; // Movido más abajo desde 30.0f
+                // Dibujar campos editables para pins de entrada
+                float currentY = 35.0f;
                 for (size_t pinIndex = 0; pinIndex < n.inputs.size(); pinIndex++)
                 {
                     const Pin &pin = n.inputs[pinIndex];
 
-                    // Mostrar etiqueta del pin (tanto para ejecución como datos)
-                    auto nameIt = cn->inputNames.find((int)pinIndex);
-                    std::string pinName = (nameIt != cn->inputNames.end()) ? nameIt->second : ("Pin " + std::to_string(pinIndex));
-
-                    // Mostrar etiqueta a la izquierda del pin
-                    ImGui::SetCursorScreenPos(ImVec2(min.x + 15, min.y + currentY - 5));
-                    ImGui::TextColored(ImVec4(0.9f, 0.9f, 0.9f, 1.0f), pinName.c_str());
-
-                    // Solo mostrar campos de edición para pins de datos (no de ejecución)
+                    // Mostrar etiqueta del pin si no es de ejecución
                     if (!pin.isExec)
                     {
-                        ImVec2 contentMin = ImVec2(min.x + 80, min.y + currentY - 10);
-                        ImVec2 contentMax = ImVec2(max.x - 15, min.y + currentY + 10);
+                        auto nameIt = cn->inputNames.find((int)pinIndex);
+                        std::string pinName = (nameIt != cn->inputNames.end()) ? nameIt->second : ("Pin " + std::to_string(pinIndex));
 
-                        // Verificar si hay conexiones en este pin
+                        // Dibujar etiqueta del pin con mejor posicionamiento
+                        ImVec2 labelPos = ImVec2(min.x + 18, min.y + currentY - 3);
+                        draw_list->AddText(labelPos, IM_COL32(200, 200, 200, 255), pinName.c_str());
+
+                        // Campo de entrada solo si no hay conexión
                         bool hasConnection = HasConnection(n.id, (int)pinIndex, true);
-
-                        // Solo mostrar input editable si NO hay conexión
                         if (!hasConnection)
                         {
-                            ImGui::SetCursorScreenPos(contentMin);
-                            ImGui::PushItemWidth(contentMax.x - contentMin.x);
+                            ImVec2 inputPos = ImVec2(min.x + 8, min.y + currentY + 12);
+                            ImGui::SetCursorScreenPos(inputPos);
+                            ImGui::PushItemWidth(n.size.x - 25);
 
                             std::string inputId = "##" + std::to_string(n.id) + "_input_" + std::to_string(pinIndex);
 
-                            // Obtener el valor actual del input
+                            // Manejo de diferentes tipos de datos
                             auto inputIt = cn->inputValues.find((int)pinIndex);
                             if (inputIt != cn->inputValues.end())
                             {
                                 try
                                 {
-                                    // Intentar diferentes tipos
                                     if (inputIt->second.type() == typeid(std::string))
                                     {
                                         std::string currentValue = std::any_cast<std::string>(inputIt->second);
@@ -914,29 +1073,17 @@ public:
                                     else if (inputIt->second.type() == typeid(int))
                                     {
                                         int currentValue = std::any_cast<int>(inputIt->second);
-                                        char buf[32];
-                                        sprintf(buf, "%d", currentValue);
-                                        if (ImGui::InputText(inputId.c_str(), buf, sizeof(buf), ImGuiInputTextFlags_CharsDecimal))
+                                        if (ImGui::DragInt(inputId.c_str(), &currentValue, 0.1f))
                                         {
-                                            int newValue = atoi(buf);
-                                            if (newValue != currentValue)
-                                            {
-                                                cn->SetInputValue<int>((int)pinIndex, newValue);
-                                            }
+                                            cn->SetInputValue<int>((int)pinIndex, currentValue);
                                         }
                                     }
                                     else if (inputIt->second.type() == typeid(float))
                                     {
                                         float currentValue = std::any_cast<float>(inputIt->second);
-                                        char buf[32];
-                                        sprintf(buf, "%.3f", currentValue);
-                                        if (ImGui::InputText(inputId.c_str(), buf, sizeof(buf), ImGuiInputTextFlags_CharsDecimal))
+                                        if (ImGui::DragFloat(inputId.c_str(), &currentValue, 0.01f))
                                         {
-                                            float newValue = (float)atof(buf);
-                                            if (fabs(newValue - currentValue) > 0.001f)
-                                            {
-                                                cn->SetInputValue<float>((int)pinIndex, newValue);
-                                            }
+                                            cn->SetInputValue<float>((int)pinIndex, currentValue);
                                         }
                                     }
                                     else if (inputIt->second.type() == typeid(bool))
@@ -947,161 +1094,115 @@ public:
                                             cn->SetInputValue<bool>((int)pinIndex, currentValue);
                                         }
                                     }
-                                    else
-                                    {
-                                        // Tipo desconocido, mostrar solo texto
-                                        ImGui::Text("Pin %zu", pinIndex);
-                                    }
                                 }
                                 catch (const std::bad_any_cast &e)
                                 {
-                                    ImGui::Text("Error: Pin %zu", pinIndex);
+                                    ImGui::Text("Error");
                                 }
                             }
-                            else
-                            {
-                                // No hay valor, mostrar campo de texto por defecto
-                                char buf[256] = "";
-                                if (ImGui::InputText(inputId.c_str(), buf, sizeof(buf)))
-                                {
-                                    cn->SetInputValue<std::string>((int)pinIndex, std::string(buf));
-                                }
-                            }
-
                             ImGui::PopItemWidth();
                         }
-                        else
-                        {
-                            // Si hay conexión, mostrar indicador
-                            ImGui::SetCursorScreenPos(ImVec2(min.x + 80, min.y + currentY - 5));
-                            ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "Connected");
-                        }
                     }
 
-                    currentY += 30.0f;
+                    currentY += 28.0f;
                 }
 
-                // Para backwards compatibility con el sistema anterior de Pins
-                for (int i = 0; i < cn->Pins.size(); i++)
+                // Dibujar etiquetas para pins de salida
+                float outputY = 35.0f;
+                for (size_t pinIndex = 0; pinIndex < n.outputs.size(); pinIndex++)
                 {
-                    PinInfo *p = cn->Pins[i];
-                    if (i < n.inputs.size())
+                    const Pin &pin = n.outputs[pinIndex];
+
+                    if (!pin.isExec)
                     {
-                        float pinY = n.inputs[i].pos.y;
-                        ImVec2 contentMin = ImVec2(min.x + 8, min.y + pinY - 8);
-                        ImVec2 contentMax = ImVec2(max.x - 15, min.y + pinY + 8);
+                        auto nameIt = cn->outputNames.find((int)pinIndex);
+                        std::string pinName = (nameIt != cn->outputNames.end()) ? nameIt->second : ("Out " + std::to_string(pinIndex));
 
-                        ImGui::SetCursorScreenPos(contentMin);
-                        ImGui::PushItemWidth(contentMax.x - contentMin.x);
-
-                        // Detectar tipo del pin
-                        if (p->_Var.type() == typeid(std::string))
-                        {
-                            std::string &value = *std::any_cast<std::reference_wrapper<std::string>>(&p->_Var);
-                            char buf[128];
-                            strncpy(buf, value.c_str(), sizeof(buf) - 1);
-                            buf[sizeof(buf) - 1] = '\0';
-                            if (ImGui::InputText(("##legacy_" + std::to_string(n.id) + "_" + p->_Name).c_str(), buf, sizeof(buf)))
-                            {
-                                value = buf;
-                            }
-                        }
-                        else if (p->_Var.type() == typeid(int))
-                        {
-                            int &value = *std::any_cast<std::reference_wrapper<int>>(&p->_Var);
-                            ImGui::InputInt(("##legacy_" + std::to_string(n.id) + "_" + p->_Name).c_str(), &value);
-                        }
-                        else if (p->_Var.type() == typeid(float))
-                        {
-                            float &value = *std::any_cast<std::reference_wrapper<float>>(&p->_Var);
-                            ImGui::InputFloat(("##legacy_" + std::to_string(n.id) + "_" + p->_Name).c_str(), &value, 0.1f, 1.0f, "%.3f");
-                        }
-                        else if (p->_Var.type() == typeid(bool))
-                        {
-                            bool &value = *std::any_cast<std::reference_wrapper<bool>>(&p->_Var);
-                            ImGui::Checkbox(("##legacy_" + std::to_string(n.id) + "_" + p->_Name).c_str(), &value);
-                        }
-                        else
-                        {
-                            ImGui::TextUnformatted(p->_Name.c_str());
-                        }
-
-                        ImGui::PopItemWidth();
+                        // Etiqueta alineada a la derecha
+                        ImVec2 text_size = ImGui::CalcTextSize(pinName.c_str());
+                        ImVec2 labelPos = ImVec2(max.x - text_size.x - 18, min.y + outputY - 3);
+                        draw_list->AddText(labelPos, IM_COL32(200, 200, 200, 255), pinName.c_str());
                     }
+
+                    outputY += 28.0f;
                 }
             }
 
             // Botón invisible para arrastrar el nodo (solo en el header)
             ImGui::SetCursorScreenPos(min);
-            ImGui::InvisibleButton(("node" + std::to_string(n.id)).c_str(), ImVec2(n.size.x, 22));
-            // Solo permitir arrastrar el nodo si no estamos en modo conexión y el click empezó en el header
-            if (ImGui::IsItemActive() && ImGui::IsMouseDragging(ImGuiMouseButton_Left) && editingNodeId != n.id && !isConnecting)
+            ImGui::InvisibleButton(("node" + std::to_string(n.id)).c_str(), ImVec2(n.size.x, 26));
+
+            // Manejar selección
+            if (ImGui::IsItemClicked())
+            {
+                // Deseleccionar otros nodos
+                for (auto &other : customNodes)
+                    other.n.isSelected = false;
+                n.isSelected = true;
+            }
+
+            // Solo permitir arrastrar si no estamos en modo conexión
+            if (ImGui::IsItemActive() && ImGui::IsMouseDragging(ImGuiMouseButton_Left) && !isConnecting)
             {
                 n.pos += ImGui::GetIO().MouseDelta;
             }
 
-            // PINS DE ENTRADA
+            // PINS DE ENTRADA con estilo Blender
             for (size_t i = 0; i < n.inputs.size(); i++)
             {
                 Pin &pin = n.inputs[i];
                 ImVec2 pinPos = window_pos + n.pos + pin.pos;
 
-                // Verificar si el pin tiene conexiones
                 bool hasConnection = HasConnection(n.id, (int)i, true);
-                ImU32 pinColor = pin.isExec ? IM_COL32(255, 80, 80, 255) : IM_COL32(255, 200, 80, 255);
 
-                if (hasConnection)
+                // Obtener color del pin
+                CustomNode *cn = GetCustomNodeById(n.id);
+                const std::any *value = nullptr;
+                if (cn)
                 {
-                    // Si tiene conexión, dibujar círculo completo
-                    draw_list->AddCircleFilled(pinPos, 6, pinColor);
-                    draw_list->AddCircle(pinPos, 6, IM_COL32(255, 255, 255, 100), 0, 1.0f);
+                    auto it = cn->inputValues.find((int)i);
+                    if (it != cn->inputValues.end())
+                        value = &it->second;
+                }
+
+                ImU32 pinColor = GetPinColor(pin.isExec, value);
+
+                // Dibujar pin con estilo Blender
+                if (hasConnection || pin.isExec)
+                {
+                    // Pin conectado: círculo completo
+                    draw_list->AddCircleFilled(pinPos, 5, pinColor);
+                    draw_list->AddCircle(pinPos, 5, IM_COL32(0, 0, 0, 120), 0, 1.0f);
                 }
                 else
                 {
-                    // Si no tiene conexión, dibujar como wire
-                    ImVec2 wireStart = pinPos;
-                    ImVec2 wireEnd = pinPos + ImVec2(10, 0);
-                    draw_list->AddCircleFilled(pinPos, 5, IM_COL32(60, 60, 60, 255));
-                    draw_list->AddCircle(pinPos, 6, pinColor);
+                    // Pin desconectado: anillo
+                    draw_list->AddCircle(pinPos, 5, pinColor, 0, 2.0f);
+                    draw_list->AddCircleFilled(pinPos, 2, pinColor);
                 }
 
-                ImGui::SetCursorScreenPos(pinPos - ImVec2(12, 12));
-                ImGui::InvisibleButton(("inpin" + std::to_string(n.id) + "_" + std::to_string(pin.id)).c_str(), ImVec2(24, 24));
+                // Área de interacción
+                ImGui::SetCursorScreenPos(pinPos - ImVec2(10, 10));
+                ImGui::InvisibleButton(("inpin" + std::to_string(n.id) + "_" + std::to_string(pin.id)).c_str(), ImVec2(20, 20));
 
-                // Debug: mostrar cuando se hace hover en un pin de entrada
-                if (ImGui::IsItemHovered() && isConnecting)
+                // Highlight en hover
+                if (ImGui::IsItemHovered())
                 {
-                    std::cout << "Hovering over input pin " << n.id << ":" << i << std::endl;
+                    draw_list->AddCircle(pinPos, 7, IM_COL32(255, 255, 255, 100), 0, 1.0f);
                 }
 
-                // Detectar doble click para eliminar conexiones
+                // Doble click para eliminar conexiones
                 if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
                 {
-                    std::cout << "Double clicked on input pin " << n.id << ":" << i << std::endl;
                     RemoveConnectionsFromPin(n.id, (int)i, true);
                 }
-                // Conectar al soltar el mouse cuando estamos arrastrando una conexión
+                // Conectar al soltar
                 else if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(ImGuiMouseButton_Left) && isConnecting && connectingFromNode != -1)
                 {
-                    std::cout << "Attempting to connect to input pin " << n.id << ":" << i << std::endl;
                     Node *fromNode = &GetNodeById(connectingFromNode)->n;
-                    if (fromNode)
+                    if (fromNode && IsValidConnection(fromNode, connectingFromPin, &n, (int)i))
                     {
-                        std::cout << "From node found: " << fromNode->id << std::endl;
-                        if (IsValidConnection(fromNode, connectingFromPin, &n, (int)i))
-                        {
-                            connections.push_back({connectingFromNode, connectingFromPin, n.id, (int)i});
-                            std::cout << "Connection created: " << connectingFromNode << ":" << connectingFromPin
-                                      << " -> " << n.id << ":" << i << std::endl;
-                        }
-                        else
-                        {
-                            std::cout << "Invalid connection attempted" << std::endl;
-                        }
-                    }
-                    else
-                    {
-                        std::cout << "From node not found!" << std::endl;
+                        connections.push_back({connectingFromNode, connectingFromPin, n.id, (int)i});
                     }
                     connectingFromNode = -1;
                     connectingFromPin = -1;
@@ -1109,64 +1210,65 @@ public:
                 }
             }
 
-            // PINS DE SALIDA
+            // PINS DE SALIDA con estilo Blender
             for (size_t i = 0; i < n.outputs.size(); i++)
             {
                 Pin &pin = n.outputs[i];
                 ImVec2 pinPos = window_pos + n.pos + pin.pos;
 
-                // Mostrar etiqueta del pin de salida
-                if (CustomNode *cn = GetCustomNodeById(n.id))
-                {
-                    auto nameIt = cn->outputNames.find((int)i);
-                    std::string pinName = (nameIt != cn->outputNames.end()) ? nameIt->second : ("Out " + std::to_string(i));
+                bool hasConnection = HasConnection(n.id, (int)i, false);
 
-                    // Mostrar etiqueta a la derecha del pin
-                    ImVec2 text_size = ImGui::CalcTextSize(pinName.c_str());
-                    ImGui::SetCursorScreenPos(ImVec2(pinPos.x - text_size.x - 15, pinPos.y - 5));
-                    ImGui::TextColored(ImVec4(0.9f, 0.9f, 0.9f, 1.0f), pinName.c_str());
+                // Obtener color del pin
+                CustomNode *cn = GetCustomNodeById(n.id);
+                const std::any *value = nullptr;
+                if (cn)
+                {
+                    auto it = cn->outputValues.find((int)i);
+                    if (it != cn->outputValues.end())
+                        value = &it->second;
                 }
 
-                // Verificar si el pin tiene conexiones
-                bool hasConnection = HasConnection(n.id, (int)i, false);
-                ImU32 pinColor = pin.isExec ? IM_COL32(255, 80, 80, 255) : IM_COL32(255, 200, 80, 255);
+                ImU32 pinColor = GetPinColor(pin.isExec, value);
 
-                if (hasConnection)
+                // Dibujar pin
+                if (hasConnection || pin.isExec)
                 {
-                    draw_list->AddCircleFilled(pinPos, 6, pinColor);
-                    draw_list->AddCircle(pinPos, 6, IM_COL32(255, 255, 255, 100), 0, 1.0f);
+                    draw_list->AddCircleFilled(pinPos, 5, pinColor);
+                    draw_list->AddCircle(pinPos, 5, IM_COL32(0, 0, 0, 120), 0, 1.0f);
                 }
                 else
                 {
-                    // Si no tiene conexión, dibujar como wire
-                    ImVec2 wireStart = pinPos;
-                    ImVec2 wireEnd = pinPos + ImVec2(-10, 0);
-                    draw_list->AddCircleFilled(pinPos, 5, IM_COL32(60, 60, 60, 255));
-                    draw_list->AddCircle(pinPos, 6, pinColor);
+                    draw_list->AddCircle(pinPos, 5, pinColor, 0, 2.0f);
+                    draw_list->AddCircleFilled(pinPos, 2, pinColor);
                 }
 
-                ImGui::SetCursorScreenPos(pinPos - ImVec2(12, 12));
-                ImGui::InvisibleButton(("outpin" + std::to_string(n.id) + "_" + std::to_string(pin.id)).c_str(), ImVec2(24, 24));
+                // Área de interacción
+                ImGui::SetCursorScreenPos(pinPos - ImVec2(10, 10));
+                ImGui::InvisibleButton(("outpin" + std::to_string(n.id) + "_" + std::to_string(pin.id)).c_str(), ImVec2(20, 20));
 
-                // Detectar doble click para eliminar conexiones
+                // Highlight en hover
+                if (ImGui::IsItemHovered())
+                {
+                    draw_list->AddCircle(pinPos, 7, IM_COL32(255, 255, 255, 100), 0, 1.0f);
+                }
+
+                // Doble click para eliminar conexiones
                 if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
                 {
-                    std::cout << "Double clicked on output pin " << n.id << ":" << i << std::endl;
                     RemoveConnectionsFromPin(n.id, (int)i, false);
                 }
-                // Iniciar conexión al empezar a arrastrar
+                // Iniciar conexión
                 else if (ImGui::IsItemActive() && ImGui::IsMouseDragging(ImGuiMouseButton_Left) && !isConnecting)
                 {
                     connectingFromNode = n.id;
                     connectingFromPin = (int)i;
                     isConnecting = true;
-                    std::cout << "Starting connection from node " << n.id << " pin " << i << std::endl;
                 }
             }
             ImGui::PopID();
         }
 
-        // Dibujar línea de conexión temporal y manejar cancelación
+        // Dibujar línea de conexión temporal estilo Blender
         if (connectingFromNode != -1 && isConnecting)
         {
             Node *fromNode = &GetNodeById(connectingFromNode)->n;
@@ -1175,165 +1277,49 @@ public:
                 ImVec2 p1 = window_pos + fromNode->pos + fromNode->outputs[connectingFromPin].pos;
                 ImVec2 p2 = ImGui::GetIO().MousePos;
 
-                ImU32 lineColor = fromNode->outputs[connectingFromPin].isExec ? IM_COL32(255, 80, 80, 150) : IM_COL32(255, 200, 80, 150);
+                bool isExec = fromNode->outputs[connectingFromPin].isExec;
+                ImU32 lineColor = isExec ? IM_COL32(255, 255, 255, 180) : IM_COL32(180, 180, 180, 180);
+                float thickness = isExec ? 3.0f : 2.0f;
 
-                draw_list->AddBezierCubic(p1, p1 + ImVec2(50, 0), p2 - ImVec2(50, 0), p2, lineColor, 3.0f);
+                // Línea temporal con dash pattern simulado
+                draw_list->AddBezierCubic(p1, p1 + ImVec2(50, 0), p2 - ImVec2(50, 0), p2, lineColor, thickness);
+
+                // Punto en el cursor
+                draw_list->AddCircleFilled(p2, 4, lineColor);
             }
         }
 
-        // Manejar cancelación DESPUÉS del procesamiento de pins para evitar conflictos
-        // Cancelar conexión si se hace click derecho o se presiona ESC
+        // Cancelar conexión
         if (isConnecting && (ImGui::IsMouseClicked(ImGuiMouseButton_Right) || ImGui::IsKeyPressed(ImGuiKey_Escape)))
         {
-            std::cout << "Connection cancelled" << std::endl;
             connectingFromNode = -1;
             connectingFromPin = -1;
             isConnecting = false;
         }
-
-        // También cancelar si se suelta el mouse en el vacío (pero solo si no se procesó una conexión exitosa)
         else if (isConnecting && ImGui::IsMouseReleased(ImGuiMouseButton_Left) && !ImGui::IsAnyItemHovered())
         {
-            std::cout << "Connection cancelled - released on empty space (IsAnyItemHovered: " << ImGui::IsAnyItemHovered() << ")" << std::endl;
             connectingFromNode = -1;
             connectingFromPin = -1;
             isConnecting = false;
         }
 
-        // Botones de control
+        // UI de control con estilo Blender
         ImGui::SetCursorScreenPos(window_pos + ImVec2(10, 10));
+        ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(70, 70, 74, 255));
+        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, IM_COL32(90, 90, 94, 255));
+        ImGui::PushStyleColor(ImGuiCol_ButtonActive, IM_COL32(50, 50, 54, 255));
+
         if (ImGui::Button("Execute Graph"))
         {
             ExecuteGraph();
         }
 
-        // Instrucciones
+        ImGui::PopStyleColor(3);
+
+        // Instrucciones con mejor tipografía
         ImGui::SetCursorScreenPos(window_pos + ImVec2(10, 40));
-        ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "Drag from output pins to input pins | Right-click/ESC to cancel | Double-click pins to disconnect");
+        ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(160, 160, 160, 255));
+        ImGui::Text("Drag from output to input | Right-click/ESC to cancel | Double-click pins to disconnect");
+        ImGui::PopStyleColor();
     }
 };
-
-// Implementación de CustomNode::Draw() DESPUÉS de SimpleNodeEditor
-// inline void CustomNode::Draw()
-// {
-//     if (!parentEditor)
-//         return; // Verificar que parentEditor no sea nullptr
-
-//     ImGui::PushID(n.id);
-//     ImVec2 window_pos = ImGui::GetWindowPos();
-//     ImVec2 min = window_pos + n.pos;
-//     ImVec2 max = window_pos + n.pos + n.size;
-
-//     ImDrawList *draw_list = ImGui::GetWindowDrawList();
-
-//     ImU32 nodeColor, headerColor, borderColor;
-
-//     nodeColor = IM_COL32(45, 45, 45, 255);
-//     headerColor = IM_COL32(60, 60, 60, 255);
-//     borderColor = IM_COL32(80, 80, 80, 255);
-
-//     // Fondo del nodo con bordes menos redondeados
-//     draw_list->AddRectFilled(min, max, nodeColor, 3.0f);
-
-//     // Header del nodo
-//     ImVec2 headerMax = ImVec2(max.x, min.y + 22);
-//     draw_list->AddRectFilled(min, headerMax, headerColor, 3.0f, ImDrawFlags_RoundCornersTop);
-
-//     // Borde del nodo
-//     draw_list->AddRect(min, max, borderColor, 3.0f, 0, 1.5f);
-
-//     // Título del nodo
-//     ImVec2 text_size = ImGui::CalcTextSize(n.title.c_str());
-//     draw_list->AddText(min + ImVec2((n.size.x - text_size.x) * 0.5f, 3), IM_COL32(255, 255, 255, 255), n.title.c_str());
-
-//     for (int i = 0; i < Pins.size(); i++)
-//     {
-//         PinInfo *p = Pins[i];
-//         float pinY = n.outputs[0].pos.y;
-//         ImVec2 contentMin = ImVec2(min.x + 8, min.y + pinY - 8);
-//         ImVec2 contentMax = ImVec2(max.x - 15, min.y + pinY + 8);
-
-//         ImGui::SetCursorScreenPos(contentMin);
-//         ImGui::PushItemWidth(contentMax.x - contentMin.x);
-
-//         if (p->_Var.type() == typeid(std::string))
-//         {
-//             std::string &value = *std::any_cast<std::reference_wrapper<std::string>>(&p->_Var);
-//             char buf[128];
-//             strncpy(buf, value.c_str(), sizeof(buf));
-//             if (ImGui::InputText(("##" + std::to_string(n.id) + "_" + p->_Name).c_str(), buf, sizeof(buf)))
-//             {
-//                 value = buf;
-//             }
-//         }
-//         else if (p->_Var.type() == typeid(int))
-//         {
-//             int &value = *std::any_cast<std::reference_wrapper<int>>(&p->_Var);
-//             ImGui::InputInt(("##" + std::to_string(n.id) + "_" + p->_Name).c_str(), &value);
-//         }
-//         else if (p->_Var.type() == typeid(float))
-//         {
-//             float &value = *std::any_cast<std::reference_wrapper<float>>(&p->_Var);
-//             ImGui::InputFloat(("##" + std::to_string(n.id) + "_" + p->_Name).c_str(), &value, 0.1f, 1.0f, "%.3f");
-//         }
-//         else
-//         {
-//             ImGui::TextUnformatted(p->_Name.c_str());
-//         }
-
-//         ImGui::PopItemWidth();
-//     }
-
-//     // Botón invisible para arrastrar el nodo (solo en el header)
-//     ImGui::SetCursorScreenPos(min);
-//     ImGui::InvisibleButton(("node" + std::to_string(n.id)).c_str(), ImVec2(n.size.x, 22));
-//     if (ImGui::IsItemActive() && ImGui::IsMouseDragging(ImGuiMouseButton_Left) && parentEditor->editingNodeId != n.id)
-//         n.pos += ImGui::GetIO().MouseDelta;
-
-//     // PINS DE ENTRADA
-//     for (size_t i = 0; i < n.inputs.size(); i++)
-//     {
-//         Pin &pin = n.inputs[i];
-//         ImVec2 pinPos = window_pos + n.pos + pin.pos;
-
-//         // Verificar si el pin tiene conexiones
-//         bool hasConnection = parentEditor->HasConnection(n.id, (int)i, true);
-//         ImU32 pinColor = pin.isExec ? IM_COL32(255, 80, 80, 255) : IM_COL32(255, 200, 80, 255);
-
-//         if (hasConnection)
-//         {
-//             // Si tiene conexión, dibujar círculo completo
-//             draw_list->AddCircleFilled(pinPos, 6, pinColor);
-//             draw_list->AddCircle(pinPos, 6, IM_COL32(255, 255, 255, 100), 0, 1.0f);
-//         }
-//         else
-//         {
-//             // Si no tiene conexión, dibujar como wire
-//             ImVec2 wireStart = pinPos;
-//             ImVec2 wireEnd = pinPos + ImVec2(10, 0);
-//             draw_list->AddCircleFilled(pinPos, 5, IM_COL32(60, 60, 60, 255));
-//             draw_list->AddCircle(pinPos, 6, pinColor);
-//         }
-
-//         ImGui::SetCursorScreenPos(pinPos - ImVec2(8, 8));
-//         ImGui::InvisibleButton(("inpin" + std::to_string(n.id) + "_" + std::to_string(pin.id)).c_str(), ImVec2(16, 16));
-
-//         // Detectar doble click para eliminar conexiones
-//         if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
-//         {
-//             std::cout << "Double clicked on input pin " << n.id << ":" << i << std::endl;
-//             parentEditor->RemoveConnectionsFromPin(n.id, (int)i, true);
-//         }
-//         // Conectar al soltar el mouse
-//         else if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(ImGuiMouseButton_Left) && parentEditor->connectingFromNode != -1)
-//         {
-//             Node *fromNode = &parentEditor->GetNodeById(parentEditor->connectingFromNode)->n;
-//             if (fromNode && parentEditor->IsValidConnection(fromNode, parentEditor->connectingFromPin, &n, (int)i))
-//             {
-//                 parentEditor->connections.push_back({parentEditor->connectingFromNode, parentEditor->connectingFromPin, n.id, (int)i});
-//             }
-//             parentEditor->connectingFromNode = -1;
-//         }
-//     }
-//     ImGui::PopID();
-// }
