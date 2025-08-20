@@ -37,9 +37,6 @@ public:
         // Crear nodos con valores editables
         auto startNode = editor.CreateStartNode(ImVec2(50, 100));
         auto stringNode = editor.CreateStringNode("Texto inicial", ImVec2(50, 200));
-        auto intNode = editor.CreateIntNode(42, ImVec2(200, 150));
-        auto floatNode = editor.CreateFloatNode(3.14f, ImVec2(350, 150));
-        auto boolNode = editor.CreateBoolNode(true, ImVec2(500, 150));
         editor.CreatePrintNode();
     }
 

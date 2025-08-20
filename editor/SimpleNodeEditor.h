@@ -126,6 +126,7 @@ public:
     std::map<int, std::any> outputValues;   // Valores de salida por índice de pin
     std::map<int, std::string> inputNames;  // Nombres de los pins de entrada
     std::map<int, std::string> outputNames; // Nombres de los pins de salida
+    std::map<int, std::any> defaultValues;  // Valores por defecto de los pins de entrada
 
     void SetupNode(SimpleNodeEditor *parentEditor)
     {
@@ -332,6 +333,12 @@ public:
             if (pinConfig.type == Input)
             {
                 newNode.inputValues[i] = pinConfig.defaultValue;
+                newNode.defaultValues[i] = pinConfig.defaultValue; // Guardar valor por defecto
+                // También establecer el valor de salida inicial para nodos que solo tienen entrada
+                if (config.outputPins.empty())
+                {
+                    newNode.outputValues[0] = pinConfig.defaultValue;
+                }
             }
 
             inputY += 28.0f; // Espaciado más compacto
@@ -410,6 +417,72 @@ public:
                                 node->inputValues[connection.toPinId] = outputValue->second;
                             }
                         }
+                    }
+                }
+            }
+        }
+    }
+
+    // Función para actualizar inmediatamente un valor de entrada cuando se establece una conexión
+    void UpdateNodeInputsImmediately(int fromNodeId, int fromPinId, int toNodeId, int toPinId)
+    {
+        CustomNode *sourceNode = GetCustomNodeById(fromNodeId);
+        CustomNode *targetNode = GetCustomNodeById(toNodeId);
+
+        if (!sourceNode || !targetNode)
+            return;
+
+        // Verificar que los pins sean válidos
+        if (fromPinId >= sourceNode->n.outputs.size() || toPinId >= targetNode->n.inputs.size())
+            return;
+
+        // Solo transferir datos para pins que no son de ejecución
+        if (!sourceNode->n.outputs[fromPinId].isExec)
+        {
+            auto outputValue = sourceNode->outputValues.find(fromPinId);
+            if (outputValue != sourceNode->outputValues.end())
+            {
+                targetNode->inputValues[toPinId] = outputValue->second;
+
+                // Si es un nodo String conectado a Print, también actualizar el valor de salida
+                if (sourceNode->n.title == "String" && fromPinId == 0)
+                {
+                    sourceNode->SetOutputValue<std::string>(0, std::any_cast<std::string>(outputValue->second));
+                }
+
+                std::cout << "[CONNECTION] Updated node " << toNodeId << " pin " << toPinId
+                          << " with value from node " << fromNodeId << " pin " << fromPinId
+                          << " = " << std::any_cast<std::string>(outputValue->second) << std::endl;
+            }
+        }
+    }
+
+    // Función para forzar la actualización de todos los valores de entrada
+    void ForceUpdateAllNodeInputs()
+    {
+        for (auto &connection : connections)
+        {
+            UpdateNodeInputsImmediately(connection.fromNodeId, connection.fromPinId,
+                                        connection.toNodeId, connection.toPinId);
+        }
+
+        // También forzar la actualización de valores de salida de nodos String
+        for (auto &node : customNodes)
+        {
+            if (node.n.title == "String")
+            {
+                auto inputValue = node.inputValues.find(0);
+                if (inputValue != node.inputValues.end())
+                {
+                    try
+                    {
+                        std::string value = std::any_cast<std::string>(inputValue->second);
+                        node.SetOutputValue<std::string>(0, value);
+                        std::cout << "[FORCE UPDATE] String node output updated to: " << value << std::endl;
+                    }
+                    catch (...)
+                    {
+                        std::cout << "[FORCE UPDATE] String node output update failed" << std::endl;
                     }
                 }
             }
@@ -497,16 +570,18 @@ public:
     {
         return CreateNode(
             "String",
-            [value](CustomNode *node)
+            [](CustomNode *node)
             {
-                node->SetOutputValue<std::string>(0, value);
-                std::cout << "[STRING] Output: " << value << std::endl;
+                // Get the current input value and use it as output
+                std::string inputValue = node->GetInputValue<std::string>(0, "My String");
+                node->SetOutputValue<std::string>(0, inputValue);
+                std::cout << "[STRING] Output: " << inputValue << std::endl;
             },
-            INPUT_OUTPUT,       // category
-            false,              // hasExecInput
-            false,              // hasExecOutput
-            {},                 // inputPins
-            {{"Value", value}}, // outputPins
+            INPUT_OUTPUT,                    // category
+            false,                           // hasExecInput
+            false,                           // hasExecOutput
+            {{"Text", std::string(value)}},  // inputPins - Now has an input pin for editing
+            {{"Value", std::string(value)}}, // outputPins
             position);
     }
 
@@ -750,6 +825,49 @@ public:
             {
                 // Para pins de entrada, eliminar conexiones que llegan a este pin
                 shouldRemove = (it->toNodeId == nodeId && it->toPinId == pinId);
+
+                // Si es un pin de entrada, restaurar su valor por defecto cuando se desconecta
+                if (shouldRemove)
+                {
+                    CustomNode *targetNode = GetCustomNodeById(nodeId);
+                    if (targetNode)
+                    {
+                        // Restaurar el valor por defecto del pin
+                        auto nameIt = targetNode->inputNames.find(pinId);
+                        if (nameIt != targetNode->inputNames.end())
+                        {
+                                                    // Buscar el valor por defecto en la configuración del nodo
+                        auto defaultIt = targetNode->defaultValues.find(pinId);
+                        if (defaultIt != targetNode->defaultValues.end())
+                        {
+                            // Restaurar el valor por defecto almacenado
+                            targetNode->inputValues[pinId] = defaultIt->second;
+                            
+                            // Para nodos String, también actualizar el valor de salida
+                            if (targetNode->n.title == "String" && pinId == 0)
+                            {
+                                try {
+                                    std::string defaultValue = std::any_cast<std::string>(defaultIt->second);
+                                    targetNode->SetOutputValue<std::string>(0, defaultValue);
+                                    std::cout << "[DISCONNECT] Restored String node to default value: " << defaultValue << std::endl;
+                                } catch (...) {
+                                    std::cout << "[DISCONNECT] Failed to restore String node default value" << std::endl;
+                                }
+                            }
+                            else
+                            {
+                                std::cout << "[DISCONNECT] Restored node " << nodeId << " pin " << pinId << " to default value" << std::endl;
+                            }
+                        }
+                        else
+                        {
+                            // Si no hay valor por defecto, limpiar el valor
+                            targetNode->inputValues.erase(pinId);
+                            std::cout << "[DISCONNECT] Cleared input value for node " << nodeId << " pin " << pinId << " (no default)" << std::endl;
+                        }
+                        }
+                    }
+                }
             }
             else
             {
@@ -912,6 +1030,41 @@ public:
         ImVec2 window_pos = ImGui::GetWindowPos();
         ImVec2 mousePos = ImGui::GetIO().MousePos - window_pos;
 
+        // Actualizar valores de entrada desde conexiones en cada frame
+        for (auto &c : connections)
+        {
+            CustomNode *sourceNode = GetCustomNodeById(c.fromNodeId);
+            CustomNode *targetNode = GetCustomNodeById(c.toNodeId);
+
+            if (sourceNode && targetNode)
+            {
+                // Solo transferir datos para pins que no son de ejecución
+                if (c.fromPinId < sourceNode->n.outputs.size() &&
+                    c.toPinId < targetNode->n.inputs.size() &&
+                    !sourceNode->n.outputs[c.fromPinId].isExec)
+                {
+                    auto outputValue = sourceNode->outputValues.find(c.fromPinId);
+                    if (outputValue != sourceNode->outputValues.end())
+                    {
+                        targetNode->inputValues[c.toPinId] = outputValue->second;
+
+                        // Debug: mostrar cuando se actualizan valores
+                        if (sourceNode->n.title == "String" && c.fromPinId == 0)
+                        {
+                            try
+                            {
+                                std::string value = std::any_cast<std::string>(outputValue->second);
+                            }
+                            catch (...)
+                            {
+                                std::cout << "[FRAME UPDATE] String node output: <invalid type>" << std::endl;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         // Dibujar conexiones con estilo Blender
         for (auto &c : connections)
         {
@@ -1047,7 +1200,15 @@ public:
 
                                         if (ImGui::InputText(inputId.c_str(), buf, sizeof(buf)))
                                         {
-                                            cn->SetInputValue<std::string>((int)pinIndex, std::string(buf));
+                                            std::string newValue = std::string(buf);
+                                            cn->SetInputValue<std::string>((int)pinIndex, newValue);
+
+                                            // Para nodos String, actualizar inmediatamente el valor de salida
+                                            if (n.title == "String" && pinIndex == 0)
+                                            {
+                                                cn->SetOutputValue<std::string>(0, newValue);
+                                                std::cout << "[STRING] Updated output value to: " << newValue << std::endl;
+                                            }
                                         }
                                     }
                                     else if (inputIt->second.type() == typeid(int))
@@ -1183,6 +1344,9 @@ public:
                     if (fromNode && IsValidConnection(fromNode, connectingFromPin, &n, (int)i))
                     {
                         connections.push_back({connectingFromNode, connectingFromPin, n.id, (int)i});
+
+                        // Actualizar inmediatamente el valor del nodo de destino
+                        UpdateNodeInputsImmediately(connectingFromNode, connectingFromPin, n.id, (int)i);
                     }
                     connectingFromNode = -1;
                     connectingFromPin = -1;
@@ -1292,6 +1456,34 @@ public:
         if (ImGui::Button("Execute Graph"))
         {
             ExecuteGraph();
+        }
+
+        ImGui::SameLine();
+
+        if (ImGui::Button("Update Values"))
+        {
+            ForceUpdateAllNodeInputs();
+        }
+        
+        ImGui::SameLine();
+        
+        if (ImGui::Button("Test Disconnect"))
+        {
+            // Buscar nodos String y Print conectados para probar desconexión
+            for (auto &connection : connections)
+            {
+                CustomNode *sourceNode = GetCustomNodeById(connection.fromNodeId);
+                CustomNode *targetNode = GetCustomNodeById(connection.toNodeId);
+                
+                if (sourceNode && targetNode && 
+                    sourceNode->n.title == "String" && targetNode->n.title == "Print Console")
+                {
+                    std::cout << "[TEST DISCONNECT] Found String-Print connection" << std::endl;
+                    std::cout << "[TEST DISCONNECT] String input: " << sourceNode->GetInputValue<std::string>(0, "default") << std::endl;
+                    std::cout << "[TEST DISCONNECT] String output: " << sourceNode->GetOutputValue<std::string>(0, "default") << std::endl;
+                    std::cout << "[TEST DISCONNECT] Print input: " << targetNode->GetInputValue<std::string>(1, "default") << std::endl;
+                }
+            }
         }
 
         ImGui::PopStyleColor(3);
