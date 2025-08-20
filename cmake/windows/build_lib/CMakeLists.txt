@@ -120,11 +120,16 @@ if(MSVC)
     target_compile_options(${Project_Name} PRIVATE
         $<$<CONFIG:Debug>:/ZI>      # Edit and Continue para Debug
         $<$<CONFIG:Release>:/O2>    # Optimización máxima para Release
+
+        /W0                         # 🔇 Suprimir TODOS los warnings
+        # /W1, /W2, /W3, /W4 = menos a más estrictos (default es /W3)
+        # /Wall = absolutamente todos (hasta los muy verbosos)
+        # /wdXXXX = deshabilita un warning específico (ej: /wd4996 para funciones "deprecated")
     )
-    
+
     # Configuración del linker
     target_link_options(${Project_Name} PRIVATE
-        $<$<CONFIG:Debug>:/INCREMENTAL>     # Linking incremental en Debug
-        $<$<CONFIG:Release>:/INCREMENTAL:NO> # No incremental en Release
+        $<$<CONFIG:Debug>:/INCREMENTAL>
+        $<$<CONFIG:Release>:/INCREMENTAL:NO>
     )
 endif()

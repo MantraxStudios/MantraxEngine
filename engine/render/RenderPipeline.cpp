@@ -146,33 +146,25 @@ void RenderPipeline::renderFrame() {
     glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    GLuint program = shaders->getProgram();
-    glUseProgram(program);
+    shaders->getProgram()->use();
 
     glm::mat4 view = camera->getViewMatrix();
     glm::mat4 projection = camera->getProjectionMatrix();
-
-    // Configurar matrices de vista y proyección
-    glUniformMatrix4fv(glGetUniformLocation(program, "view"), 1, GL_FALSE, glm::value_ptr(view));
-    glUniformMatrix4fv(glGetUniformLocation(program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-
-    // Configurar posición de la cámara para lighting
     glm::vec3 cameraPos = camera->getPosition();
-    glUniform3fv(glGetUniformLocation(program, "uViewPos"), 1, glm::value_ptr(cameraPos));
 
-    // Configurar flag PBR/Blinn-Phong
-    glUniform1i(glGetUniformLocation(program, "uUsePBR"), usePBR ? 1 : 0);
-    
-    // Configurar flag para normales de modelo (por defecto false para cubos)
-    glUniform1i(glGetUniformLocation(program, "uUseModelNormals"), 0);
+    shaders->getProgram()->setMat4("view", view);
+    shaders->getProgram()->setMat4("projection", projection);
+    shaders->getProgram()->setVec3("uViewPos", cameraPos);
+    shaders->getProgram()->setBool("uUsePBR", usePBR);
+    shaders->getProgram()->setInt("uUseModelNormals", 0);
 
     // Configurar iluminación
     configureLighting();
     
     // Configurar shadow mapping
     if (shadowsEnabled && shadowManager) {
-        shadowManager->bindShadowMap(program);
-        shadowManager->setupShadowUniforms(program);
+        shadowManager->bindShadowMap(shaders->getProgram()->getID());
+        shadowManager->setupShadowUniforms(shaders->getProgram()->getID());
         
         // Configurar shadow maps avanzados para spot y point lights
         std::vector<std::shared_ptr<Light>> spotLightsForShadows;
@@ -191,17 +183,17 @@ void RenderPipeline::renderFrame() {
         
         // Configurar shadow maps avanzados si tenemos luces spot o point
         if (!spotLightsForShadows.empty() || !pointLightsForShadows.empty()) {
-            shadowManager->bindAllShadowMaps(program);
-            shadowManager->setupAllShadowUniforms(program, spotLightsForShadows, pointLightsForShadows);
+            shadowManager->bindAllShadowMaps(shaders->getProgram()->getID());
+            shadowManager->setupAllShadowUniforms(shaders->getProgram()->getID(), spotLightsForShadows, pointLightsForShadows);
         }
         
         // Enable shadows in shader
-        GLint enableShadowsLoc = glGetUniformLocation(program, "uEnableShadows");
+        GLint enableShadowsLoc = glGetUniformLocation(shaders->getProgram()->getID(), "uEnableShadows");
         glUniform1i(enableShadowsLoc, 1);
         
         // Habilitar sombras de spot y point lights SOLO SI HAY LUCES
-        GLint enableSpotShadowsLoc = glGetUniformLocation(program, "uEnableSpotShadows");
-        GLint enablePointShadowsLoc = glGetUniformLocation(program, "uEnablePointShadows");
+        GLint enableSpotShadowsLoc = glGetUniformLocation(shaders->getProgram()->getID(), "uEnableSpotShadows");
+        GLint enablePointShadowsLoc = glGetUniformLocation(shaders->getProgram()->getID(), "uEnablePointShadows");
         
         // Solo habilitar spot shadows si tenemos spot lights con shadow maps
         int spotShadowsEnabled = !spotLightsForShadows.empty() ? 1 : 0;
@@ -211,9 +203,9 @@ void RenderPipeline::renderFrame() {
         int pointShadowsEnabled = !pointLightsForShadows.empty() ? 1 : 0;
         glUniform1i(enablePointShadowsLoc, pointShadowsEnabled);
     } else {
-        GLint enableShadowsLoc = glGetUniformLocation(program, "uEnableShadows");
-        GLint enableSpotShadowsLoc = glGetUniformLocation(program, "uEnableSpotShadows");
-        GLint enablePointShadowsLoc = glGetUniformLocation(program, "uEnablePointShadows");
+        GLint enableShadowsLoc = shaders->getProgram()->getInt("uEnableShadows");
+        GLint enableSpotShadowsLoc = shaders->getProgram()->getInt("uEnableSpotShadows");
+        GLint enablePointShadowsLoc = shaders->getProgram()->getInt("uEnablePointShadows");
         glUniform1i(enableShadowsLoc, 0);
         glUniform1i(enableSpotShadowsLoc, 0);
         glUniform1i(enablePointShadowsLoc, 0);
@@ -240,8 +232,6 @@ void RenderPipeline::renderFrame() {
 }
 
 void RenderPipeline::configureLighting() {
-    GLuint program = shaders->getProgram();
-    
     // Configurar luz ambiental - variable según el modo e intensidad
     glm::vec3 baseAmbient;
     if (lowAmbient) {
@@ -252,7 +242,7 @@ void RenderPipeline::configureLighting() {
     
     // Aplicar multiplicador de intensidad
     glm::vec3 finalAmbient = baseAmbient * ambientIntensity;
-    glUniform3fv(glGetUniformLocation(program, "uAmbientLight"), 1, glm::value_ptr(finalAmbient));
+    shaders->getProgram()->setVec3("uAmbientLight", finalAmbient);
     
     // Separar luces por tipo
     std::vector<std::shared_ptr<Light>> directionalLights;
@@ -278,57 +268,56 @@ void RenderPipeline::configureLighting() {
     // Configurar luz direccional
     if (!directionalLights.empty()) {
         auto& dirLight = directionalLights[0];
-        glUniform1i(glGetUniformLocation(program, "uHasDirLight"), 1);
-        glUniform3fv(glGetUniformLocation(program, "uDirLightDirection"), 1, glm::value_ptr(dirLight->getDirection()));
-        glUniform3fv(glGetUniformLocation(program, "uDirLightColor"), 1, glm::value_ptr(dirLight->getColor()));
-        glUniform1f(glGetUniformLocation(program, "uDirLightIntensity"), dirLight->getIntensity());
+        shaders->getProgram()->setInt("uHasDirLight", 1);
+        shaders->getProgram()->setVec3("uDirLightDirection", dirLight->getDirection());
+        shaders->getProgram()->setVec3("uDirLightColor", dirLight->getColor());
+        shaders->getProgram()->setFloat("uDirLightIntensity", dirLight->getIntensity());
+
     } else {
-        glUniform1i(glGetUniformLocation(program, "uHasDirLight"), 0);
+        shaders->getProgram()->setInt("uHasDirLight", 0);
     }
-    
-    // Configurar luces puntuales
-    glUniform1i(glGetUniformLocation(program, "uNumPointLights"), static_cast<int>(pointLights.size()));
+        
+    shaders->getProgram()->setInt("uNumPointLights", static_cast<int>(pointLights.size()));
+
+    // Iterar sobre las luces
     for (int i = 0; i < pointLights.size(); i++) {
         auto& light = pointLights[i];
-        glUniform3fv(glGetUniformLocation(program, ("uPointLightPositions[" + std::to_string(i) + "]").c_str()), 1, glm::value_ptr(light->getPosition()));
-        glUniform3fv(glGetUniformLocation(program, ("uPointLightColors[" + std::to_string(i) + "]").c_str()), 1, glm::value_ptr(light->getColor()));
-        glUniform1f(glGetUniformLocation(program, ("uPointLightIntensities[" + std::to_string(i) + "]").c_str()), light->getIntensity());
-        glUniform3fv(glGetUniformLocation(program, ("uPointLightAttenuations[" + std::to_string(i) + "]").c_str()), 1, glm::value_ptr(light->getAttenuation()));
-        glUniform1f(glGetUniformLocation(program, ("uPointLightMinDistances[" + std::to_string(i) + "]").c_str()), light->getMinDistance());
-        glUniform1f(glGetUniformLocation(program, ("uPointLightMaxDistances[" + std::to_string(i) + "]").c_str()), light->getMaxDistance());
+
+        shaders->getProgram()->setVec3("uPointLightPositions[" + std::to_string(i) + "]", light->getPosition());
+        shaders->getProgram()->setVec3("uPointLightColors[" + std::to_string(i) + "]", light->getColor());
+        shaders->getProgram()->setFloat("uPointLightIntensities[" + std::to_string(i) + "]", light->getIntensity());
+        shaders->getProgram()->setVec3("uPointLightAttenuations[" + std::to_string(i) + "]", light->getAttenuation());
+        shaders->getProgram()->setFloat("uPointLightMinDistances[" + std::to_string(i) + "]", light->getMinDistance());
+        shaders->getProgram()->setFloat("uPointLightMaxDistances[" + std::to_string(i) + "]", light->getMaxDistance());
     }
     
-    // Configurar luces spot
-    glUniform1i(glGetUniformLocation(program, "uNumSpotLights"), static_cast<int>(spotLights.size()));
+    shaders->getProgram()->setInt("uNumSpotLights", static_cast<int>(spotLights.size()));
+
     for (int i = 0; i < spotLights.size(); i++) {
         auto& light = spotLights[i];
-        glUniform3fv(glGetUniformLocation(program, ("uSpotLightPositions[" + std::to_string(i) + "]").c_str()), 1, glm::value_ptr(light->getPosition()));
-        glUniform3fv(glGetUniformLocation(program, ("uSpotLightDirections[" + std::to_string(i) + "]").c_str()), 1, glm::value_ptr(light->getDirection()));
-        glUniform3fv(glGetUniformLocation(program, ("uSpotLightColors[" + std::to_string(i) + "]").c_str()), 1, glm::value_ptr(light->getColor()));
-        glUniform1f(glGetUniformLocation(program, ("uSpotLightIntensities[" + std::to_string(i) + "]").c_str()), light->getIntensity());
-        
-        // Los ángulos ya vienen en radianes desde la clase Light
+
+        shaders->getProgram()->setVec3("uSpotLightPositions[" + std::to_string(i) + "]", light->getPosition());
+        shaders->getProgram()->setVec3("uSpotLightDirections[" + std::to_string(i) + "]", light->getDirection());
+        shaders->getProgram()->setVec3("uSpotLightColors[" + std::to_string(i) + "]", light->getColor());
+        shaders->getProgram()->setFloat("uSpotLightIntensities[" + std::to_string(i) + "]", light->getIntensity());
+
+        // Ángulos
         float cutOff = light->getCutOffAngle();
         float outerCutOff = light->getOuterCutOffAngle();
-        
-        // Asegurarnos de que outer sea siempre mayor que inner
+
         if (outerCutOff < cutOff) {
             outerCutOff = cutOff + 0.1f;
         }
-        
-        glUniform1f(glGetUniformLocation(program, ("uSpotLightCutOffs[" + std::to_string(i) + "]").c_str()), cutOff);
-        glUniform1f(glGetUniformLocation(program, ("uSpotLightOuterCutOffs[" + std::to_string(i) + "]").c_str()), outerCutOff);
-        glUniform1f(glGetUniformLocation(program, ("uSpotLightRanges[" + std::to_string(i) + "]").c_str()), light->getSpotRange());
-        
-        // CORREGIDO: Usar las matrices de sombra calculadas por el ShadowManager
+
+        shaders->getProgram()->setFloat("uSpotLightCutOffs[" + std::to_string(i) + "]", cutOff);
+        shaders->getProgram()->setFloat("uSpotLightOuterCutOffs[" + std::to_string(i) + "]", outerCutOff);
+        shaders->getProgram()->setFloat("uSpotLightRanges[" + std::to_string(i) + "]", light->getSpotRange());
+
+        // Sombras
         if (shadowsEnabled && shadowManager) {
-            // Usar la matriz de spot light calculada por el shadow manager
             const auto& spotMatrices = shadowManager->getSpotLightSpaceMatrices();
             if (i < spotMatrices.size()) {
-                GLint spotMatrixLoc = glGetUniformLocation(program, ("uSpotLightMatrices[" + std::to_string(i) + "]").c_str());
-                if (spotMatrixLoc != -1) {
-                    glUniformMatrix4fv(spotMatrixLoc, 1, GL_FALSE, glm::value_ptr(spotMatrices[i]));
-                }
+                shaders->getProgram()->setMat4("uSpotLightMatrices[" + std::to_string(i) + "]", spotMatrices[i]);
             }
         }
     }
@@ -389,7 +378,7 @@ void RenderPipeline::renderInstanced() {
         if (objects.empty()) continue;
         
         // Configurar material y shadow maps en el orden correcto
-        GLuint program = shaders->getProgram();
+        GLuint program = shaders->getProgram()->getID();
         
         // 1. Configurar material primero - ALWAYS configure material to ensure fresh state
         if (key.material) {
@@ -464,98 +453,88 @@ void RenderPipeline::configureMaterial(Material* material) {
         configureDefaultMaterial();
         return;
     }
-    
+
     if (!material->isValid()) {
-        std::cerr << "RenderPipeline::configureMaterial: ERROR - Material '" << material->getName() << "' is not valid!" << std::endl;
+        std::cerr << "RenderPipeline::configureMaterial: ERROR - Material '" 
+                  << material->getName() << "' is not valid!" << std::endl;
         configureDefaultMaterial();
         return;
     }
-    
-    GLuint program = shaders->getProgram();
-    
-    // Always ensure we're using the correct shader program
-    glUseProgram(program);
-    
-    // Check if material has any valid textures - silent validation
-    
-    // Configurar propiedades del material
-    glUniform3fv(glGetUniformLocation(program, "uAlbedo"), 1, glm::value_ptr(material->getAlbedo()));
-    glUniform1f(glGetUniformLocation(program, "uAlpha"), material->getAlpha());
-    glUniform1f(glGetUniformLocation(program, "uMetallic"), material->getMetallic());
-    glUniform1f(glGetUniformLocation(program, "uRoughness"), material->getRoughness());
-    glUniform3fv(glGetUniformLocation(program, "uEmissive"), 1, glm::value_ptr(material->getEmissive()));
-    glUniform2fv(glGetUniformLocation(program, "uTiling"), 1, glm::value_ptr(material->getTiling()));
-    glUniform1f(glGetUniformLocation(program, "uNormalStrength"), material->getNormalStrength());
-    
-    // Configurar texturas
-    glUniform1i(glGetUniformLocation(program, "uAlbedoTexture"), 0);
-    glUniform1i(glGetUniformLocation(program, "uNormalTexture"), 1);
-    glUniform1i(glGetUniformLocation(program, "uMetallicTexture"), 2);
-    glUniform1i(glGetUniformLocation(program, "uRoughnessTexture"), 3);
-    glUniform1i(glGetUniformLocation(program, "uEmissiveTexture"), 4);
-    glUniform1i(glGetUniformLocation(program, "uAOTexture"), 5);
-    
-    // Configurar flags de texturas
-    bool hasAlbedo = material->hasAlbedoTexture();
-    bool hasNormal = material->hasNormalTexture();
-    bool hasMetallic = material->hasMetallicTexture();
-    bool hasRoughness = material->hasRoughnessTexture();
-    bool hasEmissive = material->hasEmissiveTexture();
-    bool hasAO = material->hasAOTexture();
-    
-    // CORREGIDO: Asegurar que los flags de textura se establezcan correctamente
-    glUniform1i(glGetUniformLocation(program, "uHasAlbedoTexture"), hasAlbedo ? 1 : 0);
-    glUniform1i(glGetUniformLocation(program, "uHasNormalTexture"), hasNormal ? 1 : 0);
-    glUniform1i(glGetUniformLocation(program, "uHasMetallicTexture"), hasMetallic ? 1 : 0);
-    glUniform1i(glGetUniformLocation(program, "uHasRoughnessTexture"), hasRoughness ? 1 : 0);
-    glUniform1i(glGetUniformLocation(program, "uHasEmissiveTexture"), hasEmissive ? 1 : 0);
-    glUniform1i(glGetUniformLocation(program, "uHasAOTexture"), hasAO ? 1 : 0);
-    
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, 0);
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, 0);
-    glActiveTexture(GL_TEXTURE2);
-    glBindTexture(GL_TEXTURE_2D, 0);
-    glActiveTexture(GL_TEXTURE3);
-    glBindTexture(GL_TEXTURE_2D, 0);
-    glActiveTexture(GL_TEXTURE4);
-    glBindTexture(GL_TEXTURE_2D, 0);
-    glActiveTexture(GL_TEXTURE5);
-    glBindTexture(GL_TEXTURE_2D, 0);
-    glActiveTexture(GL_TEXTURE0); // Reset to 0
-    
-    // CORREGIDO: Siempre bindear texturas, incluso si no hay texturas válidas
+
+    auto shader = shaders->getProgram();
+    shader->use(); // Activar shader
+
+    // Propiedades del material
+    shader->setVec3("uAlbedo", material->getAlbedo());
+    shader->setFloat("uAlpha", material->getAlpha());
+    shader->setFloat("uMetallic", material->getMetallic());
+    shader->setFloat("uRoughness", material->getRoughness());
+    shader->setVec3("uEmissive", material->getEmissive());
+    shader->setVec2("uTiling", material->getTiling());
+    shader->setFloat("uNormalStrength", material->getNormalStrength());
+
+    // Texturas
+    shader->setInt("uAlbedoTexture", 0);
+    shader->setInt("uNormalTexture", 1);
+    shader->setInt("uMetallicTexture", 2);
+    shader->setInt("uRoughnessTexture", 3);
+    shader->setInt("uEmissiveTexture", 4);
+    shader->setInt("uAOTexture", 5);
+
+    // Flags de texturas
+    shader->setInt("uHasAlbedoTexture", material->hasAlbedoTexture() ? 1 : 0);
+    shader->setInt("uHasNormalTexture", material->hasNormalTexture() ? 1 : 0);
+    shader->setInt("uHasMetallicTexture", material->hasMetallicTexture() ? 1 : 0);
+    shader->setInt("uHasRoughnessTexture", material->hasRoughnessTexture() ? 1 : 0);
+    shader->setInt("uHasEmissiveTexture", material->hasEmissiveTexture() ? 1 : 0);
+    shader->setInt("uHasAOTexture", material->hasAOTexture() ? 1 : 0);
+
+    // Bindear texturas del material
     if (material->hasAnyValidTextures()) {
         material->bindTextures();
+    } else {
+        // Resetear todas las unidades a 0 si no hay texturas
+        for (int i = 0; i <= 5; i++) {
+            glActiveTexture(GL_TEXTURE0 + i);
+            glBindTexture(GL_TEXTURE_2D, 0);
+        }
+        glActiveTexture(GL_TEXTURE0);
     }
-    
-    // CRÍTICO: Rebindear TODOS los shadow maps después de bindear texturas del material
-    // rebindShadowMapsAfterMaterial(program);
+
+    // Rebindear shadow maps después de las texturas
+    // rebindShadowMapsAfterMaterial(shader->getProgram());
 }
 
 void RenderPipeline::configureDefaultMaterial() {
-    GLuint program = shaders->getProgram();
-    
-    // Material por defecto
-    glUniform3f(glGetUniformLocation(program, "uAlbedo"), 1.0f, 1.0f, 1.0f);
-    glUniform1f(glGetUniformLocation(program, "uAlpha"), 1.0f);
-    glUniform1f(glGetUniformLocation(program, "uMetallic"), 0.0f);
-    glUniform1f(glGetUniformLocation(program, "uRoughness"), 0.5f);
-    glUniform3f(glGetUniformLocation(program, "uEmissive"), 0.0f, 0.0f, 0.0f);
-    glUniform2f(glGetUniformLocation(program, "uTiling"), 1.0f, 1.0f);
-    glUniform1f(glGetUniformLocation(program, "uNormalStrength"), 1.0f);
-    
-    // Sin texturas
-    glUniform1i(glGetUniformLocation(program, "uHasAlbedoTexture"), 0);
-    glUniform1i(glGetUniformLocation(program, "uHasNormalTexture"), 0);
-    glUniform1i(glGetUniformLocation(program, "uHasMetallicTexture"), 0);
-    glUniform1i(glGetUniformLocation(program, "uHasRoughnessTexture"), 0);
-    glUniform1i(glGetUniformLocation(program, "uHasEmissiveTexture"), 0);
-    glUniform1i(glGetUniformLocation(program, "uHasAOTexture"), 0);
-    
-    // CRÍTICO: También rebindear shadow maps después del material por defecto
-    // rebindShadowMapsAfterMaterial(program);
+    auto shader = shaders->getProgram();
+    shader->use(); // Activar shader
+
+    // Propiedades del material por defecto
+    shader->setVec3("uAlbedo", glm::vec3(1.0f, 1.0f, 1.0f));
+    shader->setFloat("uAlpha", 1.0f);
+    shader->setFloat("uMetallic", 0.0f);
+    shader->setFloat("uRoughness", 0.5f);
+    shader->setVec3("uEmissive", glm::vec3(0.0f));
+    shader->setVec2("uTiling", glm::vec2(1.0f, 1.0f));
+    shader->setFloat("uNormalStrength", 1.0f);
+
+    // Flags de texturas desactivados
+    shader->setInt("uHasAlbedoTexture", 0);
+    shader->setInt("uHasNormalTexture", 0);
+    shader->setInt("uHasMetallicTexture", 0);
+    shader->setInt("uHasRoughnessTexture", 0);
+    shader->setInt("uHasEmissiveTexture", 0);
+    shader->setInt("uHasAOTexture", 0);
+
+    // Resetear todas las unidades de textura
+    for (int i = 0; i <= 5; i++) {
+        glActiveTexture(GL_TEXTURE0 + i);
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+    glActiveTexture(GL_TEXTURE0);
+
+    // Rebindear shadow maps después del material por defecto
+    // rebindShadowMapsAfterMaterial(shader->getProgram());
 }
 
 // Método helper para rebindear shadow maps después de cualquier configuración de material
@@ -590,15 +569,14 @@ void RenderPipeline::rebindShadowMapsAfterMaterial(GLuint program) {
 }
 
 void RenderPipeline::renderNonInstanced() {
-    // Método de respaldo para renderizado no instanciado (mantenido por compatibilidad)
+    auto shader = shaders->getProgram();
+
     for (GameObject* obj : sceneObjects) {
-        // Skip objects without geometry
-        if (!obj->hasGeometry()) {
-            continue;
-        }
-        
+        if (!obj->hasGeometry()) continue;
+
         glm::mat4 model = obj->getWorldModelMatrix();
-        glUniformMatrix4fv(glGetUniformLocation(shaders->getProgram(), "model"), 1, GL_FALSE, glm::value_ptr(model));
+        shader->setMat4("model", model); // Reemplaza glUniformMatrix4fv
+
         obj->getGeometry()->draw();
     }
 }
@@ -1034,12 +1012,11 @@ float RenderPipeline::getShadowStrength() const {
 
 void RenderPipeline::forceMaterialRefresh() {
     materialsDirty = true;
-    
-    // Force OpenGL state reset for materials
-    GLuint program = shaders->getProgram();
-    glUseProgram(program);
-    
-    // Reset all texture units to ensure clean state
+
+    auto shader = shaders->getProgram();
+    shader->use(); // Activar shader de forma consistente
+
+    // Resetear todas las unidades de textura
     for (int i = 0; i < 6; i++) {
         glActiveTexture(GL_TEXTURE0 + i);
         glBindTexture(GL_TEXTURE_2D, 0);

@@ -1,15 +1,15 @@
 #pragma once
-#include <GL/glew.h>
+#include "Shader.h"
 #include <string>
 #include "../core/CoreExporter.h"
 
 
 class MANTRAXCORE_API DefaultShaders {
 public:
+    Shader* shaderGraphic;
     DefaultShaders();
-    ~DefaultShaders();
 
-    GLuint getProgram() const;
+    Shader* getProgram() const;
     
     // Post-processing uniform setters
     void setExposure(float exposure);
@@ -20,9 +20,4 @@ public:
     float getExposure() const;
     float getSaturation() const;
     float getSmoothness() const;
-    
-private:
-    GLuint program;
-
-    GLuint compileShader(GLenum type, const std::string& source);
 };

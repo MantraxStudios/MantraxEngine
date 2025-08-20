@@ -37,6 +37,7 @@ void CoreWrapper::RegisterMaths(sol::state& lua) {
     std::cout << "[CoreWrapper] RegisterMaths called - GLM includes should be working" << std::endl;
 
     // VECTOR3
+    
     lua.new_usertype<glm::vec3>("vector3",
         sol::constructors<glm::vec3(float, float, float)>(),
         "x", &glm::vec3::x,

@@ -90,6 +90,7 @@ if(MSVC)
     target_compile_options(${PROJECT_NAME} PRIVATE
         $<$<CONFIG:Debug>:/ZI>
         $<$<CONFIG:Release>:/O2>
+        /W0
     )
     
     target_link_options(${PROJECT_NAME} PRIVATE
