@@ -20,6 +20,9 @@ private:
     std::vector<std::unique_ptr<WindowBehaviour>> m_windows;
     SimpleNodeEditor editor;
 
+        int edad = 25;
+        float velocidad = 3.5f;
+
 public:
     RenderWindows() {
         m_windows.push_back(std::make_unique<Hierarchy>());
@@ -33,9 +36,21 @@ public:
         m_windows.push_back(std::make_unique<InputEditor>());
         m_windows.push_back(std::make_unique<CanvasManager>());
 
+
         editor.AddStartNode(1, ImVec2(50, 100));
-        editor.AddStringNode(2, ImVec2(50, 200), "Mi mensaje!");  
-        editor.AddPrintNode(3, ImVec2(250, 150));
+        editor.AddStartNode(2, ImVec2(10, 100));
+        editor.AddStringNode(3, ImVec2(50, 200), "Mi mensaje!");  
+        editor.AddStringNode(4, ImVec2(50, 200), "Mi mensajeabc!");  
+        editor.AddPrintNode(5, ImVec2(250, 150));
+
+        
+
+        editor.AddCustomNode(25, ImVec2(100, 100), ImVec2(160, 80), "Persona",
+            [&](CustomNode& cn) {
+                cn.RegisterPin("Edad", edad);
+                cn.RegisterPin("Velocidad", velocidad);
+            } 
+        );
     }
     
     // Delete copy constructor and assignment operator
