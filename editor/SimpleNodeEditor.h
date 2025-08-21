@@ -608,9 +608,12 @@ public:
                 // Si es un nodo String conectado a Print, también actualizar el valor de salida
                 if (sourceNode->n.title == "String" && fromPinId == 0)
                 {
-                    try {
+                    try
+                    {
                         sourceNode->SetOutputValue<std::string>(0, std::any_cast<std::string>(outputValue->second));
-                    } catch (const std::bad_any_cast&) {
+                    }
+                    catch (const std::bad_any_cast &)
+                    {
                         // Handle case where String node might have different data type
                         std::cout << "[WARNING] String node output type mismatch" << std::endl;
                     }
@@ -619,20 +622,32 @@ public:
                 // Debug output that handles different data types safely
                 std::cout << "[CONNECTION] Updated node " << toNodeId << " pin " << toPinId
                           << " with value from node " << fromNodeId << " pin " << fromPinId;
-                
-                try {
-                    if (outputValue->second.type() == typeid(std::string)) {
+
+                try
+                {
+                    if (outputValue->second.type() == typeid(std::string))
+                    {
                         std::cout << " = " << std::any_cast<std::string>(outputValue->second);
-                    } else if (outputValue->second.type() == typeid(int)) {
+                    }
+                    else if (outputValue->second.type() == typeid(int))
+                    {
                         std::cout << " = " << std::any_cast<int>(outputValue->second);
-                    } else if (outputValue->second.type() == typeid(float)) {
+                    }
+                    else if (outputValue->second.type() == typeid(float))
+                    {
                         std::cout << " = " << std::any_cast<float>(outputValue->second);
-                    } else if (outputValue->second.type() == typeid(bool)) {
+                    }
+                    else if (outputValue->second.type() == typeid(bool))
+                    {
                         std::cout << " = " << (std::any_cast<bool>(outputValue->second) ? "true" : "false");
-                    } else {
+                    }
+                    else
+                    {
                         std::cout << " = <unknown type: " << outputValue->second.type().name() << ">";
                     }
-                } catch (const std::bad_any_cast&) {
+                }
+                catch (const std::bad_any_cast &)
+                {
                     std::cout << " = <type cast error>";
                 }
                 std::cout << std::endl;
@@ -776,24 +791,37 @@ public:
             {
                 int multiplieMove = node->GetInputValue<int>(1, 0);
                 std::cout << "[MOVE NODE] Received input value: " << multiplieMove << std::endl;
-                
+
                 // Debug: mostrar todos los valores de entrada
                 std::cout << "[MOVE NODE] All input values:" << std::endl;
-                for (const auto& input : node->inputValues) {
+                for (const auto &input : node->inputValues)
+                {
                     std::cout << "  Pin " << input.first << ": ";
-                    try {
-                        if (input.second.type() == typeid(int)) {
+                    try
+                    {
+                        if (input.second.type() == typeid(int))
+                        {
                             std::cout << std::any_cast<int>(input.second);
-                        } else if (input.second.type() == typeid(std::string)) {
+                        }
+                        else if (input.second.type() == typeid(std::string))
+                        {
                             std::cout << std::any_cast<std::string>(input.second);
-                        } else if (input.second.type() == typeid(float)) {
+                        }
+                        else if (input.second.type() == typeid(float))
+                        {
                             std::cout << std::any_cast<float>(input.second);
-                        } else if (input.second.type() == typeid(bool)) {
+                        }
+                        else if (input.second.type() == typeid(bool))
+                        {
                             std::cout << (std::any_cast<bool>(input.second) ? "true" : "false");
-                        } else {
+                        }
+                        else
+                        {
                             std::cout << "<unknown type: " << input.second.type().name() << ">";
                         }
-                    } catch (const std::bad_any_cast&) {
+                    }
+                    catch (const std::bad_any_cast &)
+                    {
                         std::cout << "<type cast error>";
                     }
                     std::cout << std::endl;
@@ -860,11 +888,11 @@ public:
                 node->nodeData["started"] = true;
                 node->nodeData["startTime"] = std::chrono::steady_clock::now();
             },
-            INPUT_OUTPUT,        // category
-            false,               // hasExecInput
-            true,                // hasExecOutput
-            {},                  // inputPins
-            {},                  // outputPins - solo pin de ejecución, sin datos
+            INPUT_OUTPUT, // category
+            false,        // hasExecInput
+            true,         // hasExecOutput
+            {},           // inputPins
+            {},           // outputPins - solo pin de ejecución, sin datos
             position);
     }
 
@@ -1007,11 +1035,14 @@ public:
             {
                 int value = node->GetInputValue<int>(0, initialValue);
                 node->SetOutputValue<int>(0, value);
-                
+
                 // Debug: verificar que el valor se estableció correctamente
-                try {
+                try
+                {
                     int outputValue = node->GetOutputValue<int>(0, -999);
-                } catch (...) {
+                }
+                catch (...)
+                {
                     std::cout << "[INT] Error getting output value" << std::endl;
                 }
             },
@@ -1384,180 +1415,6 @@ public:
             {{"Value", 0.5f}, {"Min", 0.0f}, {"Max", 1.0f}}, // inputPins
             {{"", 0.5f}},                                    // outputPins
             position);
-    }
-
-    // Función de ejemplo para crear un grafo matemático completo
-    void CreateMathGraphExample()
-    {
-        // Crear nodos básicos
-        auto vectorA = CreateVector3Node(Vector3(1, 2, 3), ImVec2(50, 100));
-        auto vectorB = CreateVector3Node(Vector3(4, 5, 6), ImVec2(50, 200));
-
-        // Operaciones vectoriales
-        auto addNode = CreateVectorAddNode(ImVec2(200, 150));
-        auto crossNode = CreateVectorCrossNode(ImVec2(200, 250));
-        auto dotNode = CreateVectorDotNode(ImVec2(200, 350));
-
-        // Operaciones matemáticas
-        auto sinNode = CreateSinNode(ImVec2(350, 150));
-        auto cosNode = CreateCosNode(ImVec2(350, 250));
-        auto lerpNode = CreateLerpNode(ImVec2(350, 350));
-
-        // Matrices
-        auto matrixA = CreateMatrix4x4Node(ImVec2(500, 150));
-        auto matrixB = CreateMatrix4x4Node(ImVec2(500, 250));
-        auto matrixMult = CreateMatrixMultiplyNode(ImVec2(500, 350));
-
-        // Conectar nodos
-        connections.push_back({vectorA->nodeId, 0, addNode->nodeId, 0}); // VectorA -> Add.A
-        connections.push_back({vectorB->nodeId, 0, addNode->nodeId, 1}); // VectorB -> Add.B
-
-        connections.push_back({vectorA->nodeId, 0, crossNode->nodeId, 0}); // VectorA -> Cross.A
-        connections.push_back({vectorB->nodeId, 0, crossNode->nodeId, 1}); // VectorB -> Cross.B
-
-        connections.push_back({vectorA->nodeId, 0, dotNode->nodeId, 0}); // VectorA -> Dot.A
-        connections.push_back({vectorB->nodeId, 0, dotNode->nodeId, 1}); // VectorB -> Dot.B
-
-        connections.push_back({addNode->nodeId, 0, sinNode->nodeId, 0});   // Add.Result -> Sin.Angle
-        connections.push_back({crossNode->nodeId, 0, cosNode->nodeId, 0}); // Cross.Result -> Cos.Angle
-
-        connections.push_back({matrixA->nodeId, 0, matrixMult->nodeId, 0}); // MatrixA -> Mult.A
-        connections.push_back({matrixB->nodeId, 0, matrixMult->nodeId, 1}); // MatrixB -> Mult.B
-
-        std::cout << "[MATH GRAPH] Created complete mathematical graph with vectors, matrices, and operations!" << std::endl;
-    }
-
-    // Función para crear múltiples instancias de cada tipo de nodo para testing
-    void CreateMultipleNodesForTesting()
-    {
-        std::cout << "[TESTING] Creating multiple instances of each node type for connection testing..." << std::endl;
-        
-        // INPUT/OUTPUT NODES - 2 de cada tipo
-        auto start1 = CreateStartNode(ImVec2(50, 100));
-        auto start2 = CreateStartNode(ImVec2(50, 200));
-        
-        auto string1 = CreateStringNode("Hello World", ImVec2(50, 300));
-        auto string2 = CreateStringNode("Test String", ImVec2(50, 400));
-        
-        auto bool1 = CreateBoolNode(true, ImVec2(50, 500));
-        auto bool2 = CreateBoolNode(false, ImVec2(50, 600));
-        
-        auto int1 = CreateIntNode(42, ImVec2(50, 700));
-        auto int2 = CreateIntNode(100, ImVec2(50, 800));
-        
-        auto float1 = CreateFloatNode(3.14f, ImVec2(50, 900));
-        auto float2 = CreateFloatNode(2.718f, ImVec2(50, 1000));
-        
-        // MATH NODES - 2 de cada tipo
-        auto add1 = CreateMathAddNode(ImVec2(200, 100));
-        auto add2 = CreateMathAddNode(ImVec2(200, 200));
-        
-        auto sin1 = CreateSinNode(ImVec2(200, 300));
-        auto sin2 = CreateSinNode(ImVec2(200, 400));
-        
-        auto cos1 = CreateCosNode(ImVec2(200, 500));
-        auto cos2 = CreateCosNode(ImVec2(200, 600));
-        
-        auto lerp1 = CreateLerpNode(ImVec2(200, 700));
-        auto lerp2 = CreateLerpNode(ImVec2(200, 800));
-        
-        auto clamp1 = CreateClampNode(ImVec2(200, 900));
-        auto clamp2 = CreateClampNode(ImVec2(200, 1000));
-        
-        // VECTOR NODES - 2 de cada tipo
-        auto vector2_1 = CreateVector2Node(Vector2(1, 2), ImVec2(350, 100));
-        auto vector2_2 = CreateVector2Node(Vector2(3, 4), ImVec2(350, 200));
-        
-        auto vector3_1 = CreateVector3Node(Vector3(1, 2, 3), ImVec2(350, 300));
-        auto vector3_2 = CreateVector3Node(Vector3(4, 5, 6), ImVec2(350, 400));
-        
-        auto vectorAdd1 = CreateVectorAddNode(ImVec2(350, 500));
-        auto vectorAdd2 = CreateVectorAddNode(ImVec2(350, 600));
-        
-        auto vectorCross1 = CreateVectorCrossNode(ImVec2(350, 700));
-        auto vectorCross2 = CreateVectorCrossNode(ImVec2(350, 800));
-        
-        auto vectorDot1 = CreateVectorDotNode(ImVec2(350, 900));
-        auto vectorDot2 = CreateVectorDotNode(ImVec2(350, 1000));
-        
-        auto vectorNormalize1 = CreateVectorNormalizeNode(ImVec2(350, 1100));
-        auto vectorNormalize2 = CreateVectorNormalizeNode(ImVec2(350, 1200));
-        
-        // MATRIX NODES - 2 de cada tipo
-        auto matrix3x3_1 = CreateMatrix3x3Node(ImVec2(500, 100));
-        auto matrix3x3_2 = CreateMatrix3x3Node(ImVec2(500, 200));
-        
-        auto matrix4x4_1 = CreateMatrix4x4Node(ImVec2(500, 300));
-        auto matrix4x4_2 = CreateMatrix4x4Node(ImVec2(500, 400));
-        
-        auto matrixMult1 = CreateMatrixMultiplyNode(ImVec2(500, 500));
-        auto matrixMult2 = CreateMatrixMultiplyNode(ImVec2(500, 600));
-        
-        // SCRIPT NODES - 2 de cada tipo
-        auto print1 = CreatePrintNode(ImVec2(650, 100));
-        auto print2 = CreatePrintNode(ImVec2(650, 200));
-        
-        auto move1 = CreateMoveNode(ImVec2(650, 300));
-        auto move2 = CreateMoveNode(ImVec2(650, 400));
-        
-        auto update1 = CreateUpdateNode(ImVec2(650, 500));
-        auto update2 = CreateUpdateNode(ImVec2(650, 600));
-        
-        auto timer1 = CreateTimerNode(1.0f, ImVec2(650, 700));
-        auto timer2 = CreateTimerNode(2.0f, ImVec2(650, 800));
-        
-        auto delay1 = CreateDelayNode(1.0f, ImVec2(650, 900));
-        auto delay2 = CreateDelayNode(2.0f, ImVec2(650, 1000));
-        
-        std::cout << "[TESTING] Created " << (customNodes.size()) << " nodes for testing!" << std::endl;
-        std::cout << "[TESTING] You can now connect them to test the connection system!" << std::endl;
-    }
-
-    // Función para crear un grafo de ejemplo simple para testing
-    void CreateSimpleTestGraph()
-    {
-        std::cout << "[TESTING] Creating a simple test graph with basic connections..." << std::endl;
-        
-        // Crear nodos básicos
-        auto start = CreateStartNode(ImVec2(50, 100));
-        auto string1 = CreateStringNode("Hello from String!", ImVec2(50, 200));
-        auto print1 = CreatePrintNode(ImVec2(200, 100));
-        auto int1 = CreateIntNode(42, ImVec2(50, 300));
-        auto move1 = CreateMoveNode(ImVec2(200, 200));
-        
-        // Debug: mostrar la estructura de pins de cada nodo
-        std::cout << "[DEBUG] Start Node pins:" << std::endl;
-        std::cout << "  Inputs: " << start->n.inputs.size() << std::endl;
-        std::cout << "  Outputs: " << start->n.outputs.size() << std::endl;
-        for (size_t i = 0; i < start->n.outputs.size(); i++) {
-            std::cout << "    Output " << i << ": isExec=" << start->n.outputs[i].isExec << std::endl;
-        }
-        
-        std::cout << "[DEBUG] Move Node pins:" << std::endl;
-        std::cout << "  Inputs: " << move1->n.inputs.size() << std::endl;
-        std::cout << "  Outputs: " << move1->n.outputs.size() << std::endl;
-        for (size_t i = 0; i < move1->n.inputs.size(); i++) {
-            std::cout << "    Input " << i << ": isExec=" << move1->n.inputs[i].isExec << std::endl;
-        }
-        
-        // Crear conexiones de ejemplo
-        if (CreateConnection(start->nodeId, 0, print1->nodeId, 0)) {
-            std::cout << "[TESTING] Connected Start -> Print (execution)" << std::endl;
-        }
-        
-        if (CreateConnection(string1->nodeId, 0, print1->nodeId, 1)) {
-            std::cout << "[TESTING] Connected String -> Print (data)" << std::endl;
-        }
-        
-        if (CreateConnection(start->nodeId, 0, move1->nodeId, 0)) {
-            std::cout << "[TESTING] Connected Start -> Move (execution)" << std::endl;
-        }
-        
-        if (CreateConnection(int1->nodeId, 0, move1->nodeId, 1)) {
-            std::cout << "[TESTING] Connected Integer -> Move (data)" << std::endl;
-        }
-        
-        std::cout << "[TESTING] Simple test graph created with " << connections.size() << " connections!" << std::endl;
     }
 
     // Método para validar si una conexión es válida (VERSIÓN MEJORADA)
@@ -2064,104 +1921,142 @@ public:
     // Método para diagnosticar problemas de conexión específicos
     void DiagnoseConnection(int fromNodeId, int fromPinId, int toNodeId, int toPinId)
     {
-        std::cout << "\n=== DIAGNOSIS: Connection " << fromNodeId << ":" << fromPinId 
+        std::cout << "\n=== DIAGNOSIS: Connection " << fromNodeId << ":" << fromPinId
                   << " -> " << toNodeId << ":" << toPinId << " ===" << std::endl;
-        
+
         CustomNode *fromNode = GetCustomNodeById(fromNodeId);
         CustomNode *toNode = GetCustomNodeById(toNodeId);
-        
-        if (!fromNode) {
+
+        if (!fromNode)
+        {
             std::cout << "[ERROR] Source node " << fromNodeId << " not found!" << std::endl;
             return;
         }
-        
-        if (!toNode) {
+
+        if (!toNode)
+        {
             std::cout << "[ERROR] Target node " << toNodeId << " not found!" << std::endl;
             return;
         }
-        
+
         std::cout << "Source node: " << fromNode->n.title << " (ID: " << fromNodeId << ")" << std::endl;
         std::cout << "Target node: " << toNode->n.title << " (ID: " << toNodeId << ")" << std::endl;
-        
+
         // Verificar pins de salida del nodo fuente
-        if (fromPinId >= 0 && fromPinId < fromNode->n.outputs.size()) {
-            Pin& outputPin = fromNode->n.outputs[fromPinId];
+        if (fromPinId >= 0 && fromPinId < fromNode->n.outputs.size())
+        {
+            Pin &outputPin = fromNode->n.outputs[fromPinId];
             std::cout << "Source output pin " << fromPinId << ": isExec=" << outputPin.isExec << std::endl;
-            
+
             auto outputValue = fromNode->outputValues.find(fromPinId);
-            if (outputValue != fromNode->outputValues.end()) {
+            if (outputValue != fromNode->outputValues.end())
+            {
                 std::cout << "Source output value: ";
-                try {
-                    if (outputValue->second.type() == typeid(int)) {
+                try
+                {
+                    if (outputValue->second.type() == typeid(int))
+                    {
                         std::cout << std::any_cast<int>(outputValue->second);
-                    } else if (outputValue->second.type() == typeid(std::string)) {
+                    }
+                    else if (outputValue->second.type() == typeid(std::string))
+                    {
                         std::cout << std::any_cast<std::string>(outputValue->second);
-                    } else if (outputValue->second.type() == typeid(float)) {
+                    }
+                    else if (outputValue->second.type() == typeid(float))
+                    {
                         std::cout << std::any_cast<float>(outputValue->second);
-                    } else {
+                    }
+                    else
+                    {
                         std::cout << "<unknown type: " << outputValue->second.type().name() << ">";
                     }
-                } catch (const std::bad_any_cast&) {
+                }
+                catch (const std::bad_any_cast &)
+                {
                     std::cout << "<type cast error>";
                 }
                 std::cout << std::endl;
-            } else {
+            }
+            else
+            {
                 std::cout << "Source output value: <not set>" << std::endl;
             }
-        } else {
+        }
+        else
+        {
             std::cout << "[ERROR] Invalid source pin ID: " << fromPinId << std::endl;
         }
-        
+
         // Verificar pins de entrada del nodo destino
-        if (toPinId >= 0 && toPinId < toNode->n.inputs.size()) {
-            Pin& inputPin = toNode->n.inputs[toPinId];
+        if (toPinId >= 0 && toPinId < toNode->n.inputs.size())
+        {
+            Pin &inputPin = toNode->n.inputs[toPinId];
             std::cout << "Target input pin " << toPinId << ": isExec=" << inputPin.isExec << std::endl;
-            
+
             auto inputValue = toNode->inputValues.find(toPinId);
-            if (inputValue != toNode->inputValues.end()) {
+            if (inputValue != toNode->inputValues.end())
+            {
                 std::cout << "Target input value: ";
-                try {
-                    if (inputValue->second.type() == typeid(int)) {
+                try
+                {
+                    if (inputValue->second.type() == typeid(int))
+                    {
                         std::cout << std::any_cast<int>(inputValue->second);
-                    } else if (inputValue->second.type() == typeid(std::string)) {
+                    }
+                    else if (inputValue->second.type() == typeid(std::string))
+                    {
                         std::cout << std::any_cast<std::string>(inputValue->second);
-                    } else if (inputValue->second.type() == typeid(float)) {
+                    }
+                    else if (inputValue->second.type() == typeid(float))
+                    {
                         std::cout << std::any_cast<float>(inputValue->second);
-                    } else {
+                    }
+                    else
+                    {
                         std::cout << "<unknown type: " << inputValue->second.type().name() << ">";
                     }
-                } catch (const std::bad_any_cast&) {
+                }
+                catch (const std::bad_any_cast &)
+                {
                     std::cout << "<type cast error>";
                 }
                 std::cout << std::endl;
-            } else {
+            }
+            else
+            {
                 std::cout << "Target input value: <not set>" << std::endl;
             }
-        } else {
+        }
+        else
+        {
             std::cout << "[ERROR] Invalid target pin ID: " << toPinId << std::endl;
         }
-        
-        std::cout << "=== END DIAGNOSIS ===\n" << std::endl;
+
+        std::cout << "=== END DIAGNOSIS ===\n"
+                  << std::endl;
     }
-    
+
     // Función para mostrar la estructura de pins de cualquier nodo
     void DebugNodePins(int nodeId)
     {
         CustomNode *node = GetCustomNodeById(nodeId);
-        if (!node) {
+        if (!node)
+        {
             std::cout << "[DEBUG] Node " << nodeId << " not found!" << std::endl;
             return;
         }
-        
+
         std::cout << "\n[DEBUG] Node: " << node->n.title << " (ID: " << node->n.id << ")" << std::endl;
         std::cout << "  Inputs (" << node->n.inputs.size() << "):" << std::endl;
-        for (size_t i = 0; i < node->n.inputs.size(); i++) {
+        for (size_t i = 0; i < node->n.inputs.size(); i++)
+        {
             Pin &pin = node->n.inputs[i];
             std::cout << "    " << i << ": isExec=" << pin.isExec << " (pos: " << pin.pos.x << ", " << pin.pos.y << ")" << std::endl;
         }
-        
+
         std::cout << "  Outputs (" << node->n.outputs.size() << "):" << std::endl;
-        for (size_t i = 0; i < node->n.outputs.size(); i++) {
+        for (size_t i = 0; i < node->n.outputs.size(); i++)
+        {
             Pin &pin = node->n.outputs[i];
             std::cout << "  " << i << ": isExec=" << pin.isExec << " (pos: " << pin.pos.x << ", " << pin.pos.y << ")" << std::endl;
         }
@@ -2172,90 +2067,119 @@ public:
     void TestIntegerToMoveConnection()
     {
         std::cout << "\n=== TESTING INTEGER TO MOVE CONNECTION ===" << std::endl;
-        
+
         // Buscar nodos Integer y Move
-        CustomNode* integerNode = nullptr;
-        CustomNode* moveNode = nullptr;
-        
-        for (auto& node : customNodes) {
-            if (node.n.title == "Integer") {
+        CustomNode *integerNode = nullptr;
+        CustomNode *moveNode = nullptr;
+
+        for (auto &node : customNodes)
+        {
+            if (node.n.title == "Integer")
+            {
                 integerNode = &node;
-            } else if (node.n.title == "Move Object") {
+            }
+            else if (node.n.title == "Move Object")
+            {
                 moveNode = &node;
             }
         }
-        
-        if (!integerNode) {
+
+        if (!integerNode)
+        {
             std::cout << "[ERROR] No Integer node found!" << std::endl;
             return;
         }
-        
-        if (!moveNode) {
+
+        if (!moveNode)
+        {
             std::cout << "[ERROR] No Move Object node found!" << std::endl;
             return;
         }
-        
+
         std::cout << "Integer node ID: " << integerNode->nodeId << std::endl;
         std::cout << "Move node ID: " << moveNode->nodeId << std::endl;
-        
+
         // Ejecutar el nodo Integer para establecer su valor de salida
-        if (integerNode->n.execFunc) {
+        if (integerNode->n.execFunc)
+        {
             std::cout << "[TEST] Executing Integer node..." << std::endl;
             integerNode->n.execFunc(&integerNode->n);
         }
-        
+
         // Verificar el valor de salida del Integer
         auto outputValue = integerNode->outputValues.find(0);
-        if (outputValue != integerNode->outputValues.end()) {
+        if (outputValue != integerNode->outputValues.end())
+        {
             std::cout << "[TEST] Integer output value: ";
-            try {
-                if (outputValue->second.type() == typeid(int)) {
+            try
+            {
+                if (outputValue->second.type() == typeid(int))
+                {
                     std::cout << std::any_cast<int>(outputValue->second);
-                } else {
+                }
+                else
+                {
                     std::cout << "<wrong type: " << outputValue->second.type().name() << ">";
                 }
-            } catch (const std::bad_any_cast&) {
+            }
+            catch (const std::bad_any_cast &)
+            {
                 std::cout << "<type cast error>";
             }
             std::cout << std::endl;
-        } else {
+        }
+        else
+        {
             std::cout << "[TEST] Integer output value: <not set>" << std::endl;
         }
-        
+
         // Verificar el valor de entrada del Move
         auto inputValue = moveNode->inputValues.find(1);
-        if (inputValue != moveNode->inputValues.end()) {
+        if (inputValue != moveNode->inputValues.end())
+        {
             std::cout << "[TEST] Move input value (pin 1): ";
-            try {
-                if (inputValue->second.type() == typeid(int)) {
+            try
+            {
+                if (inputValue->second.type() == typeid(int))
+                {
                     std::cout << std::any_cast<int>(inputValue->second);
-                } else {
+                }
+                else
+                {
                     std::cout << "<wrong type: " << inputValue->second.type().name() << ">";
                 }
-            } catch (const std::bad_any_cast&) {
+            }
+            catch (const std::bad_any_cast &)
+            {
                 std::cout << "<type cast error>";
             }
             std::cout << std::endl;
-        } else {
+        }
+        else
+        {
             std::cout << "[TEST] Move input value (pin 1): <not set>" << std::endl;
         }
-        
+
         // Verificar si hay una conexión entre ellos
         bool connectionFound = false;
-        for (const auto& conn : connections) {
+        for (const auto &conn : connections)
+        {
             if (conn.fromNodeId == integerNode->nodeId && conn.fromPinId == 0 &&
-                conn.toNodeId == moveNode->nodeId && conn.toPinId == 1) {
+                conn.toNodeId == moveNode->nodeId && conn.toPinId == 1)
+            {
                 connectionFound = true;
                 std::cout << "[TEST] Connection found: Integer(0) -> Move(1)" << std::endl;
                 break;
             }
         }
-        
-        if (!connectionFound) {
+
+        if (!connectionFound)
+        {
             std::cout << "[TEST] No connection found between Integer and Move nodes" << std::endl;
         }
-        
-        std::cout << "=== END TEST ===\n" << std::endl;
+
+        std::cout << "=== END TEST ===\n"
+                  << std::endl;
     }
 
     void ExecuteFrom(CustomNode *d)
@@ -2380,14 +2304,14 @@ public:
             {
                 ImVec2 statusPos = window_pos + ImVec2(10, 30);
                 std::string statusText = "Connecting from: " + fromNode->title + " (Pin " + std::to_string(connectingFromPin) + ")";
-                
+
                 // Fondo del texto
                 ImVec2 textSize = ImGui::CalcTextSize(statusText.c_str());
                 draw_list->AddRectFilled(
                     statusPos - ImVec2(5, 2),
                     statusPos + textSize + ImVec2(5, 2),
                     IM_COL32(0, 0, 0, 180), 4.0f);
-                
+
                 // Texto del estado
                 draw_list->AddText(statusPos, IM_COL32(255, 255, 255, 255), statusText.c_str());
             }
@@ -2432,7 +2356,7 @@ public:
                                 std::cout << "[FRAME UPDATE] String node output: <invalid type>" << std::endl;
                             }
                         }
-                        
+
                         // Debug: mostrar cuando se actualizan valores de Integer nodes
                         if (sourceNode->n.title == "Integer" && c.fromPinId == 0)
                         {
@@ -2888,7 +2812,7 @@ public:
                 // Punto en el cursor del mouse
                 ImVec2 cursorPos = window_pos + panelOffset + transformedMousePos;
                 draw_list->AddCircleFilled(cursorPos, 4, lineColor);
-                
+
                 // Highlight del pin de origen para mejor feedback visual
                 draw_list->AddCircle(p1, 8, lineColor, 0, 2.0f);
             }
@@ -3033,6 +2957,11 @@ public:
         {
             ImVec2 nodePos = createNodeMenuPos - ImGui::GetWindowPos();
 
+            if (ImGui::MenuItem("Execute Graph"))
+            {
+                ExecuteGraph();
+            }
+
             if (ImGui::BeginMenu("Input/Output"))
             {
                 if (ImGui::MenuItem("Start Node"))
@@ -3156,25 +3085,11 @@ public:
 
             ImGui::Separator();
 
-            if (ImGui::MenuItem("Create Math Graph Example"))
-            {
-                CreateMathGraphExample();
-            }
-
-            if (ImGui::MenuItem("Create Multiple Nodes for Testing"))
-            {
-                CreateMultipleNodesForTesting();
-            }
-
-            if (ImGui::MenuItem("Create Simple Test Graph"))
-            {
-                CreateSimpleTestGraph();
-            }
-            
             if (ImGui::MenuItem("Debug Node Pins (Console)"))
             {
                 std::cout << "\n[DEBUG] Available nodes:" << std::endl;
-                for (const auto& node : customNodes) {
+                for (const auto &node : customNodes)
+                {
                     std::cout << "  " << node.n.id << ": " << node.n.title << std::endl;
                 }
                 std::cout << "[DEBUG] Use DebugNodePins(nodeId) to inspect specific nodes" << std::endl;
