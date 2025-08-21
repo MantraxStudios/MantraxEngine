@@ -464,7 +464,7 @@ public:
             const auto &pinConfig = config.inputPins[i];
             Pin inputPin;
             inputPin.id = (int)i;
-            inputPin.pos = ImVec2(-8, inputY); // Más cerca del borde
+            inputPin.pos = ImVec2(0, inputY); // Completamente integrado en el borde del nodo
             inputPin.isExec = (pinConfig.type == ExecuteInput);
             newNode.n.inputs.push_back(inputPin);
 
@@ -493,7 +493,7 @@ public:
             const auto &pinConfig = config.outputPins[i];
             Pin outputPin;
             outputPin.id = (int)i;
-            outputPin.pos = ImVec2(config.size.x + 8, outputY); // Más cerca del borde
+            outputPin.pos = ImVec2(config.size.x, outputY); // Completamente integrado en el borde del nodo
             outputPin.isExec = (pinConfig.type == ExecuteOutput);
             newNode.n.outputs.push_back(outputPin);
 
@@ -719,11 +719,11 @@ public:
                 node->SetOutputValue<std::string>(0, inputValue);
                 std::cout << "[STRING] Output: " << inputValue << std::endl;
             },
-            INPUT_OUTPUT,                    // category
-            false,                           // hasExecInput
-            false,                           // hasExecOutput
-            {{"Text", std::string(value)}},  // inputPins - Now has an input pin for editing
-            {{"Value", std::string(value)}}, // outputPins
+            INPUT_OUTPUT,                   // category
+            false,                          // hasExecInput
+            false,                          // hasExecOutput
+            {{"Text", std::string(value)}}, // inputPins - Now has an input pin for editing
+            {{"", std::string(value)}},     // outputPins
             position);
     }
 
@@ -743,7 +743,7 @@ public:
             false,                      // hasExecInput
             false,                      // hasExecOutput
             {{"A", 0.0f}, {"B", 0.0f}}, // inputPins
-            {{"Result", 0.0f}},         // outputPins
+            {{"", 0.0f}},               // outputPins
             position);
     }
 
@@ -893,11 +893,11 @@ public:
                 node->SetOutputValue<bool>(0, value);
                 std::cout << "[BOOL] Value: " << (value ? "true" : "false") << std::endl;
             },
-            INPUT_OUTPUT,               // category
-            false,                      // hasExecInput
-            false,                      // hasExecOutput
-            {{"Value", initialValue}},  // inputPins
-            {{"Result", initialValue}}, // outputPins
+            INPUT_OUTPUT,              // category
+            false,                     // hasExecInput
+            false,                     // hasExecOutput
+            {{"Value", initialValue}}, // inputPins
+            {{"", initialValue}},      // outputPins
             position);
     }
 
@@ -911,11 +911,11 @@ public:
                 node->SetOutputValue<int>(0, value);
                 std::cout << "[INT] Value: " << value << std::endl;
             },
-            MATH,                       // category
-            false,                      // hasExecInput
-            false,                      // hasExecOutput
-            {{"Value", initialValue}},  // inputPins
-            {{"Result", initialValue}}, // outputPins
+            MATH,                      // category
+            false,                     // hasExecInput
+            false,                     // hasExecOutput
+            {{"Value", initialValue}}, // inputPins
+            {{"", initialValue}},      // outputPins
             position);
     }
 
@@ -929,11 +929,11 @@ public:
                 node->SetOutputValue<float>(0, value);
                 std::cout << "[FLOAT] Value: " << value << std::endl;
             },
-            MATH,                       // category
-            false,                      // hasExecInput
-            false,                      // hasExecOutput
-            {{"Value", initialValue}},  // inputPins
-            {{"Result", initialValue}}, // outputPins
+            MATH,                      // category
+            false,                     // hasExecInput
+            false,                     // hasExecOutput
+            {{"Value", initialValue}}, // inputPins
+            {{"", initialValue}},      // outputPins
             position);
     }
 
@@ -958,7 +958,7 @@ public:
             false,                                          // hasExecInput
             false,                                          // hasExecOutput
             {{"X", initialValue.x}, {"Y", initialValue.y}}, // inputPins separados para X e Y
-            {{"Result", initialValue}},                     // outputPins
+            {{"", initialValue}},                           // outputPins
             position);
     }
 
@@ -983,7 +983,7 @@ public:
             false,                                                                 // hasExecInput
             false,                                                                 // hasExecOutput
             {{"X", initialValue.x}, {"Y", initialValue.y}, {"Z", initialValue.z}}, // inputPins separados para X, Y, Z
-            {{"Result", initialValue}},                                            // outputPins
+            {{"", initialValue}},                                                  // outputPins
             position);
     }
 
@@ -1016,7 +1016,7 @@ public:
             false,                                                                                      // hasExecInput
             false,                                                                                      // hasExecOutput
             {{"A.X", 0.0f}, {"A.Y", 0.0f}, {"A.Z", 0.0f}, {"B.X", 0.0f}, {"B.Y", 0.0f}, {"B.Z", 0.0f}}, // inputPins separados
-            {{"Result", Vector3(0, 0, 0)}},                                                             // outputPins
+            {{"", Vector3(0, 0, 0)}},                                                                   // outputPins
             position);
     }
 
@@ -1048,7 +1048,7 @@ public:
             false,                                                                                      // hasExecInput
             false,                                                                                      // hasExecOutput
             {{"A.X", 1.0f}, {"A.Y", 0.0f}, {"A.Z", 0.0f}, {"B.X", 0.0f}, {"B.Y", 1.0f}, {"B.Z", 0.0f}}, // inputPins separados
-            {{"Result", Vector3(0, 0, 1)}},                                                             // outputPins
+            {{"", Vector3(0, 0, 1)}},                                                                   // outputPins
             position);
     }
 
@@ -1079,7 +1079,7 @@ public:
             false,                                                                                      // hasExecInput
             false,                                                                                      // hasExecOutput
             {{"A.X", 1.0f}, {"A.Y", 0.0f}, {"A.Z", 0.0f}, {"B.X", 1.0f}, {"B.Y", 0.0f}, {"B.Z", 0.0f}}, // inputPins separados
-            {{"Result", 1.0f}},                                                                         // outputPins
+            {{"", 1.0f}},                                                                               // outputPins
             position);
     }
 
@@ -1101,11 +1101,11 @@ public:
                 std::cout << "[VECTOR NORMALIZE] (" << x << "," << y << "," << z
                           << ") -> (" << result.x << "," << result.y << "," << result.z << ")" << std::endl;
             },
-            VECTOR,                                        // category
-            false,                                         // hasExecInput
-            false,                                         // hasExecOutput
-            {{"X", 1.0f}, {"Y", 1.0f}, {"Z", 1.0f}},       // inputPins separados para X, Y, Z
-            {{"Result", Vector3(0.577f, 0.577f, 0.577f)}}, // outputPins
+            VECTOR,                                  // category
+            false,                                   // hasExecInput
+            false,                                   // hasExecOutput
+            {{"X", 1.0f}, {"Y", 1.0f}, {"Z", 1.0f}}, // inputPins separados para X, Y, Z
+            {{"", Vector3(0.577f, 0.577f, 0.577f)}}, // outputPins
             position);
     }
 
@@ -1134,7 +1134,7 @@ public:
             false,                                               // hasExecInput
             false,                                               // hasExecOutput
             {{"Diag1", 1.0f}, {"Diag2", 1.0f}, {"Diag3", 1.0f}}, // inputPins para diagonal
-            {{"Result", Matrix3x3()}},                           // outputPins
+            {{"", Matrix3x3()}},                                 // outputPins
             position);
     }
 
@@ -1164,7 +1164,7 @@ public:
             false,                                                                // hasExecInput
             false,                                                                // hasExecOutput
             {{"Diag1", 1.0f}, {"Diag2", 1.0f}, {"Diag3", 1.0f}, {"Diag4", 1.0f}}, // inputPins para diagonal
-            {{"Result", Matrix4x4()}},                                            // outputPins
+            {{"", Matrix4x4()}},                                                  // outputPins
             position);
     }
 
@@ -1197,7 +1197,7 @@ public:
             false,                                  // hasExecInput
             false,                                  // hasExecOutput
             {{"Scale A", 1.0f}, {"Scale B", 1.0f}}, // inputPins para escalas
-            {{"Result", Matrix4x4()}},              // outputPins
+            {{"", Matrix4x4()}},                    // outputPins
             position);
     }
 
@@ -1213,11 +1213,11 @@ public:
                 node->SetOutputValue<float>(0, result);
                 std::cout << "[SIN] sin(" << angle << ") = " << result << std::endl;
             },
-            MATH,               // category
-            false,              // hasExecInput
-            false,              // hasExecOutput
-            {{"Angle", 0.0f}},  // inputPins
-            {{"Result", 0.0f}}, // outputPins
+            MATH,              // category
+            false,             // hasExecInput
+            false,             // hasExecOutput
+            {{"Angle", 0.0f}}, // inputPins
+            {{"", 0.0f}},      // outputPins
             position);
     }
 
@@ -1232,11 +1232,11 @@ public:
                 node->SetOutputValue<float>(0, result);
                 std::cout << "[COS] cos(" << angle << ") = " << result << std::endl;
             },
-            MATH,               // category
-            false,              // hasExecInput
-            false,              // hasExecOutput
-            {{"Angle", 0.0f}},  // inputPins
-            {{"Result", 1.0f}}, // outputPins
+            MATH,              // category
+            false,             // hasExecInput
+            false,             // hasExecOutput
+            {{"Angle", 0.0f}}, // inputPins
+            {{"", 1.0f}},      // outputPins
             position);
     }
 
@@ -1257,7 +1257,7 @@ public:
             false,                                   // hasExecInput
             false,                                   // hasExecOutput
             {{"A", 0.0f}, {"B", 1.0f}, {"T", 0.5f}}, // inputPins
-            {{"Result", 0.5f}},                      // outputPins
+            {{"", 0.5f}},                            // outputPins
             position);
     }
 
@@ -1278,7 +1278,7 @@ public:
             false,                                           // hasExecInput
             false,                                           // hasExecOutput
             {{"Value", 0.5f}, {"Min", 0.0f}, {"Max", 1.0f}}, // inputPins
-            {{"Result", 0.5f}},                              // outputPins
+            {{"", 0.5f}},                                    // outputPins
             position);
     }
 
@@ -1899,8 +1899,8 @@ public:
 
                         // Etiqueta alineada a la derecha y centrada verticalmente con el pin
                         ImVec2 text_size = ImGui::CalcTextSize(pinName.c_str());
-                        ImVec2 labelPos = ImVec2(max.x - text_size.x - 8, min.y + outputY + 10);
-                        // draw_list->AddText(labelPos, IM_COL32(200, 200, 200, 255), pinName.c_str());
+                        ImVec2 labelPos = ImVec2(max.x - text_size.x - 8, min.y + outputY);
+                        draw_list->AddText(labelPos, IM_COL32(200, 200, 200, 255), pinName.c_str());
                     }
 
                     outputY += 28.0f;
@@ -2102,98 +2102,18 @@ public:
             isConnecting = false;
         }
 
-        // UI de control con estilo Blender
-        ImGui::SetCursorScreenPos(window_pos + ImVec2(10, 10));
-        ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(70, 70, 74, 255));
-        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, IM_COL32(90, 90, 94, 255));
-        ImGui::PushStyleColor(ImGuiCol_ButtonActive, IM_COL32(50, 50, 54, 255));
-
-        if (ImGui::Button("Execute Graph"))
-        {
-            ExecuteGraph();
-        }
-
-        ImGui::SameLine();
-
-        if (ImGui::Button("Update Values"))
-        {
-            ForceUpdateAllNodeInputs();
-        }
-
-        ImGui::SameLine();
-
-        if (ImGui::Button("Test Disconnect"))
-        {
-            // Buscar nodos String y Print conectados para probar desconexión
-            for (auto &connection : connections)
-            {
-                CustomNode *sourceNode = GetCustomNodeById(connection.fromNodeId);
-                CustomNode *targetNode = GetCustomNodeById(connection.toNodeId);
-
-                if (sourceNode && targetNode &&
-                    sourceNode->n.title == "String" && targetNode->n.title == "Print Console")
-                {
-                    std::cout << "[TEST DISCONNECT] Found String-Print connection" << std::endl;
-                    std::cout << "[TEST DISCONNECT] String input: " << sourceNode->GetInputValue<std::string>(0, "default") << std::endl;
-                    std::cout << "[TEST DISCONNECT] String output: " << sourceNode->GetOutputValue<std::string>(0, "default") << std::endl;
-                    std::cout << "[TEST DISCONNECT] Print input: " << targetNode->GetInputValue<std::string>(1, "default") << std::endl;
-                }
-            }
-        }
-
-        ImGui::SameLine();
-
-        if (ImGui::Button("Reset View"))
-        {
-            panelOffset = ImVec2(0, 0);
-            std::cout << "[PANEL] View reset to default" << std::endl;
-        }
-
-        ImGui::SameLine();
-
-        // Mostrar información del nodo seleccionado
+        // Información del nodo seleccionado (solo cuando hay uno seleccionado)
         if (contextMenuNodeId != -1)
         {
+            ImGui::SetCursorScreenPos(window_pos + ImVec2(10, 10));
             CustomNode *selectedNode = GetCustomNodeById(contextMenuNodeId);
             if (selectedNode)
             {
-                ImGui::SameLine();
                 ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(255, 255, 100, 255));
                 ImGui::Text("Selected: %s (ID: %d)", selectedNode->n.title.c_str(), contextMenuNodeId);
                 ImGui::PopStyleColor();
             }
         }
-
-        ImGui::SameLine();
-
-        // Mostrar información del panel
-        ImGui::Text("Pan: (%.0f, %.0f)", panelOffset.x, panelOffset.y);
-
-        ImGui::PopStyleColor(3);
-
-        // Instrucciones con mejor tipografía
-        ImGui::SetCursorScreenPos(window_pos + ImVec2(10, 40));
-        ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(160, 160, 160, 255));
-        ImGui::Text("Drag from output to input | Right-click/ESC to cancel | Double-click pins to disconnect");
-        ImGui::PopStyleColor();
-
-        // Instrucciones del menú contextual
-        ImGui::SetCursorScreenPos(window_pos + ImVec2(10, 55));
-        ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(140, 140, 140, 255));
-        ImGui::Text("Right-click node: Context menu | Delete: Delete node | Ctrl+D: Disconnect all");
-        ImGui::PopStyleColor();
-
-        // Instrucciones del menú de creación
-        ImGui::SetCursorScreenPos(window_pos + ImVec2(10, 70));
-        ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(120, 120, 120, 255));
-        ImGui::Text("Right-click empty space: Create nodes menu | Organized by categories");
-        ImGui::PopStyleColor();
-
-        // Instrucciones adicionales para el panel
-        ImGui::SetCursorScreenPos(window_pos + ImVec2(10, 85));
-        ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(140, 140, 140, 255));
-        ImGui::Text("Middle button: Pan | Reset View: Reset position");
-        ImGui::PopStyleColor();
 
         // Menú contextual para nodos seleccionados
         if (showContextMenu)
@@ -2222,6 +2142,24 @@ public:
                     {
                         RemoveAllConnectionsFromNode(contextMenuNodeId);
                         contextMenuNodeId = -1;
+                    }
+
+                    ImGui::Separator();
+
+                    if (ImGui::MenuItem("Execute Graph"))
+                    {
+                        ExecuteGraph();
+                    }
+
+                    if (ImGui::MenuItem("Update Values"))
+                    {
+                        ForceUpdateAllNodeInputs();
+                    }
+
+                    if (ImGui::MenuItem("Reset View"))
+                    {
+                        panelOffset = ImVec2(0, 0);
+                        std::cout << "[PANEL] View reset to default" << std::endl;
                     }
 
                     ImGui::Separator();

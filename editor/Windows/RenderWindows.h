@@ -54,15 +54,7 @@ public:
     void RenderUI()
     {
         ImGui::Begin("Node Editor");
-
         editor.Draw();
-
-        // Ejecutar desde nodo de ejecución
-        if (ImGui::Button("Ejecutar"))
-        {
-            editor.ExecuteGraph();
-        }
-
         ImGui::End();
 
         for (auto &window : m_windows)
