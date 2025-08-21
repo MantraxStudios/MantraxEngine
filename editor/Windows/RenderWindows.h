@@ -33,12 +33,6 @@ public:
         m_windows.push_back(std::make_unique<TileEditor>());
         m_windows.push_back(std::make_unique<InputEditor>());
         m_windows.push_back(std::make_unique<CanvasManager>());
-
-        // Crear nodos con valores editables
-        auto startNode = editor.CreateStartNode(ImVec2(50, 100));
-        auto stringNode = editor.CreateStringNode("Texto inicial", ImVec2(50, 200));
-        editor.CreateVector3Node(Vector3(1.0f, 2.0f, 3.0f), ImVec2(50, 300));
-        editor.CreatePrintNode();
     }
 
     // Delete copy constructor and assignment operator
