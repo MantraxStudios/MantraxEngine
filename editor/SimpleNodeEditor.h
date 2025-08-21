@@ -8,6 +8,8 @@
 #include <map>
 #include <any>
 #include <chrono>
+#include <cmath>
+#include <array>
 
 static int NodeID = 0;
 
@@ -21,6 +23,130 @@ inline ImVec2 &operator+=(ImVec2 &a, const ImVec2 &b)
     a.y += b.y;
     return a;
 }
+
+// Estructuras de datos matemáticas
+struct Vector2
+{
+    float x, y;
+
+    Vector2(float x = 0.0f, float y = 0.0f) : x(x), y(y) {}
+
+    Vector2 operator+(const Vector2 &other) const { return Vector2(x + other.x, y + other.y); }
+    Vector2 operator-(const Vector2 &other) const { return Vector2(x - other.x, y - other.y); }
+    Vector2 operator*(float scalar) const { return Vector2(x * scalar, y * scalar); }
+    Vector2 operator/(float scalar) const { return Vector2(x / scalar, y / scalar); }
+
+    float Length() const { return std::sqrt(x * x + y * y); }
+    Vector2 Normalized() const
+    {
+        float len = Length();
+        return len > 0 ? *this / len : Vector2();
+    }
+    float Dot(const Vector2 &other) const { return x * other.x + y * other.y; }
+};
+
+struct Vector3
+{
+    float x, y, z;
+
+    Vector3(float x = 0.0f, float y = 0.0f, float z = 0.0f) : x(x), y(y), z(z) {}
+
+    Vector3 operator+(const Vector3 &other) const { return Vector3(x + other.x, y + other.y, z + other.z); }
+    Vector3 operator-(const Vector3 &other) const { return Vector3(x - other.x, y - other.y, z - other.z); }
+    Vector3 operator*(float scalar) const { return Vector3(x * scalar, y * scalar, z * scalar); }
+    Vector3 operator/(float scalar) const { return Vector3(x / scalar, y / scalar, z / scalar); }
+
+    float Length() const { return std::sqrt(x * x + y * y + z * z); }
+    Vector3 Normalized() const
+    {
+        float len = Length();
+        return len > 0 ? *this / len : Vector3();
+    }
+    float Dot(const Vector3 &other) const { return x * other.x + y * other.y + z * other.z; }
+    Vector3 Cross(const Vector3 &other) const
+    {
+        return Vector3(y * other.z - z * other.y, z * other.x - x * other.z, x * other.y - y * other.x);
+    }
+};
+
+struct Matrix3x3
+{
+    std::array<std::array<float, 3>, 3> data;
+
+    Matrix3x3()
+    {
+        for (int i = 0; i < 3; i++)
+            for (int j = 0; j < 3; j++)
+                data[i][j] = (i == j) ? 1.0f : 0.0f;
+    }
+
+    Matrix3x3 operator*(const Matrix3x3 &other) const
+    {
+        Matrix3x3 result;
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                result.data[i][j] = 0;
+                for (int k = 0; k < 3; k++)
+                {
+                    result.data[i][j] += data[i][k] * other.data[k][j];
+                }
+            }
+        }
+        return result;
+    }
+
+    Vector3 operator*(const Vector3 &vec) const
+    {
+        return Vector3(
+            data[0][0] * vec.x + data[0][1] * vec.y + data[0][2] * vec.z,
+            data[1][0] * vec.x + data[1][1] * vec.y + data[1][2] * vec.z,
+            data[2][0] * vec.x + data[2][1] * vec.y + data[2][2] * vec.z);
+    }
+};
+
+struct Matrix4x4
+{
+    std::array<std::array<float, 4>, 4> data;
+
+    Matrix4x4()
+    {
+        for (int i = 0; i < 4; i++)
+            for (int j = 0; j < 4; j++)
+                data[i][j] = (i == j) ? 1.0f : 0.0f;
+    }
+
+    Matrix4x4 operator*(const Matrix4x4 &other) const
+    {
+        Matrix4x4 result;
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                result.data[i][j] = 0;
+                for (int k = 0; k < 4; k++)
+                {
+                    result.data[i][j] += data[i][k] * other.data[k][j];
+                }
+            }
+        }
+        return result;
+    }
+
+    Vector3 operator*(const Vector3 &vec) const
+    {
+        float w = data[3][0] * vec.x + data[3][1] * vec.y + data[3][2] * vec.z + data[3][3];
+        if (w != 0)
+        {
+            return Vector3(
+                (data[0][0] * vec.x + data[0][1] * vec.y + data[0][2] * vec.z + data[0][3]) / w,
+                (data[1][0] * vec.x + data[1][1] * vec.y + data[1][2] * vec.z + data[1][3]) / w,
+                (data[2][0] * vec.x + data[2][1] * vec.y + data[2][2] * vec.z + data[2][3]) / w);
+        }
+        return Vector3();
+    }
+};
 
 enum PinType
 {
@@ -229,6 +355,15 @@ public:
     int editingNodeId = -1;    // ID del nodo que se está editando
     char textBuffer[256] = ""; // Buffer para el texto de entrada
     bool isConnecting = false; // Flag para indicar si estamos en modo conexión
+
+    // Variables para el menú contextual
+    bool showContextMenu = false;
+    ImVec2 contextMenuPos = ImVec2(0, 0);
+    int contextMenuNodeId = -1;
+
+    // Variables para el menú contextual de creación de nodos (estilo Unreal)
+    bool showCreateNodeMenu = false;
+    ImVec2 createNodeMenuPos = ImVec2(0, 0);
 
     // Variables para el movimiento del panel (estilo Unreal)
     ImVec2 panelOffset = ImVec2(0, 0);  // Offset del panel
@@ -802,6 +937,392 @@ public:
             position);
     }
 
+    // Nodos de vectores
+    CustomNode *CreateVector2Node(Vector2 initialValue = Vector2(0, 0), ImVec2 position = ImVec2(50, 450))
+    {
+        return CreateNode(
+            "Vector2",
+            [](CustomNode *node)
+            {
+                // Obtener valores de entrada individuales
+                float x = node->GetInputValue<float>(0, 0.0f);
+                float y = node->GetInputValue<float>(1, 0.0f);
+
+                // Crear vector resultante
+                Vector2 result(x, y);
+                node->SetOutputValue<Vector2>(0, result);
+
+                std::cout << "[VECTOR2] Value: (" << x << ", " << y << ")" << std::endl;
+            },
+            VECTOR,                                         // category
+            false,                                          // hasExecInput
+            false,                                          // hasExecOutput
+            {{"X", initialValue.x}, {"Y", initialValue.y}}, // inputPins separados para X e Y
+            {{"Result", initialValue}},                     // outputPins
+            position);
+    }
+
+    CustomNode *CreateVector3Node(Vector3 initialValue = Vector3(0, 0, 0), ImVec2 position = ImVec2(50, 500))
+    {
+        return CreateNode(
+            "Vector3",
+            [](CustomNode *node)
+            {
+                // Obtener valores de entrada individuales
+                float x = node->GetInputValue<float>(0, 0.0f);
+                float y = node->GetInputValue<float>(1, 0.0f);
+                float z = node->GetInputValue<float>(2, 0.0f);
+
+                // Crear vector resultante
+                Vector3 result(x, y, z);
+                node->SetOutputValue<Vector3>(0, result);
+
+                std::cout << "[VECTOR3] Value: (" << x << ", " << y << ", " << z << ")" << std::endl;
+            },
+            VECTOR,                                                                // category
+            false,                                                                 // hasExecInput
+            false,                                                                 // hasExecOutput
+            {{"X", initialValue.x}, {"Y", initialValue.y}, {"Z", initialValue.z}}, // inputPins separados para X, Y, Z
+            {{"Result", initialValue}},                                            // outputPins
+            position);
+    }
+
+    // Nodos de operaciones vectoriales
+    CustomNode *CreateVectorAddNode(ImVec2 position = ImVec2(200, 450))
+    {
+        return CreateNode(
+            "Vector Add",
+            [](CustomNode *node)
+            {
+                // Obtener componentes de los vectores A y B
+                float ax = node->GetInputValue<float>(0, 0.0f);
+                float ay = node->GetInputValue<float>(1, 0.0f);
+                float az = node->GetInputValue<float>(2, 0.0f);
+
+                float bx = node->GetInputValue<float>(3, 0.0f);
+                float by = node->GetInputValue<float>(4, 0.0f);
+                float bz = node->GetInputValue<float>(5, 0.0f);
+
+                Vector3 a(ax, ay, az);
+                Vector3 b(bx, by, bz);
+                Vector3 result = a + b;
+
+                node->SetOutputValue<Vector3>(0, result);
+                std::cout << "[VECTOR ADD] (" << ax << "," << ay << "," << az << ") + ("
+                          << bx << "," << by << "," << bz << ") = ("
+                          << result.x << "," << result.y << "," << result.z << ")" << std::endl;
+            },
+            VECTOR,                                                                                     // category
+            false,                                                                                      // hasExecInput
+            false,                                                                                      // hasExecOutput
+            {{"A.X", 0.0f}, {"A.Y", 0.0f}, {"A.Z", 0.0f}, {"B.X", 0.0f}, {"B.Y", 0.0f}, {"B.Z", 0.0f}}, // inputPins separados
+            {{"Result", Vector3(0, 0, 0)}},                                                             // outputPins
+            position);
+    }
+
+    CustomNode *CreateVectorCrossNode(ImVec2 position = ImVec2(200, 500))
+    {
+        return CreateNode(
+            "Vector Cross",
+            [](CustomNode *node)
+            {
+                // Obtener componentes de los vectores A y B
+                float ax = node->GetInputValue<float>(0, 1.0f);
+                float ay = node->GetInputValue<float>(1, 0.0f);
+                float az = node->GetInputValue<float>(2, 0.0f);
+
+                float bx = node->GetInputValue<float>(3, 0.0f);
+                float by = node->GetInputValue<float>(4, 1.0f);
+                float bz = node->GetInputValue<float>(5, 0.0f);
+
+                Vector3 a(ax, ay, az);
+                Vector3 b(bx, by, bz);
+                Vector3 result = a.Cross(b);
+
+                node->SetOutputValue<Vector3>(0, result);
+                std::cout << "[VECTOR CROSS] (" << ax << "," << ay << "," << az << ") x ("
+                          << bx << "," << by << "," << bz << ") = ("
+                          << result.x << "," << result.y << "," << result.z << ")" << std::endl;
+            },
+            VECTOR,                                                                                     // category
+            false,                                                                                      // hasExecInput
+            false,                                                                                      // hasExecOutput
+            {{"A.X", 1.0f}, {"A.Y", 0.0f}, {"A.Z", 0.0f}, {"B.X", 0.0f}, {"B.Y", 1.0f}, {"B.Z", 0.0f}}, // inputPins separados
+            {{"Result", Vector3(0, 0, 1)}},                                                             // outputPins
+            position);
+    }
+
+    CustomNode *CreateVectorDotNode(ImVec2 position = ImVec2(200, 550))
+    {
+        return CreateNode(
+            "Vector Dot",
+            [](CustomNode *node)
+            {
+                // Obtener componentes de los vectores A y B
+                float ax = node->GetInputValue<float>(0, 1.0f);
+                float ay = node->GetInputValue<float>(1, 0.0f);
+                float az = node->GetInputValue<float>(2, 0.0f);
+
+                float bx = node->GetInputValue<float>(3, 1.0f);
+                float by = node->GetInputValue<float>(4, 0.0f);
+                float bz = node->GetInputValue<float>(5, 0.0f);
+
+                Vector3 a(ax, ay, az);
+                Vector3 b(bx, by, bz);
+                float result = a.Dot(b);
+
+                node->SetOutputValue<float>(0, result);
+                std::cout << "[VECTOR DOT] (" << ax << "," << ay << "," << az << ") · ("
+                          << bx << "," << by << "," << bz << ") = " << result << std::endl;
+            },
+            VECTOR,                                                                                     // category
+            false,                                                                                      // hasExecInput
+            false,                                                                                      // hasExecOutput
+            {{"A.X", 1.0f}, {"A.Y", 0.0f}, {"A.Z", 0.0f}, {"B.X", 1.0f}, {"B.Y", 0.0f}, {"B.Z", 0.0f}}, // inputPins separados
+            {{"Result", 1.0f}},                                                                         // outputPins
+            position);
+    }
+
+    CustomNode *CreateVectorNormalizeNode(ImVec2 position = ImVec2(200, 600))
+    {
+        return CreateNode(
+            "Vector Normalize",
+            [](CustomNode *node)
+            {
+                // Obtener componentes del vector de entrada
+                float x = node->GetInputValue<float>(0, 1.0f);
+                float y = node->GetInputValue<float>(1, 1.0f);
+                float z = node->GetInputValue<float>(2, 1.0f);
+
+                Vector3 value(x, y, z);
+                Vector3 result = value.Normalized();
+
+                node->SetOutputValue<Vector3>(0, result);
+                std::cout << "[VECTOR NORMALIZE] (" << x << "," << y << "," << z
+                          << ") -> (" << result.x << "," << result.y << "," << result.z << ")" << std::endl;
+            },
+            VECTOR,                                        // category
+            false,                                         // hasExecInput
+            false,                                         // hasExecOutput
+            {{"X", 1.0f}, {"Y", 1.0f}, {"Z", 1.0f}},       // inputPins separados para X, Y, Z
+            {{"Result", Vector3(0.577f, 0.577f, 0.577f)}}, // outputPins
+            position);
+    }
+
+    // Nodos de matrices
+    CustomNode *CreateMatrix3x3Node(ImVec2 position = ImVec2(350, 450))
+    {
+        return CreateNode(
+            "Matrix 3x3",
+            [](CustomNode *node)
+            {
+                // Obtener valores de entrada para la diagonal principal
+                float diag1 = node->GetInputValue<float>(0, 1.0f);
+                float diag2 = node->GetInputValue<float>(1, 1.0f);
+                float diag3 = node->GetInputValue<float>(2, 1.0f);
+
+                // Crear matriz con valores en la diagonal
+                Matrix3x3 result;
+                result.data[0][0] = diag1;
+                result.data[1][1] = diag2;
+                result.data[2][2] = diag3;
+
+                node->SetOutputValue<Matrix3x3>(0, result);
+                std::cout << "[MATRIX 3x3] Diagonal: (" << diag1 << ", " << diag2 << ", " << diag3 << ")" << std::endl;
+            },
+            MATH,                                                // category
+            false,                                               // hasExecInput
+            false,                                               // hasExecOutput
+            {{"Diag1", 1.0f}, {"Diag2", 1.0f}, {"Diag3", 1.0f}}, // inputPins para diagonal
+            {{"Result", Matrix3x3()}},                           // outputPins
+            position);
+    }
+
+    CustomNode *CreateMatrix4x4Node(ImVec2 position = ImVec2(350, 500))
+    {
+        return CreateNode(
+            "Matrix 4x4",
+            [](CustomNode *node)
+            {
+                // Obtener valores de entrada para la diagonal principal
+                float diag1 = node->GetInputValue<float>(0, 1.0f);
+                float diag2 = node->GetInputValue<float>(1, 1.0f);
+                float diag3 = node->GetInputValue<float>(2, 1.0f);
+                float diag4 = node->GetInputValue<float>(3, 1.0f);
+
+                // Crear matriz con valores en la diagonal
+                Matrix4x4 result;
+                result.data[0][0] = diag1;
+                result.data[1][1] = diag2;
+                result.data[2][2] = diag3;
+                result.data[3][3] = diag4;
+
+                node->SetOutputValue<Matrix4x4>(0, result);
+                std::cout << "[MATRIX 4x4] Diagonal: (" << diag1 << ", " << diag2 << ", " << diag3 << ", " << diag4 << ")" << std::endl;
+            },
+            MATH,                                                                 // category
+            false,                                                                // hasExecInput
+            false,                                                                // hasExecOutput
+            {{"Diag1", 1.0f}, {"Diag2", 1.0f}, {"Diag3", 1.0f}, {"Diag4", 1.0f}}, // inputPins para diagonal
+            {{"Result", Matrix4x4()}},                                            // outputPins
+            position);
+    }
+
+    CustomNode *CreateMatrixMultiplyNode(ImVec2 position = ImVec2(350, 550))
+    {
+        return CreateNode(
+            "Matrix Multiply",
+            [](CustomNode *node)
+            {
+                // Obtener valores de entrada para las matrices
+                float scaleA = node->GetInputValue<float>(0, 1.0f);
+                float scaleB = node->GetInputValue<float>(1, 1.0f);
+
+                // Crear matrices escaladas
+                Matrix4x4 a, b;
+                a.data[0][0] = scaleA;
+                a.data[1][1] = scaleA;
+                a.data[2][2] = scaleA;
+                a.data[3][3] = scaleA;
+                b.data[0][0] = scaleB;
+                b.data[1][1] = scaleB;
+                b.data[2][2] = scaleB;
+                b.data[3][3] = scaleB;
+
+                Matrix4x4 result = a * b;
+                node->SetOutputValue<Matrix4x4>(0, result);
+                std::cout << "[MATRIX MULTIPLY] A(" << scaleA << ") * B(" << scaleB << ") = Result" << std::endl;
+            },
+            MATH,                                   // category
+            false,                                  // hasExecInput
+            false,                                  // hasExecOutput
+            {{"Scale A", 1.0f}, {"Scale B", 1.0f}}, // inputPins para escalas
+            {{"Result", Matrix4x4()}},              // outputPins
+            position);
+    }
+
+    // Nodos matemáticos avanzados
+    CustomNode *CreateSinNode(ImVec2 position = ImVec2(500, 450))
+    {
+        return CreateNode(
+            "Sin",
+            [](CustomNode *node)
+            {
+                float angle = node->GetInputValue<float>(0, 0.0f);
+                float result = std::sin(angle);
+                node->SetOutputValue<float>(0, result);
+                std::cout << "[SIN] sin(" << angle << ") = " << result << std::endl;
+            },
+            MATH,               // category
+            false,              // hasExecInput
+            false,              // hasExecOutput
+            {{"Angle", 0.0f}},  // inputPins
+            {{"Result", 0.0f}}, // outputPins
+            position);
+    }
+
+    CustomNode *CreateCosNode(ImVec2 position = ImVec2(500, 500))
+    {
+        return CreateNode(
+            "Cos",
+            [](CustomNode *node)
+            {
+                float angle = node->GetInputValue<float>(0, 0.0f);
+                float result = std::cos(angle);
+                node->SetOutputValue<float>(0, result);
+                std::cout << "[COS] cos(" << angle << ") = " << result << std::endl;
+            },
+            MATH,               // category
+            false,              // hasExecInput
+            false,              // hasExecOutput
+            {{"Angle", 0.0f}},  // inputPins
+            {{"Result", 1.0f}}, // outputPins
+            position);
+    }
+
+    CustomNode *CreateLerpNode(ImVec2 position = ImVec2(500, 550))
+    {
+        return CreateNode(
+            "Lerp",
+            [](CustomNode *node)
+            {
+                float a = node->GetInputValue<float>(0, 0.0f);
+                float b = node->GetInputValue<float>(1, 1.0f);
+                float t = node->GetInputValue<float>(2, 0.5f);
+                float result = a + (b - a) * t;
+                node->SetOutputValue<float>(0, result);
+                std::cout << "[LERP] " << a << " + (" << b << " - " << a << ") * " << t << " = " << result << std::endl;
+            },
+            MATH,                                    // category
+            false,                                   // hasExecInput
+            false,                                   // hasExecOutput
+            {{"A", 0.0f}, {"B", 1.0f}, {"T", 0.5f}}, // inputPins
+            {{"Result", 0.5f}},                      // outputPins
+            position);
+    }
+
+    CustomNode *CreateClampNode(ImVec2 position = ImVec2(500, 600))
+    {
+        return CreateNode(
+            "Clamp",
+            [](CustomNode *node)
+            {
+                float value = node->GetInputValue<float>(0, 0.5f);
+                float min = node->GetInputValue<float>(1, 0.0f);
+                float max = node->GetInputValue<float>(2, 1.0f);
+                float result = std::clamp(value, min, max);
+                node->SetOutputValue<float>(0, result);
+                std::cout << "[CLAMP] clamp(" << value << ", " << min << ", " << max << ") = " << result << std::endl;
+            },
+            MATH,                                            // category
+            false,                                           // hasExecInput
+            false,                                           // hasExecOutput
+            {{"Value", 0.5f}, {"Min", 0.0f}, {"Max", 1.0f}}, // inputPins
+            {{"Result", 0.5f}},                              // outputPins
+            position);
+    }
+
+    // Función de ejemplo para crear un grafo matemático completo
+    void CreateMathGraphExample()
+    {
+        // Crear nodos básicos
+        auto vectorA = CreateVector3Node(Vector3(1, 2, 3), ImVec2(50, 100));
+        auto vectorB = CreateVector3Node(Vector3(4, 5, 6), ImVec2(50, 200));
+
+        // Operaciones vectoriales
+        auto addNode = CreateVectorAddNode(ImVec2(200, 150));
+        auto crossNode = CreateVectorCrossNode(ImVec2(200, 250));
+        auto dotNode = CreateVectorDotNode(ImVec2(200, 350));
+
+        // Operaciones matemáticas
+        auto sinNode = CreateSinNode(ImVec2(350, 150));
+        auto cosNode = CreateCosNode(ImVec2(350, 250));
+        auto lerpNode = CreateLerpNode(ImVec2(350, 350));
+
+        // Matrices
+        auto matrixA = CreateMatrix4x4Node(ImVec2(500, 150));
+        auto matrixB = CreateMatrix4x4Node(ImVec2(500, 250));
+        auto matrixMult = CreateMatrixMultiplyNode(ImVec2(500, 350));
+
+        // Conectar nodos
+        connections.push_back({vectorA->nodeId, 0, addNode->nodeId, 0}); // VectorA -> Add.A
+        connections.push_back({vectorB->nodeId, 0, addNode->nodeId, 1}); // VectorB -> Add.B
+
+        connections.push_back({vectorA->nodeId, 0, crossNode->nodeId, 0}); // VectorA -> Cross.A
+        connections.push_back({vectorB->nodeId, 0, crossNode->nodeId, 1}); // VectorB -> Cross.B
+
+        connections.push_back({vectorA->nodeId, 0, dotNode->nodeId, 0}); // VectorA -> Dot.A
+        connections.push_back({vectorB->nodeId, 0, dotNode->nodeId, 1}); // VectorB -> Dot.B
+
+        connections.push_back({addNode->nodeId, 0, sinNode->nodeId, 0});   // Add.Result -> Sin.Angle
+        connections.push_back({crossNode->nodeId, 0, cosNode->nodeId, 0}); // Cross.Result -> Cos.Angle
+
+        connections.push_back({matrixA->nodeId, 0, matrixMult->nodeId, 0}); // MatrixA -> Mult.A
+        connections.push_back({matrixB->nodeId, 0, matrixMult->nodeId, 1}); // MatrixB -> Mult.B
+
+        std::cout << "[MATH GRAPH] Created complete mathematical graph with vectors, matrices, and operations!" << std::endl;
+    }
+
     // Método para verificar si un pin tiene conexiones
     bool HasConnection(int nodeId, int pinId, bool isInput)
     {
@@ -896,6 +1417,71 @@ public:
                 ++it;
             }
         }
+    }
+
+    // Método para eliminar todas las conexiones de un nodo
+    void RemoveAllConnectionsFromNode(int nodeId)
+    {
+        auto it = connections.begin();
+        while (it != connections.end())
+        {
+            if (it->fromNodeId == nodeId || it->toNodeId == nodeId)
+            {
+                std::cout << "Removing connection: " << it->fromNodeId << ":" << it->fromPinId
+                          << " -> " << it->toNodeId << ":" << it->toPinId << std::endl;
+                it = connections.erase(it);
+            }
+            else
+            {
+                ++it;
+            }
+        }
+
+        // Limpiar la selección del menú contextual
+        contextMenuNodeId = -1;
+    }
+
+    // Método para eliminar un nodo y todas sus conexiones
+    void DeleteNode(int nodeId)
+    {
+        std::cout << "[DELETE] Attempting to delete node with ID: " << nodeId << std::endl;
+        std::cout << "[DELETE] Total nodes before deletion: " << customNodes.size() << std::endl;
+
+        // Primero eliminar todas las conexiones del nodo
+        RemoveAllConnectionsFromNode(nodeId);
+
+        // Luego eliminar el nodo
+        auto it = customNodes.begin();
+        while (it != customNodes.end())
+        {
+            std::cout << "[DELETE] Checking node: ID=" << it->n.id << ", nodeId=" << it->nodeId << ", title=" << it->n.title << std::endl;
+            if (it->n.id == nodeId)
+            {
+                std::cout << "[DELETE] Found node to delete: " << nodeId << " (" << it->n.title << ")" << std::endl;
+                it = customNodes.erase(it);
+                std::cout << "[DELETE] Node deleted successfully" << std::endl;
+                break;
+            }
+            else
+            {
+                ++it;
+            }
+        }
+
+        std::cout << "[DELETE] Total nodes after deletion: " << customNodes.size() << std::endl;
+
+        // Deseleccionar si era el nodo seleccionado
+        for (auto &node : customNodes)
+        {
+            if (node.n.isSelected)
+            {
+                node.n.isSelected = false;
+                break;
+            }
+        }
+
+        // Limpiar la selección del menú contextual
+        contextMenuNodeId = -1;
     }
 
     // Método para validar si una conexión es válida
@@ -1032,6 +1618,14 @@ public:
             return BlenderColors::PinFloat;
         else if (value->type() == typeid(bool))
             return BlenderColors::PinColor;
+        else if (value->type() == typeid(Vector2))
+            return BlenderColors::PinVector;
+        else if (value->type() == typeid(Vector3))
+            return BlenderColors::PinVector;
+        else if (value->type() == typeid(Matrix3x3))
+            return BlenderColors::PinVector;
+        else if (value->type() == typeid(Matrix4x4))
+            return BlenderColors::PinVector;
 
         return BlenderColors::PinFloat;
     }
@@ -1060,6 +1654,13 @@ public:
         else
         {
             isPanning = false;
+        }
+
+        // Manejar clic derecho en el espacio vacío para crear nodos
+        if (ImGui::IsMouseClicked(ImGuiMouseButton_Right) && !ImGui::IsAnyItemHovered())
+        {
+            showCreateNodeMenu = true;
+            createNodeMenuPos = ImGui::GetIO().MousePos;
         }
 
         // Aplicar transformación del panel
@@ -1205,7 +1806,7 @@ public:
                         std::string pinName = (nameIt != cn->inputNames.end()) ? nameIt->second : ("Pin " + std::to_string(pinIndex));
 
                         // Dibujar etiqueta del pin con mejor posicionamiento (centrada verticalmente con el pin)
-                        ImVec2 labelPos = ImVec2(min.x + 8, min.y + currentY + 10);
+                        ImVec2 labelPos = ImVec2(min.x + 8, min.y + currentY);
                         draw_list->AddText(labelPos, IM_COL32(200, 200, 200, 255), pinName.c_str());
 
                         // Campo de entrada solo si no hay conexión
@@ -1216,7 +1817,7 @@ public:
                             // Dejar espacio para la etiqueta del pin (aproximadamente 80px) + márgenes
                             float availableWidth = n.size.x - 88.0f; // 80px para etiqueta + 8px de margen derecho
 
-                            ImVec2 inputPos = ImVec2(min.x + 80, min.y + currentY + 8);
+                            ImVec2 inputPos = ImVec2(min.x + 80, min.y + currentY - 2);
                             ImGui::SetCursorScreenPos(inputPos);
                             ImGui::PushItemWidth(availableWidth);
 
@@ -1314,6 +1915,19 @@ public:
             if (ImGui::IsItemClicked())
             {
                 // Deseleccionar otros nodos
+                for (auto &other : customNodes)
+                    other.n.isSelected = false;
+                n.isSelected = true;
+            }
+
+            // Manejar clic derecho para menú contextual
+            if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
+            {
+                showContextMenu = true;
+                contextMenuPos = ImGui::GetIO().MousePos;
+                contextMenuNodeId = n.id;
+
+                // Deseleccionar otros nodos y seleccionar este
                 for (auto &other : customNodes)
                     other.n.isSelected = false;
                 n.isSelected = true;
@@ -1537,6 +2151,21 @@ public:
 
         ImGui::SameLine();
 
+        // Mostrar información del nodo seleccionado
+        if (contextMenuNodeId != -1)
+        {
+            CustomNode *selectedNode = GetCustomNodeById(contextMenuNodeId);
+            if (selectedNode)
+            {
+                ImGui::SameLine();
+                ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(255, 255, 100, 255));
+                ImGui::Text("Selected: %s (ID: %d)", selectedNode->n.title.c_str(), contextMenuNodeId);
+                ImGui::PopStyleColor();
+            }
+        }
+
+        ImGui::SameLine();
+
         // Mostrar información del panel
         ImGui::Text("Pan: (%.0f, %.0f)", panelOffset.x, panelOffset.y);
 
@@ -1548,10 +2177,226 @@ public:
         ImGui::Text("Drag from output to input | Right-click/ESC to cancel | Double-click pins to disconnect");
         ImGui::PopStyleColor();
 
+        // Instrucciones del menú contextual
+        ImGui::SetCursorScreenPos(window_pos + ImVec2(10, 55));
+        ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(140, 140, 140, 255));
+        ImGui::Text("Right-click node: Context menu | Delete: Delete node | Ctrl+D: Disconnect all");
+        ImGui::PopStyleColor();
+
+        // Instrucciones del menú de creación
+        ImGui::SetCursorScreenPos(window_pos + ImVec2(10, 70));
+        ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(120, 120, 120, 255));
+        ImGui::Text("Right-click empty space: Create nodes menu | Organized by categories");
+        ImGui::PopStyleColor();
+
         // Instrucciones adicionales para el panel
-        ImGui::SetCursorScreenPos(window_pos + ImVec2(10, 60));
+        ImGui::SetCursorScreenPos(window_pos + ImVec2(10, 85));
         ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(140, 140, 140, 255));
         ImGui::Text("Middle button: Pan | Reset View: Reset position");
         ImGui::PopStyleColor();
+
+        // Menú contextual para nodos seleccionados
+        if (showContextMenu)
+        {
+            ImGui::OpenPopup("NodeContextMenu");
+            showContextMenu = false;
+        }
+
+        if (ImGui::BeginPopup("NodeContextMenu"))
+        {
+            if (contextMenuNodeId != -1)
+            {
+                CustomNode *selectedNode = GetCustomNodeById(contextMenuNodeId);
+                if (selectedNode)
+                {
+                    ImGui::Text("Node: %s", selectedNode->n.title.c_str());
+                    ImGui::Separator();
+
+                    if (ImGui::MenuItem("Delete Node", "Del"))
+                    {
+                        DeleteNode(contextMenuNodeId);
+                        contextMenuNodeId = -1;
+                    }
+
+                    if (ImGui::MenuItem("Disconnect All", "Ctrl+D"))
+                    {
+                        RemoveAllConnectionsFromNode(contextMenuNodeId);
+                        contextMenuNodeId = -1;
+                    }
+
+                    ImGui::Separator();
+
+                    if (ImGui::MenuItem("Copy Node", "Ctrl+C"))
+                    {
+                        // TODO: Implementar copia de nodos
+                        std::cout << "[MENU] Copy node not implemented yet" << std::endl;
+                    }
+
+                    if (ImGui::MenuItem("Duplicate Node", "Ctrl+D"))
+                    {
+                        // TODO: Implementar duplicación de nodos
+                        std::cout << "[MENU] Duplicate node not implemented yet" << std::endl;
+                    }
+                }
+            }
+            ImGui::EndPopup();
+        }
+
+        // Manejar teclas de acceso rápido
+        if (ImGui::IsKeyPressed(ImGuiKey_Delete) && contextMenuNodeId != -1)
+        {
+            DeleteNode(contextMenuNodeId);
+            contextMenuNodeId = -1;
+        }
+
+        if (ImGui::IsKeyDown(ImGuiKey_LeftCtrl) && ImGui::IsKeyPressed(ImGuiKey_D))
+        {
+            if (contextMenuNodeId != -1)
+            {
+                RemoveAllConnectionsFromNode(contextMenuNodeId);
+                contextMenuNodeId = -1;
+            }
+        }
+
+        // Menú contextual de creación de nodos (estilo Unreal)
+        if (showCreateNodeMenu)
+        {
+            ImGui::OpenPopup("CreateNodeMenu");
+            showCreateNodeMenu = false;
+        }
+
+        if (ImGui::BeginPopup("CreateNodeMenu"))
+        {
+            ImVec2 nodePos = createNodeMenuPos - ImGui::GetWindowPos();
+            std::cout << "[CREATE MENU] Mouse pos: (" << createNodeMenuPos.x << ", " << createNodeMenuPos.y << ")" << std::endl;
+            std::cout << "[CREATE MENU] Window pos: (" << ImGui::GetWindowPos().x << ", " << ImGui::GetWindowPos().y << ")" << std::endl;
+            std::cout << "[CREATE MENU] Final node pos: (" << nodePos.x << ", " << nodePos.y << ")" << std::endl;
+
+            if (ImGui::BeginMenu("Input/Output"))
+            {
+                if (ImGui::MenuItem("Start Node"))
+                {
+                    CreateStartNode(nodePos);
+                }
+                if (ImGui::MenuItem("String Node"))
+                {
+                    CreateStringNode("New String", nodePos);
+                }
+                if (ImGui::MenuItem("Boolean Node"))
+                {
+                    CreateBoolNode(false, nodePos);
+                }
+                if (ImGui::MenuItem("Integer Node"))
+                {
+                    CreateIntNode(0, nodePos);
+                }
+                if (ImGui::MenuItem("Float Node"))
+                {
+                    CreateFloatNode(0.0f, nodePos);
+                }
+                ImGui::EndMenu();
+            }
+
+            if (ImGui::BeginMenu("Math"))
+            {
+                if (ImGui::MenuItem("Add Node"))
+                {
+                    CreateMathAddNode(nodePos);
+                }
+                if (ImGui::MenuItem("Sin Node"))
+                {
+                    CreateSinNode(nodePos);
+                }
+                if (ImGui::MenuItem("Cos Node"))
+                {
+                    CreateCosNode(nodePos);
+                }
+                if (ImGui::MenuItem("Lerp Node"))
+                {
+                    CreateLerpNode(nodePos);
+                }
+                if (ImGui::MenuItem("Clamp Node"))
+                {
+                    CreateClampNode(nodePos);
+                }
+                ImGui::EndMenu();
+            }
+
+            if (ImGui::BeginMenu("Vector"))
+            {
+                if (ImGui::MenuItem("Vector2 Node"))
+                {
+                    CreateVector2Node(Vector2(0, 0), nodePos);
+                }
+                if (ImGui::MenuItem("Vector3 Node"))
+                {
+                    CreateVector3Node(Vector3(0, 0, 0), nodePos);
+                }
+                if (ImGui::MenuItem("Vector Add"))
+                {
+                    CreateVectorAddNode(nodePos);
+                }
+                if (ImGui::MenuItem("Vector Cross"))
+                {
+                    CreateVectorCrossNode(nodePos);
+                }
+                if (ImGui::MenuItem("Vector Dot"))
+                {
+                    CreateVectorDotNode(nodePos);
+                }
+                if (ImGui::MenuItem("Vector Normalize"))
+                {
+                    CreateVectorNormalizeNode(nodePos);
+                }
+                ImGui::EndMenu();
+            }
+
+            if (ImGui::BeginMenu("Matrix"))
+            {
+                if (ImGui::MenuItem("Matrix 3x3"))
+                {
+                    CreateMatrix3x3Node(nodePos);
+                }
+                if (ImGui::MenuItem("Matrix 4x4"))
+                {
+                    CreateMatrix4x4Node(nodePos);
+                }
+                if (ImGui::MenuItem("Matrix Multiply"))
+                {
+                    CreateMatrixMultiplyNode(nodePos);
+                }
+                ImGui::EndMenu();
+            }
+
+            if (ImGui::BeginMenu("Script"))
+            {
+                if (ImGui::MenuItem("Print Console"))
+                {
+                    CreatePrintNode(nodePos);
+                }
+                if (ImGui::MenuItem("Update Node"))
+                {
+                    CreateUpdateNode(nodePos);
+                }
+                if (ImGui::MenuItem("Timer Node"))
+                {
+                    CreateTimerNode(1.0f, nodePos);
+                }
+                if (ImGui::MenuItem("Delay Node"))
+                {
+                    CreateDelayNode(1.0f, nodePos);
+                }
+                ImGui::EndMenu();
+            }
+
+            ImGui::Separator();
+
+            if (ImGui::MenuItem("Create Math Graph Example"))
+            {
+                CreateMathGraphExample();
+            }
+
+            ImGui::EndPopup();
+        }
     }
 };
