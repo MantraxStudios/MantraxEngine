@@ -13,6 +13,8 @@ static int NodeID = 0;
 
 inline ImVec2 operator+(const ImVec2 &a, const ImVec2 &b) { return ImVec2(a.x + b.x, a.y + b.y); }
 inline ImVec2 operator-(const ImVec2 &a, const ImVec2 &b) { return ImVec2(a.x - b.x, a.y - b.y); }
+inline ImVec2 operator*(const ImVec2 &a, float scalar) { return ImVec2(a.x * scalar, a.y * scalar); }
+inline ImVec2 operator/(const ImVec2 &a, float scalar) { return ImVec2(a.x / scalar, a.y / scalar); }
 inline ImVec2 &operator+=(ImVec2 &a, const ImVec2 &b)
 {
     a.x += b.x;
@@ -227,12 +229,11 @@ public:
     int editingNodeId = -1;    // ID del nodo que se está editando
     char textBuffer[256] = ""; // Buffer para el texto de entrada
     bool isConnecting = false; // Flag para indicar si estamos en modo conexión
-    
+
     // Variables para el movimiento del panel (estilo Unreal)
-    ImVec2 panelOffset = ImVec2(0, 0);     // Offset del panel
-    float panelZoom = 1.0f;                 // Zoom del panel (1.0 = 100%)
-    ImVec2 lastMousePos = ImVec2(0, 0);    // Última posición del ratón para pan
-    bool isPanning = false;                 // Flag para indicar si estamos haciendo pan
+    ImVec2 panelOffset = ImVec2(0, 0);  // Offset del panel
+    ImVec2 lastMousePos = ImVec2(0, 0); // Última posición del ratón para pan
+    bool isPanning = false;             // Flag para indicar si estamos haciendo pan
 
     // Colores estilo Blender
     struct BlenderColors
@@ -322,7 +323,7 @@ public:
         newNode.n.outputs.clear();
 
         // Configurar pins de entrada - posicionados a la izquierda del nodo
-        float inputY = 37.0f; // Ajustado para alinear con los campos de entrada
+        float inputY = 44.0f; // Ajustado para alinear exactamente con el centro de los campos de entrada
         for (size_t i = 0; i < config.inputPins.size(); i++)
         {
             const auto &pinConfig = config.inputPins[i];
@@ -351,7 +352,7 @@ public:
         }
 
         // Configurar pins de salida - posicionados a la derecha del nodo
-        float outputY = 37.0f; // Ajustado para alinear con los campos de entrada
+        float outputY = 44.0f; // Ajustado para alinear exactamente con el centro de los campos de entrada
         for (size_t i = 0; i < config.outputPins.size(); i++)
         {
             const auto &pinConfig = config.outputPins[i];
@@ -1041,6 +1042,29 @@ public:
         ImVec2 window_pos = ImGui::GetWindowPos();
         ImVec2 mousePos = ImGui::GetIO().MousePos - window_pos;
 
+        // Manejar pan con el botón medio del ratón
+        if (ImGui::IsMouseDown(ImGuiMouseButton_Middle))
+        {
+            if (!isPanning)
+            {
+                isPanning = true;
+                lastMousePos = mousePos;
+            }
+            else
+            {
+                ImVec2 delta = mousePos - lastMousePos;
+                panelOffset += delta;
+                lastMousePos = mousePos;
+            }
+        }
+        else
+        {
+            isPanning = false;
+        }
+
+        // Aplicar transformación del panel
+        ImVec2 transformedMousePos = mousePos - panelOffset;
+
         // Actualizar valores de entrada desde conexiones en cada frame
         for (auto &c : connections)
         {
@@ -1087,8 +1111,9 @@ public:
             if (c.fromPinId >= fromNode->outputs.size() || c.toPinId >= toNode->inputs.size())
                 continue;
 
-            ImVec2 p1 = window_pos + fromNode->pos + fromNode->outputs[c.fromPinId].pos;
-            ImVec2 p2 = window_pos + toNode->pos + toNode->inputs[c.toPinId].pos;
+            // Aplicar transformación del panel a las posiciones
+            ImVec2 p1 = window_pos + panelOffset + fromNode->pos + fromNode->outputs[c.fromPinId].pos;
+            ImVec2 p2 = window_pos + panelOffset + toNode->pos + toNode->inputs[c.toPinId].pos;
 
             // Color de la línea según el tipo de pin
             bool isExec = fromNode->outputs[c.fromPinId].isExec;
@@ -1116,8 +1141,9 @@ public:
             auto &n = d.n;
 
             ImGui::PushID(n.id);
-            ImVec2 min = window_pos + n.pos;
-            ImVec2 max = window_pos + n.pos + n.size;
+            // Aplicar transformación del panel a las posiciones del nodo
+            ImVec2 min = window_pos + panelOffset + n.pos;
+            ImVec2 max = window_pos + panelOffset + n.pos + n.size;
 
             // Colores según categoría y estado
             ImU32 headerColor = BlenderColors::GetCategoryColor(n.category);
@@ -1167,7 +1193,7 @@ public:
             if (CustomNode *cn = GetCustomNodeById(n.id))
             {
                 // Dibujar campos editables para pins de entrada
-                float currentY = 37.0f; // Ajustado para alinear con los pins
+                float currentY = 34.0f; // Ajustado para alinear exactamente con los pins (44px - 10px para centrar texto)
                 for (size_t pinIndex = 0; pinIndex < n.inputs.size(); pinIndex++)
                 {
                     const Pin &pin = n.inputs[pinIndex];
@@ -1178,8 +1204,8 @@ public:
                         auto nameIt = cn->inputNames.find((int)pinIndex);
                         std::string pinName = (nameIt != cn->inputNames.end()) ? nameIt->second : ("Pin " + std::to_string(pinIndex));
 
-                        // Dibujar etiqueta del pin con mejor posicionamiento
-                        ImVec2 labelPos = ImVec2(min.x + 8, min.y + currentY + 2);
+                        // Dibujar etiqueta del pin con mejor posicionamiento (centrada verticalmente con el pin)
+                        ImVec2 labelPos = ImVec2(min.x + 8, min.y + currentY + 10);
                         draw_list->AddText(labelPos, IM_COL32(200, 200, 200, 255), pinName.c_str());
 
                         // Campo de entrada solo si no hay conexión
@@ -1190,7 +1216,7 @@ public:
                             // Dejar espacio para la etiqueta del pin (aproximadamente 80px) + márgenes
                             float availableWidth = n.size.x - 88.0f; // 80px para etiqueta + 8px de margen derecho
 
-                            ImVec2 inputPos = ImVec2(min.x + 80, min.y + currentY + 2);
+                            ImVec2 inputPos = ImVec2(min.x + 80, min.y + currentY + 8);
                             ImGui::SetCursorScreenPos(inputPos);
                             ImGui::PushItemWidth(availableWidth);
 
@@ -1260,7 +1286,7 @@ public:
                 }
 
                 // Dibujar etiquetas para pins de salida
-                float outputY = 37.0f; // Ajustado para alinear con los pins
+                float outputY = 34.0f; // Ajustado para alinear exactamente con los pins
                 for (size_t pinIndex = 0; pinIndex < n.outputs.size(); pinIndex++)
                 {
                     const Pin &pin = n.outputs[pinIndex];
@@ -1270,9 +1296,9 @@ public:
                         auto nameIt = cn->outputNames.find((int)pinIndex);
                         std::string pinName = (nameIt != cn->outputNames.end()) ? nameIt->second : ("Out " + std::to_string(pinIndex));
 
-                        // Etiqueta alineada a la derecha
+                        // Etiqueta alineada a la derecha y centrada verticalmente con el pin
                         ImVec2 text_size = ImGui::CalcTextSize(pinName.c_str());
-                        ImVec2 labelPos = ImVec2(max.x - text_size.x - 8, min.y + outputY + 2);
+                        ImVec2 labelPos = ImVec2(max.x - text_size.x - 8, min.y + outputY + 10);
                         // draw_list->AddText(labelPos, IM_COL32(200, 200, 200, 255), pinName.c_str());
                     }
 
@@ -1296,6 +1322,7 @@ public:
             // Solo permitir arrastrar si no estamos en modo conexión
             if (ImGui::IsItemActive() && ImGui::IsMouseDragging(ImGuiMouseButton_Left) && !isConnecting)
             {
+                // Mover el nodo
                 n.pos += ImGui::GetIO().MouseDelta;
             }
 
@@ -1303,7 +1330,8 @@ public:
             for (size_t i = 0; i < n.inputs.size(); i++)
             {
                 Pin &pin = n.inputs[i];
-                ImVec2 pinPos = window_pos + n.pos + pin.pos;
+                // Aplicar transformación del panel a la posición del pin
+                ImVec2 pinPos = window_pos + panelOffset + n.pos + pin.pos;
 
                 bool hasConnection = HasConnection(n.id, (int)i, true);
 
@@ -1369,7 +1397,8 @@ public:
             for (size_t i = 0; i < n.outputs.size(); i++)
             {
                 Pin &pin = n.outputs[i];
-                ImVec2 pinPos = window_pos + n.pos + pin.pos;
+                // Aplicar transformación del panel a la posición del pin
+                ImVec2 pinPos = window_pos + panelOffset + n.pos + pin.pos;
 
                 bool hasConnection = HasConnection(n.id, (int)i, false);
 
@@ -1429,7 +1458,8 @@ public:
             Node *fromNode = &GetNodeById(connectingFromNode)->n;
             if (fromNode && connectingFromPin < fromNode->outputs.size())
             {
-                ImVec2 p1 = window_pos + fromNode->pos + fromNode->outputs[connectingFromPin].pos;
+                // Aplicar transformación del panel a la posición del pin de origen
+                ImVec2 p1 = window_pos + panelOffset + fromNode->pos + fromNode->outputs[connectingFromPin].pos;
                 ImVec2 p2 = ImGui::GetIO().MousePos;
 
                 bool isExec = fromNode->outputs[connectingFromPin].isExec;
@@ -1497,12 +1527,31 @@ public:
             }
         }
 
+        ImGui::SameLine();
+
+        if (ImGui::Button("Reset View"))
+        {
+            panelOffset = ImVec2(0, 0);
+            std::cout << "[PANEL] View reset to default" << std::endl;
+        }
+
+        ImGui::SameLine();
+
+        // Mostrar información del panel
+        ImGui::Text("Pan: (%.0f, %.0f)", panelOffset.x, panelOffset.y);
+
         ImGui::PopStyleColor(3);
 
         // Instrucciones con mejor tipografía
         ImGui::SetCursorScreenPos(window_pos + ImVec2(10, 40));
         ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(160, 160, 160, 255));
         ImGui::Text("Drag from output to input | Right-click/ESC to cancel | Double-click pins to disconnect");
+        ImGui::PopStyleColor();
+
+        // Instrucciones adicionales para el panel
+        ImGui::SetCursorScreenPos(window_pos + ImVec2(10, 60));
+        ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(140, 140, 140, 255));
+        ImGui::Text("Middle button: Pan | Reset View: Reset position");
         ImGui::PopStyleColor();
     }
 };
