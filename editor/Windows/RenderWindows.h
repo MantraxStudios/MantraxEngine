@@ -14,8 +14,6 @@
 #include "CanvasManager.h"
 #include <MantraxNodes/MNodeEditor.h>
 
-class MNodeEditor;
-
 class RenderWindows
 {
 private:

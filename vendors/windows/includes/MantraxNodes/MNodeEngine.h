@@ -839,10 +839,8 @@ public:
             "String",
             [](CustomNode *node)
             {
-                // Get the current input value and use it as output
                 std::string inputValue = node->GetInputValue<std::string>(0, "My String");
                 node->SetOutputValue<std::string>(0, inputValue);
-                std::cout << "[STRING] Output: " << inputValue << std::endl;
             },
             INPUT_OUTPUT,                   // category
             false,                          // hasExecInput

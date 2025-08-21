@@ -13,9 +13,6 @@
 #include <set>
 #include "MNodeEngine.h"
 
-class MNodeEditor;
-class CustomNode;
-
 class MNodeEditor
 {
 public:
