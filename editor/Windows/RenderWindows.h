@@ -12,13 +12,15 @@
 #include "TileEditor.h"
 #include "InputEditor.h"
 #include "CanvasManager.h"
-#include "../SimpleNodeEditor.h"
+#include <MantraxNodes/MNodeEditor.h>
+
+class MNodeEditor;
 
 class RenderWindows
 {
 private:
     std::vector<std::unique_ptr<WindowBehaviour>> m_windows;
-    SimpleNodeEditor editor;
+    MNodeEditor editor;
 
 public:
     RenderWindows()
