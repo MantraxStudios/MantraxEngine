@@ -11,35 +11,6 @@ class GameObjectNode
 public:
     void RegisterNodes(MNodeEngine &engine, ImVec2 position = ImVec2(300, 100))
     {
-        PremakeNode findObjectNode(
-            "Object",
-            "Find Object",
-            [](CustomNode *node)
-            {
-                int index = node->GetInputValue<int>(1, 0);
-
-                auto &gameObjects = SceneManager::getInstance().getActiveScene()->getGameObjects();
-
-                if (index >= 0 && index < static_cast<int>(gameObjects.size()))
-                {
-                    GameObject *obj = gameObjects[index];
-
-                    node->SetOutputValue<GameObject *>(1, obj);
-                }
-                else
-                {
-                    std::cout << "Invalid GameObject index: " << index << " (max: " << gameObjects.size() - 1 << ")" << std::endl;
-                    node->SetOutputValue<GameObject *>(1, nullptr);
-                }
-            },
-            SCRIPT,                              // CATEGORY
-            true,                                // EXECUTE PIN INPUT
-            true,                                // EXECUTE PIN OUT
-            {{"Index", 0}},                      // INPUT PINS
-            {{"Object", (GameObject *)nullptr}}, // OUTPUT PINS
-            position                             // PIN POSITION
-        );
-
         // Crear el nodo usando el engine
         PremakeNode setNameNode(
             "Object",
@@ -470,13 +441,152 @@ public:
             {{"Rotation", glm::vec3(0, 0, 0)}},
             position);
 
+        PremakeNode findObjectNode(
+            "Object",
+            "Find Object",
+            [](CustomNode *node)
+            {
+                int index = node->GetInputValue<int>(1, 0);
+
+                auto &gameObjects = SceneManager::getInstance().getActiveScene()->getGameObjects();
+
+                if (index >= 0 && index < static_cast<int>(gameObjects.size()))
+                {
+                    GameObject *obj = gameObjects[index];
+
+                    node->SetOutputValue<GameObject *>(1, obj);
+                }
+                else
+                {
+                    std::cout << "Invalid GameObject index: " << index << " (max: " << gameObjects.size() - 1 << ")" << std::endl;
+                    node->SetOutputValue<GameObject *>(1, nullptr);
+                }
+            },
+            SCRIPT,                              // CATEGORY
+            true,                                // EXECUTE PIN INPUT
+            true,                                // EXECUTE PIN OUT
+            {{"Index", 0}},                      // INPUT PINS
+            {{"Object", (GameObject *)nullptr}}, // OUTPUT PINS
+            position                             // PIN POSITION
+        );
+
+        PremakeNode setParentNode(
+            "Object",
+            "Attach To",
+            [](CustomNode *node)
+            {
+                GameObject *object = node->GetInputValue<GameObject *>(2, nullptr);
+
+                if (object != nullptr)
+                {
+                    if (node->GetInputValue<GameObject *>(1, nullptr) != nullptr)
+                    {
+                        object->setParent(node->GetInputValue<GameObject *>(1, nullptr));
+                        node->SetOutputValue<GameObject *>(1, object->getParent());
+                    }
+                }
+            },
+            SCRIPT,                                                                     // CATEGORY
+            true,                                                                       // EXECUTE PIN INPUT
+            true,                                                                       // EXECUTE PIN OUT
+            {{"New Parent", (GameObject *)nullptr}, {"Object", (GameObject *)nullptr}}, // INPUT PINS
+            {{"Parent", (GameObject *)nullptr}},                                        // OUTPUT PINS
+            position                                                                    // PIN POSITION
+        );
+
+        PremakeNode removeParent(
+            "Object",
+            "Detach",
+            [](CustomNode *node)
+            {
+                GameObject *object = node->GetInputValue<GameObject *>(1, nullptr);
+
+                if (object != nullptr)
+                {
+                    object->setParent(nullptr);
+                }
+            },
+            SCRIPT,                              // CATEGORY
+            true,                                // EXECUTE PIN INPUT
+            true,                                // EXECUTE PIN OUT
+            {{"Object", (GameObject *)nullptr}}, // INPUT PINS
+            {},                                  // OUTPUT PINS
+            position                             // PIN POSITION
+        );
+
+        PremakeNode countChilds(
+            "Object",
+            "Count Childs",
+            [](CustomNode *node)
+            {
+                GameObject *object = node->GetInputValue<GameObject *>(0, nullptr);
+
+                if (object != nullptr)
+                {
+                    node->SetOutputValue<int>(0, object->getChildCount());
+                }
+            },
+            SCRIPT,                              // CATEGORY
+            false,                               // EXECUTE PIN INPUT
+            false,                               // EXECUTE PIN OUT
+            {{"Object", (GameObject *)nullptr}}, // INPUT PINS
+            {{"Childs", 0}},                     // OUTPUT PINS
+            position                             // PIN POSITION
+        );
+
+        PremakeNode getChild(
+            "Object",
+            "Get Child",
+            [](CustomNode *node)
+            {
+                GameObject *object = node->GetInputValue<GameObject *>(1, nullptr);
+                int index = node->GetInputValue<int>(2, 0);
+
+                if (object != nullptr)
+                {
+                    node->SetOutputValue<GameObject *>(1, object->getChild(index));
+                }
+            },
+            SCRIPT,                                                  // CATEGORY
+            true,                                                    // EXECUTE PIN INPUT
+            true,                                                    // EXECUTE PIN OUT
+            {{"Object", (GameObject *)nullptr}, {"Child Index", 0}}, // INPUT PINS
+            {{"Child", (GameObject *)nullptr}},                      // OUTPUT PINS
+            position                                                 // PIN POSITION
+        );
+
+        PremakeNode destroyNode(
+            "Object",
+            "Destroy Object",
+            [](CustomNode *node)
+            {
+                GameObject *object = node->GetInputValue<GameObject *>(1, nullptr);
+
+                if (object != nullptr)
+                {
+                    object->destroy();
+                }
+            },
+            SCRIPT,                              // CATEGORY
+            true,                                // EXECUTE PIN INPUT
+            true,                                // EXECUTE PIN OUT
+            {{"Object", (GameObject *)nullptr}}, // INPUT PINS
+            {},                                  // OUTPUT PINS
+            position                             // PIN POSITION
+        );
+
+        engine.PrefabNodes.push_back(setParentNode);
+        engine.PrefabNodes.push_back(removeParent);
+        engine.PrefabNodes.push_back(getChild);
+        engine.PrefabNodes.push_back(countChilds);
+        engine.PrefabNodes.push_back(findObjectNode);
+        engine.PrefabNodes.push_back(destroyNode);
+
         engine.PrefabNodes.push_back(getNameNode);
         engine.PrefabNodes.push_back(setNameNode);
 
         engine.PrefabNodes.push_back(setTagNode);
         engine.PrefabNodes.push_back(getTagNode);
-
-        engine.PrefabNodes.push_back(findObjectNode);
 
         engine.PrefabNodes.push_back(setPosNode);
         engine.PrefabNodes.push_back(getPosNode);
