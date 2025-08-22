@@ -11,8 +11,8 @@
 #include <cmath>
 #include <array>
 #include <set>
-
 #include <components/SceneManager.h>
+#include <components/GameObject.h>
 
 static int NodeID = 0;
 
@@ -350,6 +350,7 @@ class MNodeEngine
 public:
     std::vector<CustomNode> customNodes;
     std::vector<Connection> connections;
+    std::vector<CustomNode> _CopyNodes;
 
     int connectingFromNode = -1;
     int connectingFromPin = -1;
@@ -469,7 +470,7 @@ public:
             const auto &pinConfig = config.inputPins[i];
             Pin inputPin;
             inputPin.id = (int)i;
-            inputPin.pos = ImVec2(-8, inputY); // Ligeramente fuera del borde para mejor detección
+            inputPin.pos = ImVec2(0, inputY); // Ligeramente fuera del borde para mejor detección
             inputPin.isExec = (pinConfig.type == ExecuteInput);
             newNode.n.inputs.push_back(inputPin);
 
@@ -498,7 +499,7 @@ public:
             const auto &pinConfig = config.outputPins[i];
             Pin outputPin;
             outputPin.id = (int)i;
-            outputPin.pos = ImVec2(config.size.x + 8, outputY); // Ligeramente fuera del borde para mejor detección
+            outputPin.pos = ImVec2(config.size.x, outputY); // Ligeramente fuera del borde para mejor detección
             outputPin.isExec = (pinConfig.type == ExecuteOutput);
             newNode.n.outputs.push_back(outputPin);
 
@@ -1746,8 +1747,16 @@ public:
                         std::cout << std::any_cast<float>(input.second);
                     else if (input.second.type() == typeid(bool))
                         std::cout << (std::any_cast<bool>(input.second) ? "true" : "false");
+                    else if (input.second.type() == typeid(GameObject *))
+                    {
+                        GameObject *obj = std::any_cast<GameObject *>(input.second);
+                        if (obj)
+                            std::cout << "GameObject: " << obj->Name;
+                        else
+                            std::cout << "GameObject: nullptr";
+                    }
                     else
-                        std::cout << "<unknown type>";
+                        std::cout << "<unknown type: " << input.second.type().name() << ">";
                 }
                 catch (...)
                 {
@@ -1770,8 +1779,16 @@ public:
                         std::cout << std::any_cast<float>(output.second);
                     else if (output.second.type() == typeid(bool))
                         std::cout << (std::any_cast<bool>(output.second) ? "true" : "false");
+                    else if (output.second.type() == typeid(GameObject *))
+                    {
+                        GameObject *obj = std::any_cast<GameObject *>(output.second);
+                        if (obj)
+                            std::cout << "GameObject: " << obj->Name;
+                        else
+                            std::cout << "GameObject: nullptr";
+                    }
                     else
-                        std::cout << "<unknown type>";
+                        std::cout << "<unknown type: " << output.second.type().name() << ">";
                 }
                 catch (...)
                 {
@@ -2248,6 +2265,8 @@ public:
             return BlenderColors::PinVector;
         else if (value->type() == typeid(Matrix4x4))
             return BlenderColors::PinVector;
+        else if (value->type() == typeid(GameObject *))
+            return IM_COL32(255, 100, 100, 255); // Rojo para GameObject pointers
 
         return BlenderColors::PinFloat;
     }

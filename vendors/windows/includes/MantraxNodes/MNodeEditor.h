@@ -12,6 +12,7 @@
 #include <array>
 #include <set>
 #include "MNodeEngine.h"
+#include "Externals/GameObjectNode.h"
 
 class MNodeEditor
 {
@@ -19,6 +20,9 @@ public:
     MNodeEngine *engine = new MNodeEngine();
     std::vector<CustomNode> &customNodes = engine->customNodes;
     std::vector<Connection> &connections = engine->connections;
+
+    // NODES IMPLEMENTS
+    GameObjectNode *NodesGM = new GameObjectNode();
 
     int connectingFromNode = -1;
     int connectingFromPin = -1;
@@ -48,27 +52,12 @@ public:
             switch (category)
             {
             case INPUT_OUTPUT:
-                return IM_COL32(35, 35, 35, 255); // Naranja rojizo (Header 1)
-            case MATH:
-                return IM_COL32(95, 145, 185, 255); // Azul
-            case CONVERTER:
-                return IM_COL32(185, 165, 95, 255); // Amarillo
-            case VECTOR:
-                return IM_COL32(125, 185, 95, 255); // Verde
-            case SHADER:
-                return IM_COL32(95, 185, 145, 255); // Verde azulado
-            case TEXTURE:
-                return IM_COL32(185, 95, 145, 255); // Rosa
-            case COLOR:
-                return IM_COL32(145, 95, 185, 255); // Púrpura
             case SCRIPT:
-                return IM_COL32(185, 125, 95, 255); // Naranja
+            case SHADER:
             case GROUP:
-                return IM_COL32(95, 125, 185, 255); // Azul oscuro
-            case LAYOUT:
-                return IM_COL32(125, 125, 125, 255); // Gris
+                return IM_COL32(255, 0, 0, 255); // 🔴 Rojo intenso
             default:
-                return IM_COL32(125, 125, 125, 255); // Gris por defecto
+                return IM_COL32(128, 128, 128, 255); // ⚪ Gris neutro
             }
         }
 
@@ -519,18 +508,16 @@ public:
 
                 ImU32 pinColor = GetPinColor(pin.isExec, value);
 
-                // Dibujar pin con estilo Blender
+                // Dibujar pin
                 if (hasConnection || pin.isExec)
                 {
-                    // Pin conectado: círculo completo
                     draw_list->AddCircleFilled(pinPos, 5, pinColor);
                     draw_list->AddCircle(pinPos, 5, IM_COL32(0, 0, 0, 120), 0, 1.0f);
                 }
                 else
                 {
-                    // Pin desconectado: anillo
-                    draw_list->AddCircle(pinPos, 5, pinColor, 0, 2.0f);
-                    draw_list->AddCircleFilled(pinPos, 2, pinColor);
+                    draw_list->AddCircle(pinPos, 6, IM_COL32(100, 100, 100, 120), 0, 2.0f);
+                    draw_list->AddCircleFilled(pinPos, 5, pinColor);
                 }
 
                 // Área de interacción (más grande para mejor usabilidad)
@@ -622,8 +609,8 @@ public:
                 }
                 else
                 {
-                    draw_list->AddCircle(pinPos, 5, pinColor, 0, 2.0f);
-                    draw_list->AddCircleFilled(pinPos, 2, pinColor);
+                    draw_list->AddCircle(pinPos, 6, IM_COL32(100, 100, 100, 120), 0, 2.0f);
+                    draw_list->AddCircleFilled(pinPos, 5, pinColor);
                 }
 
                 // Área de interacción (más grande para mejor usabilidad)
@@ -965,6 +952,39 @@ public:
                 {
                     engine->CreateDelayNode(1.0f, nodePos);
                 }
+
+                ImGui::EndMenu();
+            }
+
+            if (ImGui::BeginMenu("Game Object"))
+            {
+                if (ImGui::MenuItem("Create All GameObject Nodes"))
+                {
+                    NodesGM->CreateAllGameObjectNodes(*engine);
+                }
+
+                ImGui::Separator();
+
+                if (ImGui::MenuItem("Find Object"))
+                {
+                    NodesGM->FindObject(*engine);
+                }
+
+                if (ImGui::MenuItem("Change Name"))
+                {
+                    NodesGM->ChangeNameNode(*engine);
+                }
+
+                if (ImGui::MenuItem("Get Name"))
+                {
+                    NodesGM->GetNameNode(*engine);
+                }
+
+                if (ImGui::MenuItem("Move GameObject"))
+                {
+                    NodesGM->MoveGameObjectNode(*engine);
+                }
+
                 ImGui::EndMenu();
             }
 
