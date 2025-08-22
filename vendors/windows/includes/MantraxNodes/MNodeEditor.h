@@ -13,6 +13,8 @@
 #include <set>
 #include "MNodeEngine.h"
 #include "Externals/GameObjectNode.h"
+#include "Externals/DebugNodes.h"
+#include "Externals/EventsNode.h"
 
 class MNodeEditor
 {
@@ -23,6 +25,8 @@ public:
 
     // NODES IMPLEMENTS
     GameObjectNode *NodesGM = new GameObjectNode();
+    DebugNodes *NodesDB = new DebugNodes();
+    EventsNode *NodesEV = new EventsNode();
 
     int connectingFromNode = -1;
     int connectingFromPin = -1;
@@ -47,6 +51,8 @@ public:
     MNodeEditor()
     {
         NodesGM->RegisterNodes(*engine);
+        NodesDB->RegisterNodes(*engine);
+        NodesEV->RegisterNodes(*engine);
 
         std::cout << "##### Nodes Registers: " << engine->PrefabNodes.size() << std::endl;
     }
@@ -56,27 +62,14 @@ public:
     {
         static ImU32 GetCategoryColor(NodeCategory category)
         {
-            switch (category)
-            {
-            case INPUT_OUTPUT:
-            case SCRIPT:
-            case SHADER:
-            case GROUP:
-                return IM_COL32(255, 0, 0, 255); // 🔴 Rojo intenso
-            default:
-                return IM_COL32(128, 128, 128, 255); // ⚪ Gris neutro
-            }
+            // Todos los headers son grises (100, 100, 100, 255)
+            return IM_COL32(100, 100, 100, 255);
         }
 
         static ImU32 GetCategoryColorDark(NodeCategory category)
         {
-            ImU32 color = GetCategoryColor(category);
-            // Hacer más oscuro reduciendo cada componente
-            return IM_COL32(
-                (color >> IM_COL32_R_SHIFT & 0xFF) * 0.7f,
-                (color >> IM_COL32_G_SHIFT & 0xFF) * 0.7f,
-                (color >> IM_COL32_B_SHIFT & 0xFF) * 0.7f,
-                255);
+            // Versión más oscura del gris (70, 70, 70, 255)
+            return IM_COL32(70, 70, 70, 255);
         }
 
         static constexpr ImU32 NodeBackground = IM_COL32(62, 62, 66, 240);
@@ -322,19 +315,11 @@ public:
             // Fondo del nodo con esquinas redondeadas estilo Blender
             draw_list->AddRectFilled(min, max, nodeColor, 6.0f);
 
-            // Header del nodo con gradiente sutil
+            // Header del nodo uniforme
             ImVec2 headerMax = ImVec2(max.x, min.y + 26);
 
-            // Primero dibujamos el header con esquinas superiores redondeadas
+            // Dibujamos el header completo con esquinas superiores redondeadas
             draw_list->AddRectFilled(min, headerMax, headerColor, 6.0f, ImDrawFlags_RoundCornersTop);
-
-            // Luego añadimos el gradiente oscuro en la parte inferior del header
-            draw_list->AddRectFilledMultiColor(
-                ImVec2(min.x, min.y + 13), headerMax, // mitad inferior del header
-                BlenderColors::GetCategoryColorDark(n.category),
-                BlenderColors::GetCategoryColorDark(n.category),
-                BlenderColors::GetCategoryColorDark(n.category),
-                BlenderColors::GetCategoryColorDark(n.category));
 
             // Borde del nodo
             draw_list->AddRect(min, max, borderColor, 6.0f, 0, n.isSelected ? 2.0f : 4.0f);
@@ -898,135 +883,26 @@ public:
                 engine->ExecuteGraph();
             }
 
-            if (ImGui::BeginMenu("Input/Output"))
-            {
-                if (ImGui::MenuItem("Start Node"))
-                {
-                    engine->CreateStartNode(nodePos);
-                }
-                if (ImGui::MenuItem("String Node"))
-                {
-                    engine->CreateStringNode("New String", nodePos);
-                }
-                if (ImGui::MenuItem("Boolean Node"))
-                {
-                    engine->CreateBoolNode(false, nodePos);
-                }
-                if (ImGui::MenuItem("Integer Node"))
-                {
-                    engine->CreateIntNode(0, nodePos);
-                }
-                if (ImGui::MenuItem("Float Node"))
-                {
-                    engine->CreateFloatNode(0.0f, nodePos);
-                }
-                ImGui::EndMenu();
-            }
-
-            if (ImGui::BeginMenu("Math"))
-            {
-                if (ImGui::MenuItem("Add Node"))
-                {
-                    engine->CreateMathAddNode(nodePos);
-                }
-                if (ImGui::MenuItem("Sin Node"))
-                {
-                    engine->CreateSinNode(nodePos);
-                }
-                if (ImGui::MenuItem("Cos Node"))
-                {
-                    engine->CreateCosNode(nodePos);
-                }
-                if (ImGui::MenuItem("Lerp Node"))
-                {
-                    engine->CreateLerpNode(nodePos);
-                }
-                if (ImGui::MenuItem("Clamp Node"))
-                {
-                    engine->CreateClampNode(nodePos);
-                }
-                ImGui::EndMenu();
-            }
-
-            if (ImGui::BeginMenu("Vector"))
-            {
-                if (ImGui::MenuItem("Vector2 Node"))
-                {
-                    engine->CreateVector2Node(Vector2(0, 0), nodePos);
-                }
-                if (ImGui::MenuItem("Vector3 Node"))
-                {
-                    engine->CreateVector3Node(Vector3(0, 0, 0), nodePos);
-                }
-                if (ImGui::MenuItem("Vector Add"))
-                {
-                    engine->CreateVectorAddNode(nodePos);
-                }
-                if (ImGui::MenuItem("Vector Cross"))
-                {
-                    engine->CreateVectorCrossNode(nodePos);
-                }
-                if (ImGui::MenuItem("Vector Dot"))
-                {
-                    engine->CreateVectorDotNode(nodePos);
-                }
-                if (ImGui::MenuItem("Vector Normalize"))
-                {
-                    engine->CreateVectorNormalizeNode(nodePos);
-                }
-                ImGui::EndMenu();
-            }
-
-            if (ImGui::BeginMenu("Matrix"))
-            {
-                if (ImGui::MenuItem("Matrix 3x3"))
-                {
-                    engine->CreateMatrix3x3Node(nodePos);
-                }
-                if (ImGui::MenuItem("Matrix 4x4"))
-                {
-                    engine->CreateMatrix4x4Node(nodePos);
-                }
-                if (ImGui::MenuItem("Matrix Multiply"))
-                {
-                    engine->CreateMatrixMultiplyNode(nodePos);
-                }
-                ImGui::EndMenu();
-            }
-
-            if (ImGui::BeginMenu("Script"))
-            {
-                if (ImGui::MenuItem("Print Console"))
-                {
-                    engine->CreatePrintNode(nodePos);
-                }
-                if (ImGui::MenuItem("Move Object"))
-                {
-                    engine->CreateMoveNode(nodePos);
-                }
-                if (ImGui::MenuItem("Update Node"))
-                {
-                    engine->CreateUpdateNode(nodePos);
-                }
-                if (ImGui::MenuItem("Timer Node"))
-                {
-                    engine->CreateTimerNode(1.0f, nodePos);
-                }
-                if (ImGui::MenuItem("Delay Node"))
-                {
-                    engine->CreateDelayNode(1.0f, nodePos);
-                }
-
-                ImGui::EndMenu();
-            }
-
-            for (PremakeNode nd : engine->PrefabNodes)
+            for (auto &nd : engine->PrefabNodes)
             {
                 if (ImGui::BeginMenu(nd.cat.c_str()))
                 {
                     std::string titleNew = "> " + nd.title;
 
-                    ImGui::MenuItem(titleNew.c_str());
+                    if (ImGui::MenuItem(titleNew.c_str()))
+                    {
+                        engine->CreateNode(
+                            nd.title,         // 🔹 std::string
+                            nd.executeFunc,   // 🔹 std::function<void(CustomNode*)>
+                            nd.hasExecInput,  // 🔹 bool
+                            nd.hasExecOutput, // 🔹 bool
+                            nd.inputPins,     // 🔹 vector<pair<string, any>>
+                            nd.outputPins,    // 🔹 vector<pair<string, any>>
+                            nd.position,      // 🔹 ImVec2
+                            nd.size           // 🔹 ImVec2
+                        );
+                    }
+
                     ImGui::EndMenu();
                 }
             }

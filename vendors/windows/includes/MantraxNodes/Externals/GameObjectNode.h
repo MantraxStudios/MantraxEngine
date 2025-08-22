@@ -12,7 +12,7 @@ public:
     void RegisterNodes(MNodeEngine &engine, ImVec2 position = ImVec2(300, 100))
     {
         PremakeNode findObjectNode(
-            "GameObject",
+            "Object",
             "Find Object",
             [](CustomNode *node)
             {
@@ -42,7 +42,7 @@ public:
 
         // Crear el nodo usando el engine
         PremakeNode changeNameNode(
-            "GameObject",
+            "Object",
             "Change Name Game Object",
             [](CustomNode *node)
             {
@@ -67,21 +67,20 @@ public:
         );
 
         PremakeNode getNameNode(
-            "GameObject",
+            "Object",
             "Get GameObject Name",
             [](CustomNode *node)
             {
-                GameObject *obj = node->GetInputValue<GameObject *>(1, nullptr);
+                GameObject *obj = node->GetInputValue<GameObject *>(0, nullptr);
                 if (obj)
                 {
                     std::string name = obj->Name;
-                    node->SetOutputValue<std::string>(1, name);
-                    std::cout << "GameObject name: " << name << std::endl;
+                    node->SetOutputValue<std::string>(0, name);
                 }
                 else
                 {
                     std::cout << "GetNameNode received nullptr GameObject" << std::endl;
-                    node->SetOutputValue<std::string>(1, "NULL");
+                    node->SetOutputValue<std::string>(0, "NULL");
                 }
             },
             SCRIPT,                              // CATEGORY
