@@ -68,7 +68,7 @@ public:
             position                          // PIN POSITION
         );
 
-        PremakeNode stringNode(
+        PremakeNode intNode(
             "Const",
             "Int",
             [](CustomNode *node)
@@ -86,5 +86,6 @@ public:
         engine.PrefabNodes.push_back(vec3Node);
         engine.PrefabNodes.push_back(vec2Node);
         engine.PrefabNodes.push_back(stringNode);
+        engine.PrefabNodes.push_back(intNode);
     }
 };

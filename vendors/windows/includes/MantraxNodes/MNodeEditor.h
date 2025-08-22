@@ -16,6 +16,7 @@
 #include "Externals/DebugNodes.h"
 #include "Externals/EventsNode.h"
 #include "Externals/MathNodes.h"
+#include "Externals/ConstNode.h"
 
 class MNodeEditor
 {
@@ -29,6 +30,7 @@ public:
     DebugNodes *NodesDB = new DebugNodes();
     EventsNode *NodesEV = new EventsNode();
     MathNodes *NodesMath = new MathNodes();
+    ConstNode *NodesConst = new ConstNode();
 
     int connectingFromNode = -1;
     int connectingFromPin = -1;
@@ -56,6 +58,7 @@ public:
         NodesDB->RegisterNodes(*engine);
         NodesEV->RegisterNodes(*engine);
         NodesMath->RegisterNodes(*engine);
+        NodesConst->RegisterNodes(*engine);
 
         std::cout << "##### Nodes Registers: " << engine->PrefabNodes.size() << std::endl;
     }
@@ -135,7 +138,7 @@ public:
             return BlenderColors::PinColor;
         else if (value->type() == typeid(GameObject *))
             return BlenderColors::PinFloat;
-        
+
         return BlenderColors::PinFloat;
     }
 
@@ -518,8 +521,6 @@ public:
                 }
 
                 ImU32 pinColor = GetPinColor(pin.isExec, value);
-                
-
 
                 // Dibujar pin
                 if (pin.isExec)
@@ -737,8 +738,6 @@ public:
                 }
 
                 ImU32 pinColor = GetPinColor(pin.isExec, value);
-                
-
 
                 // Dibujar pin
                 if (pin.isExec)
