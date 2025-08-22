@@ -443,7 +443,7 @@ public:
 
         PremakeNode findObjectNode(
             "Object",
-            "Find Object",
+            "Find Object Per Index",
             [](CustomNode *node)
             {
                 int index = node->GetInputValue<int>(1, 0);
@@ -466,6 +466,40 @@ public:
             true,                                // EXECUTE PIN INPUT
             true,                                // EXECUTE PIN OUT
             {{"Index", 0}},                      // INPUT PINS
+            {{"Object", (GameObject *)nullptr}}, // OUTPUT PINS
+            position                             // PIN POSITION
+        );
+
+        PremakeNode findObjectByNameNode(
+            "Object",
+            "Find Object By Name",
+            [](CustomNode *node)
+            {
+                std::string targetName = node->GetInputValue<std::string>(1, "");
+
+                auto &gameObjects = SceneManager::getInstance().getActiveScene()->getGameObjects();
+                GameObject *foundObj = nullptr;
+
+                for (auto *obj : gameObjects)
+                {
+                    if (obj && obj->Name == targetName)
+                    {
+                        foundObj = obj;
+                        break; // encontramos el primero que coincide
+                    }
+                }
+
+                if (!foundObj)
+                {
+                    std::cout << "GameObject with name \"" << targetName << "\" not found!" << std::endl;
+                }
+
+                node->SetOutputValue<GameObject *>(1, foundObj);
+            },
+            SCRIPT,                              // CATEGORY
+            true,                                // EXECUTE PIN INPUT
+            true,                                // EXECUTE PIN OUT
+            {{"Name", std::string("")}},         // INPUT PINS
             {{"Object", (GameObject *)nullptr}}, // OUTPUT PINS
             position                             // PIN POSITION
         );
@@ -555,6 +589,40 @@ public:
             position                                                 // PIN POSITION
         );
 
+        PremakeNode getChildByName(
+            "Object",
+            "Get Child By Name",
+            [](CustomNode *node)
+            {
+                GameObject *object = node->GetInputValue<GameObject *>(1, nullptr);
+                std::string childName = node->GetInputValue<std::string>(2, "");
+
+                GameObject *foundChild = nullptr;
+
+                if (object != nullptr)
+                {
+                    int childCount = object->getChildCount(); // Asumo que tenés una función así
+                    for (int i = 0; i < childCount; ++i)
+                    {
+                        GameObject *child = object->getChild(i);
+                        if (child && child->Name == childName)
+                        {
+                            foundChild = child;
+                            break; // devuelve el primero que coincide
+                        }
+                    }
+                }
+
+                node->SetOutputValue<GameObject *>(1, foundChild);
+            },
+            SCRIPT,                                                               // CATEGORY
+            true,                                                                 // EXECUTE PIN INPUT
+            true,                                                                 // EXECUTE PIN OUT
+            {{"Object", (GameObject *)nullptr}, {"Child Name", std::string("")}}, // INPUT PINS
+            {{"Child", (GameObject *)nullptr}},                                   // OUTPUT PINS
+            position                                                              // PIN POSITION
+        );
+
         PremakeNode destroyNode(
             "Object",
             "Destroy Object",
@@ -578,7 +646,9 @@ public:
         engine.PrefabNodes.push_back(setParentNode);
         engine.PrefabNodes.push_back(removeParent);
         engine.PrefabNodes.push_back(getChild);
+        engine.PrefabNodes.push_back(getChildByName);
         engine.PrefabNodes.push_back(countChilds);
+        engine.PrefabNodes.push_back(findObjectByNameNode);
         engine.PrefabNodes.push_back(findObjectNode);
         engine.PrefabNodes.push_back(destroyNode);
 
