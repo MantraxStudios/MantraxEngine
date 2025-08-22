@@ -328,7 +328,7 @@ public:
                 BlenderColors::GetCategoryColorDark(n.category));
 
             // Borde del nodo
-            draw_list->AddRect(min, max, borderColor, 6.0f, 0, n.isSelected ? 2.0f : 1.0f);
+            draw_list->AddRect(min, max, borderColor, 6.0f, 0, n.isSelected ? 2.0f : 4.0f);
 
             // Título del nodo con mejor tipografía
             ImVec2 text_size = ImGui::CalcTextSize(n.title.c_str());
@@ -364,7 +364,7 @@ public:
                             // Dejar espacio para la etiqueta del pin (aproximadamente 80px) + márgenes
                             float availableWidth = n.size.x - 88.0f; // 80px para etiqueta + 8px de margen derecho
 
-                            ImVec2 inputPos = ImVec2(min.x + 80, min.y + currentY - 2);
+                            ImVec2 inputPos = ImVec2(min.x + 70, min.y + currentY - 2);
                             ImGui::SetCursorScreenPos(inputPos);
                             ImGui::PushItemWidth(availableWidth);
 
@@ -509,15 +509,41 @@ public:
                 ImU32 pinColor = GetPinColor(pin.isExec, value);
 
                 // Dibujar pin
-                if (hasConnection || pin.isExec)
+                if (pin.isExec)
                 {
-                    draw_list->AddCircleFilled(pinPos, 5, pinColor);
-                    draw_list->AddCircle(pinPos, 5, IM_COL32(0, 0, 0, 120), 0, 1.0f);
+                    // Pin de ejecución: cuadrado
+                    float pinSize = 5.0f;
+                    ImVec2 pinMin = pinPos - ImVec2(pinSize, pinSize);
+                    ImVec2 pinMax = pinPos + ImVec2(pinSize, pinSize);
+                    
+                    if (hasConnection)
+                    {
+                        // Pin conectado: cuadrado lleno
+                        draw_list->AddRectFilled(pinMin, pinMax, pinColor);
+                        draw_list->AddRect(pinMin, pinMax, IM_COL32(0, 0, 0, 120), 0, 1.0f);
+                    }
+                    else
+                    {
+                        // Pin desconectado: cuadrado con borde
+                        draw_list->AddRectFilled(pinMin, pinMax, pinColor);
+                        draw_list->AddRect(pinMin, pinMax, IM_COL32(0, 0, 0, 120), 0, 1.0f);
+                    }
                 }
                 else
                 {
-                    draw_list->AddCircle(pinPos, 6, IM_COL32(100, 100, 100, 120), 0, 2.0f);
-                    draw_list->AddCircleFilled(pinPos, 5, pinColor);
+                    // Pin de datos: círculo
+                    if (hasConnection)
+                    {
+                        // Pin conectado: círculo completo
+                        draw_list->AddCircleFilled(pinPos, 5, pinColor);
+                        draw_list->AddCircle(pinPos, 5, IM_COL32(0, 0, 0, 120), 0, 1.0f);
+                    }
+                    else
+                    {
+                        // Pin desconectado: anillo
+                        draw_list->AddCircle(pinPos, 6, IM_COL32(255, 255, 255, 255), 0, 2.0f);
+                        draw_list->AddCircleFilled(pinPos, 5, pinColor);
+                    }
                 }
 
                 // Área de interacción (más grande para mejor usabilidad)
@@ -602,15 +628,41 @@ public:
                 ImU32 pinColor = GetPinColor(pin.isExec, value);
 
                 // Dibujar pin
-                if (hasConnection || pin.isExec)
+                if (pin.isExec)
                 {
-                    draw_list->AddCircleFilled(pinPos, 5, pinColor);
-                    draw_list->AddCircle(pinPos, 5, IM_COL32(0, 0, 0, 120), 0, 1.0f);
+                    // Pin de ejecución: cuadrado
+                    float pinSize = 5.0f;
+                    ImVec2 pinMin = pinPos - ImVec2(pinSize, pinSize);
+                    ImVec2 pinMax = pinPos + ImVec2(pinSize, pinSize);
+                    
+                    if (hasConnection)
+                    {
+                        // Pin conectado: cuadrado lleno
+                        draw_list->AddRectFilled(pinMin, pinMax, pinColor);
+                        draw_list->AddRect(pinMin, pinMax, IM_COL32(0, 0, 0, 120), 0, 1.0f);
+                    }
+                    else
+                    {
+                        // Pin desconectado: cuadrado con borde
+                        draw_list->AddRectFilled(pinMin, pinMax, pinColor);
+                        draw_list->AddRect(pinMin, pinMax, IM_COL32(0, 0, 0, 120), 0, 1.0f);
+                    }
                 }
                 else
                 {
-                    draw_list->AddCircle(pinPos, 6, IM_COL32(100, 100, 100, 120), 0, 2.0f);
-                    draw_list->AddCircleFilled(pinPos, 5, pinColor);
+                    // Pin de datos: círculo
+                    if (hasConnection)
+                    {
+                        // Pin conectado: círculo completo
+                        draw_list->AddCircleFilled(pinPos, 5, pinColor);
+                        draw_list->AddCircle(pinPos, 5, IM_COL32(0, 0, 0, 120), 0, 1.0f);
+                    }
+                    else
+                    {
+                        // Pin desconectado: anillo
+                        draw_list->AddCircle(pinPos, 6, IM_COL32(255, 255, 255, 255), 0, 2.0f);
+                        draw_list->AddCircleFilled(pinPos, 5, pinColor);
+                    }
                 }
 
                 // Área de interacción (más grande para mejor usabilidad)
