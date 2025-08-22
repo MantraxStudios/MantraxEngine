@@ -44,6 +44,13 @@ public:
     ImVec2 lastMousePos = ImVec2(0, 0); // Última posición del ratón para pan
     bool isPanning = false;             // Flag para indicar si estamos haciendo pan
 
+    MNodeEditor()
+    {
+        NodesGM->RegisterNodes(*engine);
+
+        std::cout << "##### Nodes Registers: " << engine->PrefabNodes.size() << std::endl;
+    }
+
     // Colores estilo Blender
     struct BlenderColors
     {
@@ -164,6 +171,8 @@ public:
         if (ImGui::IsMouseClicked(ImGuiMouseButton_Right) && !ImGui::IsAnyItemHovered())
         {
             showCreateNodeMenu = true;
+            // Capturar la posición absoluta del mouse para crear el nodo en esa ubicación
+            // Esto permite que los nodos aparezcan exactamente donde haces clic derecho
             createNodeMenuPos = ImGui::GetIO().MousePos;
         }
 
@@ -515,7 +524,7 @@ public:
                     float pinSize = 5.0f;
                     ImVec2 pinMin = pinPos - ImVec2(pinSize, pinSize);
                     ImVec2 pinMax = pinPos + ImVec2(pinSize, pinSize);
-                    
+
                     if (hasConnection)
                     {
                         // Pin conectado: cuadrado lleno
@@ -634,7 +643,7 @@ public:
                     float pinSize = 5.0f;
                     ImVec2 pinMin = pinPos - ImVec2(pinSize, pinSize);
                     ImVec2 pinMax = pinPos + ImVec2(pinSize, pinSize);
-                    
+
                     if (hasConnection)
                     {
                         // Pin conectado: cuadrado lleno
@@ -879,7 +888,10 @@ public:
 
         if (ImGui::BeginPopup("CreateNodeMenu"))
         {
-            ImVec2 nodePos = createNodeMenuPos - ImGui::GetWindowPos();
+            // Hacer que el nodo aparezca en el centro de la ventana del editor
+            // Calcular el centro de la ventana y restar panelOffset para compensar el pan
+            ImVec2 windowSize = ImGui::GetWindowSize();
+            ImVec2 nodePos = (windowSize * 0.5f) - panelOffset;
 
             if (ImGui::MenuItem("Execute Graph"))
             {
@@ -1008,36 +1020,15 @@ public:
                 ImGui::EndMenu();
             }
 
-            if (ImGui::BeginMenu("Game Object"))
+            for (PremakeNode nd : engine->PrefabNodes)
             {
-                if (ImGui::MenuItem("Create All GameObject Nodes"))
+                if (ImGui::BeginMenu(nd.cat.c_str()))
                 {
-                    NodesGM->CreateAllGameObjectNodes(*engine);
+                    std::string titleNew = "> " + nd.title;
+
+                    ImGui::MenuItem(titleNew.c_str());
+                    ImGui::EndMenu();
                 }
-
-                ImGui::Separator();
-
-                if (ImGui::MenuItem("Find Object"))
-                {
-                    NodesGM->FindObject(*engine);
-                }
-
-                if (ImGui::MenuItem("Change Name"))
-                {
-                    NodesGM->ChangeNameNode(*engine);
-                }
-
-                if (ImGui::MenuItem("Get Name"))
-                {
-                    NodesGM->GetNameNode(*engine);
-                }
-
-                if (ImGui::MenuItem("Move GameObject"))
-                {
-                    NodesGM->MoveGameObjectNode(*engine);
-                }
-
-                ImGui::EndMenu();
             }
 
             ImGui::Separator();

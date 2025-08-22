@@ -344,13 +344,52 @@ public:
     }
 };
 
+class PremakeNode
+{
+public:
+    PremakeNode(const std::string &cat,
+                const std::string &title,
+                std::function<void(CustomNode *)> executeFunc,
+                NodeCategory category = INPUT_OUTPUT,
+                bool hasExecInput = false,
+                bool hasExecOutput = false,
+                std::vector<std::pair<std::string, std::any>> inputPins = {},
+                std::vector<std::pair<std::string, std::any>> outputPins = {},
+                ImVec2 position = ImVec2(100, 100),
+                ImVec2 size = ImVec2(180, 80))
+        : cat(cat),
+          title(title),
+          executeFunc(std::move(executeFunc)),
+          category(category),
+          hasExecInput(hasExecInput),
+          hasExecOutput(hasExecOutput),
+          inputPins(std::move(inputPins)),
+          outputPins(std::move(outputPins)),
+          position(position),
+          size(size)
+    {
+    }
+
+    std::string cat;   // 🔹 Ahora es dueño
+    std::string title; // 🔹 Ahora es dueño
+    std::function<void(CustomNode *)> executeFunc;
+    NodeCategory category;
+    bool hasExecInput;
+    bool hasExecOutput;
+    std::vector<std::pair<std::string, std::any>> inputPins;
+    std::vector<std::pair<std::string, std::any>> outputPins;
+    ImVec2 position;
+    ImVec2 size;
+};
+
 // Editor de nodos
 class MNodeEngine
 {
 public:
     std::vector<CustomNode> customNodes;
     std::vector<Connection> connections;
-    std::vector<CustomNode> _CopyNodes;
+
+    std::vector<PremakeNode> PrefabNodes;
 
     int connectingFromNode = -1;
     int connectingFromPin = -1;
@@ -717,6 +756,7 @@ public:
         ImVec2 position = ImVec2(100, 100),
         ImVec2 size = ImVec2(180, 80))
     {
+        std::cout << "[DEBUG] CreateNode called with position: (" << position.x << ", " << position.y << ")" << std::endl;
         NodeConfig config(title, category, size);
 
         // Agregar pin de ejecución de entrada si se necesita
@@ -836,6 +876,7 @@ public:
 
     CustomNode *CreateStringNode(const std::string &value = "My String", ImVec2 position = ImVec2(50, 200))
     {
+        std::cout << "[DEBUG] CreateStringNode called with position: (" << position.x << ", " << position.y << ")" << std::endl;
         return CreateNode(
             "String",
             [](CustomNode *node)
