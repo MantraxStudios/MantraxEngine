@@ -79,7 +79,6 @@ public:
                 }
                 else
                 {
-                    std::cout << "GetNameNode received nullptr GameObject" << std::endl;
                     node->SetOutputValue<std::string>(0, "NULL");
                 }
             },
@@ -91,8 +90,31 @@ public:
             position                             // PIN POSITION
         );
 
+        PremakeNode setPosNode(
+            "Object",
+            "Set Position",
+            [](CustomNode *node)
+            {
+                GameObject *obj = node->GetInputValue<GameObject *>(1, nullptr);
+                glm::vec3 pos = node->GetInputValue<glm::vec3>(2, glm::vec3(0, 0, 0));
+
+                if (obj)
+                {
+                    obj->setWorldPosition(pos);
+                    node->SetInputValue<glm::vec3>(1, obj->getWorldPosition());
+                }
+            },
+            SCRIPT,                                                                // CATEGORY
+            true,                                                                  // EXECUTE PIN INPUT
+            true,                                                                  // EXECUTE PIN OUT
+            {{"Object", (GameObject *)nullptr}, {"Position", glm::vec3(0, 0, 0)}}, // INPUT PINS
+            {{"Position", glm::vec3(0, 0, 0)}},                                    // OUTPUT PINS
+            position                                                               // PIN POSITION
+        );
+
         engine.PrefabNodes.push_back(getNameNode);
-        engine.PrefabNodes.push_back(changeNameNode);
         engine.PrefabNodes.push_back(findObjectNode);
+        engine.PrefabNodes.push_back(changeNameNode);
+        engine.PrefabNodes.push_back(setPosNode);
     }
 };

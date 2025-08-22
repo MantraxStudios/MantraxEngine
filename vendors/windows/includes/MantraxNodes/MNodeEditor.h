@@ -15,6 +15,7 @@
 #include "Externals/GameObjectNode.h"
 #include "Externals/DebugNodes.h"
 #include "Externals/EventsNode.h"
+#include "Externals/MathNodes.h"
 
 class MNodeEditor
 {
@@ -27,6 +28,7 @@ public:
     GameObjectNode *NodesGM = new GameObjectNode();
     DebugNodes *NodesDB = new DebugNodes();
     EventsNode *NodesEV = new EventsNode();
+    MathNodes *NodesMath = new MathNodes();
 
     int connectingFromNode = -1;
     int connectingFromPin = -1;
@@ -53,6 +55,7 @@ public:
         NodesGM->RegisterNodes(*engine);
         NodesDB->RegisterNodes(*engine);
         NodesEV->RegisterNodes(*engine);
+        NodesMath->RegisterNodes(*engine);
 
         std::cout << "##### Nodes Registers: " << engine->PrefabNodes.size() << std::endl;
     }
@@ -441,7 +444,7 @@ public:
                         // Etiqueta alineada a la derecha y centrada verticalmente con el pin
                         ImVec2 text_size = ImGui::CalcTextSize(pinName.c_str());
                         ImVec2 labelPos = ImVec2(max.x - text_size.x - 8, min.y + outputY);
-                        draw_list->AddText(labelPos, IM_COL32(200, 200, 200, 255), pinName.c_str());
+                        // draw_list->AddText(labelPos, IM_COL32(200, 200, 200, 255), pinName.c_str());
                     }
 
                     outputY += 28.0f;

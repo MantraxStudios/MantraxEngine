@@ -238,7 +238,7 @@ struct NodeConfig
     std::vector<PinConfig> outputPins;
     std::function<void(CustomNode *)> executeFunction;
 
-    NodeConfig(const std::string &t, NodeCategory cat = INPUT_OUTPUT, ImVec2 s = ImVec2(220, 100))
+    NodeConfig(const std::string &t, NodeCategory cat = INPUT_OUTPUT, ImVec2 s = ImVec2(300, 100))
         : title(t), category(cat), size(s) {}
 };
 
@@ -263,7 +263,7 @@ public:
         n.id = NodeID;
         nodeId = n.id;
         n.pos = ImVec2(50, 100);
-        n.size = ImVec2(140, 80);
+        n.size = ImVec2(200, 80);
         n.title = "Print";
         n.data = "Hello";
 
@@ -272,7 +272,7 @@ public:
         // Pin de datos de entrada para el texto (amarillo) - posición ajustada fuera del nodo
         n.inputs.push_back({1, ImVec2(-15, 70), false});
         // Pin de ejecución de salida (rojo) - posición ajustada fuera del nodo
-        n.outputs.push_back({0, ImVec2(155, 45), true});
+        n.outputs.push_back({0, ImVec2(215, 45), true});
 
         // Función de ejecución
         n.execFunc = [](Node *node)
@@ -754,7 +754,7 @@ public:
         std::vector<std::pair<std::string, std::any>> inputPins = {},
         std::vector<std::pair<std::string, std::any>> outputPins = {},
         ImVec2 position = ImVec2(100, 100),
-        ImVec2 size = ImVec2(180, 80))
+        ImVec2 size = ImVec2(300, 80))
     {
         std::cout << "[DEBUG] CreateNode called with position: (" << position.x << ", " << position.y << ")" << std::endl;
         NodeConfig config(title, category, size);
@@ -798,7 +798,7 @@ public:
         std::vector<std::pair<std::string, std::any>> inputPins = {},
         std::vector<std::pair<std::string, std::any>> outputPins = {},
         ImVec2 position = ImVec2(100, 100),
-        ImVec2 size = ImVec2(250, 80))
+        ImVec2 size = ImVec2(350, 80))
     {
         // Llamar a la versión principal con categoría por defecto
         return CreateNode(title, executeFunc, INPUT_OUTPUT, hasExecInput, hasExecOutput, inputPins, outputPins, position, size);
