@@ -6,6 +6,13 @@
 #include <MantraxNodes/MNodeEngine.h>
 #include <imgui/imgui.h>
 
+#include <components/AudioSource.h>
+#include <components/CharacterController.h>
+#include <components/Collider.h>
+#include <components/LightComponent.h>
+#include <components/Rigidbody.h>
+#include <components/SpriteAnimator.h>
+
 class GameObjectNode
 {
 public:

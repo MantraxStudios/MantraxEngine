@@ -7,10 +7,13 @@
 #include "render/Light.h"
 #include <imgui/imgui.h>
 
-bool Hierarchy::isChildOf(GameObject* possibleParent, GameObject* child) {
-    if (!child) return false;
-    auto* parent = child->getParent();
-    while (parent) {
+bool Hierarchy::isChildOf(GameObject *possibleParent, GameObject *child)
+{
+    if (!child)
+        return false;
+    auto *parent = child->getParent();
+    while (parent)
+    {
         if (parent == possibleParent)
             return true;
         parent = parent->getParent();
@@ -18,36 +21,42 @@ bool Hierarchy::isChildOf(GameObject* possibleParent, GameObject* child) {
     return false;
 }
 
-
-
 // Renderizado recursivo de GameObjects en árbol con Drag & Drop parenting.
-void Hierarchy::RenderGameObjectNode(GameObject* gameObject) {
-    if (!gameObject) return;
+void Hierarchy::RenderGameObjectNode(GameObject *gameObject)
+{
+    if (!gameObject)
+        return;
 
     ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
     if (Selection::GameObjectSelect == gameObject)
         flags |= ImGuiTreeNodeFlags_Selected;
 
     bool hasChildren = !gameObject->getChildren().empty();
-    bool open = ImGui::TreeNodeEx((void*)gameObject, flags | (hasChildren ? 0 : ImGuiTreeNodeFlags_Leaf), "%s", gameObject->Name.c_str());
+    bool open = ImGui::TreeNodeEx((void *)gameObject, flags | (hasChildren ? 0 : ImGuiTreeNodeFlags_Leaf), "%s", gameObject->Name.c_str());
 
     // Selección por clic
-    if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen()) {
+    if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
+    {
         Selection::GameObjectSelect = gameObject;
     }
 
     // Menú contextual (opcional, puedes expandir)
-    if (ImGui::BeginPopupContextItem()) {
-        if (ImGui::MenuItem("Select")) {
+    if (ImGui::BeginPopupContextItem())
+    {
+        if (ImGui::MenuItem("Select"))
+        {
             Selection::GameObjectSelect = gameObject;
         }
-        if (ImGui::MenuItem("Deselect")) {
+        if (ImGui::MenuItem("Deselect"))
+        {
             Selection::GameObjectSelect = nullptr;
         }
         ImGui::Separator();
-        if (ImGui::MenuItem("Delete")) {
+        if (ImGui::MenuItem("Delete"))
+        {
             // TODO: Implementar borrado
-            if (Selection::GameObjectSelect == gameObject) {
+            if (Selection::GameObjectSelect == gameObject)
+            {
                 Selection::GameObjectSelect = nullptr;
             }
         }
@@ -55,22 +64,27 @@ void Hierarchy::RenderGameObjectNode(GameObject* gameObject) {
     }
 
     // Drag & Drop: Source
-    if (ImGui::BeginDragDropSource()) {
-        ImGui::SetDragDropPayload("GAMEOBJECT_DRAG", &gameObject, sizeof(GameObject*));
+    if (ImGui::BeginDragDropSource())
+    {
+        ImGui::SetDragDropPayload("GAMEOBJECT_DRAG", &gameObject, sizeof(GameObject *));
         ImGui::Text("Set parent: %s", gameObject->Name.c_str());
         ImGui::EndDragDropSource();
     }
 
     // Drag & Drop: Target
-    if (ImGui::BeginDragDropTarget()) {
-        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("GAMEOBJECT_DRAG")) {
-            GameObject* droppedObject = *(GameObject**)payload->Data;
+    if (ImGui::BeginDragDropTarget())
+    {
+        if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("GAMEOBJECT_DRAG"))
+        {
+            GameObject *droppedObject = *(GameObject **)payload->Data;
             // Si arrastras sobre sí mismo o su padre, lo vuelves root
-            if (droppedObject == gameObject || droppedObject->getParent() == gameObject) {
+            if (droppedObject == gameObject || droppedObject->getParent() == gameObject)
+            {
                 droppedObject->setParent(nullptr);
             }
             // Si arrastras sobre otro objeto y no es su hijo, lo haces hijo de ese
-            else if (droppedObject != gameObject && !isChildOf(droppedObject, gameObject)) {
+            else if (droppedObject != gameObject && !isChildOf(droppedObject, gameObject))
+            {
                 droppedObject->setParent(gameObject);
             }
             // else: intentas crear ciclo, no hacer nada.
@@ -79,22 +93,27 @@ void Hierarchy::RenderGameObjectNode(GameObject* gameObject) {
     }
 
     // Renderizado recursivo de hijos
-    if (open) {
-        for (auto* child : gameObject->getChildren()) {
+    if (open)
+    {
+        for (auto *child : gameObject->getChildren())
+        {
             RenderGameObjectNode(child);
         }
         ImGui::TreePop();
     }
 }
 
-void Hierarchy::OnRenderGUI() {
-    if (!isOpen) return;
+void Hierarchy::OnRenderGUI()
+{
+    if (!isOpen)
+        return;
 
     ImGui::Begin("Hierarchy", &isOpen);
 
     // Obtener la escena activa
-    auto* activeScene = SceneManager::getInstance().getActiveScene();
-    if (!activeScene) {
+    auto *activeScene = SceneManager::getInstance().getActiveScene();
+    if (!activeScene)
+    {
         ImGui::Text("No active scene");
         ImGui::End();
         return;
@@ -106,44 +125,53 @@ void Hierarchy::OnRenderGUI() {
 
     std::string sceneName = activeScene->getName();
 
-    if (!renamingScene) {
+    if (!renamingScene)
+    {
         // TreeNode con el nombre de la escena
         bool open = ImGui::TreeNode(sceneName.c_str());
 
         // Doble click activa edición
-        if (ImGui::IsMouseDoubleClicked(0) && ImGui::IsItemHovered()) {
-            renamingScene = true;
-            strncpy_s(sceneNameBuffer, sceneName.c_str(), sizeof(sceneNameBuffer));
-            sceneNameBuffer[sizeof(sceneNameBuffer) - 1] = 0;
-        }
+        // if (ImGui::IsMouseDoubleClicked(0) && ImGui::IsItemHovered()) {
+        //     renamingScene = true;
+        //     strncpy_s(sceneNameBuffer, sceneName.c_str(), sizeof(sceneNameBuffer));
+        //     sceneNameBuffer[sizeof(sceneNameBuffer) - 1] = 0;
+        // }
 
-        if (open) {
+        if (open)
+        {
             // Popup de crear objeto vacío
-            if (ImGui::BeginPopupContextItem("SceneContext")) {
-                if (ImGui::MenuItem("Create Empty Object")) {
+            if (ImGui::BeginPopupContextItem("SceneContext"))
+            {
+                if (ImGui::MenuItem("Create Empty Object"))
+                {
                     // TODO: Implementar creación de objeto vacío
                 }
                 ImGui::EndPopup();
             }
 
             // Mostrar selección actual
-            if (Selection::GameObjectSelect) {
+            if (Selection::GameObjectSelect)
+            {
                 ImGui::TextColored(ImVec4(0.2f, 0.6f, 1.0f, 1.0f), "Selected: %s", Selection::GameObjectSelect->Name.c_str());
             }
-            else {
+            else
+            {
                 ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "No object selected");
             }
             ImGui::Separator();
 
             // Renderizar objetos raíz
-            const auto& gameObjects = activeScene->getGameObjects();
-            
+            const auto &gameObjects = activeScene->getGameObjects();
+
             bool anyRoot = false;
-            for (GameObject* gameObject : gameObjects) {
-                if (!gameObject || !gameObject->isValid()) {
+            for (GameObject *gameObject : gameObjects)
+            {
+                if (!gameObject || !gameObject->isValid())
+                {
                     continue;
                 }
-                if (!gameObject->hasParent()) {
+                if (!gameObject->hasParent())
+                {
                     anyRoot = true;
                     RenderGameObjectNode(gameObject);
                 }
@@ -151,13 +179,16 @@ void Hierarchy::OnRenderGUI() {
             ImGui::TreePop();
         }
     }
-    else {
+    else
+    {
         ImGui::SetNextItemWidth(-1);
         ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0.15f, 0.2f, 0.28f, 1.0f));
         if (ImGui::InputText("##SceneRename", sceneNameBuffer, sizeof(sceneNameBuffer),
-            ImGuiInputTextFlags_AutoSelectAll | ImGuiInputTextFlags_EnterReturnsTrue)) {
+                             ImGuiInputTextFlags_AutoSelectAll | ImGuiInputTextFlags_EnterReturnsTrue))
+        {
             std::string newName = sceneNameBuffer;
-            if (!newName.empty() && newName != sceneName) {
+            if (!newName.empty() && newName != sceneName)
+            {
                 activeScene->setName(newName);
 
                 renamingScene = false;
@@ -167,18 +198,23 @@ void Hierarchy::OnRenderGUI() {
     }
 
     // ----------- Light Service (igual que antes) -----------
-    if (ImGui::TreeNode("Light Service")) {
-        if (ImGui::BeginPopupContextItem("LightServiceContext")) {
-            auto* activeScene = SceneManager::getInstance().getActiveScene();
-            if (activeScene) {
-                if (ImGui::MenuItem("Add Directional Light")) {
+    if (ImGui::TreeNode("Light Service"))
+    {
+        if (ImGui::BeginPopupContextItem("LightServiceContext"))
+        {
+            auto *activeScene = SceneManager::getInstance().getActiveScene();
+            if (activeScene)
+            {
+                if (ImGui::MenuItem("Add Directional Light"))
+                {
                     auto newLight = std::make_shared<Light>(LightType::Directional);
                     newLight->setDirection(glm::vec3(-0.2f, -1.0f, -0.3f));
                     newLight->setColor(glm::vec3(1.0f, 1.0f, 1.0f));
                     newLight->setIntensity(1.0f);
                     activeScene->addLight(newLight);
                 }
-                if (ImGui::MenuItem("Add Point Light")) {
+                if (ImGui::MenuItem("Add Point Light"))
+                {
                     auto newLight = std::make_shared<Light>(LightType::Point);
                     newLight->setPosition(glm::vec3(0.0f, 3.0f, 0.0f));
                     newLight->setColor(glm::vec3(1.0f, 1.0f, 1.0f));
@@ -186,7 +222,8 @@ void Hierarchy::OnRenderGUI() {
                     newLight->setAttenuation(1.0f, 0.09f, 0.032f);
                     activeScene->addLight(newLight);
                 }
-                if (ImGui::MenuItem("Add Spot Light")) {
+                if (ImGui::MenuItem("Add Spot Light"))
+                {
                     auto newLight = std::make_shared<Light>(LightType::Spot);
                     newLight->setPosition(glm::vec3(0.0f, 3.0f, 0.0f));
                     newLight->setDirection(glm::vec3(0.0f, -1.0f, 0.0f));
@@ -200,31 +237,38 @@ void Hierarchy::OnRenderGUI() {
             ImGui::EndPopup();
         }
 
-        auto* activeScene = SceneManager::getInstance().getActiveScene();
-        if (!activeScene) {
+        auto *activeScene = SceneManager::getInstance().getActiveScene();
+        if (!activeScene)
+        {
             ImGui::Text("No active scene");
         }
-        else {
-            const auto& lights = activeScene->getLights();
+        else
+        {
+            const auto &lights = activeScene->getLights();
             ImGui::TextColored(ImVec4(1.0f, 0.8f, 0.0f, 1.0f),
-                "Total Lights: %zu", lights.size());
+                               "Total Lights: %zu", lights.size());
             // TODO: Implement light selection in new Selection system
             ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "Light selection not implemented");
             ImGui::Separator();
 
-            if (lights.empty()) {
+            if (lights.empty())
+            {
                 ImGui::Text("No Lights in scene");
             }
-            else {
-                for (size_t i = 0; i < lights.size(); i++) {
-                    const auto& light = lights[i];
-                    if (!light) continue;
+            else
+            {
+                for (size_t i = 0; i < lights.size(); i++)
+                {
+                    const auto &light = lights[i];
+                    if (!light)
+                        continue;
 
                     ImGui::PushID(static_cast<int>(i));
-                    const char* icon = "";
+                    const char *icon = "";
                     ImVec4 lightColor;
                     std::string typeName;
-                    switch (light->getType()) {
+                    switch (light->getType())
+                    {
                     case LightType::Directional:
                         icon = "[D]";
                         typeName = "Directional Light";
@@ -247,15 +291,19 @@ void Hierarchy::OnRenderGUI() {
 
                     std::string displayText = typeName;
 
-                    if (ImGui::Selectable((icon + std::string(" ") + displayText).c_str(), isSelected)) {
+                    if (ImGui::Selectable((icon + std::string(" ") + displayText).c_str(), isSelected))
+                    {
                         // TODO: Implement light selection
                     }
 
-                    if (ImGui::BeginPopupContextItem()) {
-                        if (ImGui::MenuItem("Select")) {
+                    if (ImGui::BeginPopupContextItem())
+                    {
+                        if (ImGui::MenuItem("Select"))
+                        {
                             // TODO: Implement light selection
                         }
-                        if (ImGui::MenuItem("Deselect")) {
+                        if (ImGui::MenuItem("Deselect"))
+                        {
                             // TODO: Implement light selection
                         }
                         ImGui::EndPopup();
@@ -270,7 +318,8 @@ void Hierarchy::OnRenderGUI() {
 
     ImGui::End();
 
-    if (ImGui::IsKeyPressed(ImGuiKey_Delete) && Selection::GameObjectSelect != nullptr) {
+    if (ImGui::IsKeyPressed(ImGuiKey_Delete) && Selection::GameObjectSelect != nullptr)
+    {
         SceneManager::getInstance().getActiveScene()->removeGameObject(Selection::GameObjectSelect);
         Selection::GameObjectSelect = nullptr;
     }

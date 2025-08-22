@@ -1030,9 +1030,8 @@ public:
                 }
 
                 if (!match)
-                    continue; // 🔹 saltar nodos que no matchean
+                    continue;
 
-                // Mostrar como antes
                 if (ImGui::BeginMenu(nd.cat.c_str()))
                 {
                     std::string titleNew = "> " + nd.title;
@@ -1048,6 +1047,8 @@ public:
                             nd.outputPins,
                             nd.position,
                             nd.size);
+
+                        strcpy(searchBuffer, "");
                     }
 
                     ImGui::EndMenu();
