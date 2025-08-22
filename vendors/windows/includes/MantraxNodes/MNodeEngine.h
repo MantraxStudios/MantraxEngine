@@ -2291,21 +2291,23 @@ public:
         if (!value)
             return BlenderColors::PinFloat;
 
-        // Determinar color por tipo de datos
+        // Determinar color por tipo de datos con colores específicos
         if (value->type() == typeid(std::string))
-            return BlenderColors::PinString;
-        else if (value->type() == typeid(float) || value->type() == typeid(int))
-            return BlenderColors::PinFloat;
+            return IM_COL32(100, 200, 100, 255); // Verde para String
+        else if (value->type() == typeid(int))
+            return IM_COL32(255, 150, 50, 255);  // Naranja para Int
+        else if (value->type() == typeid(float))
+            return IM_COL32(100, 150, 255, 255); // Azul para Float
         else if (value->type() == typeid(bool))
             return BlenderColors::PinColor;
         else if (value->type() == typeid(Vector2))
-            return BlenderColors::PinVector;
+            return IM_COL32(255, 100, 200, 255); // Rosa para Vector2
         else if (value->type() == typeid(Vector3))
-            return BlenderColors::PinVector;
+            return IM_COL32(200, 100, 255, 255); // Púrpura para Vector3
         else if (value->type() == typeid(Matrix3x3))
-            return BlenderColors::PinVector;
+            return IM_COL32(255, 200, 100, 255); // Amarillo para Matrix3x3
         else if (value->type() == typeid(Matrix4x4))
-            return BlenderColors::PinVector;
+            return IM_COL32(100, 255, 200, 255); // Verde azulado para Matrix4x4
         else if (value->type() == typeid(GameObject *))
             return IM_COL32(255, 100, 100, 255); // Rojo para GameObject pointers
 

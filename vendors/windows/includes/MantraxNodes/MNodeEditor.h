@@ -130,10 +130,12 @@ public:
         else if (value->type() == typeid(Vector3))
             return BlenderColors::PinVector;
         else if (value->type() == typeid(Matrix3x3))
-            return BlenderColors::PinVector;
+            return BlenderColors::PinColor;
         else if (value->type() == typeid(Matrix4x4))
-            return BlenderColors::PinVector;
-
+            return BlenderColors::PinColor;
+        else if (value->type() == typeid(GameObject *))
+            return BlenderColors::PinFloat;
+        
         return BlenderColors::PinFloat;
     }
 
@@ -498,12 +500,26 @@ public:
                 const std::any *value = nullptr;
                 if (cn)
                 {
+                    // Primero buscar en valores de entrada (conexiones activas)
                     auto it = cn->inputValues.find((int)i);
                     if (it != cn->inputValues.end())
+                    {
                         value = &it->second;
+                    }
+                    else
+                    {
+                        // Si no hay valor de entrada, usar el valor por defecto
+                        auto defaultIt = cn->defaultValues.find((int)i);
+                        if (defaultIt != cn->defaultValues.end())
+                        {
+                            value = &defaultIt->second;
+                        }
+                    }
                 }
 
                 ImU32 pinColor = GetPinColor(pin.isExec, value);
+                
+
 
                 // Dibujar pin
                 if (pin.isExec)
@@ -617,12 +633,112 @@ public:
                 const std::any *value = nullptr;
                 if (cn)
                 {
+                    // Buscar en valores de salida
                     auto it = cn->outputValues.find((int)i);
                     if (it != cn->outputValues.end())
+                    {
                         value = &it->second;
+                    }
+                    else
+                    {
+                        // Si no hay valor de salida, intentar obtener el tipo del pin de salida
+                        // Buscar en valores por defecto del nodo
+                        auto defaultIt = cn->defaultValues.find((int)i);
+                        if (defaultIt != cn->defaultValues.end())
+                        {
+                            value = &defaultIt->second;
+                        }
+                        else
+                        {
+                            // Para nodos específicos, usar lógica especial
+                            if (n.title == "String" && i == 0)
+                            {
+                                // Para nodos String, usar el valor de entrada
+                                auto inputIt = cn->inputValues.find(0);
+                                if (inputIt != cn->inputValues.end())
+                                {
+                                    value = &inputIt->second;
+                                }
+                            }
+                            else if (n.title == "Integer" && i == 0)
+                            {
+                                // Para nodos Integer, usar el valor de entrada
+                                auto inputIt = cn->inputValues.find(0);
+                                if (inputIt != cn->inputValues.end())
+                                {
+                                    value = &inputIt->second;
+                                }
+                            }
+                            else if (n.title == "Float" && i == 0)
+                            {
+                                // Para nodos Float, usar el valor de entrada
+                                auto inputIt = cn->inputValues.find(0);
+                                if (inputIt != cn->inputValues.end())
+                                {
+                                    value = &inputIt->second;
+                                }
+                            }
+                            else if (n.title == "Bool" && i == 0)
+                            {
+                                // Para nodos Bool, usar el valor de entrada
+                                auto inputIt = cn->inputValues.find(0);
+                                if (inputIt != cn->inputValues.end())
+                                {
+                                    value = &inputIt->second;
+                                }
+                            }
+                            else if (n.title == "Vector2" && i == 0)
+                            {
+                                // Para nodos Vector2, usar el valor de entrada
+                                auto inputIt = cn->inputValues.find(0);
+                                if (inputIt != cn->inputValues.end())
+                                {
+                                    value = &inputIt->second;
+                                }
+                            }
+                            else if (n.title == "Vector3" && i == 0)
+                            {
+                                // Para nodos Vector3, usar el valor de entrada
+                                auto inputIt = cn->inputValues.find(0);
+                                if (inputIt != cn->inputValues.end())
+                                {
+                                    value = &inputIt->second;
+                                }
+                            }
+                            else if (n.title == "Matrix3x3" && i == 0)
+                            {
+                                // Para nodos Matrix3x3, usar el valor de entrada
+                                auto inputIt = cn->inputValues.find(0);
+                                if (inputIt != cn->inputValues.end())
+                                {
+                                    value = &inputIt->second;
+                                }
+                            }
+                            else if (n.title == "Matrix4x4" && i == 0)
+                            {
+                                // Para nodos Matrix4x4, usar el valor de entrada
+                                auto inputIt = cn->inputValues.find(0);
+                                if (inputIt != cn->inputValues.end())
+                                {
+                                    value = &inputIt->second;
+                                }
+                            }
+                            else if (n.title == "GameObject" && i == 0)
+                            {
+                                // Para nodos GameObject, usar el valor de entrada
+                                auto inputIt = cn->inputValues.find(0);
+                                if (inputIt != cn->inputValues.end())
+                                {
+                                    value = &inputIt->second;
+                                }
+                            }
+                        }
+                    }
                 }
 
                 ImU32 pinColor = GetPinColor(pin.isExec, value);
+                
+
 
                 // Dibujar pin
                 if (pin.isExec)
