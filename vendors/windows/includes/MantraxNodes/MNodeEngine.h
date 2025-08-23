@@ -2238,17 +2238,7 @@ public:
         if (!node || !node->execFunc)
             return;
 
-        // Marcar nodo como activo durante la ejecución
         node->isActive = true;
-
-        // Si es un nodo Print, verificar si tiene datos conectados
-        // if (node->title == "Print")
-        // {
-        //     // Buscar conexión de datos en el pin 1 (pin de texto)
-        //     std::string connectedValue = GetConnectedValue(node->id, 1);
-        //     if (!connectedValue.empty())
-        //         node->data = connectedValue;
-        // }
 
         node->execFunc(node);
 

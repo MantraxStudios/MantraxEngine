@@ -18,6 +18,7 @@
 #include "Externals/MathNodes.h"
 #include "Externals/ConstNode.h"
 #include "Externals/ConvertsNode.h"
+#include "Externals/ConditionsNode.h"
 
 class MNodeEditor
 {
@@ -33,6 +34,7 @@ public:
     MathNodes *NodesMath = new MathNodes();
     ConstNode *NodesConst = new ConstNode();
     ConvertsNode *NodesConvert = new ConvertsNode();
+    ConditionNodes *NodesCondition = new ConditionNodes();
 
     int connectingFromNode = -1;
     int connectingFromPin = -1;
@@ -62,6 +64,7 @@ public:
         NodesMath->RegisterNodes(*engine);
         NodesConst->RegisterNodes(*engine);
         NodesConvert->RegisterNodes(*engine);
+        NodesCondition->RegisterNodes(*engine);
     }
 
     // Colores estilo Blender
