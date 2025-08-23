@@ -10,6 +10,14 @@ class ConditionNodes
 public:
     void RegisterNodes(MNodeEngine &engine, ImVec2 position = ImVec2(300, 100))
     {
+        PremakeNode branchNode(
+            "Condition", "Branch",
+            [](CustomNode *node) {},
+            SCRIPT, true, true,
+            {{"Value", false}},
+            {},
+            position);
+
         // -------- INT COMPARISON NODES --------
         PremakeNode intCompareNode(
             "Condition", "Int Compare",
@@ -129,6 +137,7 @@ public:
             position);
 
         // Agregar todos los nodos al engine
+        engine.PrefabNodes.push_back(branchNode);
         engine.PrefabNodes.push_back(intCompareNode);
         engine.PrefabNodes.push_back(floatCompareNode);
         engine.PrefabNodes.push_back(stringCompareNode);
