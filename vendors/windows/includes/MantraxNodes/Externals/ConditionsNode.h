@@ -52,7 +52,7 @@ public:
                 else if (op == ">=")
                     result = (a >= b);
 
-                node->SetOutputValue<bool>(1, result);
+                node->SetOutputValue<bool>(0, result);
             },
             SCRIPT, false, false, // NO exec
             {{"A", 0}, {"B", 0}, {"Operator", std::string("==")}},
@@ -82,7 +82,7 @@ public:
                 else if (op == ">=")
                     result = (a >= b);
 
-                node->SetOutputValue<bool>(1, result);
+                node->SetOutputValue<bool>(0, result);
             },
             SCRIPT, false, false, // NO exec
             {{"A", 0.0f}, {"B", 0.0f}, {"Operator", std::string("==")}},
@@ -112,7 +112,7 @@ public:
                 else if (op == ">=")
                     result = (a >= b);
 
-                node->SetOutputValue<bool>(1, result);
+                node->SetOutputValue<bool>(0, result);
             },
             SCRIPT, false, false, // NO exec
             {{"A", std::string("")}, {"B", std::string("")}, {"Operator", std::string("==")}},
@@ -140,7 +140,7 @@ public:
                 else if (op == "NOR")
                     result = !(a || b);
 
-                node->SetOutputValue<bool>(1, result);
+                node->SetOutputValue<bool>(0, result);
             },
             SCRIPT, false, false, // NO exec
             {{"A", false}, {"B", false}, {"Operator", std::string("AND")}},
