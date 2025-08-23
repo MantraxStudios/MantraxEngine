@@ -17,6 +17,7 @@
 #include "Externals/EventsNode.h"
 #include "Externals/MathNodes.h"
 #include "Externals/ConstNode.h"
+#include "Externals/ConvertsNode.h"
 
 class MNodeEditor
 {
@@ -31,6 +32,7 @@ public:
     EventsNode *NodesEV = new EventsNode();
     MathNodes *NodesMath = new MathNodes();
     ConstNode *NodesConst = new ConstNode();
+    ConvertsNode *NodesConvert = new ConvertsNode();
 
     int connectingFromNode = -1;
     int connectingFromPin = -1;
@@ -59,6 +61,7 @@ public:
         NodesEV->RegisterNodes(*engine);
         NodesMath->RegisterNodes(*engine);
         NodesConst->RegisterNodes(*engine);
+        NodesConvert->RegisterNodes(*engine);
     }
 
     // Colores estilo Blender
@@ -199,62 +202,62 @@ public:
             }
         }
 
-                          // Actualizar valores de entrada desde conexiones en cada frame
-         for (auto &c : connections)
-         {
-             CustomNode *sourceNode = GetCustomNodeById(c.fromNodeId);
-             CustomNode *targetNode = GetCustomNodeById(c.toNodeId);
+        // Actualizar valores de entrada desde conexiones en cada frame
+        for (auto &c : connections)
+        {
+            CustomNode *sourceNode = GetCustomNodeById(c.fromNodeId);
+            CustomNode *targetNode = GetCustomNodeById(c.toNodeId);
 
-             if (sourceNode && targetNode)
-             {
-                 // Solo transferir datos para pins que no son de ejecución
-                 if (c.fromPinId < sourceNode->n.outputs.size() &&
-                     c.toPinId < targetNode->n.inputs.size() &&
-                     !sourceNode->n.outputs[c.fromPinId].isExec)
-                 {
-                     // Si el nodo fuente es un nodo de datos, ejecutarlo para mantener valores actualizados
-                     if (sourceNode->n.inputs.empty() || !sourceNode->n.inputs[0].isExec)
-                     {
-                         if (sourceNode->n.execFunc)
-                         {
-                             sourceNode->n.execFunc(&sourceNode->n);
-                         }
-                     }
+            if (sourceNode && targetNode)
+            {
+                // Solo transferir datos para pins que no son de ejecución
+                if (c.fromPinId < sourceNode->n.outputs.size() &&
+                    c.toPinId < targetNode->n.inputs.size() &&
+                    !sourceNode->n.outputs[c.fromPinId].isExec)
+                {
+                    // Si el nodo fuente es un nodo de datos, ejecutarlo para mantener valores actualizados
+                    if (sourceNode->n.inputs.empty() || !sourceNode->n.inputs[0].isExec)
+                    {
+                        if (sourceNode->n.execFunc)
+                        {
+                            sourceNode->n.execFunc(&sourceNode->n);
+                        }
+                    }
 
-                     auto outputValue = sourceNode->outputValues.find(c.fromPinId);
-                     if (outputValue != sourceNode->outputValues.end())
-                     {
-                         targetNode->inputValues[c.toPinId] = outputValue->second;
+                    auto outputValue = sourceNode->outputValues.find(c.fromPinId);
+                    if (outputValue != sourceNode->outputValues.end())
+                    {
+                        targetNode->inputValues[c.toPinId] = outputValue->second;
 
-                         // Debug: mostrar cuando se actualizan valores
-                         if (sourceNode->n.title == "String" && c.fromPinId == 0)
-                         {
-                             try
-                             {
-                                 std::string value = std::any_cast<std::string>(outputValue->second);
-                             }
-                             catch (...)
-                             {
-                                 std::cout << "[FRAME UPDATE] String node output: <invalid type>" << std::endl;
-                             }
-                         }
+                        // Debug: mostrar cuando se actualizan valores
+                        if (sourceNode->n.title == "String" && c.fromPinId == 0)
+                        {
+                            try
+                            {
+                                std::string value = std::any_cast<std::string>(outputValue->second);
+                            }
+                            catch (...)
+                            {
+                                std::cout << "[FRAME UPDATE] String node output: <invalid type>" << std::endl;
+                            }
+                        }
 
-                         // Debug: mostrar cuando se actualizan valores de Integer nodes
-                         if (sourceNode->n.title == "Integer" && c.fromPinId == 0)
-                         {
-                             try
-                             {
-                                 int value = std::any_cast<int>(outputValue->second);
-                             }
-                             catch (...)
-                             {
-                                 std::cout << "[FRAME UPDATE] Integer node output: <invalid type>" << std::endl;
-                             }
-                         }
-                     }
-                 }
-             }
-         }
+                        // Debug: mostrar cuando se actualizan valores de Integer nodes
+                        if (sourceNode->n.title == "Integer" && c.fromPinId == 0)
+                        {
+                            try
+                            {
+                                int value = std::any_cast<int>(outputValue->second);
+                            }
+                            catch (...)
+                            {
+                                std::cout << "[FRAME UPDATE] Integer node output: <invalid type>" << std::endl;
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         // Dibujar conexiones con estilo Blender
         for (auto &c : connections)
@@ -599,17 +602,17 @@ public:
                 // Conectar al hacer click (no al soltar)
                 else if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left) && isConnecting && connectingFromNode != -1)
                 {
-                                                              // Usar el nuevo sistema de conexión mejorado
-                     if (engine->CreateConnection(connectingFromNode, connectingFromPin, n.id, (int)i))
-                     {
-                         std::cout << "[SUCCESS] Connection established from node " << connectingFromNode
-                                   << " pin " << connectingFromPin << " to node " << n.id << " pin " << i << std::endl;
-                     }
-                     else
-                     {
-                         std::cout << "[FAILED] Could not establish connection from node " << connectingFromNode
-                                   << " pin " << connectingFromPin << " to node " << n.id << " pin " << i << std::endl;
-                     }
+                    // Usar el nuevo sistema de conexión mejorado
+                    if (engine->CreateConnection(connectingFromNode, connectingFromPin, n.id, (int)i))
+                    {
+                        std::cout << "[SUCCESS] Connection established from node " << connectingFromNode
+                                  << " pin " << connectingFromPin << " to node " << n.id << " pin " << i << std::endl;
+                    }
+                    else
+                    {
+                        std::cout << "[FAILED] Could not establish connection from node " << connectingFromNode
+                                  << " pin " << connectingFromPin << " to node " << n.id << " pin " << i << std::endl;
+                    }
 
                     connectingFromNode = -1;
                     connectingFromPin = -1;

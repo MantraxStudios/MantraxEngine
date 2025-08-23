@@ -164,6 +164,68 @@ public:
             position                                                               // PIN POSITION
         );
 
+        PremakeNode getPosNode(
+            "Object",
+            "Get Position",
+            [](CustomNode *node)
+            {
+                GameObject *obj = node->GetInputValue<GameObject *>(0, nullptr);
+
+                if (obj)
+                {
+                    node->SetOutputValue<glm::vec3>(0, obj->getWorldPosition());
+                }
+            },
+            SCRIPT,                              // CATEGORY
+            false,                               // EXECUTE PIN INPUT
+            false,                               // EXECUTE PIN OUT
+            {{"Object", (GameObject *)nullptr}}, // INPUT PINS
+            {{"Position", glm::vec3(0, 0, 0)}},  // OUTPUT PINS
+            position                             // PIN POSITION
+        );
+
+        PremakeNode setLocalPosNode(
+            "Object",
+            "Set Local Position",
+            [](CustomNode *node)
+            {
+                GameObject *obj = node->GetInputValue<GameObject *>(1, nullptr);
+                glm::vec3 pos = node->GetInputValue<glm::vec3>(2, glm::vec3(0, 0, 0));
+
+                if (obj)
+                {
+                    obj->setLocalPosition(pos);
+                    node->SetOutputValue<glm::vec3>(1, pos);
+                }
+            },
+            SCRIPT,                                                                // CATEGORY
+            true,                                                                  // EXECUTE PIN INPUT
+            true,                                                                  // EXECUTE PIN OUT
+            {{"Object", (GameObject *)nullptr}, {"Position", glm::vec3(0, 0, 0)}}, // INPUT PINS
+            {{"Position", glm::vec3(0, 0, 0)}},                                    // OUTPUT PINS
+            position                                                               // PIN POSITION
+        );
+
+        PremakeNode getLocalPosNode(
+            "Object",
+            "Get Local Position",
+            [](CustomNode *node)
+            {
+                GameObject *obj = node->GetInputValue<GameObject *>(0, nullptr);
+
+                if (obj)
+                {
+                    node->SetOutputValue<glm::vec3>(0, obj->getLocalPosition());
+                }
+            },
+            SCRIPT,                              // CATEGORY
+            false,                               // EXECUTE PIN INPUT
+            false,                               // EXECUTE PIN OUT
+            {{"Object", (GameObject *)nullptr}}, // INPUT PINS
+            {{"Position", glm::vec3(0, 0, 0)}},  // OUTPUT PINS
+            position                             // PIN POSITION
+        );
+
         PremakeNode setScaleNode(
             "Object",
             "Set Scale",
@@ -186,55 +248,258 @@ public:
             position                                                            // PIN POSITION
         );
 
-        PremakeNode getPosNode(
-            "Object",
-            "Get Position",
-            [](CustomNode *node)
-            {
-                GameObject *obj = node->GetInputValue<GameObject *>(1, nullptr);
-
-                if (obj)
-                {
-                    node->SetOutputValue<glm::vec3>(1, obj->getWorldPosition());
-                }
-            },
-            SCRIPT,                              // CATEGORY
-            true,                                // EXECUTE PIN INPUT
-            true,                                // EXECUTE PIN OUT
-            {{"Object", (GameObject *)nullptr}}, // INPUT PINS
-            {{"Position", glm::vec3(0, 0, 0)}},  // OUTPUT PINS
-            position                             // PIN POSITION
-        );
-
         PremakeNode getScaleNode(
             "Object",
             "Get Scale",
             [](CustomNode *node)
             {
-                GameObject *obj = node->GetInputValue<GameObject *>(1, nullptr);
+                GameObject *obj = node->GetInputValue<GameObject *>(0, nullptr);
 
                 if (obj)
                 {
-                    node->SetOutputValue<glm::vec3>(1, obj->getWorldScale());
+                    node->SetOutputValue<glm::vec3>(0, obj->getWorldScale());
                 }
             },
             SCRIPT,                              // CATEGORY
-            true,                                // EXECUTE PIN INPUT
-            true,                                // EXECUTE PIN OUT
+            false,                               // EXECUTE PIN INPUT
+            false,                               // EXECUTE PIN OUT
             {{"Object", (GameObject *)nullptr}}, // INPUT PINS
             {{"Scale", glm::vec3(0, 0, 0)}},     // OUTPUT PINS
             position                             // PIN POSITION
         );
 
+        PremakeNode setLocalScaleNode(
+            "Object",
+            "Set Local Scale",
+            [](CustomNode *node)
+            {
+                GameObject *obj = node->GetInputValue<GameObject *>(1, nullptr);
+                glm::vec3 valGet = node->GetInputValue<glm::vec3>(2, glm::vec3(1, 1, 1));
+
+                if (obj)
+                {
+                    obj->setLocalScale(valGet);
+                    node->SetOutputValue<glm::vec3>(1, valGet);
+                }
+            },
+            SCRIPT,                                                             // CATEGORY
+            true,                                                               // EXECUTE PIN INPUT
+            true,                                                               // EXECUTE PIN OUT
+            {{"Object", (GameObject *)nullptr}, {"Scale", glm::vec3(1, 1, 1)}}, // INPUT PINS
+            {{"Scale", glm::vec3(1, 1, 1)}},                                    // OUTPUT PINS
+            position                                                            // PIN POSITION
+        );
+
+        PremakeNode getLocalScaleNode(
+            "Object",
+            "Get Local Scale",
+            [](CustomNode *node)
+            {
+                GameObject *obj = node->GetInputValue<GameObject *>(0, nullptr);
+
+                if (obj)
+                {
+                    node->SetOutputValue<glm::vec3>(0, obj->getLocalScale());
+                }
+            },
+            SCRIPT,                              // CATEGORY
+            false,                               // EXECUTE PIN INPUT
+            false,                               // EXECUTE PIN OUT
+            {{"Object", (GameObject *)nullptr}}, // INPUT PINS
+            {{"Scale", glm::vec3(1, 1, 1)}},     // OUTPUT PINS
+            position                             // PIN POSITION
+        );
+
+        PremakeNode setRotNode(
+            "Object",
+            "Set Rotation",
+            [](CustomNode *node)
+            {
+                GameObject *obj = node->GetInputValue<GameObject *>(1, nullptr);
+                glm::quat rot = node->GetInputValue<glm::quat>(2, glm::quat(1, 0, 0, 0)); // identidad
+
+                if (obj)
+                {
+                    obj->setWorldRotationQuat(rot);
+                    node->SetOutputValue<glm::quat>(1, rot);
+                }
+            },
+            SCRIPT,
+            true, // EXECUTE PIN INPUT
+            true, // EXECUTE PIN OUT
+            {{"Object", (GameObject *)nullptr}, {"Rotation", glm::quat(1, 0, 0, 0)}},
+            {{"Rotation", glm::quat(1, 0, 0, 0)}},
+            position);
+
+        PremakeNode getRotNode(
+            "Object",
+            "Get Rotation",
+            [](CustomNode *node)
+            {
+                GameObject *obj = node->GetInputValue<GameObject *>(0, nullptr);
+
+                if (obj)
+                {
+                    node->SetOutputValue<glm::quat>(0, obj->getWorldRotationQuat());
+                }
+            },
+            SCRIPT,
+            false, // no EXECUTE PIN
+            false,
+            {{"Object", (GameObject *)nullptr}},
+            {{"Rotation", glm::quat(1, 0, 0, 0)}},
+            position);
+
+        PremakeNode setLocalRotNode(
+            "Object",
+            "Set Local Rotation",
+            [](CustomNode *node)
+            {
+                GameObject *obj = node->GetInputValue<GameObject *>(1, nullptr);
+                glm::quat rot = node->GetInputValue<glm::quat>(2, glm::quat(1, 0, 0, 0));
+
+                if (obj)
+                {
+                    obj->setLocalRotationQuat(rot);
+                    node->SetOutputValue<glm::quat>(1, rot);
+                }
+            },
+            SCRIPT,
+            true,
+            true,
+            {{"Object", (GameObject *)nullptr}, {"Rotation", glm::quat(1, 0, 0, 0)}},
+            {{"Rotation", glm::quat(1, 0, 0, 0)}},
+            position);
+
+        PremakeNode getLocalRotNode(
+            "Object",
+            "Get Local Rotation",
+            [](CustomNode *node)
+            {
+                GameObject *obj = node->GetInputValue<GameObject *>(0, nullptr);
+
+                if (obj)
+                {
+                    node->SetOutputValue<glm::quat>(0, obj->getLocalRotationQuat());
+                }
+            },
+            SCRIPT,
+            false,
+            false,
+            {{"Object", (GameObject *)nullptr}},
+            {{"Rotation", glm::quat(1, 0, 0, 0)}},
+            position);
+
+        PremakeNode setEulerNode(
+            "Object",
+            "Set Rotation Euler",
+            [](CustomNode *node)
+            {
+                GameObject *obj = node->GetInputValue<GameObject *>(1, nullptr);
+                glm::vec3 euler = node->GetInputValue<glm::vec3>(2, glm::vec3(0, 0, 0));
+
+                if (obj)
+                {
+                    obj->setWorldRotationEuler(euler); // tu GameObject debería aceptar Euler
+                    node->SetOutputValue<glm::vec3>(1, euler);
+                }
+            },
+            SCRIPT,
+            true,
+            true,
+            {{"Object", (GameObject *)nullptr}, {"Rotation", glm::vec3(0, 0, 0)}},
+            {{"Rotation", glm::vec3(0, 0, 0)}},
+            position);
+
+        PremakeNode getEulerNode(
+            "Object",
+            "Get Rotation Euler",
+            [](CustomNode *node)
+            {
+                GameObject *obj = node->GetInputValue<GameObject *>(0, nullptr);
+
+                if (obj)
+                {
+                    node->SetOutputValue<glm::vec3>(0, obj->getLocalRotationEuler());
+                }
+            },
+            SCRIPT,
+            false,
+            false,
+            {{"Object", (GameObject *)nullptr}},
+            {{"Rotation", glm::vec3(0, 0, 0)}},
+            position);
+
+        PremakeNode setLocalEulerNode(
+            "Object",
+            "Set Local Rotation Euler",
+            [](CustomNode *node)
+            {
+                GameObject *obj = node->GetInputValue<GameObject *>(1, nullptr);
+                glm::vec3 euler = node->GetInputValue<glm::vec3>(2, glm::vec3(0, 0, 0));
+
+                if (obj)
+                {
+                    obj->setLocalRotationEuler(euler);
+                    node->SetOutputValue<glm::vec3>(1, euler);
+                }
+            },
+            SCRIPT,
+            true,
+            true,
+            {{"Object", (GameObject *)nullptr}, {"Rotation", glm::vec3(0, 0, 0)}},
+            {{"Rotation", glm::vec3(0, 0, 0)}},
+            position);
+
+        PremakeNode getLocalEulerNode(
+            "Object",
+            "Get Local Rotation Euler",
+            [](CustomNode *node)
+            {
+                GameObject *obj = node->GetInputValue<GameObject *>(0, nullptr);
+
+                if (obj)
+                {
+                    node->SetOutputValue<glm::vec3>(0, obj->getLocalRotationEuler());
+                }
+            },
+            SCRIPT,
+            false,
+            false,
+            {{"Object", (GameObject *)nullptr}},
+            {{"Rotation", glm::vec3(0, 0, 0)}},
+            position);
+
         engine.PrefabNodes.push_back(getNameNode);
-        engine.PrefabNodes.push_back(getTagNode);
         engine.PrefabNodes.push_back(setNameNode);
+
         engine.PrefabNodes.push_back(setTagNode);
+        engine.PrefabNodes.push_back(getTagNode);
 
         engine.PrefabNodes.push_back(findObjectNode);
+
         engine.PrefabNodes.push_back(setPosNode);
-        engine.PrefabNodes.push_back(setScaleNode);
         engine.PrefabNodes.push_back(getPosNode);
+
+        engine.PrefabNodes.push_back(setLocalPosNode);
+        engine.PrefabNodes.push_back(getLocalPosNode);
+
+        engine.PrefabNodes.push_back(setScaleNode);
         engine.PrefabNodes.push_back(getScaleNode);
+
+        engine.PrefabNodes.push_back(setLocalScaleNode);
+        engine.PrefabNodes.push_back(getLocalScaleNode);
+
+        engine.PrefabNodes.push_back(setRotNode);
+        engine.PrefabNodes.push_back(getRotNode);
+
+        engine.PrefabNodes.push_back(setLocalRotNode);
+        engine.PrefabNodes.push_back(getLocalRotNode);
+
+        engine.PrefabNodes.push_back(setEulerNode);
+        engine.PrefabNodes.push_back(getEulerNode);
+
+        engine.PrefabNodes.push_back(setLocalEulerNode);
+        engine.PrefabNodes.push_back(getLocalEulerNode);
     }
 };

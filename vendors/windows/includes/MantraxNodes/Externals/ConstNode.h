@@ -98,6 +98,32 @@ public:
             position           // PIN POSITION
         );
 
+        PremakeNode quatNode(
+            "Const",
+            "Quaternion",
+            [](CustomNode *node)
+            {
+                node->SetOutputValue<glm::quat>(0, glm::quat(
+                                                       node->GetInputValue<float>(0, 1.0f), // W (por defecto 1, identidad)
+                                                       node->GetInputValue<float>(1, 0.0f), // X
+                                                       node->GetInputValue<float>(2, 0.0f), // Y
+                                                       node->GetInputValue<float>(3, 0.0f)  // Z
+                                                       ));
+            },
+            SCRIPT, // CATEGORY
+            false,  // EXECUTE PIN INPUT
+            false,  // EXECUTE PIN OUT
+            {
+                {"W", float(1.0f)},
+                {"X", float(0.0f)},
+                {"Y", float(0.0f)},
+                {"Z", float(0.0f)},
+            },                                  // INPUT PINS
+            {{"Value", glm::quat(1, 0, 0, 0)}}, // OUTPUT PINS (identidad)
+            position                            // PIN POSITION
+        );
+
+        engine.PrefabNodes.push_back(quatNode);
         engine.PrefabNodes.push_back(vec3Node);
         engine.PrefabNodes.push_back(vec2Node);
         engine.PrefabNodes.push_back(stringNode);
