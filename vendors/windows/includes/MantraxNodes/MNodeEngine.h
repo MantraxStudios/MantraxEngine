@@ -774,11 +774,11 @@ public:
         }
 
         // Agregar pin de ejecución de salida si se necesita
-        if (hasExecOutput && title != "Branch")
+        if (hasExecOutput && title != "Branch" && title != "For Loop")
         {
             config.outputPins.push_back(PinConfig("", ExecuteOutput));
         }
-        else if (hasExecOutput && title == "Branch")
+        else if (hasExecOutput && title == "Branch" || hasExecOutput && title == "For Loop")
         {
             config.outputPins.push_back(PinConfig("", ExecuteOutput));
             config.outputPins.push_back(PinConfig("", ExecuteOutput));
@@ -1598,36 +1598,76 @@ public:
 
         node->execFunc(node);
 
-        for (auto &c : connections)
+        // Solo procesar conexiones normales si NO es For Loop ni Branch
+        if (node->title != "Branch" && node->title != "For Loop")
         {
-            if (c.fromNodeId == node->id)
+            for (auto &c : connections)
             {
-                if (node->title != "Branch")
+                if (c.fromNodeId == node->id)
                 {
-                    // Normal execution pins
                     CustomNode *next = GetNodeById(c.toNodeId);
                     if (next && c.fromPinId < node->outputs.size() && node->outputs[c.fromPinId].isExec)
-                    {
                         ExecuteFrom(next);
-                    }
                 }
-                else
+            }
+        }
+        // ------------------- Branch -------------------
+        else if (node->title == "Branch")
+        {
+            bool condition = d->GetInputValue<bool>(1, false);
+            int truePinIndex = 0;
+            int falsePinIndex = 1;
+
+            for (auto &c : connections)
+            {
+                if (c.fromNodeId != node->id)
+                    continue;
+
+                if ((condition && c.fromPinId == truePinIndex) ||
+                    (!condition && c.fromPinId == falsePinIndex))
                 {
-                    bool condition = d->GetInputValue<bool>(1, false);
-
-                    int truePinIndex = 0;
-                    int falsePinIndex = 1;
-
-                    if ((condition && c.fromPinId == truePinIndex) ||
-                        (!condition && c.fromPinId == falsePinIndex))
-                    {
-                        CustomNode *next = GetNodeById(c.toNodeId);
-                        if (next && c.fromPinId < node->outputs.size() && node->outputs[c.fromPinId].isExec)
-                        {
-                            ExecuteFrom(next);
-                        }
-                    }
+                    CustomNode *next = GetNodeById(c.toNodeId);
+                    if (next && node->outputs[c.fromPinId].isExec)
+                        ExecuteFrom(next);
                 }
+            }
+        }
+        // ------------------- For Loop -------------------
+        else if (node->title == "For Loop")
+        {
+            int start = d->GetInputValue<int>(1, 0);
+            int end = d->GetInputValue<int>(2, 0);
+
+            std::vector<Connection> loopBodyConns;
+            std::vector<Connection> completedConns;
+
+            for (auto &c : connections)
+            {
+                if (c.fromNodeId != node->id)
+                    continue;
+                if (c.fromPinId == 1)
+                    loopBodyConns.push_back(c); // LoopBody
+                if (c.fromPinId == 0)
+                    completedConns.push_back(c); // Completed
+            }
+
+            for (int i = start; i < end; i++)
+            {
+                d->SetOutputValue<int>(2, i); // Index pin
+
+                for (auto &loopConn : loopBodyConns)
+                {
+                    CustomNode *next = GetNodeById(loopConn.toNodeId);
+                    if (next && next != d) // Evitar ejecutar el mismo nodo recursivamente
+                        ExecuteFrom(next);
+                }
+            }
+
+            for (auto &compConn : completedConns)
+            {
+                CustomNode *next = GetNodeById(compConn.toNodeId);
+                if (next && next != d)
+                    ExecuteFrom(next);
             }
         }
 

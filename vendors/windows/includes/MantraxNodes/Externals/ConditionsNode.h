@@ -19,14 +19,24 @@ public:
             {},                 // outputs exec se manejan en ExecuteFrom
             position);
 
+        PremakeNode forNode(
+            "Condition", "For Loop",
+            [](CustomNode *node) {
+
+            },
+            SCRIPT, true, true,          // Branch sí tiene ejecución
+            {{"Start", 0}, {"End", 10}}, // condición
+            {{"Index", 0}},              // outputs exec se manejan en ExecuteFrom
+            position);
+
         // -------- INT COMPARISON NODE --------
         PremakeNode intCompareNode(
             "Condition", "Int Compare",
             [](CustomNode *node)
             {
-                int a = node->GetInputValue<int>(1, 0);
-                int b = node->GetInputValue<int>(2, 0);
-                std::string op = node->GetInputValue<std::string>(3, "==");
+                int a = node->GetInputValue<int>(0, 0);
+                int b = node->GetInputValue<int>(1, 0);
+                std::string op = node->GetInputValue<std::string>(2, "==");
                 bool result = false;
 
                 if (op == "==")
@@ -54,9 +64,9 @@ public:
             "Condition", "Float Compare",
             [](CustomNode *node)
             {
-                float a = node->GetInputValue<float>(1, 0.0f);
-                float b = node->GetInputValue<float>(2, 0.0f);
-                std::string op = node->GetInputValue<std::string>(3, "==");
+                float a = node->GetInputValue<float>(0, 0.0f);
+                float b = node->GetInputValue<float>(1, 0.0f);
+                std::string op = node->GetInputValue<std::string>(2, "==");
                 bool result = false;
 
                 if (op == "==")
@@ -84,9 +94,9 @@ public:
             "Condition", "String Compare",
             [](CustomNode *node)
             {
-                std::string a = node->GetInputValue<std::string>(1, "");
-                std::string b = node->GetInputValue<std::string>(2, "");
-                std::string op = node->GetInputValue<std::string>(3, "==");
+                std::string a = node->GetInputValue<std::string>(0, "");
+                std::string b = node->GetInputValue<std::string>(1, "");
+                std::string op = node->GetInputValue<std::string>(2, "==");
                 bool result = false;
 
                 if (op == "==")
@@ -114,9 +124,9 @@ public:
             "Condition", "Bool Logic",
             [](CustomNode *node)
             {
-                bool a = node->GetInputValue<bool>(1, false);
-                bool b = node->GetInputValue<bool>(2, false);
-                std::string op = node->GetInputValue<std::string>(3, "AND");
+                bool a = node->GetInputValue<bool>(0, false);
+                bool b = node->GetInputValue<bool>(1, false);
+                std::string op = node->GetInputValue<std::string>(2, "AND");
                 bool result = false;
 
                 if (op == "AND")
@@ -138,6 +148,7 @@ public:
             position);
 
         // -------- REGISTRO --------
+        engine.PrefabNodes.push_back(forNode);
         engine.PrefabNodes.push_back(branchNode);
         engine.PrefabNodes.push_back(intCompareNode);
         engine.PrefabNodes.push_back(floatCompareNode);
