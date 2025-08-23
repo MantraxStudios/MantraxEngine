@@ -10,15 +10,16 @@ class ConditionNodes
 public:
     void RegisterNodes(MNodeEngine &engine, ImVec2 position = ImVec2(300, 100))
     {
+        // -------- BRANCH NODE --------
         PremakeNode branchNode(
             "Condition", "Branch",
             [](CustomNode *node) {},
-            SCRIPT, true, true,
-            {{"Value", false}},
-            {},
+            SCRIPT, true, true, // Branch sí tiene ejecución
+            {{"Value", false}}, // condición
+            {},                 // outputs exec se manejan en ExecuteFrom
             position);
 
-        // -------- INT COMPARISON NODES --------
+        // -------- INT COMPARISON NODE --------
         PremakeNode intCompareNode(
             "Condition", "Int Compare",
             [](CustomNode *node)
@@ -43,12 +44,12 @@ public:
 
                 node->SetOutputValue<bool>(1, result);
             },
-            SCRIPT, true, true,
+            SCRIPT, false, false, // NO exec
             {{"A", 0}, {"B", 0}, {"Operator", std::string("==")}},
             {{"Result", false}},
             position);
 
-        // -------- FLOAT COMPARISON NODES --------
+        // -------- FLOAT COMPARISON NODE --------
         PremakeNode floatCompareNode(
             "Condition", "Float Compare",
             [](CustomNode *node)
@@ -73,12 +74,12 @@ public:
 
                 node->SetOutputValue<bool>(1, result);
             },
-            SCRIPT, true, true,
+            SCRIPT, false, false, // NO exec
             {{"A", 0.0f}, {"B", 0.0f}, {"Operator", std::string("==")}},
             {{"Result", false}},
             position);
 
-        // -------- STRING COMPARISON NODES --------
+        // -------- STRING COMPARISON NODE --------
         PremakeNode stringCompareNode(
             "Condition", "String Compare",
             [](CustomNode *node)
@@ -103,12 +104,12 @@ public:
 
                 node->SetOutputValue<bool>(1, result);
             },
-            SCRIPT, true, true,
+            SCRIPT, false, false, // NO exec
             {{"A", std::string("")}, {"B", std::string("")}, {"Operator", std::string("==")}},
             {{"Result", false}},
             position);
 
-        // -------- BOOL LOGIC NODES --------
+        // -------- BOOL LOGIC NODE --------
         PremakeNode boolLogicNode(
             "Condition", "Bool Logic",
             [](CustomNode *node)
@@ -131,12 +132,12 @@ public:
 
                 node->SetOutputValue<bool>(1, result);
             },
-            SCRIPT, true, true,
+            SCRIPT, false, false, // NO exec
             {{"A", false}, {"B", false}, {"Operator", std::string("AND")}},
             {{"Result", false}},
             position);
 
-        // Agregar todos los nodos al engine
+        // -------- REGISTRO --------
         engine.PrefabNodes.push_back(branchNode);
         engine.PrefabNodes.push_back(intCompareNode);
         engine.PrefabNodes.push_back(floatCompareNode);
