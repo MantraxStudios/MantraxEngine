@@ -2242,13 +2242,13 @@ public:
         node->isActive = true;
 
         // Si es un nodo Print, verificar si tiene datos conectados
-        if (node->title == "Print")
-        {
-            // Buscar conexión de datos en el pin 1 (pin de texto)
-            std::string connectedValue = GetConnectedValue(node->id, 1);
-            if (!connectedValue.empty())
-                node->data = connectedValue;
-        }
+        // if (node->title == "Print")
+        // {
+        //     // Buscar conexión de datos en el pin 1 (pin de texto)
+        //     std::string connectedValue = GetConnectedValue(node->id, 1);
+        //     if (!connectedValue.empty())
+        //         node->data = connectedValue;
+        // }
 
         node->execFunc(node);
 
@@ -2270,7 +2270,7 @@ public:
     // Método para ejecutar desde un nodo Start
     void ExecuteGraph()
     {
-        ForceUpdateAllNodeInputs();
+        // ForceUpdateAllNodeInputs();
 
         for (auto &node : customNodes)
         {
@@ -2295,7 +2295,7 @@ public:
         if (value->type() == typeid(std::string))
             return IM_COL32(100, 200, 100, 255); // Verde para String
         else if (value->type() == typeid(int))
-            return IM_COL32(255, 150, 50, 255);  // Naranja para Int
+            return IM_COL32(255, 150, 50, 255); // Naranja para Int
         else if (value->type() == typeid(float))
             return IM_COL32(100, 150, 255, 255); // Azul para Float
         else if (value->type() == typeid(bool))
