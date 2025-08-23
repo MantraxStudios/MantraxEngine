@@ -11,6 +11,7 @@
 #include <cmath>
 #include <array>
 #include <set>
+#include <queue>
 #include <components/SceneManager.h>
 #include <components/GameObject.h>
 
@@ -391,6 +392,9 @@ public:
 
     std::vector<PremakeNode> PrefabNodes;
 
+    mutable std::vector<int> topologicalOrder;
+    mutable bool topologicalOrderDirty = true;
+
     int connectingFromNode = -1;
     int connectingFromPin = -1;
     int editingNodeId = -1;    // ID del nodo que se está editando
@@ -467,6 +471,82 @@ public:
         static constexpr ImU32 ConnectionLine = IM_COL32(180, 180, 180, 200);
         static constexpr ImU32 ConnectionLineSelected = IM_COL32(255, 255, 255, 255);
     };
+
+    std::vector<int> CalculateTopologicalOrder() const
+    {
+        std::vector<int> result;
+        std::map<int, int> inDegree;
+        std::map<int, std::vector<int>> adjacencyList;
+
+        // Inicializar grados de entrada para todos los nodos
+        for (const auto &node : customNodes)
+        {
+            inDegree[node.n.id] = 0;
+            adjacencyList[node.n.id] = std::vector<int>();
+        }
+
+        // Calcular grados de entrada basándose SOLO en conexiones de datos
+        for (const auto &conn : connections)
+        {
+            // Verificar que ambos nodos existen
+            auto fromNode = std::find_if(customNodes.begin(), customNodes.end(),
+                                         [&](const CustomNode &n)
+                                         { return n.n.id == conn.fromNodeId; });
+            auto toNode = std::find_if(customNodes.begin(), customNodes.end(),
+                                       [&](const CustomNode &n)
+                                       { return n.n.id == conn.toNodeId; });
+
+            if (fromNode != customNodes.end() && toNode != customNodes.end())
+            {
+                // Solo considerar conexiones de datos para el orden topológico
+                if (conn.fromPinId < fromNode->n.outputs.size() &&
+                    !fromNode->n.outputs[conn.fromPinId].isExec)
+                {
+                    inDegree[conn.toNodeId]++;
+                    adjacencyList[conn.fromNodeId].push_back(conn.toNodeId);
+                }
+            }
+        }
+
+        // Cola para procesamiento
+        std::queue<int> zeroInDegreeQueue;
+
+        // Agregar nodos sin dependencias de datos
+        for (const auto &pair : inDegree)
+        {
+            if (pair.second == 0)
+            {
+                zeroInDegreeQueue.push(pair.first);
+            }
+        }
+
+        // Procesamiento topológico
+        while (!zeroInDegreeQueue.empty())
+        {
+            int currentNode = zeroInDegreeQueue.front();
+            zeroInDegreeQueue.pop();
+            result.push_back(currentNode);
+
+            // Reducir grado de entrada de nodos dependientes
+            for (int neighbor : adjacencyList[currentNode])
+            {
+                inDegree[neighbor]--;
+                if (inDegree[neighbor] == 0)
+                {
+                    zeroInDegreeQueue.push(neighbor);
+                }
+            }
+        }
+
+        std::cout << "[TOPO] Calculated topological order: ";
+        for (int id : result)
+        {
+            std::cout << id << " ";
+        }
+        std::cout << std::endl;
+
+        return result;
+    }
 
     CustomNode *GetNodeById(int id)
     {
@@ -702,44 +782,80 @@ public:
     // Función para forzar la actualización de todos los valores de entrada
     void ForceUpdateAllNodeInputs()
     {
-        // Primero, ejecutar todos los nodos de datos para asegurar que tengan valores de salida válidos
-        for (auto &node : customNodes)
+        // Recalcular orden topológico si es necesario
+        if (topologicalOrderDirty)
         {
-            // Si es un nodo de datos (sin pins de ejecución), ejecutarlo
-            if (node.n.inputs.empty() || !node.n.inputs[0].isExec)
+            topologicalOrder = CalculateTopologicalOrder();
+            topologicalOrderDirty = false;
+        }
+
+        std::cout << "[FORCE UPDATE] Starting comprehensive node update..." << std::endl;
+
+        // Ejecutar nodos de datos en orden topológico
+        for (int nodeId : topologicalOrder)
+        {
+            auto nodeIt = std::find_if(customNodes.begin(), customNodes.end(),
+                                       [nodeId](const CustomNode &n)
+                                       { return n.n.id == nodeId; });
+
+            if (nodeIt != customNodes.end())
             {
-                if (node.n.execFunc)
+                CustomNode &node = *nodeIt;
+
+                // Actualizar valores de entrada desde conexiones
+                UpdateNodeInputs(&node);
+
+                // Si es un nodo de datos (sin pins de ejecución o con título específico), ejecutarlo
+                if (IsDataNode(node) && node.n.execFunc)
                 {
-                    std::cout << "[FORCE UPDATE] Executing data node " << node.n.title << " to get output value" << std::endl;
+                    std::cout << "[FORCE UPDATE] Executing data node: " << node.n.title << std::endl;
                     node.n.execFunc(&node.n);
+
+                    // Propagar inmediatamente sus valores de salida
+                    PropagateNodeOutputs(&node);
                 }
             }
         }
 
-        // Luego actualizar todas las conexiones
-        for (auto &connection : connections)
-        {
-            UpdateNodeInputsImmediately(connection.fromNodeId, connection.fromPinId,
-                                        connection.toNodeId, connection.toPinId);
-        }
+        std::cout << "[FORCE UPDATE] Update complete." << std::endl;
+    }
 
-        // También forzar la actualización de valores de salida de nodos String
-        for (auto &node : customNodes)
+    bool IsDataNode(const CustomNode &node) const
+    {
+        // Un nodo es de datos si no tiene pins de ejecución de entrada
+        // o si es un tipo específico que siempre debe ejecutarse
+        return node.n.inputs.empty() ||
+               !node.n.inputs[0].isExec ||
+               node.n.title == "String" ||
+               node.n.title == "Number" ||
+               node.n.title == "Boolean" ||
+               node.n.title == "Get Variable" ||
+               node.n.title == "Math";
+    }
+
+    void PropagateNodeOutputs(CustomNode *node)
+    {
+        if (!node)
+            return;
+
+        for (const auto &connection : connections)
         {
-            if (node.n.title == "String")
+            if (connection.fromNodeId == node->n.id)
             {
-                auto inputValue = node.inputValues.find(0);
-                if (inputValue != node.inputValues.end())
+                // Solo propagar datos, no ejecución
+                if (connection.fromPinId < node->n.outputs.size() &&
+                    !node->n.outputs[connection.fromPinId].isExec)
                 {
-                    try
+                    CustomNode *targetNode = GetCustomNodeById(connection.toNodeId);
+                    if (targetNode)
                     {
-                        std::string value = std::any_cast<std::string>(inputValue->second);
-                        node.SetOutputValue<std::string>(0, value);
-                        std::cout << "[FORCE UPDATE] String node output updated to: " << value << std::endl;
-                    }
-                    catch (...)
-                    {
-                        std::cout << "[FORCE UPDATE] String node output update failed" << std::endl;
+                        auto outputValue = node->outputValues.find(connection.fromPinId);
+                        if (outputValue != node->outputValues.end())
+                        {
+                            targetNode->inputValues[connection.toPinId] = outputValue->second;
+                            std::cout << "[PROPAGATE] " << node->n.title << " -> " << targetNode->n.title
+                                      << " (pin " << connection.toPinId << ")" << std::endl;
+                        }
                     }
                 }
             }
@@ -952,89 +1068,16 @@ public:
         newConnection.toPinId = toPinId;
 
         connections.push_back(newConnection);
+
+        // Marcar orden topológico como sucio
+        topologicalOrderDirty = true;
+
         std::cout << "[SUCCESS] Connection created successfully!" << std::endl;
 
-        // Actualizar inmediatamente el valor del nodo de destino
-        UpdateNodeInputsImmediately(fromNodeId, fromPinId, toNodeId, toPinId);
+        // Actualizar inmediatamente todo el grafo de dependencias
+        ForceUpdateAllNodeInputs();
 
         return true;
-    }
-
-    // Método para eliminar conexiones de un pin específico
-    void RemoveConnectionsFromPin(int nodeId, int pinId, bool isInput)
-    {
-        auto it = connections.begin();
-        while (it != connections.end())
-        {
-            bool shouldRemove = false;
-            if (isInput)
-            {
-                // Para pins de entrada, eliminar conexiones que llegan a este pin
-                shouldRemove = (it->toNodeId == nodeId && it->toPinId == pinId);
-
-                // Si es un pin de entrada, restaurar su valor por defecto cuando se desconecta
-                if (shouldRemove)
-                {
-                    CustomNode *targetNode = GetCustomNodeById(nodeId);
-                    if (targetNode)
-                    {
-                        // Restaurar el valor por defecto del pin
-                        auto nameIt = targetNode->inputNames.find(pinId);
-                        if (nameIt != targetNode->inputNames.end())
-                        {
-                            // Buscar el valor por defecto en la configuración del nodo
-                            auto defaultIt = targetNode->defaultValues.find(pinId);
-                            if (defaultIt != targetNode->defaultValues.end())
-                            {
-                                // Restaurar el valor por defecto almacenado
-                                targetNode->inputValues[pinId] = defaultIt->second;
-
-                                // Para nodos String, también actualizar el valor de salida
-                                if (targetNode->n.title == "String" && pinId == 0)
-                                {
-                                    try
-                                    {
-                                        std::string defaultValue = std::any_cast<std::string>(defaultIt->second);
-                                        targetNode->SetOutputValue<std::string>(0, defaultValue);
-                                        std::cout << "[DISCONNECT] Restored String node to default value: " << defaultValue << std::endl;
-                                    }
-                                    catch (...)
-                                    {
-                                        std::cout << "[DISCONNECT] Failed to restore String node default value" << std::endl;
-                                    }
-                                }
-                                else
-                                {
-                                    std::cout << "[DISCONNECT] Restored node " << nodeId << " pin " << pinId << " to default value" << std::endl;
-                                }
-                            }
-                            else
-                            {
-                                // Si no hay valor por defecto, limpiar el valor
-                                targetNode->inputValues.erase(pinId);
-                                std::cout << "[DISCONNECT] Cleared input value for node " << nodeId << " pin " << pinId << " (no default)" << std::endl;
-                            }
-                        }
-                    }
-                }
-            }
-            else
-            {
-                // Para pins de salida, eliminar conexiones que salen de este pin
-                shouldRemove = (it->fromNodeId == nodeId && it->fromPinId == pinId);
-            }
-
-            if (shouldRemove)
-            {
-                std::cout << "Removing connection: " << it->fromNodeId << ":" << it->fromPinId
-                          << " -> " << it->toNodeId << ":" << it->toPinId << std::endl;
-                it = connections.erase(it);
-            }
-            else
-            {
-                ++it;
-            }
-        }
     }
 
     // Método para eliminar todas las conexiones de un nodo
@@ -1324,281 +1367,19 @@ public:
         }
     }
 
-    // Método para diagnosticar problemas de conexión específicos
-    void DiagnoseConnection(int fromNodeId, int fromPinId, int toNodeId, int toPinId)
-    {
-        std::cout << "\n=== DIAGNOSIS: Connection " << fromNodeId << ":" << fromPinId
-                  << " -> " << toNodeId << ":" << toPinId << " ===" << std::endl;
-
-        CustomNode *fromNode = GetCustomNodeById(fromNodeId);
-        CustomNode *toNode = GetCustomNodeById(toNodeId);
-
-        if (!fromNode)
-        {
-            std::cout << "[ERROR] Source node " << fromNodeId << " not found!" << std::endl;
-            return;
-        }
-
-        if (!toNode)
-        {
-            std::cout << "[ERROR] Target node " << toNodeId << " not found!" << std::endl;
-            return;
-        }
-
-        std::cout << "Source node: " << fromNode->n.title << " (ID: " << fromNodeId << ")" << std::endl;
-        std::cout << "Target node: " << toNode->n.title << " (ID: " << toNodeId << ")" << std::endl;
-
-        // Verificar pins de salida del nodo fuente
-        if (fromPinId >= 0 && fromPinId < fromNode->n.outputs.size())
-        {
-            Pin &outputPin = fromNode->n.outputs[fromPinId];
-            std::cout << "Source output pin " << fromPinId << ": isExec=" << outputPin.isExec << std::endl;
-
-            auto outputValue = fromNode->outputValues.find(fromPinId);
-            if (outputValue != fromNode->outputValues.end())
-            {
-                std::cout << "Source output value: ";
-                try
-                {
-                    if (outputValue->second.type() == typeid(int))
-                    {
-                        std::cout << std::any_cast<int>(outputValue->second);
-                    }
-                    else if (outputValue->second.type() == typeid(std::string))
-                    {
-                        std::cout << std::any_cast<std::string>(outputValue->second);
-                    }
-                    else if (outputValue->second.type() == typeid(float))
-                    {
-                        std::cout << std::any_cast<float>(outputValue->second);
-                    }
-                    else
-                    {
-                        std::cout << "<unknown type: " << outputValue->second.type().name() << ">";
-                    }
-                }
-                catch (const std::bad_any_cast &)
-                {
-                    std::cout << "<type cast error>";
-                }
-                std::cout << std::endl;
-            }
-            else
-            {
-                std::cout << "Source output value: <not set>" << std::endl;
-            }
-        }
-        else
-        {
-            std::cout << "[ERROR] Invalid source pin ID: " << fromPinId << std::endl;
-        }
-
-        // Verificar pins de entrada del nodo destino
-        if (toPinId >= 0 && toPinId < toNode->n.inputs.size())
-        {
-            Pin &inputPin = toNode->n.inputs[toPinId];
-            std::cout << "Target input pin " << toPinId << ": isExec=" << inputPin.isExec << std::endl;
-
-            auto inputValue = toNode->inputValues.find(toPinId);
-            if (inputValue != toNode->inputValues.end())
-            {
-                std::cout << "Target input value: ";
-                try
-                {
-                    if (inputValue->second.type() == typeid(int))
-                    {
-                        std::cout << std::any_cast<int>(inputValue->second);
-                    }
-                    else if (inputValue->second.type() == typeid(std::string))
-                    {
-                        std::cout << std::any_cast<std::string>(inputValue->second);
-                    }
-                    else if (inputValue->second.type() == typeid(float))
-                    {
-                        std::cout << std::any_cast<float>(inputValue->second);
-                    }
-                    else
-                    {
-                        std::cout << "<unknown type: " << inputValue->second.type().name() << ">";
-                    }
-                }
-                catch (const std::bad_any_cast &)
-                {
-                    std::cout << "<type cast error>";
-                }
-                std::cout << std::endl;
-            }
-            else
-            {
-                std::cout << "Target input value: <not set>" << std::endl;
-            }
-        }
-        else
-        {
-            std::cout << "[ERROR] Invalid target pin ID: " << toPinId << std::endl;
-        }
-
-        std::cout << "=== END DIAGNOSIS ===\n"
-                  << std::endl;
-    }
-
-    // Función para mostrar la estructura de pins de cualquier nodo
-    void DebugNodePins(int nodeId)
-    {
-        CustomNode *node = GetCustomNodeById(nodeId);
-        if (!node)
-        {
-            std::cout << "[DEBUG] Node " << nodeId << " not found!" << std::endl;
-            return;
-        }
-
-        std::cout << "\n[DEBUG] Node: " << node->n.title << " (ID: " << node->n.id << ")" << std::endl;
-        std::cout << "  Inputs (" << node->n.inputs.size() << "):" << std::endl;
-        for (size_t i = 0; i < node->n.inputs.size(); i++)
-        {
-            Pin &pin = node->n.inputs[i];
-            std::cout << "    " << i << ": isExec=" << pin.isExec << " (pos: " << pin.pos.x << ", " << pin.pos.y << ")" << std::endl;
-        }
-
-        std::cout << "  Outputs (" << node->n.outputs.size() << "):" << std::endl;
-        for (size_t i = 0; i < node->n.outputs.size(); i++)
-        {
-            Pin &pin = node->n.outputs[i];
-            std::cout << "  " << i << ": isExec=" << pin.isExec << " (pos: " << pin.pos.x << ", " << pin.pos.y << ")" << std::endl;
-        }
-        std::cout << std::endl;
-    }
-
-    // Método para probar la conexión entre Integer y Move nodes
-    void TestIntegerToMoveConnection()
-    {
-        std::cout << "\n=== TESTING INTEGER TO MOVE CONNECTION ===" << std::endl;
-
-        // Buscar nodos Integer y Move
-        CustomNode *integerNode = nullptr;
-        CustomNode *moveNode = nullptr;
-
-        for (auto &node : customNodes)
-        {
-            if (node.n.title == "Integer")
-            {
-                integerNode = &node;
-            }
-            else if (node.n.title == "Move Object")
-            {
-                moveNode = &node;
-            }
-        }
-
-        if (!integerNode)
-        {
-            std::cout << "[ERROR] No Integer node found!" << std::endl;
-            return;
-        }
-
-        if (!moveNode)
-        {
-            std::cout << "[ERROR] No Move Object node found!" << std::endl;
-            return;
-        }
-
-        std::cout << "Integer node ID: " << integerNode->nodeId << std::endl;
-        std::cout << "Move node ID: " << moveNode->nodeId << std::endl;
-
-        // Ejecutar el nodo Integer para establecer su valor de salida
-        if (integerNode->n.execFunc)
-        {
-            std::cout << "[TEST] Executing Integer node..." << std::endl;
-            integerNode->n.execFunc(&integerNode->n);
-        }
-
-        // Verificar el valor de salida del Integer
-        auto outputValue = integerNode->outputValues.find(0);
-        if (outputValue != integerNode->outputValues.end())
-        {
-            std::cout << "[TEST] Integer output value: ";
-            try
-            {
-                if (outputValue->second.type() == typeid(int))
-                {
-                    std::cout << std::any_cast<int>(outputValue->second);
-                }
-                else
-                {
-                    std::cout << "<wrong type: " << outputValue->second.type().name() << ">";
-                }
-            }
-            catch (const std::bad_any_cast &)
-            {
-                std::cout << "<type cast error>";
-            }
-            std::cout << std::endl;
-        }
-        else
-        {
-            std::cout << "[TEST] Integer output value: <not set>" << std::endl;
-        }
-
-        // Verificar el valor de entrada del Move
-        auto inputValue = moveNode->inputValues.find(1);
-        if (inputValue != moveNode->inputValues.end())
-        {
-            std::cout << "[TEST] Move input value (pin 1): ";
-            try
-            {
-                if (inputValue->second.type() == typeid(int))
-                {
-                    std::cout << std::any_cast<int>(inputValue->second);
-                }
-                else
-                {
-                    std::cout << "<wrong type: " << inputValue->second.type().name() << ">";
-                }
-            }
-            catch (const std::bad_any_cast &)
-            {
-                std::cout << "<type cast error>";
-            }
-            std::cout << std::endl;
-        }
-        else
-        {
-            std::cout << "[TEST] Move input value (pin 1): <not set>" << std::endl;
-        }
-
-        // Verificar si hay una conexión entre ellos
-        bool connectionFound = false;
-        for (const auto &conn : connections)
-        {
-            if (conn.fromNodeId == integerNode->nodeId && conn.fromPinId == 0 &&
-                conn.toNodeId == moveNode->nodeId && conn.toPinId == 1)
-            {
-                connectionFound = true;
-                std::cout << "[TEST] Connection found: Integer(0) -> Move(1)" << std::endl;
-                break;
-            }
-        }
-
-        if (!connectionFound)
-        {
-            std::cout << "[TEST] No connection found between Integer and Move nodes" << std::endl;
-        }
-
-        std::cout << "=== END TEST ===\n"
-                  << std::endl;
-    }
-
     void ExecuteFrom(CustomNode *d)
     {
         Node *node = &d->n;
         if (!node || !node->execFunc)
             return;
 
-        node->isActive = true;
+        // NUEVO: Antes de ejecutar cualquier nodo, asegurar que todas las dependencias de datos estén actualizadas
+        EvaluateDataDependencies(d);
 
+        node->isActive = true;
         node->execFunc(node);
 
-        // Solo procesar conexiones normales si NO es For Loop ni Branch
+        // Resto del código de ejecución se mantiene igual...
         if (node->title != "Branch" && node->title != "For Loop")
         {
             for (auto &c : connections)
@@ -1611,9 +1392,11 @@ public:
                 }
             }
         }
-        // ------------------- Branch -------------------
         else if (node->title == "Branch")
         {
+            // Asegurar que la condición esté evaluada antes de la ejecución
+            UpdateNodeInputs(d);
+
             bool condition = d->GetInputValue<bool>(1, false);
             int truePinIndex = 0;
             int falsePinIndex = 1;
@@ -1632,9 +1415,11 @@ public:
                 }
             }
         }
-        // ------------------- For Loop -------------------
         else if (node->title == "For Loop")
         {
+            // Asegurar que los valores de inicio y fin estén evaluados
+            UpdateNodeInputs(d);
+
             int start = d->GetInputValue<int>(1, 0);
             int end = d->GetInputValue<int>(2, 0);
 
@@ -1646,19 +1431,19 @@ public:
                 if (c.fromNodeId != node->id)
                     continue;
                 if (c.fromPinId == 1)
-                    loopBodyConns.push_back(c); // LoopBody
+                    loopBodyConns.push_back(c);
                 if (c.fromPinId == 0)
-                    completedConns.push_back(c); // Completed
+                    completedConns.push_back(c);
             }
 
             for (int i = start; i < end; i++)
             {
-                d->SetOutputValue<int>(2, i); // Index pin
+                d->SetOutputValue<int>(2, i);
 
                 for (auto &loopConn : loopBodyConns)
                 {
                     CustomNode *next = GetNodeById(loopConn.toNodeId);
-                    if (next && next != d) // Evitar ejecutar el mismo nodo recursivamente
+                    if (next && next != d)
                         ExecuteFrom(next);
                 }
             }
@@ -1674,50 +1459,145 @@ public:
         node->isActive = false;
     }
 
-    // Método para ejecutar desde un nodo Start
-    void ExecuteGraph()
+    void EvaluateDataDependencies(CustomNode *node)
     {
-        // ForceUpdateAllNodeInputs();
+        if (!node)
+            return;
 
-        for (auto &node : customNodes)
+        std::set<int> visited;
+        EvaluateDataDependenciesRecursive(node, visited);
+    }
+
+    // NUEVO: Evaluación recursiva de dependencias
+    void EvaluateDataDependenciesRecursive(CustomNode *node, std::set<int> &visited)
+    {
+        if (!node || visited.find(node->n.id) != visited.end())
         {
-            if (node.n.title == "Start")
+            return; // Ya procesado o nulo
+        }
+
+        visited.insert(node->n.id);
+
+        // Primero, evaluar todas las dependencias de datos de este nodo
+        for (const auto &connection : connections)
+        {
+            if (connection.toNodeId == node->n.id)
             {
-                ExecuteFrom(&node);
-                break;
+                // Solo procesar conexiones de datos, no de ejecución
+                CustomNode *sourceNode = GetCustomNodeById(connection.fromNodeId);
+                if (sourceNode && connection.fromPinId < sourceNode->n.outputs.size() &&
+                    !sourceNode->n.outputs[connection.fromPinId].isExec)
+                {
+                    // Evaluar recursivamente las dependencias del nodo fuente
+                    EvaluateDataDependenciesRecursive(sourceNode, visited);
+
+                    // Si el nodo fuente es un nodo de datos, ejecutarlo
+                    if (IsDataNode(*sourceNode) && sourceNode->n.execFunc)
+                    {
+                        std::cout << "[EVAL DEPS] Executing data dependency: " << sourceNode->n.title << std::endl;
+                        sourceNode->n.execFunc(&sourceNode->n);
+                    }
+
+                    // Propagar el valor inmediatamente
+                    auto outputValue = sourceNode->outputValues.find(connection.fromPinId);
+                    if (outputValue != sourceNode->outputValues.end())
+                    {
+                        node->inputValues[connection.toPinId] = outputValue->second;
+                        std::cout << "[EVAL DEPS] Propagated value from " << sourceNode->n.title
+                                  << " to " << node->n.title << std::endl;
+                    }
+                }
             }
         }
     }
 
-    // Función para obtener el color de un pin según su tipo
-    ImU32 GetPinColor(bool isExec, const std::any *value = nullptr)
+    void ExecuteGraph()
     {
-        if (isExec)
-            return BlenderColors::PinExec;
+        std::cout << "[EXECUTE] Starting graph execution..." << std::endl;
 
-        if (!value)
-            return BlenderColors::PinFloat;
+        // Primero, evaluar todos los nodos de datos en orden topológico
+        ForceUpdateAllNodeInputs();
 
-        // Determinar color por tipo de datos con colores específicos
-        if (value->type() == typeid(std::string))
-            return IM_COL32(100, 200, 100, 255); // Verde para String
-        else if (value->type() == typeid(int))
-            return IM_COL32(255, 150, 50, 255); // Naranja para Int
-        else if (value->type() == typeid(float))
-            return IM_COL32(100, 150, 255, 255); // Azul para Float
-        else if (value->type() == typeid(bool))
-            return BlenderColors::PinColor;
-        else if (value->type() == typeid(Vector2))
-            return IM_COL32(255, 100, 200, 255); // Rosa para Vector2
-        else if (value->type() == typeid(Vector3))
-            return IM_COL32(200, 100, 255, 255); // Púrpura para Vector3
-        else if (value->type() == typeid(Matrix3x3))
-            return IM_COL32(255, 200, 100, 255); // Amarillo para Matrix3x3
-        else if (value->type() == typeid(Matrix4x4))
-            return IM_COL32(100, 255, 200, 255); // Verde azulado para Matrix4x4
-        else if (value->type() == typeid(GameObject *))
-            return IM_COL32(255, 100, 100, 255); // Rojo para GameObject pointers
+        // Luego ejecutar desde el nodo Start
+        for (auto &node : customNodes)
+        {
+            if (node.n.title == "Start")
+            {
+                std::cout << "[EXECUTE] Found Start node, beginning execution flow..." << std::endl;
+                ExecuteFrom(&node);
+                break;
+            }
+        }
 
-        return BlenderColors::PinFloat;
+        std::cout << "[EXECUTE] Graph execution complete." << std::endl;
+    }
+
+    // MEJORADO: Eliminar conexiones con limpieza de orden topológico
+    void RemoveConnectionsFromPin(int nodeId, int pinId, bool isInput)
+    {
+        auto it = connections.begin();
+        bool removedAny = false;
+
+        while (it != connections.end())
+        {
+            bool shouldRemove = false;
+            if (isInput)
+            {
+                shouldRemove = (it->toNodeId == nodeId && it->toPinId == pinId);
+
+                if (shouldRemove)
+                {
+                    CustomNode *targetNode = GetCustomNodeById(nodeId);
+                    if (targetNode)
+                    {
+                        auto defaultIt = targetNode->defaultValues.find(pinId);
+                        if (defaultIt != targetNode->defaultValues.end())
+                        {
+                            targetNode->inputValues[pinId] = defaultIt->second;
+
+                            if (targetNode->n.title == "String" && pinId == 0)
+                            {
+                                try
+                                {
+                                    std::string defaultValue = std::any_cast<std::string>(defaultIt->second);
+                                    targetNode->SetOutputValue<std::string>(0, defaultValue);
+                                    std::cout << "[DISCONNECT] Restored String node to default value: " << defaultValue << std::endl;
+                                }
+                                catch (...)
+                                {
+                                    std::cout << "[DISCONNECT] Failed to restore String node default value" << std::endl;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            targetNode->inputValues.erase(pinId);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                shouldRemove = (it->fromNodeId == nodeId && it->fromPinId == pinId);
+            }
+
+            if (shouldRemove)
+            {
+                std::cout << "Removing connection: " << it->fromNodeId << ":" << it->fromPinId
+                          << " -> " << it->toNodeId << ":" << it->toPinId << std::endl;
+                it = connections.erase(it);
+                removedAny = true;
+            }
+            else
+            {
+                ++it;
+            }
+        }
+
+        // Marcar orden topológico como sucio si se removió alguna conexión
+        if (removedAny)
+        {
+            topologicalOrderDirty = true;
+        }
     }
 };
