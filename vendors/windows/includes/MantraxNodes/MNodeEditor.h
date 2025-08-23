@@ -59,8 +59,6 @@ public:
         NodesEV->RegisterNodes(*engine);
         NodesMath->RegisterNodes(*engine);
         NodesConst->RegisterNodes(*engine);
-
-        std::cout << "##### Nodes Registers: " << engine->PrefabNodes.size() << std::endl;
     }
 
     // Colores estilo Blender
@@ -80,7 +78,7 @@ public:
 
         static constexpr ImU32 NodeBackground = IM_COL32(62, 62, 66, 240);
         static constexpr ImU32 NodeBackgroundSelected = IM_COL32(90, 90, 94, 255);
-        static constexpr ImU32 NodeBorder = IM_COL32(80, 80, 84, 255);
+        static constexpr ImU32 NodeBorder = IM_COL32(100, 100, 100, 255);
         static constexpr ImU32 NodeBorderSelected = IM_COL32(255, 190, 60, 255);
         static constexpr ImU32 NodeHeaderText = IM_COL32(220, 220, 220, 255);
         static constexpr ImU32 PinExec = IM_COL32(255, 255, 255, 255);
@@ -278,7 +276,7 @@ public:
             ImU32 lineColor = isExec ? BlenderColors::PinExec : BlenderColors::ConnectionLine;
 
             // Línea más gruesa para conexiones de ejecución
-            float thickness = isExec ? 3.0f : 2.0f;
+            float thickness = isExec ? 4.0f : 4.0f;
 
             // Dibujar sombra de la línea
             draw_list->AddBezierCubic(
@@ -321,16 +319,16 @@ public:
                 IM_COL32(0, 0, 0, 60), 6.0f);
 
             // Fondo del nodo con esquinas redondeadas estilo Blender
-            draw_list->AddRectFilled(min, max, nodeColor, 6.0f);
+            draw_list->AddRectFilled(min, max, nodeColor, 10.0f);
 
             // Header del nodo uniforme
             ImVec2 headerMax = ImVec2(max.x, min.y + 26);
 
             // Dibujamos el header completo con esquinas superiores redondeadas
-            draw_list->AddRectFilled(min, headerMax, headerColor, 6.0f, ImDrawFlags_RoundCornersTop);
+            draw_list->AddRectFilled(min, headerMax, headerColor, 10.0f, ImDrawFlags_RoundCornersTop);
 
             // Borde del nodo
-            draw_list->AddRect(min, max, borderColor, 6.0f, 0, n.isSelected ? 2.0f : 4.0f);
+            draw_list->AddRect(min, max, borderColor, 10.0f, 0, n.isSelected ? 2.0f : 4.0f);
 
             // Título del nodo con mejor tipografía
             ImVec2 text_size = ImGui::CalcTextSize(n.title.c_str());
@@ -355,7 +353,7 @@ public:
                         std::string pinName = (nameIt != cn->inputNames.end()) ? nameIt->second : ("Pin " + std::to_string(pinIndex));
 
                         // Dibujar etiqueta del pin con mejor posicionamiento (centrada verticalmente con el pin)
-                        ImVec2 labelPos = ImVec2(min.x + 8, min.y + currentY);
+                        ImVec2 labelPos = ImVec2(min.x + 15, min.y + currentY);
                         draw_list->AddText(labelPos, IM_COL32(200, 200, 200, 255), pinName.c_str());
 
                         // Campo de entrada solo si no hay conexión
@@ -526,7 +524,7 @@ public:
                 if (pin.isExec)
                 {
                     // Pin de ejecución: cuadrado
-                    float pinSize = 5.0f;
+                    float pinSize = 7.0f;
                     ImVec2 pinMin = pinPos - ImVec2(pinSize, pinSize);
                     ImVec2 pinMax = pinPos + ImVec2(pinSize, pinSize);
 
@@ -549,14 +547,13 @@ public:
                     if (hasConnection)
                     {
                         // Pin conectado: círculo completo
-                        draw_list->AddCircleFilled(pinPos, 5, pinColor);
-                        draw_list->AddCircle(pinPos, 5, IM_COL32(0, 0, 0, 120), 0, 1.0f);
+                        draw_list->AddCircleFilled(pinPos, 7, pinColor);
                     }
                     else
                     {
                         // Pin desconectado: anillo
-                        draw_list->AddCircle(pinPos, 6, IM_COL32(255, 255, 255, 255), 0, 2.0f);
-                        draw_list->AddCircleFilled(pinPos, 5, pinColor);
+                        draw_list->AddCircleFilled(pinPos, 7, pinColor);
+                        draw_list->AddCircle(pinPos, 8, IM_COL32(255, 255, 255, 255), 0, 2.0f);
                     }
                 }
 
@@ -743,7 +740,7 @@ public:
                 if (pin.isExec)
                 {
                     // Pin de ejecución: cuadrado
-                    float pinSize = 5.0f;
+                    float pinSize = 7.0f;
                     ImVec2 pinMin = pinPos - ImVec2(pinSize, pinSize);
                     ImVec2 pinMax = pinPos + ImVec2(pinSize, pinSize);
 
@@ -766,14 +763,13 @@ public:
                     if (hasConnection)
                     {
                         // Pin conectado: círculo completo
-                        draw_list->AddCircleFilled(pinPos, 5, pinColor);
-                        draw_list->AddCircle(pinPos, 5, IM_COL32(0, 0, 0, 120), 0, 1.0f);
+                        draw_list->AddCircleFilled(pinPos, 7, pinColor);
                     }
                     else
                     {
                         // Pin desconectado: anillo
-                        draw_list->AddCircle(pinPos, 6, IM_COL32(255, 255, 255, 255), 0, 2.0f);
-                        draw_list->AddCircleFilled(pinPos, 5, pinColor);
+                        draw_list->AddCircle(pinPos, 7, IM_COL32(255, 255, 255, 255), 0, 2.0f);
+                        draw_list->AddCircleFilled(pinPos, 8, pinColor);
                     }
                 }
 

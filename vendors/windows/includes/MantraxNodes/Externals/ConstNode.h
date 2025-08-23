@@ -83,9 +83,25 @@ public:
             position        // PIN POSITION
         );
 
+        PremakeNode floatNode(
+            "Const",
+            "Float",
+            [](CustomNode *node)
+            {
+                node->SetOutputValue<float>(0, node->GetInputValue<float>(0, 0.0f));
+            },
+            SCRIPT,            // CATEGORY
+            false,             // EXECUTE PIN INPUT
+            false,             // EXECUTE PIN OUT
+            {{"Value", 0.0f}}, // INPUT PINS
+            {{"", 0.0f}},      // OUTPUT PINS
+            position           // PIN POSITION
+        );
+
         engine.PrefabNodes.push_back(vec3Node);
         engine.PrefabNodes.push_back(vec2Node);
         engine.PrefabNodes.push_back(stringNode);
         engine.PrefabNodes.push_back(intNode);
+        engine.PrefabNodes.push_back(floatNode);
     }
 };
