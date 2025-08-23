@@ -64,12 +64,12 @@ public:
                     std::cout << "ChangeNameNode received nullptr GameObject" << std::endl;
                 }
             },
-            SCRIPT,                                                                   // CATEGORY
-            true,                                                                     // EXECUTE PIN INPUT
-            true,                                                                     // EXECUTE PIN OUT
-            {{"Object", (GameObject *)nullptr}, {"New Tag", std::string("Default")}}, // INPUT PINS
-            {{"New Tag", std::string("Default")}},                                    // OUTPUT PINS
-            position                                                                  // PIN POSITION
+            SCRIPT,                                                               // CATEGORY
+            true,                                                                 // EXECUTE PIN INPUT
+            true,                                                                 // EXECUTE PIN OUT
+            {{"Object", (GameObject *)nullptr}, {"Tag", std::string("Default")}}, // INPUT PINS
+            {{"New Tag", std::string("Default")}},                                // OUTPUT PINS
+            position                                                              // PIN POSITION
         );
 
         PremakeNode getNameNode(

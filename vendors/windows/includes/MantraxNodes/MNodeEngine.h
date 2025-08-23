@@ -263,7 +263,7 @@ public:
         n.id = NodeID;
         nodeId = n.id;
         n.pos = ImVec2(50, 100);
-        n.size = ImVec2(200, 80);
+        n.size = ImVec2(400, 80);
         n.title = "Print";
         n.data = "Hello";
 
@@ -756,7 +756,7 @@ public:
         std::vector<std::pair<std::string, std::any>> inputPins = {},
         std::vector<std::pair<std::string, std::any>> outputPins = {},
         ImVec2 position = ImVec2(100, 100),
-        ImVec2 size = ImVec2(300, 80))
+        ImVec2 size = ImVec2(500, 80))
     {
         std::cout << "[DEBUG] CreateNode called with position: (" << position.x << ", " << position.y << ")" << std::endl;
         NodeConfig config(title, category, size);
