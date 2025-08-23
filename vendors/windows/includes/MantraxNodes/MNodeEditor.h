@@ -341,7 +341,7 @@ public:
             if (CustomNode *cn = GetCustomNodeById(n.id))
             {
                 // Dibujar campos editables para pins de entrada
-                float currentY = 34.0f; // Ajustado para alinear exactamente con los pins (44px - 10px para centrar texto)
+                float currentY = 33.5f; // Ajustado para alinear exactamente con los pins (44px - 10px para centrar texto)
                 for (size_t pinIndex = 0; pinIndex < n.inputs.size(); pinIndex++)
                 {
                     const Pin &pin = n.inputs[pinIndex];
@@ -997,8 +997,39 @@ public:
                 engine->ExecuteGraph();
             }
 
+            static char searchBuffer[128] = "";
+            ImGui::InputTextWithHint("##search", "Search node...", searchBuffer, IM_ARRAYSIZE(searchBuffer));
+
+            std::string filter = searchBuffer;
+            std::transform(filter.begin(), filter.end(), filter.begin(), ::tolower);
+
+            ImGui::Spacing();
+
             for (auto &nd : engine->PrefabNodes)
             {
+                // filtro vacío → mostrar todos
+                bool match = filter.empty();
+
+                // si hay texto → comparar con título y categoría
+                if (!match)
+                {
+                    std::string titleLower = nd.title;
+                    std::string catLower = nd.cat;
+
+                    std::transform(titleLower.begin(), titleLower.end(), titleLower.begin(), ::tolower);
+                    std::transform(catLower.begin(), catLower.end(), catLower.begin(), ::tolower);
+
+                    if (titleLower.find(filter) != std::string::npos ||
+                        catLower.find(filter) != std::string::npos)
+                    {
+                        match = true;
+                    }
+                }
+
+                if (!match)
+                    continue; // 🔹 saltar nodos que no matchean
+
+                // Mostrar como antes
                 if (ImGui::BeginMenu(nd.cat.c_str()))
                 {
                     std::string titleNew = "> " + nd.title;
@@ -1006,15 +1037,14 @@ public:
                     if (ImGui::MenuItem(titleNew.c_str()))
                     {
                         engine->CreateNode(
-                            nd.title,         // 🔹 std::string
-                            nd.executeFunc,   // 🔹 std::function<void(CustomNode*)>
-                            nd.hasExecInput,  // 🔹 bool
-                            nd.hasExecOutput, // 🔹 bool
-                            nd.inputPins,     // 🔹 vector<pair<string, any>>
-                            nd.outputPins,    // 🔹 vector<pair<string, any>>
-                            nd.position,      // 🔹 ImVec2
-                            nd.size           // 🔹 ImVec2
-                        );
+                            nd.title,
+                            nd.executeFunc,
+                            nd.hasExecInput,
+                            nd.hasExecOutput,
+                            nd.inputPins,
+                            nd.outputPins,
+                            nd.position,
+                            nd.size);
                     }
 
                     ImGui::EndMenu();
