@@ -41,7 +41,7 @@ public:
         );
 
         // Crear el nodo usando el engine
-        PremakeNode changeNameNode(
+        PremakeNode setNameNode(
             "Object",
             "Set Name",
             [](CustomNode *node)
@@ -51,6 +51,7 @@ public:
                 {
                     std::string newName = node->GetInputValue<std::string>(2, "Hello");
                     obj->Name = newName;
+                    node->SetOutputValue<std::string>(1, obj->Name);
                     std::cout << "GameObject renamed to: " << newName << std::endl;
                 }
                 else
@@ -62,19 +63,70 @@ public:
             true,                                                                    // EXECUTE PIN INPUT
             true,                                                                    // EXECUTE PIN OUT
             {{"Object", (GameObject *)nullptr}, {"New Name", std::string("Hello")}}, // INPUT PINS
-            {},                                                                      // OUTPUT PINS
+            {{"Name", std::string("Name")}},                                         // OUTPUT PINS
             position                                                                 // PIN POSITION
+        );
+
+        // Crear el nodo usando el engine
+        PremakeNode setTagNode(
+            "Object",
+            "Set Tag",
+            [](CustomNode *node)
+            {
+                GameObject *obj = node->GetInputValue<GameObject *>(1, nullptr);
+                if (obj)
+                {
+                    std::string newName = node->GetInputValue<std::string>(2, "Default");
+                    obj->Tag = newName;
+                    node->SetOutputValue<std::string>(1, obj->Tag);
+                    std::cout << "GameObject renamed to: " << newName << std::endl;
+                }
+                else
+                {
+                    std::cout << "ChangeNameNode received nullptr GameObject" << std::endl;
+                }
+            },
+            SCRIPT,                                                                   // CATEGORY
+            true,                                                                     // EXECUTE PIN INPUT
+            true,                                                                     // EXECUTE PIN OUT
+            {{"Object", (GameObject *)nullptr}, {"New Tag", std::string("Default")}}, // INPUT PINS
+            {{"New Tag", std::string("Default")}},                                    // OUTPUT PINS
+            position                                                                  // PIN POSITION
         );
 
         PremakeNode getNameNode(
             "Object",
-            "Get GameObject Name",
+            "Get Name",
             [](CustomNode *node)
             {
                 GameObject *obj = node->GetInputValue<GameObject *>(0, nullptr);
                 if (obj)
                 {
                     std::string name = obj->Name;
+                    node->SetOutputValue<std::string>(0, name);
+                }
+                else
+                {
+                    node->SetOutputValue<std::string>(0, "NULL");
+                }
+            },
+            SCRIPT,                              // CATEGORY
+            false,                               // EXECUTE PIN INPUT
+            false,                               // EXECUTE PIN OUT
+            {{"Object", (GameObject *)nullptr}}, // INPUT PINS
+            {{"Name", std::string("")}},         // OUTPUT PINS
+            position                             // PIN POSITION
+        );
+
+        PremakeNode getTagNode(
+            "Object",
+            "Get Tag",
+            [](CustomNode *node)
+            {
+                GameObject *obj = node->GetInputValue<GameObject *>(0, nullptr);
+                if (obj)
+                {
+                    std::string name = obj->Tag;
                     node->SetOutputValue<std::string>(0, name);
                 }
                 else
@@ -175,8 +227,11 @@ public:
         );
 
         engine.PrefabNodes.push_back(getNameNode);
+        engine.PrefabNodes.push_back(getTagNode);
+        engine.PrefabNodes.push_back(setNameNode);
+        engine.PrefabNodes.push_back(setTagNode);
+
         engine.PrefabNodes.push_back(findObjectNode);
-        engine.PrefabNodes.push_back(changeNameNode);
         engine.PrefabNodes.push_back(setPosNode);
         engine.PrefabNodes.push_back(setScaleNode);
         engine.PrefabNodes.push_back(getPosNode);
