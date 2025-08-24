@@ -1,5 +1,13 @@
 #include "MNodeEngine.h"
 
+#include "GameObjectNode.h"
+#include "DebugNodes.h"
+#include "EventsNode.h"
+#include "MathNodes.h"
+#include "ConstNode.h"
+#include "ConvertsNode.h"
+#include "ConditionsNode.h"
+
 static int NodeID = 0;
 
 void CustomNode::SetupNode()
@@ -29,6 +37,22 @@ void CustomNode::SetupNode()
 MNodeEngine::MNodeEngine(GameObject *obj)
 {
     _SelfObject = obj;
+
+    GameObjectNode *NodesGM = new GameObjectNode();
+    DebugNodes *NodesDB = new DebugNodes();
+    EventsNode *NodesEV = new EventsNode();
+    MathNodes *NodesMath = new MathNodes();
+    ConstNode *NodesConst = new ConstNode();
+    ConvertsNode *NodesConvert = new ConvertsNode();
+    ConditionNodes *NodesCondition = new ConditionNodes();
+
+    NodesGM->RegisterNodes(*this);
+    NodesDB->RegisterNodes(*this);
+    NodesEV->RegisterNodes(*this);
+    NodesMath->RegisterNodes(*this);
+    NodesConst->RegisterNodes(*this);
+    NodesConvert->RegisterNodes(*this);
+    NodesCondition->RegisterNodes(*this);
 }
 
 // Lambda Factory para crear nodos de manera simple (Nueva versión con NodeCategory)

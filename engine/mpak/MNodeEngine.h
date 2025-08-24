@@ -402,8 +402,8 @@ public:
     {
     }
 
-    std::string cat;   // 🔹 Ahora es dueño
-    std::string title; // 🔹 Ahora es dueño
+    std::string cat;
+    std::string title;
     std::function<void(CustomNode *)> executeFunc;
     NodeCategory category;
     bool hasExecInput;

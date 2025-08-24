@@ -12,13 +12,6 @@
 #include <array>
 #include <set>
 #include <mpak/MNodeEngine.h>
-#include <mpak/GameObjectNode.h>
-#include <mpak/DebugNodes.h>
-#include <mpak/EventsNode.h>
-#include <mpak/MathNodes.h>
-#include <mpak/ConstNode.h>
-#include <mpak/ConvertsNode.h>
-#include <mpak/ConditionsNode.h>
 
 class MNodeEditor
 {
@@ -30,15 +23,6 @@ public:
     std::vector<CustomNode> *customNodes = nullptr;
     std::vector<Connection> *connections = nullptr;
 
-    // NODES IMPLEMENTS
-    GameObjectNode *NodesGM = new GameObjectNode();
-    DebugNodes *NodesDB = new DebugNodes();
-    EventsNode *NodesEV = new EventsNode();
-    MathNodes *NodesMath = new MathNodes();
-    ConstNode *NodesConst = new ConstNode();
-    ConvertsNode *NodesConvert = new ConvertsNode();
-    ConditionNodes *NodesCondition = new ConditionNodes();
-
     int connectingFromNode = -1;
     int connectingFromPin = -1;
     int editingNodeId = -1;    // ID del nodo que se está editando
@@ -46,7 +30,7 @@ public:
     bool isConnecting = false; // Flag para indicar si estamos en modo conexión
 
     // Variables para el menú contextual
-    bool showContextMenu = false;
+    bool showContextMenu = falsethis;
     ImVec2 contextMenuPos = ImVec2(0, 0);
     int contextMenuNodeId = -1;
 
@@ -70,14 +54,6 @@ public:
 
         customNodes = &engine->customNodes; // apunta a los originales
         connections = &engine->connections; // apunta a los originales
-
-        NodesGM->RegisterNodes(*engine);
-        NodesDB->RegisterNodes(*engine);
-        NodesEV->RegisterNodes(*engine);
-        NodesMath->RegisterNodes(*engine);
-        NodesConst->RegisterNodes(*engine);
-        NodesConvert->RegisterNodes(*engine);
-        NodesCondition->RegisterNodes(*engine);
     }
 
     // Colores estilo Blender
