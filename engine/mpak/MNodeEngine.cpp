@@ -870,6 +870,7 @@ CustomNode *MNodeEngine::GetCustomNodeById(int id)
 CustomNode *MNodeEngine::CreateCustomNode(const NodeConfig &config, ImVec2 position)
 {
     CustomNode newNode;
+    newNode._SelfObject = _SelfObject;
     newNode.SetupNode();
     newNode.n.title = config.title;
     newNode.n.size = config.size;

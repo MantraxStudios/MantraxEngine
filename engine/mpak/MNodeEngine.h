@@ -301,6 +301,7 @@ class MANTRAXCORE_API CustomNode
 {
 public:
     int nodeId;
+    GameObject *_SelfObject;
     Node n;
     std::vector<PinInfo *> Pins;
 

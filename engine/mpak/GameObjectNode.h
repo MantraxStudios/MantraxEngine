@@ -477,6 +477,21 @@ public:
             position                             // PIN POSITION
         );
 
+        PremakeNode thisObject(
+            "Object",
+            "This Object",
+            [](CustomNode *node)
+            {
+                node->SetOutputValue<GameObject *>(0, node->_SelfObject);
+            },
+            SCRIPT,                              // CATEGORY
+            false,                               // EXECUTE PIN INPUT
+            false,                               // EXECUTE PIN OUT
+            {},                                  // INPUT PINS
+            {{"Object", (GameObject *)nullptr}}, // OUTPUT PINS
+            position                             // PIN POSITION
+        );
+
         PremakeNode findObjectByNameNode(
             "Object",
             "Find Object By Name",
@@ -650,13 +665,17 @@ public:
             position                             // PIN POSITION
         );
 
-        engine.PrefabNodes.push_back(setParentNode);
-        engine.PrefabNodes.push_back(removeParent);
-        engine.PrefabNodes.push_back(getChild);
-        engine.PrefabNodes.push_back(getChildByName);
-        engine.PrefabNodes.push_back(countChilds);
+        engine.PrefabNodes.push_back(thisObject);
         engine.PrefabNodes.push_back(findObjectByNameNode);
         engine.PrefabNodes.push_back(findObjectNode);
+
+        engine.PrefabNodes.push_back(setParentNode);
+        engine.PrefabNodes.push_back(removeParent);
+
+        engine.PrefabNodes.push_back(countChilds);
+        engine.PrefabNodes.push_back(getChild);
+        engine.PrefabNodes.push_back(getChildByName);
+
         engine.PrefabNodes.push_back(destroyNode);
 
         engine.PrefabNodes.push_back(getNameNode);
