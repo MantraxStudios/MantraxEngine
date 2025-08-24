@@ -9,19 +9,42 @@
 
 void EditorNode::OnRenderGUI()
 {
-    for (auto &glyphEditor : Engines_Nodes)
+    // Usamos índice manual porque quizá tengamos que borrar elementos
+    for (size_t i = 0; i < Engines_Nodes.size();)
     {
+        auto *glyphEditor = Engines_Nodes[i];
+
         if (glyphEditor->engine == nullptr)
-            return;
+        {
+            // lo eliminamos también en este caso
+            delete glyphEditor;
+            Engines_Nodes.erase(Engines_Nodes.begin() + i);
+            continue;
+        }
 
         std::string windowName = "Glyphs##" + std::to_string(glyphEditor->editorID);
+
+        bool open = true; // <- controla la "X"
         ImGui::SetNextWindowSizeConstraints(
-            ImVec2(400, 400),        // tamaño mínimo (width=200, height=150)
-            ImVec2(FLT_MAX, FLT_MAX) // tamaño máximo (sin límite aquí)
+            ImVec2(400, 400),        // tamaño mínimo
+            ImVec2(FLT_MAX, FLT_MAX) // tamaño máximo
         );
-        ImGui::Begin(windowName.c_str());
-        glyphEditor->Draw();
+
+        if (ImGui::Begin(windowName.c_str(), &open))
+        {
+            glyphEditor->Draw();
+        }
         ImGui::End();
+
+        if (!open)
+        {
+            // Usuario cerró la ventana → liberar memoria y quitar del vector
+            delete glyphEditor;
+            Engines_Nodes.erase(Engines_Nodes.begin() + i);
+            continue; // no incrementamos i
+        }
+
+        i++; // sólo avanzamos si no eliminamos
     }
 }
 
