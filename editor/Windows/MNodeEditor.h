@@ -30,7 +30,7 @@ public:
     bool isConnecting = false; // Flag para indicar si estamos en modo conexión
 
     // Variables para el menú contextual
-    bool showContextMenu = falsethis;
+    bool showContextMenu = false;
     ImVec2 contextMenuPos = ImVec2(0, 0);
     int contextMenuNodeId = -1;
 
