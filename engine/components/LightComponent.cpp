@@ -60,29 +60,49 @@ void LightComponent::setOwner(GameObject* owner) {
     if (owner && light) {
         if (auto scene = SceneManager::getInstance().getActiveScene()) {
             scene->addLight(light);
-            std::cout << "Light added to scene at position: " 
-                      << owner->getWorldPosition().x << ", "
-                      << owner->getWorldPosition().y << ", "
-                      << owner->getWorldPosition().z << std::endl;
+            std::cout << "LightComponent: Light added to scene for GameObject '" << owner->Name << "'" << std::endl;
         }
+        
+        // CORREGIDO: Actualizar transformación inmediatamente
         updateTransform();
+        
+        // Mostrar información inicial de la luz
+        std::cout << "LightComponent: Initial light configuration:" << std::endl;
+        std::cout << "  Type: " << (light->getType() == LightType::Directional ? "Directional" : 
+                                   light->getType() == LightType::Spot ? "Spot" : "Point") << std::endl;
+        std::cout << "  Color: (" << light->getColor().x << ", " << light->getColor().y << ", " << light->getColor().z << ")" << std::endl;
+        std::cout << "  Intensity: " << light->getIntensity() << std::endl;
+        std::cout << "  Position: (" << light->getPosition().x << ", " << light->getPosition().y << ", " << light->getPosition().z << ")" << std::endl;
+        std::cout << "  Direction: (" << light->getDirection().x << ", " << light->getDirection().y << ", " << light->getDirection().z << ")" << std::endl;
     }
 }
 
 void LightComponent::update() {
     if (owner && light) {
-        //setColor(color);
-        //setIntensity(intensity);
-        //setEnabled(enabled);
+        // CORREGIDO: Sincronizar todas las propiedades del componente con la luz
+        light->setColor(color);
+        light->setIntensity(intensity);
+        light->setEnabled(enabled);
 
-        //setAttenuation(attenuationConstant, attenuationLinear, attenuationQuadratic);
-        //setRange(minDistance, maxDistance);
+        // Sincronizar propiedades específicas por tipo
+        switch (light->getType()) {
+            case LightType::Point:
+                light->setAttenuation(attenuationConstant, attenuationLinear, attenuationQuadratic);
+                light->setRange(minDistance, maxDistance);
+                break;
+            case LightType::Spot:
+                light->setCutOffAngle(cutOffAngle);
+                light->setOuterCutOffAngle(outerCutOffAngle);
+                light->setSpotRange(spotMaxDistance);
+                light->setAttenuation(attenuationConstant, attenuationLinear, attenuationQuadratic);
+                light->setRange(minDistance, maxDistance);
+                break;
+            case LightType::Directional:
+                // Las luces direccionales no necesitan atenuación ni rango
+                break;
+        }
 
-        //setCutOffAngle(cutOffAngle);
-        //setOuterCutOffAngle(outerCutOffAngle);
-
-        //setSpotRange(spotMaxDistance);
-
+        // Actualizar transformación (posición y dirección)
         updateTransform();
     }
 }
@@ -97,9 +117,27 @@ void LightComponent::updateTransform() {
     // Actualizar posición
     light->setPosition(worldPos);
 
-    // Calcular dirección basada en la rotación mundial
+    // CORREGIDO: Calcular dirección basada en la rotación mundial
+    // Usar el vector forward estándar (0, 0, -1) y aplicarle la rotación
     glm::vec3 forward = worldRot * glm::vec3(0.0f, 0.0f, -1.0f);
-    light->setDirection(glm::normalize(forward));
+    
+    // Para luces direccionales, la dirección es opuesta al forward del objeto
+    if (light->getType() == LightType::Directional) {
+        forward = -forward; // Invertir para que apunte en la dirección correcta
+    }
+    
+    // Normalizar y establecer la dirección
+    glm::vec3 normalizedDirection = glm::normalize(forward);
+    light->setDirection(normalizedDirection);
+    
+    // DEBUG: Mostrar información de la transformación
+    std::cout << "LightComponent: GameObject '" << owner->Name << "' transform updated:" << std::endl;
+    std::cout << "  Position: (" << worldPos.x << ", " << worldPos.y << ", " << worldPos.z << ")" << std::endl;
+    std::cout << "  Rotation: (" << glm::degrees(glm::eulerAngles(worldRot).x) << "°, " 
+              << glm::degrees(glm::eulerAngles(worldRot).y) << "°, " 
+              << glm::degrees(glm::eulerAngles(worldRot).z) << "°)" << std::endl;
+    std::cout << "  Forward: (" << forward.x << ", " << forward.y << ", " << forward.z << ")" << std::endl;
+    std::cout << "  Light Direction: (" << normalizedDirection.x << ", " << normalizedDirection.y << ", " << normalizedDirection.z << ")" << std::endl;
 }
 
 // Delegación de funciones
@@ -113,6 +151,15 @@ void LightComponent::setIntensity(float intensity) {
 
 void LightComponent::setEnabled(bool enable) {
     if (light) light->setEnabled(enable);
+}
+
+// CORREGIDO: Método para establecer dirección manualmente
+void LightComponent::setDirection(const glm::vec3& direction) {
+    if (light) {
+        light->setDirection(direction);
+        std::cout << "LightComponent: Direction set manually to (" 
+                  << direction.x << ", " << direction.y << ", " << direction.z << ")" << std::endl;
+    }
 }
 
 void LightComponent::setAttenuation(float constant, float linear, float quadratic) {
@@ -152,6 +199,16 @@ bool LightComponent::isEnabled() const {
     return light ? light->isEnabled() : false;
 }
 
+// CORREGIDO: Obtener dirección actual de la luz
+glm::vec3 LightComponent::getDirection() const {
+    return light ? light->getDirection() : glm::vec3(0.0f, -1.0f, 0.0f);
+}
+
+// CORREGIDO: Obtener posición actual de la luz
+glm::vec3 LightComponent::getPosition() const {
+    return light ? light->getPosition() : glm::vec3(0.0f);
+}
+
 float LightComponent::getCutOffAngle() const {
     return light ? light->getCutOffAngle() : 0.0f;
 }
@@ -175,6 +232,72 @@ float LightComponent::getMinDistance() const {
 float LightComponent::getMaxDistance() const {
     return light ? light->getMaxDistance() : 50.0f;
 } 
+
+// CORREGIDO: Método para verificar el estado de la luz
+void LightComponent::debugLightStatus() const {
+    if (!light) {
+        std::cout << "LightComponent: ERROR - No hay luz asociada" << std::endl;
+        return;
+    }
+    
+    if (!owner) {
+        std::cout << "LightComponent: ERROR - No hay GameObject asociado" << std::endl;
+        return;
+    }
+    
+    std::cout << "=== LIGHT DEBUG STATUS ===" << std::endl;
+    std::cout << "GameObject: '" << owner->Name << "'" << std::endl;
+    
+    // Información del GameObject
+    glm::vec3 worldPos = owner->getWorldPosition();
+    glm::quat worldRot = owner->getWorldRotationQuat();
+    glm::vec3 localPos = owner->getLocalPosition();
+    glm::quat localRot = owner->getLocalRotationQuat();
+    
+    std::cout << "GameObject Transform:" << std::endl;
+    std::cout << "  Local Position: (" << localPos.x << ", " << localPos.y << ", " << localPos.z << ")" << std::endl;
+    std::cout << "  Local Rotation: (" << localRot.x << ", " << localRot.y << ", " << localRot.z << ", " << localRot.w << ")" << std::endl;
+    std::cout << "  World Position: (" << worldPos.x << ", " << worldPos.y << ", " << worldPos.z << ")" << std::endl;
+    std::cout << "  World Rotation: (" << worldRot.x << ", " << worldRot.y << ", " << worldRot.z << ", " << worldRot.w << ")" << std::endl;
+    
+    // Información de la luz
+    std::cout << "Light Properties:" << std::endl;
+    std::cout << "  Type: " << (light->getType() == LightType::Directional ? "Directional" : 
+                               light->getType() == LightType::Spot ? "Spot" : "Point") << std::endl;
+    std::cout << "  Color: (" << light->getColor().x << ", " << light->getColor().y << ", " << light->getColor().z << ")" << std::endl;
+    std::cout << "  Intensity: " << light->getIntensity() << std::endl;
+    std::cout << "  Position: (" << light->getPosition().x << ", " << light->getPosition().y << ", " << light->getPosition().z << ")" << std::endl;
+    std::cout << "  Direction: (" << light->getDirection().x << ", " << light->getDirection().y << ", " << light->getDirection().z << ")" << std::endl;
+    std::cout << "  Enabled: " << (light->isEnabled() ? "Yes" : "No") << std::endl;
+    
+    // Propiedades específicas por tipo
+    switch (light->getType()) {
+        case LightType::Spot:
+            std::cout << "  CutOff Angle: " << glm::degrees(light->getCutOffAngle()) << "°" << std::endl;
+            std::cout << "  Outer CutOff Angle: " << glm::degrees(light->getOuterCutOffAngle()) << "°" << std::endl;
+            std::cout << "  Spot Range: " << light->getSpotRange() << std::endl;
+            break;
+        case LightType::Point:
+            glm::vec3 atten = light->getAttenuation();
+            std::cout << "  Attenuation: (" << atten.x << ", " << atten.y << ", " << atten.z << ")" << std::endl;
+            std::cout << "  Range: " << light->getMinDistance() << " to " << light->getMaxDistance() << std::endl;
+            break;
+        case LightType::Directional:
+            std::cout << "  Directional lights don't have range or attenuation" << std::endl;
+            break;
+    }
+    
+    // Verificar sincronización
+    bool posSynced = (worldPos == light->getPosition());
+    std::cout << "Synchronization:" << std::endl;
+    std::cout << "  Position Synced: " << (posSynced ? "Yes" : "No") << std::endl;
+    
+    if (!posSynced) {
+        std::cout << "  WARNING: GameObject and light positions are not synchronized!" << std::endl;
+    }
+    
+    std::cout << "=========================" << std::endl;
+}
 
 std::string LightComponent::serializeComponent() const {
     json j;

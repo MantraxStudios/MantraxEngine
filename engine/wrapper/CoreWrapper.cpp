@@ -671,6 +671,13 @@ void CoreWrapper::RegisterLightComponent(sol::state& lua) {
         "setEnabled", &LightComponent::setEnabled,
         "isEnabled", &LightComponent::isEnabled,
 
+        // ===== TRANSFORM PROPERTIES =====
+        "setDirection", &LightComponent::setDirection,
+        "getDirection", &LightComponent::getDirection,
+        "getPosition", &LightComponent::getPosition,
+        "forceTransformUpdate", &LightComponent::forceTransformUpdate,
+        "debugLightStatus", &LightComponent::debugLightStatus,
+
         // ===== ATTENUATION =====
         "setAttenuation", &LightComponent::setAttenuation,
         "getAttenuation", &LightComponent::getAttenuation,

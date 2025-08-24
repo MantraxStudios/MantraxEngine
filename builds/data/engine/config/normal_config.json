@@ -1,0 +1,31 @@
+{
+    "normal_settings": {
+        "flip_normals": false,
+        "use_model_normals": true,
+        "normal_strength": 1.0,
+        "debug_mode": false,
+        "assimp_flags": {
+            "flip_winding_order": false,
+            "gen_smooth_normals": true,
+            "calc_tangent_space": true,
+            "flip_uvs": true
+        }
+    },
+    "lighting_debug": {
+        "show_normals": false,
+        "normal_scale": 0.1,
+        "wireframe_mode": false
+    },
+    "troubleshooting": {
+        "common_issues": [
+            "Si las normales se ven al revés, cambia flip_normals a true",
+            "Si la iluminación se ve extraña, verifica que use_model_normals sea true",
+            "Para modelos con problemas, prueba con debug_mode: true"
+        ],
+        "assimp_tips": [
+            "aiProcess_FlipWindingOrder puede causar problemas con normales",
+            "aiProcess_GenSmoothNormals es recomendado para modelos suaves",
+            "aiProcess_CalcTangentSpace es necesario para normal mapping"
+        ]
+    }
+}

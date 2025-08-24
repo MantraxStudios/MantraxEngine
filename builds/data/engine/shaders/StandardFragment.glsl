@@ -177,11 +177,26 @@ void main() {
     
     // Sample normal map
     vec3 N = normalize(Normal);
+    
+    // CORREGIDO: Verificar que la normal sea válida
+    if (length(N) < 0.1) {
+        N = vec3(0.0, 1.0, 0.0); // Fallback a normal hacia arriba
+    }
+    
     if (uHasNormalTexture) {
         vec3 normalMap = texture(uNormalTexture, texCoord).rgb;
         normalMap = normalMap * 2.0 - 1.0;
         normalMap.xy *= uNormalStrength;
-        N = normalize(TBN * normalMap);
+        
+        // CORREGIDO: Asegurar que TBN sea válido antes de usarlo
+        if (length(TBN[0]) > 0.1 && length(TBN[1]) > 0.1 && length(TBN[2]) > 0.1) {
+            N = normalize(TBN * normalMap);
+        }
+        
+        // CORREGIDO: Verificar que la normal resultante sea válida
+        if (length(N) < 0.1 || any(isnan(N))) {
+            N = normalize(Normal); // Fallback a la normal del vértice
+        }
     }
     
     // Sample AO

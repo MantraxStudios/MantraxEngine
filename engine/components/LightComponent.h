@@ -26,6 +26,9 @@ public:
     void setIntensity(float intensity);
     void setEnabled(bool enable);
     
+    // CORREGIDO: Método para establecer dirección manualmente
+    void setDirection(const glm::vec3& direction);
+    
     // Funciones específicas por tipo de luz
     void setAttenuation(float constant, float linear, float quadratic);
     void setRange(float minDistance, float maxDistance);
@@ -38,6 +41,8 @@ public:
     glm::vec3 getColor() const;
     float getIntensity() const;
     bool isEnabled() const;
+    glm::vec3 getDirection() const; // CORREGIDO: Obtener dirección actual
+    glm::vec3 getPosition() const;  // CORREGIDO: Obtener posición actual
     float getCutOffAngle() const;
     float getOuterCutOffAngle() const;
     float getSpotRange() const;
@@ -45,6 +50,12 @@ public:
     float getMinDistance() const;
     float getMaxDistance() const;
     std::shared_ptr<Light> getLight() const { return light; }
+    
+    // CORREGIDO: Método para forzar actualización de transformación
+    void forceTransformUpdate() { updateTransform(); }
+    
+    // CORREGIDO: Método para verificar el estado de la luz
+    void debugLightStatus() const;
 
 private:
     std::shared_ptr<Light> light;

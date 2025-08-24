@@ -1,0 +1,56 @@
+{
+    "light_debug": {
+        "enable_logging": true,
+        "show_transform_info": true,
+        "log_update_frequency": 1.0,
+        "force_transform_update": false
+    },
+    "light_settings": {
+        "default_directional": {
+            "color": [1.0, 1.0, 1.0],
+            "intensity": 1.0,
+            "direction": [0.0, -1.0, 0.0],
+            "auto_update_transform": true
+        },
+        "default_spot": {
+            "color": [1.0, 1.0, 1.0],
+            "intensity": 1.0,
+            "cutoff_angle": 12.5,
+            "outer_cutoff_angle": 17.5,
+            "range": 50.0,
+            "auto_update_transform": true
+        },
+        "default_point": {
+            "color": [1.0, 1.0, 1.0],
+            "intensity": 1.0,
+            "attenuation": [1.0, 0.09, 0.032],
+            "range": [0.1, 50.0],
+            "auto_update_transform": true
+        }
+    },
+    "troubleshooting": {
+        "common_issues": [
+            "Si la luz no se mueve con el GameObject, verifica que updateTransform() se llame",
+            "Si la dirección es incorrecta, usa setDirection() manualmente",
+            "Para luces direccionales, la dirección se calcula automáticamente desde la rotación",
+            "Para spot lights, la dirección determina hacia dónde apunta el cono de luz"
+        ],
+        "debug_steps": [
+            "1. Verifica que el LightComponent esté adjunto al GameObject correcto",
+            "2. Usa forceTransformUpdate() para forzar la actualización",
+            "3. Revisa la consola para ver los logs de transformación",
+            "4. Usa el script light_test.lua para probar la funcionalidad"
+        ],
+        "key_controls": {
+            "R": "Rotar GameObject 90° en Y y actualizar luz",
+            "T": "Establecer dirección de luz hacia abajo (0, -1, 0)",
+            "Y": "Establecer dirección de luz hacia la derecha (1, 0, 0)",
+            "U": "Establecer dirección de luz hacia adelante (0, 0, -1)"
+        }
+    },
+    "performance": {
+        "update_frequency": "every_frame",
+        "transform_caching": true,
+        "batch_updates": false
+    }
+}

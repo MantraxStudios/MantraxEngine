@@ -157,6 +157,9 @@ void RenderPipeline::renderFrame() {
     shaders->getProgram()->setVec3("uViewPos", cameraPos);
     shaders->getProgram()->setBool("uUsePBR", usePBR);
     shaders->getProgram()->setInt("uUseModelNormals", 0);
+    
+    // CORREGIDO: Configurar inversión de normales (puedes cambiar esto a true si las normales siguen al revés)
+    shaders->getProgram()->setBool("uFlipNormals", false);
 
     // Configurar iluminación
     configureLighting();

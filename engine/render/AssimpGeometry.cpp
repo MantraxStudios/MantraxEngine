@@ -64,8 +64,8 @@ void AssimpGeometry::loadModel(const std::string& path) {
         | aiProcess_JoinIdenticalVertices
         | aiProcess_ImproveCacheLocality
         | aiProcess_OptimizeMeshes
-        | aiProcess_PreTransformVertices
-        | aiProcess_FlipWindingOrder;
+        | aiProcess_PreTransformVertices;
+        // REMOVIDO: aiProcess_FlipWindingOrder - causa problemas con normales
 
     std::cout << "Loading model from: " << path << std::endl;
 

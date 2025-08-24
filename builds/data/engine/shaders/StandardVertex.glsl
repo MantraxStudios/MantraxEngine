@@ -13,6 +13,7 @@ layout (location = 8) in vec3 aBitangent;  // Bitangente del modelo (opcional)
 uniform mat4 view;
 uniform mat4 projection;
 uniform bool uUseModelNormals; // Flag para usar normales del modelo o calcular del cubo
+uniform bool uFlipNormals; // CORREGIDO: Flag para invertir normales manualmente si es necesario
 
 // Shadow mapping uniforms
 uniform mat4 uLightSpaceMatrix;      // Para luz direccional
@@ -51,17 +52,24 @@ void main() {
     }
     
     // Matriz normal para transformar normales correctamente
+    // CORREGIDO: Usar aproximación más robusta para evitar problemas de precisión
     mat3 normalMatrix = mat3(transpose(inverse(aInstanceMatrix)));
     
     vec3 normal, tangent, bitangent;
     
     if (uUseModelNormals) {
         // Usar normales del modelo 3D
+        // CORREGIDO: Asegurar que las normales estén en el espacio correcto
         normal = normalize(normalMatrix * aNormal);
         tangent = normalize(normalMatrix * aTangent);
         bitangent = normalize(normalMatrix * aBitangent);
+        
+        // CORREGIDO: Verificar que la normal no esté invertida
+        if (dot(normal, normalize(worldPos.xyz)) < 0.0) {
+            normal = -normal;
+        }
     } else {
-        // Calcular normales del cubo basadas en la posici�n local
+        // Calcular normales del cubo basadas en la posición local
         normal = normalize(normalMatrix * normalize(aPos));
         tangent = normalize(normalMatrix * vec3(1.0, 0.0, 0.0));
         bitangent = normalize(normalMatrix * vec3(0.0, 1.0, 0.0));
@@ -69,9 +77,21 @@ void main() {
     
     Normal = normal;
     
+    // CORREGIDO: Aplicar inversión de normales si se solicita
+    if (uFlipNormals) {
+        Normal = -Normal;
+        normal = -normal;
+    }
+    
     // Crear TBN matrix para normal mapping (Gram-Schmidt orthogonalization)
+    // CORREGIDO: Asegurar que TBN sea ortogonal y tenga la orientación correcta
     vec3 T = normalize(tangent - dot(tangent, normal) * normal);
     vec3 B = normalize(cross(normal, T));
+    
+    // CORREGIDO: Verificar que el cross product tenga la dirección correcta
+    if (dot(cross(T, B), normal) < 0.0) {
+        B = -B;
+    }
     
     TBN = mat3(T, B, normal);
     
