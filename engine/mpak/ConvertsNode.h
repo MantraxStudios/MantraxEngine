@@ -3,7 +3,7 @@
 #include <vector>
 #include <string>
 #include <sstream>
-#include <MantraxNodes/MNodeEngine.h>
+#include "MNodeEngine.h"
 #include <imgui/imgui.h>
 
 class ConvertsNode

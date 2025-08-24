@@ -11,21 +11,24 @@
 #include <cmath>
 #include <array>
 #include <set>
-#include "MNodeEngine.h"
-#include "Externals/GameObjectNode.h"
-#include "Externals/DebugNodes.h"
-#include "Externals/EventsNode.h"
-#include "Externals/MathNodes.h"
-#include "Externals/ConstNode.h"
-#include "Externals/ConvertsNode.h"
-#include "Externals/ConditionsNode.h"
+#include <mpak/MNodeEngine.h>
+#include <mpak/GameObjectNode.h>
+#include <mpak/DebugNodes.h>
+#include <mpak/EventsNode.h>
+#include <mpak/MathNodes.h>
+#include <mpak/ConstNode.h>
+#include <mpak/ConvertsNode.h>
+#include <mpak/ConditionsNode.h>
 
 class MNodeEditor
 {
 public:
-    MNodeEngine *engine = new MNodeEngine();
-    std::vector<CustomNode> &customNodes = engine->customNodes;
-    std::vector<Connection> &connections = engine->connections;
+    int editorID;
+
+    MNodeEngine *engine;
+
+    std::vector<CustomNode> *customNodes = nullptr;
+    std::vector<Connection> *connections = nullptr;
 
     // NODES IMPLEMENTS
     GameObjectNode *NodesGM = new GameObjectNode();
@@ -58,6 +61,16 @@ public:
 
     MNodeEditor()
     {
+        std::cout << "MNode" << std::endl;
+    }
+
+    void SetupNodeEditor(MNodeEngine *_engine)
+    {
+        engine = _engine;
+
+        customNodes = &engine->customNodes; // apunta a los originales
+        connections = &engine->connections; // apunta a los originales
+
         NodesGM->RegisterNodes(*engine);
         NodesDB->RegisterNodes(*engine);
         NodesEV->RegisterNodes(*engine);
@@ -98,7 +111,7 @@ public:
 
     CustomNode *GetNodeById(int id)
     {
-        for (auto &n : customNodes)
+        for (auto &n : *customNodes)
         {
             if (n.n.id == id || n.nodeId == id)
                 return &n;
@@ -108,7 +121,7 @@ public:
 
     CustomNode *GetCustomNodeById(int id)
     {
-        for (auto &cn : customNodes)
+        for (auto &cn : *customNodes)
         {
             if (cn.nodeId == id || cn.n.id == id)
                 return &cn;
@@ -206,7 +219,7 @@ public:
         }
 
         // Actualizar valores de entrada desde conexiones en cada frame
-        for (auto &c : connections)
+        for (auto &c : *connections)
         {
             CustomNode *sourceNode = GetCustomNodeById(c.fromNodeId);
             CustomNode *targetNode = GetCustomNodeById(c.toNodeId);
@@ -263,7 +276,7 @@ public:
         }
 
         // Dibujar conexiones con estilo Blender
-        for (auto &c : connections)
+        for (auto &c : *connections)
         {
             Node *fromNode = &GetNodeById(c.fromNodeId)->n;
             Node *toNode = &GetNodeById(c.toNodeId)->n;
@@ -298,7 +311,7 @@ public:
         }
 
         // Dibujar nodos con estilo Blender
-        for (auto &d : customNodes)
+        for (auto &d : *customNodes)
         {
             auto &n = d.n;
 
@@ -468,7 +481,7 @@ public:
             if (ImGui::IsItemClicked())
             {
                 // Deseleccionar otros nodos
-                for (auto &other : customNodes)
+                for (auto &other : *customNodes)
                     other.n.isSelected = false;
                 n.isSelected = true;
             }
@@ -481,7 +494,7 @@ public:
                 contextMenuNodeId = n.id;
 
                 // Deseleccionar otros nodos y seleccionar este
-                for (auto &other : customNodes)
+                for (auto &other : *customNodes)
                     other.n.isSelected = false;
                 n.isSelected = true;
             }
@@ -935,11 +948,6 @@ public:
 
                     ImGui::Separator();
 
-                    if (ImGui::MenuItem("Debug Connection System"))
-                    {
-                        engine->DebugConnectionSystem();
-                    }
-
                     if (ImGui::MenuItem("Validate Connections"))
                     {
                         engine->ValidateConnectionIntegrity();
@@ -1063,7 +1071,7 @@ public:
             if (ImGui::MenuItem("Debug Node Pins (Console)"))
             {
                 std::cout << "\n[DEBUG] Available nodes:" << std::endl;
-                for (const auto &node : customNodes)
+                for (const auto &node : *customNodes)
                 {
                     std::cout << "  " << node.n.id << ": " << node.n.title << std::endl;
                 }

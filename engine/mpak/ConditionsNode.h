@@ -2,7 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <MantraxNodes/MNodeEngine.h>
+#include "MNodeEngine.h"
 #include <imgui/imgui.h>
 
 class ConditionNodes

@@ -16,6 +16,7 @@
 #include "../core/UIDGenerator.h"
 #include "../render/AssimpGeometry.h"
 #include "Component.h"
+#include "../mpak/MNodeEngine.h"
 
 // Layer constants for physics
 #define LAYER_0 (1 << 0)
@@ -48,29 +49,31 @@
 
 // Forward declaration
 class AssimpGeometry;
-
+class MNodeEngine;
 class MANTRAXCORE_API GameObject
 {
 public:
+    MNodeEngine *_GlyphsEngine;
+
     // Constructor por defecto para objetos vacíos
     GameObject();
-    
+
     // Constructor con path de modelo (carga automática)
-    GameObject(const std::string& modelPath);
-    GameObject(const std::string& modelPath, std::shared_ptr<Material> material);
-    
+    GameObject(const std::string &modelPath);
+    GameObject(const std::string &modelPath, std::shared_ptr<Material> material);
+
     // Constructor for AssimpGeometry specifically
     GameObject(std::shared_ptr<AssimpGeometry> geometry);
     GameObject(std::shared_ptr<AssimpGeometry> geometry, std::shared_ptr<Material> material);
 
     // Prohibir copia
-    GameObject(const GameObject&) = delete;
-    GameObject& operator=(const GameObject&) = delete;
+    GameObject(const GameObject &) = delete;
+    GameObject &operator=(const GameObject &) = delete;
 
     // Permitir movimiento
-    GameObject(GameObject&&) noexcept = default;
-    GameObject& operator=(GameObject&&) noexcept = default;
-    GameObject* getSelfObject();
+    GameObject(GameObject &&) noexcept = default;
+    GameObject &operator=(GameObject &&) noexcept = default;
+    GameObject *getSelfObject();
 
     // Destructor virtual para asegurar la correcta destrucción de clases derivadas
     virtual ~GameObject();
@@ -117,26 +120,26 @@ public:
      * Establece un nuevo padre preservando la transformación mundial del objeto
      * @param newParent Nuevo objeto padre (nullptr para remover del padre actual)
      */
-    void setParent(GameObject* newParent);
+    void setParent(GameObject *newParent);
 
     /**
      * Establece un nuevo padre SIN preservar la transformación mundial
      * Las transformaciones locales se mantienen tal como están
      * @param newParent Nuevo objeto padre (nullptr para remover del padre actual)
      */
-    void setParentNoWorldPreserve(GameObject* newParent);
+    void setParentNoWorldPreserve(GameObject *newParent);
 
     /**
      * Establece un nuevo padre preservando SOLO la posición mundial
      * La rotación y escala local se mantienen tal como están
      * @param newParent Nuevo objeto padre (nullptr para remover del padre actual)
      */
-    void setParentPreserveWorldPosition(GameObject* newParent);
+    void setParentPreserveWorldPosition(GameObject *newParent);
 
-    void setParentPreserveWorldMatrix(GameObject* newParent);
+    void setParentPreserveWorldMatrix(GameObject *newParent);
 
     // Alternativa simple que usa el método setParent existente
-    void setParentPreserveWorldMatrixSimple(GameObject* newParent);
+    void setParentPreserveWorldMatrixSimple(GameObject *newParent);
 
     // Agregar estas declaraciones en la sección private: de GameObject.h
 
@@ -144,51 +147,51 @@ public:
      * Descompone una matriz 4x4 en posición, rotación y escala
      * Método manual más básico
      */
-    void decomposeMatrix(const glm::mat4& matrix, glm::vec3& position, glm::quat& rotation, glm::vec3& scale);
+    void decomposeMatrix(const glm::mat4 &matrix, glm::vec3 &position, glm::quat &rotation, glm::vec3 &scale);
 
     /**
      * Descompone una matriz 4x4 en posición, rotación y escala
      * Usa glm::decompose con fallback al método manual
      */
-    void decomposeMatrixRobust(const glm::mat4& matrix, glm::vec3& position, glm::quat& rotation, glm::vec3& scale);
+    void decomposeMatrixRobust(const glm::mat4 &matrix, glm::vec3 &position, glm::quat &rotation, glm::vec3 &scale);
 
-    GameObject* getParent() const { return parent; }
+    GameObject *getParent() const { return parent; }
     bool hasParent() const { return parent != nullptr; }
-    
+
     // Child operations
-    void addChild(GameObject* child);
-    void removeChild(GameObject* child);
-    const std::vector<GameObject*>& getChildren() const { return children; }
+    void addChild(GameObject *child);
+    void removeChild(GameObject *child);
+    const std::vector<GameObject *> &getChildren() const { return children; }
     int getChildCount() const { return static_cast<int>(children.size()); }
-    GameObject* getChild(int index) const;
-    
+    GameObject *getChild(int index) const;
+
     // Hierarchy traversal
-    GameObject* findChild(const std::string& name) const;
-    GameObject* findChildRecursive(const std::string& name) const;
-    std::vector<GameObject*> getAllChildren() const;
-    
+    GameObject *findChild(const std::string &name) const;
+    GameObject *findChildRecursive(const std::string &name) const;
+    std::vector<GameObject *> getAllChildren() const;
+
     // Hierarchy validation
-    bool isChildOf(const GameObject* potentialParent) const;
-    bool isParentOf(const GameObject* potentialChild) const;
-    bool isInHierarchy(const GameObject* root) const;
+    bool isChildOf(const GameObject *potentialParent) const;
+    bool isParentOf(const GameObject *potentialChild) const;
+    bool isInHierarchy(const GameObject *root) const;
 
     // ===== EXISTING FUNCTIONALITY =====
     AssimpGeometry *getGeometry() const;
-    
+
     // Métodos para asignar geometría después de la creación
     void setGeometry(std::shared_ptr<AssimpGeometry> geometry);
     bool hasGeometry() const { return geometry != nullptr; }
-    
+
     // Métodos para carga automática de modelos
-    void setModelPath(const std::string& path);
+    void setModelPath(const std::string &path);
     bool loadModelFromPath();
-    bool loadModelFromPath(const std::string& path);
-    const std::string& getModelPath() const { return ModelPath; }
-    
+    bool loadModelFromPath(const std::string &path);
+    const std::string &getModelPath() const { return ModelPath; }
+
     // Material
     void setMaterial(std::shared_ptr<Material> material);
     std::shared_ptr<Material> getMaterial() const;
-    
+
     // Debug methods
     void debugMaterialState() const;
     void debugTextureState() const;
@@ -198,7 +201,7 @@ public:
     bool isRenderEnabled() const { return shouldRender; }
     void setTransformUpdateEnabled(bool enable) { shouldUpdateTransform = enable; }
     bool isTransformUpdateEnabled() const { return shouldUpdateTransform; }
-    
+
     // Bounding volumes para frustum culling (OPTIMIZADO)
     BoundingSphere getWorldBoundingSphere() const;
     BoundingBox getLocalBoundingBox() const;
@@ -211,7 +214,7 @@ public:
     // Layer configuration for physics
     physx::PxU32 Layer = LAYER_0;
     physx::PxU32 LayerMask = LAYER_0 | LAYER_1 | LAYER_2 | LAYER_3 | LAYER_4 | LAYER_5 | LAYER_6 | LAYER_7 | LAYER_8 | LAYER_9 | LAYER_10 | LAYER_11 | LAYER_12 | LAYER_13 | LAYER_14 | LAYER_15 | LAYER_16 | LAYER_17 | LAYER_18 | LAYER_19 | LAYER_TRIGGER | LAYER_PLAYER | LAYER_ENEMY | LAYER_ENVIRONMENT | LAYER_SENSOR;
-    
+
     // Getters and setters for layer configuration
     physx::PxU32 getLayer() const { return Layer; }
     void setLayer(physx::PxU32 layer) { Layer = layer; }
@@ -219,16 +222,18 @@ public:
     void setLayerMask(physx::PxU32 layerMask) { LayerMask = layerMask; }
 
     // Sistema de componentes
-    template<typename T, typename... Args>
-    T* addComponent(Args&&... args) {
+    template <typename T, typename... Args>
+    T *addComponent(Args &&...args)
+    {
         static_assert(std::is_base_of<Component, T>::value, "T must inherit from Component");
 
         std::unique_ptr<T> comp = std::make_unique<T>(std::forward<Args>(args)...);
         comp->setOwner(this);
-        T* rawPtr = comp.get();
+        T *rawPtr = comp.get();
         components.push_back(std::move(comp));
 
-        if (rawPtr && rawPtr->isActive()) {
+        if (rawPtr && rawPtr->isActive())
+        {
             rawPtr->defines();
             rawPtr->start();
         }
@@ -237,101 +242,125 @@ public:
     }
 
     // Añade esto en GameObject.h o como función auxiliar
-    template<typename T>
-    T* getComponentSafe() {
-        try {
+    template <typename T>
+    T *getComponentSafe()
+    {
+        try
+        {
             // Verificar que el vector components no esté corrupto
-            if (components.empty()) {
+            if (components.empty())
+            {
                 return nullptr;
             }
 
             // Verificar que no estamos accediendo a memoria inválida
-            for (size_t i = 0; i < components.size(); ++i) {
-                if (!components[i]) {
+            for (size_t i = 0; i < components.size(); ++i)
+            {
+                if (!components[i])
+                {
                     continue; // Skip null pointers
                 }
 
                 // Verificar que el puntero parece válido antes del dynamic_cast
-                try {
-                    T* casted = dynamic_cast<T*>(components[i].get());
-                    if (casted) {
+                try
+                {
+                    T *casted = dynamic_cast<T *>(components[i].get());
+                    if (casted)
+                    {
                         return casted;
                     }
                 }
-                catch (...) {
+                catch (...)
+                {
                     // Si dynamic_cast falla, continuar con el siguiente
                     continue;
                 }
             }
         }
-        catch (...) {
+        catch (...)
+        {
             return nullptr;
         }
         return nullptr;
     }
 
-    template<typename T>
-    T* getComponent() {
-        for (auto& comp : components) {
-            if (T* casted = dynamic_cast<T*>(comp.get())) {
+    template <typename T>
+    T *getComponent()
+    {
+        for (auto &comp : components)
+        {
+            if (T *casted = dynamic_cast<T *>(comp.get()))
+            {
                 return casted;
             }
         }
         return nullptr;
     }
 
-    template<typename T>
-    bool hasComponent() {
-        for (auto& comp : components) {
-            if (dynamic_cast<T*>(comp.get())) {
+    template <typename T>
+    bool hasComponent()
+    {
+        for (auto &comp : components)
+        {
+            if (dynamic_cast<T *>(comp.get()))
+            {
                 return true;
             }
         }
         return false;
     }
 
-    template<typename T>
-    const T* getComponent() const {
-        for (const auto& comp : components) {
-            if (const T* casted = dynamic_cast<const T*>(comp.get())) {
+    template <typename T>
+    const T *getComponent() const
+    {
+        for (const auto &comp : components)
+        {
+            if (const T *casted = dynamic_cast<const T *>(comp.get()))
+            {
                 return casted;
             }
         }
         return nullptr;
     }
 
-    void removeComponent(const Component* componentPtr) {
+    void removeComponent(const Component *componentPtr)
+    {
         components.erase(
             std::remove_if(components.begin(), components.end(),
-                [componentPtr](const std::unique_ptr<Component>& ptr) {
-                    return ptr.get() == componentPtr;
-                }),
-            components.end()
-        );
+                           [componentPtr](const std::unique_ptr<Component> &ptr)
+                           {
+                               return ptr.get() == componentPtr;
+                           }),
+            components.end());
     }
 
-    bool removeComponentSafe(const Component* componentPtr) {
+    bool removeComponentSafe(const Component *componentPtr)
+    {
         auto initialSize = components.size();
         components.erase(
             std::remove_if(components.begin(), components.end(),
-                [componentPtr](const std::unique_ptr<Component>& ptr) {
-                    return ptr.get() == componentPtr;
-                }),
-            components.end()
-        );
+                           [componentPtr](const std::unique_ptr<Component> &ptr)
+                           {
+                               return ptr.get() == componentPtr;
+                           }),
+            components.end());
         return components.size() < initialSize;
     }
 
     template <typename T>
-    bool removeComponent() {
+    bool removeComponent()
+    {
         static_assert(std::is_base_of<Component, T>::value, "T must inherit from Component");
         auto it = std::find_if(components.begin(), components.end(),
-            [](const std::unique_ptr<Component>& comp) {
-                return dynamic_cast<T*>(comp.get()) != nullptr;
-            });
+                               [](const std::unique_ptr<Component> &comp)
+                               {
+                                   return dynamic_cast<T *>(comp.get()) != nullptr;
+                               });
 
-        if (it != components.end()) {
-            if (it->get()) {
+        if (it != components.end())
+        {
+            if (it->get())
+            {
                 it->get()->destroy();
             }
             components.erase(it);
@@ -340,13 +369,15 @@ public:
         return false;
     }
 
-
     // Obtener todos los componentes
-    std::vector<const Component*> getAllComponents() const {
-        std::vector<const Component*> result;
+    std::vector<const Component *> getAllComponents() const
+    {
+        std::vector<const Component *> result;
         result.reserve(components.size());
-        for (const auto& comp : components) {
-            if (comp) {
+        for (const auto &comp : components)
+        {
+            if (comp)
+            {
                 result.push_back(comp.get());
             }
         }
@@ -361,9 +392,9 @@ public:
     std::string ObjectID = std::to_string(UIDGenerator::Generate());
     std::string ModelPath = "";
     AssimpGeometry *geometry;
-    std::shared_ptr<AssimpGeometry> sharedGeometry; 
+    std::shared_ptr<AssimpGeometry> sharedGeometry;
     std::shared_ptr<Material> material;
-    
+
     // Transform data
     glm::vec3 localPosition;
     glm::vec3 localScale;
@@ -372,11 +403,11 @@ public:
     mutable glm::mat4 worldModelMatrix;
     mutable bool dirtyLocalTransform;
     mutable bool dirtyWorldTransform;
-    
+
     // Hierarchy data
-    GameObject* parent;
-    std::vector<GameObject*> children;
-    
+    GameObject *parent;
+    std::vector<GameObject *> children;
+
     // Bounding volumes (OPTIMIZADO)
     BoundingBox localBoundingBox;
     float localBoundingRadius;
@@ -388,12 +419,12 @@ private:
     void updateWorldModelMatrix() const;
     void updateChildrenTransforms();
     void removeFromParent();
-    void addToParent(GameObject* newParent);
+    void addToParent(GameObject *newParent);
     void invalidateWorldTransform();
-    void cleanup(); 
+    void cleanup();
 
     std::vector<std::unique_ptr<Component>> components;
     bool shouldRender{true};
     bool shouldUpdateTransform{true};
-    bool isDestroyed{false}; 
+    bool isDestroyed{false};
 };

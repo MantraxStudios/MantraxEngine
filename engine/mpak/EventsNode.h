@@ -3,7 +3,7 @@
 #include <vector>
 #include <components/GameObject.h>
 #include <components/SceneManager.h>
-#include <MantraxNodes/MNodeEngine.h>
+#include "MNodeEngine.h"
 #include <imgui/imgui.h>
 
 class EventsNode

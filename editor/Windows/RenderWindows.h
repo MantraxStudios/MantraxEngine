@@ -9,16 +9,16 @@
 #include "ContentBrowser.h"
 #include "MaterialEditor.h"
 #include "AnimatorEditor.h"
+#include "EditorNode.h"
 #include "TileEditor.h"
 #include "InputEditor.h"
 #include "CanvasManager.h"
-#include <MantraxNodes/MNodeEditor.h>
+#include "MNodeEditor.h"
 
 class RenderWindows
 {
 private:
     std::vector<std::unique_ptr<WindowBehaviour>> m_windows;
-    MNodeEditor editor;
 
 public:
     RenderWindows()
@@ -33,9 +33,9 @@ public:
         m_windows.push_back(std::make_unique<TileEditor>());
         m_windows.push_back(std::make_unique<InputEditor>());
         m_windows.push_back(std::make_unique<CanvasManager>());
+        m_windows.push_back(std::make_unique<EditorNode>());
     }
 
-    // Delete copy constructor and assignment operator
     RenderWindows(const RenderWindows &) = delete;
     RenderWindows &operator=(const RenderWindows &) = delete;
 
@@ -47,10 +47,6 @@ public:
 
     void RenderUI()
     {
-        ImGui::Begin("Node Editor");
-        editor.Draw();
-        ImGui::End();
-
         for (auto &window : m_windows)
         {
             if (window && window->isOpen)
@@ -70,7 +66,6 @@ public:
                 return typed;
             }
         }
-        // Si no se encuentra, agregamos una nueva ventana del tipo solicitado
         auto newWindow = std::make_unique<T>();
         T *ptr = newWindow.get();
         m_windows.push_back(std::move(newWindow));

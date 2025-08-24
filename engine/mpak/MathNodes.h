@@ -2,7 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <glm/glm.hpp>
-#include <MantraxNodes/MNodeEngine.h>
+#include "MNodeEngine.h"
 
 class MathNodes
 {
