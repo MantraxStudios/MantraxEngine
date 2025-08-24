@@ -6,6 +6,7 @@
 #include "MathNodes.h"
 #include "ConstNode.h"
 #include "ConvertsNode.h"
+#include "ShaderNode.h"
 #include "ConditionsNode.h"
 
 static int NodeID = 0;
@@ -45,6 +46,7 @@ MNodeEngine::MNodeEngine(GameObject *obj)
     ConstNode *NodesConst = new ConstNode();
     ConvertsNode *NodesConvert = new ConvertsNode();
     ConditionNodes *NodesCondition = new ConditionNodes();
+    ShaderNode *NodesShader = new ShaderNode();
 
     NodesGM->RegisterNodes(*this);
     NodesDB->RegisterNodes(*this);
@@ -53,6 +55,7 @@ MNodeEngine::MNodeEngine(GameObject *obj)
     NodesConst->RegisterNodes(*this);
     NodesConvert->RegisterNodes(*this);
     NodesCondition->RegisterNodes(*this);
+    NodesShader->RegisterNodes(*this);
 }
 
 // Lambda Factory para crear nodos de manera simple (Nueva versión con NodeCategory)

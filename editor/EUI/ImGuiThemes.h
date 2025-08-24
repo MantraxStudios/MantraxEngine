@@ -9,8 +9,8 @@ public:
         ImGuiStyle &style = ImGui::GetStyle();
         ImVec4 *colors = style.Colors;
 
-        ImVec4 bg = ImVec4(23 / 255.0f, 23 / 255.0f, 23 / 255.0f, 1.0f);     // Fondo general
-        ImVec4 border = ImVec4(30 / 255.0f, 30 / 255.0f, 30 / 255.0f, 1.0f); // Bordes
+        ImVec4 bg = ImVec4(45 / 255.0f, 45 / 255.0f, 45 / 255.0f, 1.0f);     // Fondo general
+        ImVec4 border = ImVec4(60 / 255.0f, 60 / 255.0f, 60 / 255.0f, 1.0f); // Bordes
         ImVec4 textWhite = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);                   // Texto blanco
 
         ImVec4 button = ImVec4(30 / 255.0f, 30 / 255.0f, 30 / 255.0f, 1.0f);       // Botón normal

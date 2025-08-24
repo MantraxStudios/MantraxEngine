@@ -25,6 +25,10 @@ public:
             [](CustomNode *node)
             {
                 GameObject *obj = node->GetInputValue<GameObject *>(1, nullptr);
+
+                if (obj == nullptr)
+                    obj = node->_SelfObject;
+
                 if (obj)
                 {
                     std::string newName = node->GetInputValue<std::string>(2, "Hello");
@@ -52,6 +56,10 @@ public:
             [](CustomNode *node)
             {
                 GameObject *obj = node->GetInputValue<GameObject *>(1, nullptr);
+
+                if (obj == nullptr)
+                    obj = node->_SelfObject;
+
                 if (obj)
                 {
                     std::string newName = node->GetInputValue<std::string>(2, "Default");
@@ -78,6 +86,10 @@ public:
             [](CustomNode *node)
             {
                 GameObject *obj = node->GetInputValue<GameObject *>(0, nullptr);
+
+                if (obj == nullptr)
+                    obj = node->_SelfObject;
+
                 if (obj)
                 {
                     std::string name = obj->Name;
@@ -102,6 +114,10 @@ public:
             [](CustomNode *node)
             {
                 GameObject *obj = node->GetInputValue<GameObject *>(0, nullptr);
+
+                if (obj == nullptr)
+                    obj = node->_SelfObject;
+
                 if (obj)
                 {
                     std::string name = obj->Tag;
@@ -126,6 +142,10 @@ public:
             [](CustomNode *node)
             {
                 GameObject *obj = node->GetInputValue<GameObject *>(1, nullptr);
+
+                if (obj == nullptr)
+                    obj = node->_SelfObject;
+
                 glm::vec3 pos = node->GetInputValue<glm::vec3>(2, glm::vec3(0, 0, 0));
 
                 if (obj)
@@ -149,6 +169,9 @@ public:
             {
                 GameObject *obj = node->GetInputValue<GameObject *>(0, nullptr);
 
+                if (obj == nullptr)
+                    obj = node->_SelfObject;
+
                 if (obj)
                 {
                     node->SetOutputValue<glm::vec3>(0, obj->getWorldPosition());
@@ -168,6 +191,10 @@ public:
             [](CustomNode *node)
             {
                 GameObject *obj = node->GetInputValue<GameObject *>(1, nullptr);
+
+                if (obj == nullptr)
+                    obj = node->_SelfObject;
+
                 glm::vec3 pos = node->GetInputValue<glm::vec3>(2, glm::vec3(0, 0, 0));
 
                 if (obj)
@@ -191,6 +218,9 @@ public:
             {
                 GameObject *obj = node->GetInputValue<GameObject *>(0, nullptr);
 
+                if (obj == nullptr)
+                    obj = node->_SelfObject;
+
                 if (obj)
                 {
                     node->SetOutputValue<glm::vec3>(0, obj->getLocalPosition());
@@ -210,6 +240,10 @@ public:
             [](CustomNode *node)
             {
                 GameObject *obj = node->GetInputValue<GameObject *>(1, nullptr);
+
+                if (obj == nullptr)
+                    obj = node->_SelfObject;
+
                 glm::vec3 valGet = node->GetInputValue<glm::vec3>(2, glm::vec3(0, 0, 0));
 
                 if (obj)
@@ -233,6 +267,9 @@ public:
             {
                 GameObject *obj = node->GetInputValue<GameObject *>(0, nullptr);
 
+                if (obj == nullptr)
+                    obj = node->_SelfObject;
+
                 if (obj)
                 {
                     node->SetOutputValue<glm::vec3>(0, obj->getWorldScale());
@@ -252,6 +289,10 @@ public:
             [](CustomNode *node)
             {
                 GameObject *obj = node->GetInputValue<GameObject *>(1, nullptr);
+
+                if (obj == nullptr)
+                    obj = node->_SelfObject;
+
                 glm::vec3 valGet = node->GetInputValue<glm::vec3>(2, glm::vec3(1, 1, 1));
 
                 if (obj)
@@ -275,6 +316,9 @@ public:
             {
                 GameObject *obj = node->GetInputValue<GameObject *>(0, nullptr);
 
+                if (obj == nullptr)
+                    obj = node->_SelfObject;
+
                 if (obj)
                 {
                     node->SetOutputValue<glm::vec3>(0, obj->getLocalScale());
@@ -294,6 +338,10 @@ public:
             [](CustomNode *node)
             {
                 GameObject *obj = node->GetInputValue<GameObject *>(1, nullptr);
+
+                if (obj == nullptr)
+                    obj = node->_SelfObject;
+
                 glm::quat rot = node->GetInputValue<glm::quat>(2, glm::quat(1, 0, 0, 0)); // identidad
 
                 if (obj)
@@ -316,6 +364,9 @@ public:
             {
                 GameObject *obj = node->GetInputValue<GameObject *>(0, nullptr);
 
+                if (obj == nullptr)
+                    obj = node->_SelfObject;
+
                 if (obj)
                 {
                     node->SetOutputValue<glm::quat>(0, obj->getWorldRotationQuat());
@@ -334,6 +385,10 @@ public:
             [](CustomNode *node)
             {
                 GameObject *obj = node->GetInputValue<GameObject *>(1, nullptr);
+
+                if (obj == nullptr)
+                    obj = node->_SelfObject;
+
                 glm::quat rot = node->GetInputValue<glm::quat>(2, glm::quat(1, 0, 0, 0));
 
                 if (obj)
@@ -356,6 +411,9 @@ public:
             {
                 GameObject *obj = node->GetInputValue<GameObject *>(0, nullptr);
 
+                if (obj == nullptr)
+                    obj = node->_SelfObject;
+
                 if (obj)
                 {
                     node->SetOutputValue<glm::quat>(0, obj->getLocalRotationQuat());
@@ -374,6 +432,10 @@ public:
             [](CustomNode *node)
             {
                 GameObject *obj = node->GetInputValue<GameObject *>(1, nullptr);
+
+                if (obj == nullptr)
+                    obj = node->_SelfObject;
+
                 glm::vec3 euler = node->GetInputValue<glm::vec3>(2, glm::vec3(0, 0, 0));
 
                 if (obj)
@@ -396,6 +458,9 @@ public:
             {
                 GameObject *obj = node->GetInputValue<GameObject *>(0, nullptr);
 
+                if (obj == nullptr)
+                    obj = node->_SelfObject;
+
                 if (obj)
                 {
                     node->SetOutputValue<glm::vec3>(0, obj->getLocalRotationEuler());
@@ -414,6 +479,10 @@ public:
             [](CustomNode *node)
             {
                 GameObject *obj = node->GetInputValue<GameObject *>(1, nullptr);
+
+                if (obj == nullptr)
+                    obj = node->_SelfObject;
+
                 glm::vec3 euler = node->GetInputValue<glm::vec3>(2, glm::vec3(0, 0, 0));
 
                 if (obj)
@@ -435,6 +504,9 @@ public:
             [](CustomNode *node)
             {
                 GameObject *obj = node->GetInputValue<GameObject *>(0, nullptr);
+
+                if (obj == nullptr)
+                    obj = node->_SelfObject;
 
                 if (obj)
                 {
@@ -533,6 +605,9 @@ public:
             {
                 GameObject *object = node->GetInputValue<GameObject *>(2, nullptr);
 
+                if (object == nullptr)
+                    object = node->_SelfObject;
+
                 if (object != nullptr)
                 {
                     if (node->GetInputValue<GameObject *>(1, nullptr) != nullptr)
@@ -557,6 +632,9 @@ public:
             {
                 GameObject *object = node->GetInputValue<GameObject *>(1, nullptr);
 
+                if (object == nullptr)
+                    object = node->_SelfObject;
+
                 if (object != nullptr)
                 {
                     object->setParent(nullptr);
@@ -577,6 +655,9 @@ public:
             {
                 GameObject *object = node->GetInputValue<GameObject *>(0, nullptr);
 
+                if (object == nullptr)
+                    object = node->_SelfObject;
+
                 if (object != nullptr)
                 {
                     node->SetOutputValue<int>(0, object->getChildCount());
@@ -596,6 +677,10 @@ public:
             [](CustomNode *node)
             {
                 GameObject *object = node->GetInputValue<GameObject *>(1, nullptr);
+
+                if (object == nullptr)
+                    object = node->_SelfObject;
+
                 int index = node->GetInputValue<int>(2, 0);
 
                 if (object != nullptr)
@@ -617,6 +702,10 @@ public:
             [](CustomNode *node)
             {
                 GameObject *object = node->GetInputValue<GameObject *>(1, nullptr);
+
+                if (object == nullptr)
+                    object = node->_SelfObject;
+
                 std::string childName = node->GetInputValue<std::string>(2, "");
 
                 GameObject *foundChild = nullptr;
@@ -651,6 +740,9 @@ public:
             [](CustomNode *node)
             {
                 GameObject *object = node->GetInputValue<GameObject *>(1, nullptr);
+
+                if (object == nullptr)
+                    object = node->_SelfObject;
 
                 if (object != nullptr)
                 {
