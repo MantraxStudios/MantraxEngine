@@ -20,6 +20,7 @@ public:
 
     MNodeEngine *engine;
 
+    bool isHovering;
     std::vector<CustomNode> *customNodes = nullptr;
     std::vector<Connection> *connections = nullptr;
 
@@ -162,7 +163,7 @@ public:
         }
 
         // Manejar clic derecho en el espacio vacío para crear nodos
-        if (ImGui::IsMouseClicked(ImGuiMouseButton_Right) && !ImGui::IsAnyItemHovered())
+        if (ImGui::IsMouseClicked(ImGuiMouseButton_Right) && !ImGui::IsAnyItemHovered() && isHovering)
         {
             showCreateNodeMenu = true;
             // Capturar la posición absoluta del mouse para crear el nodo en esa ubicación

@@ -9,14 +9,12 @@
 
 void EditorNode::OnRenderGUI()
 {
-    // Usamos índice manual porque quizá tengamos que borrar elementos
     for (size_t i = 0; i < Engines_Nodes.size();)
     {
         auto *glyphEditor = Engines_Nodes[i];
 
         if (glyphEditor->engine == nullptr)
         {
-            // lo eliminamos también en este caso
             delete glyphEditor;
             Engines_Nodes.erase(Engines_Nodes.begin() + i);
             continue;
@@ -24,14 +22,14 @@ void EditorNode::OnRenderGUI()
 
         std::string windowName = "Glyphs##" + std::to_string(glyphEditor->editorID);
 
-        bool open = true; // <- controla la "X"
+        bool open = true;
         ImGui::SetNextWindowSizeConstraints(
-            ImVec2(400, 400),        // tamaño mínimo
-            ImVec2(FLT_MAX, FLT_MAX) // tamaño máximo
-        );
+            ImVec2(400, 400),
+            ImVec2(FLT_MAX, FLT_MAX));
 
         if (ImGui::Begin(windowName.c_str(), &open))
         {
+            glyphEditor->isHovering = ImGui::IsWindowHovered();
             glyphEditor->Draw();
         }
         ImGui::End();
@@ -50,6 +48,17 @@ void EditorNode::OnRenderGUI()
 
 void EditorNode::OpenNewEditor(MNodeEngine *engine)
 {
+    for (MNodeEditor *_Node : Engines_Nodes)
+    {
+        if (_Node)
+        {
+            if (_Node->engine == engine)
+            {
+                return;
+            }
+        }
+    }
+
     static int MakedEditorID;
 
     MNodeEditor *newEditor = new MNodeEditor();
