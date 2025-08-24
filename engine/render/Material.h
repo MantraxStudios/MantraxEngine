@@ -4,34 +4,34 @@
 #include "Texture.h"
 #include "../core/CoreExporter.h"
 
-
-class MANTRAXCORE_API Material {
+class MANTRAXCORE_API Material
+{
 public:
     Material();
-    Material(const std::string& name);
+    Material(const std::string &name);
     ~Material();
 
     // Validación del material
     bool isValid() const { return !name.empty(); }
 
     // Propiedades del material
-    void setName(const std::string& materialName);
-    void setAlbedo(const glm::vec3& color);
+    void setName(const std::string &materialName);
+    void setAlbedo(const glm::vec3 &color);
     void setAlpha(float value);
     void setMetallic(float value);
     void setRoughness(float value);
-    void setEmissive(const glm::vec3& color);
-    void setTiling(const glm::vec2& tiling);
+    void setEmissive(const glm::vec3 &color);
+    void setTiling(const glm::vec2 &tiling);
     void setNormalStrength(float strength);
 
     // Texturas PBR (todas opcionales) - CONFIGURACIÓN AUTOMÁTICA
-    void setAlbedoTexture(const std::string& filePath);
-    void setNormalTexture(const std::string& filePath);
-    void setMetallicTexture(const std::string& filePath);
-    void setRoughnessTexture(const std::string& filePath);
-    void setEmissiveTexture(const std::string& filePath);
-    void setAOTexture(const std::string& filePath);
-    
+    void setAlbedoTexture(const std::string &filePath);
+    void setNormalTexture(const std::string &filePath);
+    void setMetallicTexture(const std::string &filePath);
+    void setRoughnessTexture(const std::string &filePath);
+    void setEmissiveTexture(const std::string &filePath);
+    void setAOTexture(const std::string &filePath);
+
     // Métodos para establecer texturas directamente desde objetos Texture
     void setAlbedoTexture(std::shared_ptr<Texture> texture);
     void setNormalTexture(std::shared_ptr<Texture> texture);
@@ -39,7 +39,7 @@ public:
     void setRoughnessTexture(std::shared_ptr<Texture> texture);
     void setEmissiveTexture(std::shared_ptr<Texture> texture);
     void setAOTexture(std::shared_ptr<Texture> texture);
-    
+
     // Configuración automática basada en las texturas cargadas
     void autoConfigureMaterial();
 
@@ -51,7 +51,7 @@ public:
     glm::vec3 getEmissive() const { return emissive; }
     glm::vec2 getTiling() const { return tiling; }
     float getNormalStrength() const { return normalStrength; }
-    
+
     std::shared_ptr<Texture> getAlbedoTexture() const { return albedoTexture; }
     std::shared_ptr<Texture> getNormalTexture() const { return normalTexture; }
     std::shared_ptr<Texture> getMetallicTexture() const { return metallicTexture; }
@@ -82,7 +82,7 @@ public:
 
 private:
     std::string name;
-    
+
     // Propiedades del material
     glm::vec3 albedo;
     float alpha;
@@ -91,7 +91,7 @@ private:
     glm::vec3 emissive;
     glm::vec2 tiling;
     float normalStrength;
-    
+
     // Texturas PBR (todas opcionales)
     std::shared_ptr<Texture> albedoTexture;
     std::shared_ptr<Texture> normalTexture;
@@ -99,8 +99,8 @@ private:
     std::shared_ptr<Texture> roughnessTexture;
     std::shared_ptr<Texture> emissiveTexture;
     std::shared_ptr<Texture> aoTexture;
-    
+
     // Métodos privados para detección automática
     std::string detectMaterialType() const;
-    void applyAutoConfiguration(const std::string& materialType);
-}; 
+    void applyAutoConfiguration(const std::string &materialType);
+};
