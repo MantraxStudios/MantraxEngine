@@ -178,6 +178,120 @@ public:
             {{"Tiling", glm::vec2(1.0f)}},
             position);
 
+        // ========= GET VALUES =========
+
+        PremakeNode getAlbedoNode(
+            "Material",
+            "Get Albedo",
+            [](CustomNode *node)
+            {
+                Material *mat = node->GetInputValue<Material *>(0, nullptr);
+                if (mat != nullptr)
+                {
+                    node->SetOutputValue<glm::vec3>(0, mat->getAlbedo());
+                }
+            },
+            SCRIPT, false, false,
+            {{"Material", (Material *)nullptr}},
+            {{"Value", glm::vec3(1.0f)}},
+            position);
+
+        PremakeNode getMetallicNode(
+            "Material",
+            "Get Metallic",
+            [](CustomNode *node)
+            {
+                Material *mat = node->GetInputValue<Material *>(0, nullptr);
+                if (mat != nullptr)
+                {
+                    node->SetOutputValue<float>(0, mat->getMetallic());
+                }
+            },
+            SCRIPT, false, false,
+            {{"Material", (Material *)nullptr}},
+            {{"Value", 1.0f}},
+            position);
+
+        PremakeNode getRoughnessNode(
+            "Material",
+            "Get Roughness",
+            [](CustomNode *node)
+            {
+                Material *mat = node->GetInputValue<Material *>(0, nullptr);
+                if (mat != nullptr)
+                {
+                    node->SetOutputValue<float>(0, mat->getRoughness());
+                }
+            },
+            SCRIPT, false, false,
+            {{"Material", (Material *)nullptr}},
+            {{"Value", 1.0f}},
+            position);
+
+        PremakeNode getEmissiveNode(
+            "Material",
+            "Get Emissive",
+            [](CustomNode *node)
+            {
+                Material *mat = node->GetInputValue<Material *>(0, nullptr);
+                if (mat != nullptr)
+                {
+                    node->SetOutputValue<glm::vec3>(0, mat->getEmissive());
+                }
+            },
+            SCRIPT, false, false,
+            {{"Material", (Material *)nullptr}},
+            {{"Value", glm::vec3(1.0f)}},
+            position);
+
+        PremakeNode getTilingNode(
+            "Material",
+            "Get Tiling",
+            [](CustomNode *node)
+            {
+                Material *mat = node->GetInputValue<Material *>(0, nullptr);
+                if (mat != nullptr)
+                {
+                    node->SetOutputValue<glm::vec2>(0, mat->getEmissive());
+                }
+            },
+            SCRIPT, false, false,
+            {{"Material", (Material *)nullptr}},
+            {{"Value", glm::vec2(1.0f)}},
+            position);
+
+        PremakeNode getNormalStrengthNode(
+            "Material",
+            "Get Normal Strength",
+            [](CustomNode *node)
+            {
+                Material *mat = node->GetInputValue<Material *>(0, nullptr);
+                if (mat != nullptr)
+                {
+                    node->SetOutputValue<float>(0, mat->getNormalStrength());
+                }
+            },
+            SCRIPT, false, false,
+            {{"Material", (Material *)nullptr}},
+            {{"Value", 1.0f}},
+            position);
+
+        PremakeNode getAlphaNode(
+            "Material",
+            "Get Alpha",
+            [](CustomNode *node)
+            {
+                Material *mat = node->GetInputValue<Material *>(0, nullptr);
+                if (mat != nullptr)
+                {
+                    node->SetOutputValue<float>(0, mat->getAlpha());
+                }
+            },
+            SCRIPT, false, false,
+            {{"Material", (Material *)nullptr}},
+            {{"Value", 1.0f}},
+            position);
+
         engine.PrefabNodes.push_back(getMaterial);
         engine.PrefabNodes.push_back(getMaterialName);
         engine.PrefabNodes.push_back(setAlbedoNode);
@@ -186,5 +300,14 @@ public:
         engine.PrefabNodes.push_back(setRoughnessNode);
         engine.PrefabNodes.push_back(setEmissiveNode);
         engine.PrefabNodes.push_back(setNormalStrength);
+
+        // === ADD NODES
+        engine.PrefabNodes.push_back(getAlbedoNode);
+        engine.PrefabNodes.push_back(getMetallicNode);
+        engine.PrefabNodes.push_back(getRoughnessNode);
+        engine.PrefabNodes.push_back(getEmissiveNode);
+        engine.PrefabNodes.push_back(getTilingNode);
+        engine.PrefabNodes.push_back(getNormalStrengthNode);
+        engine.PrefabNodes.push_back(getAlphaNode);
     }
 };
