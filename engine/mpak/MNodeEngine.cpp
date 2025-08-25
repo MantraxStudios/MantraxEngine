@@ -1123,8 +1123,6 @@ void MNodeEngine::ForceUpdateAllNodeInputs()
         topologicalOrderDirty = false;
     }
 
-    std::cout << "[FORCE UPDATE] Starting comprehensive node update..." << std::endl;
-
     // Ejecutar nodos de datos en orden topológico
     for (int nodeId : topologicalOrder)
     {
@@ -1142,7 +1140,6 @@ void MNodeEngine::ForceUpdateAllNodeInputs()
             // Si es un nodo de datos (sin pins de ejecución o con título específico), ejecutarlo
             if (IsDataNode(node) && node.n.execFunc)
             {
-                std::cout << "[FORCE UPDATE] Executing data node: " << node.n.title << std::endl;
                 node.n.execFunc(&node.n);
 
                 // Propagar inmediatamente sus valores de salida
@@ -1150,8 +1147,6 @@ void MNodeEngine::ForceUpdateAllNodeInputs()
             }
         }
     }
-
-    std::cout << "[FORCE UPDATE] Update complete." << std::endl;
 }
 
 bool MNodeEngine::IsDataNode(const CustomNode &node) const
