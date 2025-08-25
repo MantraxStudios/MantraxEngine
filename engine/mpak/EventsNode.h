@@ -13,7 +13,7 @@ public:
     {
         PremakeNode startEventNode(
             "Events",
-            "Start",
+            "On Start",
             [](CustomNode *node)
             {
                 node->nodeData["started"] = true;
@@ -27,6 +27,32 @@ public:
             position      // PIN POSITION
         );
 
+        PremakeNode tickEventNode(
+            "Events",
+            "On Tick",
+            [](CustomNode *node) {},
+            INPUT_OUTPUT, // category
+            false,        // hasExecInput
+            true,         // hasExecOutput
+            {},           // inputPins
+            {},           // outputPins - solo pin de ejecución, sin datos
+            position      // PIN POSITION
+        );
+
+        PremakeNode triggerEventNode(
+            "Events",
+            "On Trigger",
+            [](CustomNode *node) {},
+            INPUT_OUTPUT, // category
+            false,        // hasExecInput
+            true,         // hasExecOutput
+            {},           // inputPins
+            {},           // outputPins - solo pin de ejecución, sin datos
+            position      // PIN POSITION
+        );
+
         engine.PrefabNodes.push_back(startEventNode);
+        engine.PrefabNodes.push_back(tickEventNode);
+        engine.PrefabNodes.push_back(triggerEventNode);
     }
 };

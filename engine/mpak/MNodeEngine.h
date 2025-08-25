@@ -531,6 +531,7 @@ public:
     void EvaluateDataDependenciesRecursive(CustomNode *node, std::set<int> &visited);
 
     void ExecuteGraph();
+    void ExecuteGraphOnTick();
 
     // MEJORADO: Eliminar conexiones con limpieza de orden topológico
     void RemoveConnectionsFromPin(int nodeId, int pinId, bool isInput);

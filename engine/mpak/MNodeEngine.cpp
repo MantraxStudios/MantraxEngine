@@ -712,23 +712,28 @@ void MNodeEngine::EvaluateDataDependenciesRecursive(CustomNode *node, std::set<i
 
 void MNodeEngine::ExecuteGraph()
 {
-    std::cout << "[EXECUTE] Starting graph execution..." << std::endl;
-
-    // Primero, evaluar todos los nodos de datos en orden topológico
     ForceUpdateAllNodeInputs();
-
-    // Luego ejecutar desde el nodo Start
     for (auto &node : customNodes)
     {
-        if (node.n.title == "Start")
+        if (node.n.title == "On Start")
         {
-            std::cout << "[EXECUTE] Found Start node, beginning execution flow..." << std::endl;
             ExecuteFrom(&node);
             break;
         }
     }
+}
 
-    std::cout << "[EXECUTE] Graph execution complete." << std::endl;
+void MNodeEngine::ExecuteGraphOnTick()
+{
+    ForceUpdateAllNodeInputs();
+    for (auto &node : customNodes)
+    {
+        if (node.n.title == "On Tick")
+        {
+            ExecuteFrom(&node);
+            break;
+        }
+    }
 }
 
 // MEJORADO: Eliminar conexiones con limpieza de orden topológico

@@ -680,6 +680,8 @@ void GameObject::update(float deltaTime)
         }
     }
 
+    _GlyphsEngine->ExecuteGraphOnTick();
+
     // Actualizar la transformación si es necesario
     if (shouldUpdateTransform && dirtyWorldTransform)
     {
