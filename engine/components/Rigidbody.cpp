@@ -269,12 +269,14 @@ void Rigidbody::setBodyType(BodyType type)
     {
         // Static to Dynamic/Kinematic or Dynamic/Kinematic to Static: Need to recreate
         // This is because PhysX doesn't allow converting between static and dynamic at runtime
-        std::cout << "[Rigidbody] Recreating body for type change from " 
-                  << (oldType == BodyType::Static ? "Static" : oldType == BodyType::Dynamic ? "Dynamic" : "Kinematic")
+        std::cout << "[Rigidbody] Recreating body for type change from "
+                  << (oldType == BodyType::Static ? "Static" : oldType == BodyType::Dynamic ? "Dynamic"
+                                                                                            : "Kinematic")
                   << " to "
-                  << (type == BodyType::Static ? "Static" : type == BodyType::Dynamic ? "Dynamic" : "Kinematic")
+                  << (type == BodyType::Static ? "Static" : type == BodyType::Dynamic ? "Dynamic"
+                                                                                      : "Kinematic")
                   << " for " << owner->Name << std::endl;
-        
+
         destroy();
         initializePhysics();
     }
