@@ -8,6 +8,7 @@
 #include "ConvertsNode.h"
 #include "ShaderNode.h"
 #include "ConditionsNode.h"
+#include "AudioNode.h"
 
 static int NodeID = 0;
 
@@ -47,6 +48,7 @@ MNodeEngine::MNodeEngine(GameObject *obj)
     ConvertsNode *NodesConvert = new ConvertsNode();
     ConditionNodes *NodesCondition = new ConditionNodes();
     ShaderNode *NodesShader = new ShaderNode();
+    AudioNode *NodeAudio = new AudioNode();
 
     NodesGM->RegisterNodes(*this);
     NodesDB->RegisterNodes(*this);
@@ -56,6 +58,7 @@ MNodeEngine::MNodeEngine(GameObject *obj)
     NodesConvert->RegisterNodes(*this);
     NodesCondition->RegisterNodes(*this);
     NodesShader->RegisterNodes(*this);
+    NodeAudio->RegisterNodes(*this);
 }
 
 // Lambda Factory para crear nodos de manera simple (Nueva versión con NodeCategory)

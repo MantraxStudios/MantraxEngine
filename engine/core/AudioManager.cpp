@@ -4,49 +4,58 @@
 #include "../render/Camera.h"
 #include "../core/FileSystem.h"
 
-AudioManager* AudioManager::instance = nullptr;
+AudioManager *AudioManager::instance = nullptr;
 
-AudioManager& AudioManager::getInstance() {
-    if (!instance) {
+AudioManager &AudioManager::getInstance()
+{
+    if (!instance)
+    {
         instance = new AudioManager();
     }
     return *instance;
 }
 
-void AudioManager::destroy() {
-    if (instance) {
+void AudioManager::destroy()
+{
+    if (instance)
+    {
         instance->shutdown();
         delete instance;
         instance = nullptr;
     }
 }
 
-bool AudioManager::initialize(int maxChannels) {
+bool AudioManager::initialize(int maxChannels)
+{
     FMOD_RESULT result;
-    
+
     // Crear el sistema FMOD
     result = FMOD::System_Create(&system);
-    if (!checkError(result)) return false;
+    if (!checkError(result))
+        return false;
 
     // Inicializar FMOD con configuración 3D
     result = system->init(maxChannels, FMOD_INIT_NORMAL | FMOD_INIT_3D_RIGHTHANDED, nullptr);
-    if (!checkError(result)) return false;
+    if (!checkError(result))
+        return false;
 
     // Configurar parámetros 3D
     // - Doppler scale: 1.0 = efecto Doppler normal
     // - Distance factor: 1.0 = 1 unidad = 1 metro
     // - Rolloff scale: 0.75 = atenuación más suave
     result = system->set3DSettings(1.0f, 1.0f, 0.75f);
-    if (!checkError(result)) return false;
+    if (!checkError(result))
+        return false;
 
     // Configurar el listener inicial
     // Nota: Estos valores se actualizarán en el primer frame con la posición real de la cámara
-    FMOD_VECTOR initialPos = { 0.0f, 0.0f, 0.0f };
-    FMOD_VECTOR initialVel = { 0.0f, 0.0f, 0.0f };
-    FMOD_VECTOR initialForward = { 0.0f, 0.0f, 1.0f };
-    FMOD_VECTOR initialUp = { 0.0f, 1.0f, 0.0f };
+    FMOD_VECTOR initialPos = {0.0f, 0.0f, 0.0f};
+    FMOD_VECTOR initialVel = {0.0f, 0.0f, 0.0f};
+    FMOD_VECTOR initialForward = {0.0f, 0.0f, 1.0f};
+    FMOD_VECTOR initialUp = {0.0f, 1.0f, 0.0f};
     result = system->set3DListenerAttributes(0, &initialPos, &initialVel, &initialForward, &initialUp);
-    if (!checkError(result)) return false;
+    if (!checkError(result))
+        return false;
 
     std::cout << "FMOD initialized successfully with 3D audio settings" << std::endl;
     std::cout << "Max channels: " << maxChannels << std::endl;
@@ -54,13 +63,16 @@ bool AudioManager::initialize(int maxChannels) {
     return true;
 }
 
-void AudioManager::update() {
-    if (system) {
+void AudioManager::update()
+{
+    if (system)
+    {
         // Obtener la cámara activa
-        auto* scene = SceneManager::getInstance().getActiveScene();
-        if (scene && scene->getCamera()) {
-            Camera* camera = scene->getCamera();
-            
+        auto *scene = SceneManager::getInstance().getActiveScene();
+        if (scene && scene->getCamera())
+        {
+            Camera *camera = scene->getCamera();
+
             // Obtener los vectores de la cámara
             glm::vec3 position = camera->getPosition();
             glm::vec3 velocity = camera->GetVelocity();
@@ -68,10 +80,10 @@ void AudioManager::update() {
             glm::vec3 up = camera->GetUp();
 
             // Convertir a FMOD_VECTOR
-            FMOD_VECTOR fmodPosition = { position.x, position.y, position.z };
-            FMOD_VECTOR fmodVelocity = { velocity.x, velocity.y, velocity.z };
-            FMOD_VECTOR fmodForward = { forward.x, forward.y, forward.z };
-            FMOD_VECTOR fmodUp = { up.x, up.y, up.z };
+            FMOD_VECTOR fmodPosition = {position.x, position.y, position.z};
+            FMOD_VECTOR fmodVelocity = {velocity.x, velocity.y, velocity.z};
+            FMOD_VECTOR fmodForward = {forward.x, forward.y, forward.z};
+            FMOD_VECTOR fmodUp = {up.x, up.y, up.z};
 
             // Actualizar atributos del listener
             system->set3DListenerAttributes(0, &fmodPosition, &fmodVelocity, &fmodForward, &fmodUp);
@@ -82,8 +94,10 @@ void AudioManager::update() {
     }
 }
 
-void AudioManager::shutdown() {
-    if (system) {
+void AudioManager::shutdown()
+{
+    if (system)
+    {
         unloadAllSounds();
         system->close();
         system->release();
@@ -91,47 +105,61 @@ void AudioManager::shutdown() {
     }
 }
 
-FMOD::Sound* AudioManager::loadSound(const std::string& path, bool is3D, bool isLooping, bool isStream) {
+FMOD::Sound *AudioManager::loadSound(const std::string &_path, bool is3D, bool isLooping, bool isStream)
+{
+    std::string path = FileSystem::getProjectPath() + "\\Content\\" + _path;
+
     // Verificar si el sonido ya está cargado
     auto it = sounds.find(path);
-    if (it != sounds.end()) {
+    if (it != sounds.end())
+    {
         return it->second;
     }
 
-    FMOD::Sound* sound = nullptr;
+    FMOD::Sound *sound = nullptr;
     FMOD_MODE mode = FMOD_DEFAULT;
-    
+
     // Configurar modo según parámetros
-    if (is3D) {
+    if (is3D)
+    {
         mode = FMOD_3D | FMOD_3D_LINEARROLLOFF; // Forzar modo 3D y atenuación lineal
         std::cout << "Loading sound '" << path << "' in 3D mode" << std::endl;
-    } else {
+    }
+    else
+    {
         mode = FMOD_2D;
         std::cout << "Loading sound '" << path << "' in 2D mode" << std::endl;
     }
 
-    if (isLooping) {
+    if (isLooping)
+    {
         mode |= FMOD_LOOP_NORMAL;
-    } else {
+    }
+    else
+    {
         mode |= FMOD_LOOP_OFF;
     }
 
-    if (isStream) {
+    if (isStream)
+    {
         mode |= FMOD_CREATESTREAM;
     }
 
     // Cargar el sonido
-    FMOD_RESULT result = system->createSound((FileSystem::getProjectPath() + "\\Content\\" + path).c_str(), mode, nullptr, &sound);
-    if (!checkError(result)) {
+    FMOD_RESULT result = system->createSound((path).c_str(), mode, nullptr, &sound);
+    if (!checkError(result))
+    {
         std::cerr << "111 Failed to load sound: " << path << std::endl;
         return nullptr;
     }
 
     // Verificar que el modo 3D se aplicó correctamente
-    if (is3D) {
+    if (is3D)
+    {
         FMOD_MODE currentMode;
         sound->getMode(&currentMode);
-        if (!(currentMode & FMOD_3D)) {
+        if (!(currentMode & FMOD_3D))
+        {
             std::cerr << "Warning: Sound was requested as 3D but mode is not 3D!" << std::endl;
         }
     }
@@ -140,17 +168,22 @@ FMOD::Sound* AudioManager::loadSound(const std::string& path, bool is3D, bool is
     return sound;
 }
 
-void AudioManager::unloadSound(const std::string& path) {
+void AudioManager::unloadSound(const std::string &path)
+{
     auto it = sounds.find(path);
-    if (it != sounds.end()) {
+    if (it != sounds.end())
+    {
         it->second->release();
         sounds.erase(it);
     }
 }
 
-void AudioManager::unloadAllSounds() {
-    for (auto& pair : sounds) {
-        if (pair.second) {
+void AudioManager::unloadAllSounds()
+{
+    for (auto &pair : sounds)
+    {
+        if (pair.second)
+        {
             pair.second->release();
         }
     }
@@ -158,15 +191,19 @@ void AudioManager::unloadAllSounds() {
     channels.clear();
 }
 
-FMOD::Channel* AudioManager::playSound(const std::string& path, const FMOD_VECTOR& position, float volume) {
-    FMOD::Sound* sound = loadSound(path);
-    if (!sound) return nullptr;
+FMOD::Channel *AudioManager::playSound(const std::string &path, const FMOD_VECTOR &position, float volume)
+{
+    FMOD::Sound *sound = loadSound(path);
+    if (!sound)
+        return nullptr;
 
-    FMOD::Channel* channel = nullptr;
+    FMOD::Channel *channel = nullptr;
     FMOD_RESULT result = system->playSound(sound, nullptr, false, &channel);
-    if (!checkError(result)) return nullptr;
+    if (!checkError(result))
+        return nullptr;
 
-    if (channel) {
+    if (channel)
+    {
         channel->setVolume(volume);
         channel->set3DAttributes(&position, nullptr);
     }
@@ -174,15 +211,19 @@ FMOD::Channel* AudioManager::playSound(const std::string& path, const FMOD_VECTO
     return channel;
 }
 
-FMOD::Channel* AudioManager::playSoundWithChannel(const std::string& path, int channelId, const FMOD_VECTOR& position, float volume) {
-    FMOD::Sound* sound = loadSound(path);
-    if (!sound) return nullptr;
+FMOD::Channel *AudioManager::playSoundWithChannel(const std::string &path, int channelId, const FMOD_VECTOR &position, float volume)
+{
+    FMOD::Sound *sound = loadSound(path);
+    if (!sound)
+        return nullptr;
 
-    FMOD::Channel* channel = nullptr;
+    FMOD::Channel *channel = nullptr;
     FMOD_RESULT result = system->playSound(sound, nullptr, false, &channel);
-    if (!checkError(result)) return nullptr;
+    if (!checkError(result))
+        return nullptr;
 
-    if (channel) {
+    if (channel)
+    {
         channel->setVolume(volume);
         channel->set3DAttributes(&position, nullptr);
         channels[channelId] = channel;
@@ -191,59 +232,76 @@ FMOD::Channel* AudioManager::playSoundWithChannel(const std::string& path, int c
     return channel;
 }
 
-void AudioManager::stopChannel(int channelId) {
+void AudioManager::stopChannel(int channelId)
+{
     auto it = channels.find(channelId);
-    if (it != channels.end() && it->second) {
+    if (it != channels.end() && it->second)
+    {
         it->second->stop();
     }
 }
 
-void AudioManager::stopAllChannels() {
-    for (auto& pair : channels) {
-        if (pair.second) {
+void AudioManager::stopAllChannels()
+{
+    for (auto &pair : channels)
+    {
+        if (pair.second)
+        {
             pair.second->stop();
         }
     }
     channels.clear();
 }
 
-void AudioManager::setChannelVolume(int channelId, float volume) {
+void AudioManager::setChannelVolume(int channelId, float volume)
+{
     auto it = channels.find(channelId);
-    if (it != channels.end() && it->second) {
+    if (it != channels.end() && it->second)
+    {
         it->second->setVolume(volume);
     }
 }
 
-void AudioManager::setChannelPosition(int channelId, const FMOD_VECTOR& position) {
+void AudioManager::setChannelPosition(int channelId, const FMOD_VECTOR &position)
+{
     auto it = channels.find(channelId);
-    if (it != channels.end() && it->second) {
+    if (it != channels.end() && it->second)
+    {
         it->second->set3DAttributes(&position, nullptr);
     }
 }
 
-void AudioManager::setListenerPosition(const FMOD_VECTOR& position, const FMOD_VECTOR* velocity,
-                                     const FMOD_VECTOR* forward, const FMOD_VECTOR* up) {
-    if (system) {
+void AudioManager::setListenerPosition(const FMOD_VECTOR &position, const FMOD_VECTOR *velocity,
+                                       const FMOD_VECTOR *forward, const FMOD_VECTOR *up)
+{
+    if (system)
+    {
         system->set3DListenerAttributes(0, &position, velocity, forward, up);
     }
 }
 
-void AudioManager::set3DSettings(float dopplerScale, float distanceFactor, float rolloffScale) {
-    if (system) {
+void AudioManager::set3DSettings(float dopplerScale, float distanceFactor, float rolloffScale)
+{
+    if (system)
+    {
         system->set3DSettings(dopplerScale, distanceFactor, rolloffScale);
     }
 }
 
-void AudioManager::get3DSettings(float* dopplerScale, float* distanceFactor, float* rolloffScale) {
-    if (system) {
+void AudioManager::get3DSettings(float *dopplerScale, float *distanceFactor, float *rolloffScale)
+{
+    if (system)
+    {
         system->get3DSettings(dopplerScale, distanceFactor, rolloffScale);
     }
 }
 
-bool AudioManager::checkError(FMOD_RESULT result) {
-    if (result != FMOD_OK) {
+bool AudioManager::checkError(FMOD_RESULT result)
+{
+    if (result != FMOD_OK)
+    {
         std::cerr << "FMOD Error: " << result << std::endl;
         return false;
     }
     return true;
-} 
+}

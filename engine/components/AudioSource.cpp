@@ -8,18 +8,20 @@
 
 using json = nlohmann::json;
 
-
-void AudioSource::defines() {
-
+void AudioSource::defines()
+{
 }
 
-void AudioSource::setOwner(GameObject* owner) {
+void AudioSource::setOwner(GameObject *owner)
+{
     Component::setOwner(owner);
     stop(); // Asegurarse de detener cualquier sonido si se cambia el owner
 }
 
-void AudioSource::setSound(const std::string& path, bool is3D, bool isLooping, bool isStream) {
-    if (channel) {
+void AudioSource::setSound(const std::string &path, bool is3D, bool isLooping, bool isStream)
+{
+    if (channel)
+    {
         stop();
     }
 
@@ -29,86 +31,107 @@ void AudioSource::setSound(const std::string& path, bool is3D, bool isLooping, b
     this->isStream = isStream;
 }
 
-void AudioSource::setVolume(float vol) {
+void AudioSource::setVolume(float vol)
+{
     volume = glm::clamp(vol, 0.0f, 1.0f);
-    if (channel) {
+    if (channel)
+    {
         channel->setVolume(volume);
     }
-
 }
 
-void AudioSource::set3DAttributes(bool enabled) {
+void AudioSource::set3DAttributes(bool enabled)
+{
     is3D = enabled;
-    if (channel) {
+    if (channel)
+    {
         stop();
         shouldPlay = true; // Reproducir de nuevo con los nuevos atributos
     }
 }
 
-void AudioSource::setMinDistance(float distance) {
+void AudioSource::setMinDistance(float distance)
+{
     minDistance = glm::max(0.1f, distance);
-    if (channel && is3D) {
+    if (channel && is3D)
+    {
         update3DAttributes();
     }
 }
 
-void AudioSource::setMaxDistance(float distance) {
+void AudioSource::setMaxDistance(float distance)
+{
     maxDistance = glm::max(minDistance + 0.1f, distance);
-    if (channel && is3D) {
+    if (channel && is3D)
+    {
         update3DAttributes();
     }
 }
 
-void AudioSource::play() {
-    if (!soundPath.empty()) {
+void AudioSource::play()
+{
+    if (!soundPath.empty())
+    {
         stop(); // Detener reproducción anterior si existe
 
-        auto& audioManager = AudioManager::getInstance();
+        auto &audioManager = AudioManager::getInstance();
 
         // Cargar y reproducir el sonido
-        FMOD::Sound* sound = audioManager.loadSound(soundPath, is3D, isLooping, isStream);
-        if (sound) {
-            if (is3D) {
+        FMOD::Sound *sound = audioManager.loadSound(soundPath, is3D, isLooping, isStream);
+        if (sound)
+        {
+            if (is3D)
+            {
                 // Obtener la posición del GameObject
                 glm::vec3 pos = owner->getWorldPosition();
-                FMOD_VECTOR position = { pos.x, pos.y, pos.z };
+                FMOD_VECTOR position = {pos.x, pos.y, pos.z};
 
                 // Reproducir en 3D
                 channel = audioManager.playSound(soundPath, position, volume);
-                if (channel) {
+                if (channel)
+                {
                     update3DAttributes();
                 }
             }
-            else {
+            else
+            {
                 // Reproducir en 2D
-                channel = audioManager.playSound(soundPath, FMOD_VECTOR{ 0,0,0 }, volume);
+                channel = audioManager.playSound(soundPath, FMOD_VECTOR{0, 0, 0}, volume);
             }
         }
     }
 }
 
-void AudioSource::stop() {
-    if (channel) {
+void AudioSource::stop()
+{
+    if (channel)
+    {
         channel->stop();
         channel = nullptr;
     }
     shouldPlay = false;
 }
 
-void AudioSource::pause() {
-    if (channel) {
+void AudioSource::pause()
+{
+    if (channel)
+    {
         channel->setPaused(true);
     }
 }
 
-void AudioSource::resume() {
-    if (channel) {
+void AudioSource::resume()
+{
+    if (channel)
+    {
         channel->setPaused(false);
     }
 }
 
-bool AudioSource::isPlaying() const {
-    if (channel) {
+bool AudioSource::isPlaying() const
+{
+    if (channel)
+    {
         bool playing = false;
         channel->isPlaying(&playing);
         return playing;
@@ -116,8 +139,10 @@ bool AudioSource::isPlaying() const {
     return false;
 }
 
-bool AudioSource::isPaused() const {
-    if (channel) {
+bool AudioSource::isPaused() const
+{
+    if (channel)
+    {
         bool paused = false;
         channel->getPaused(&paused);
         return paused;
@@ -125,52 +150,59 @@ bool AudioSource::isPaused() const {
     return false;
 }
 
-void AudioSource::update() {
-    if (shouldPlay) {
+void AudioSource::update()
+{
+    if (shouldPlay)
+    {
         play();
         shouldPlay = false;
     }
 
-    if (channel && is3D) {
+    if (channel && is3D)
+    {
         updatePosition();
     }
 }
 
-void AudioSource::updatePosition() {
-    if (owner && channel) {
+void AudioSource::updatePosition()
+{
+    if (owner && channel)
+    {
         glm::vec3 pos = owner->getWorldPosition();
-        FMOD_VECTOR position = { pos.x, pos.y, pos.z };
+        FMOD_VECTOR position = {pos.x, pos.y, pos.z};
         channel->set3DAttributes(&position, nullptr);
         update3DAttributes();
     }
 }
 
-void AudioSource::update3DAttributes() {
-    if (channel && is3D) {
-        // Actualizar posición
+void AudioSource::update3DAttributes()
+{
+    if (channel && is3D)
+    {
         glm::vec3 pos = owner->getWorldPosition();
-        FMOD_VECTOR position = { pos.x, pos.y, pos.z };
+        FMOD_VECTOR position = {pos.x, pos.y, pos.z};
 
-        Camera* cam = SceneManager::getInstance().getActiveScene()->getCamera();
+        Camera *cam = SceneManager::getInstance().getActiveScene()->getCamera();
         glm::vec3 _velocity = cam->GetVelocity();
         glm::vec3 _front = cam->GetForward();
         glm::vec3 _up = cam->GetUp();
 
-        FMOD_VECTOR velocity = { _velocity.x, _velocity.y, _velocity.z };
-        FMOD_VECTOR forward = { _front.x, _front.y, _front.z };
-        FMOD_VECTOR up = { _up.x, _up.y, _up.z };
+        FMOD_VECTOR velocity = {_velocity.x, _velocity.y, _velocity.z};
+        FMOD_VECTOR forward = {_front.x, _front.y, _front.z};
+        FMOD_VECTOR up = {_up.x, _up.y, _up.z};
 
         channel->set3DMinMaxDistance(minDistance, maxDistance);
         FMOD_RESULT result = channel->set3DAttributes(&position, 0);
     }
 }
 
-void AudioSource::destroy() {
+void AudioSource::destroy()
+{
     stop();
 }
 
-
-std::string AudioSource::serializeComponent() const {
+std::string AudioSource::serializeComponent() const
+{
     json j;
     j["soundPath"] = soundPath;
     j["volume"] = volume;
@@ -183,7 +215,8 @@ std::string AudioSource::serializeComponent() const {
     return j.dump();
 }
 
-void AudioSource::deserialize(const std::string& data) {
+void AudioSource::deserialize(const std::string &data)
+{
     json j = json::parse(data);
 
     // Extrae y aplica todo usando setters
