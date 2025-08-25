@@ -10,6 +10,7 @@
 #include "ConditionsNode.h"
 #include "DescomposerNode.h"
 #include "AudioNode.h"
+#include "RigidBodyNode.h"
 
 static int NodeID = 0;
 
@@ -51,6 +52,7 @@ MNodeEngine::MNodeEngine(GameObject *obj)
     ShaderNode *NodesShader = new ShaderNode();
     AudioNode *NodeAudio = new AudioNode();
     DescomposerNode *NodeDescomposer = new DescomposerNode();
+    RigidBodyNode *NodeRigidbody = new RigidBodyNode();
 
     NodesGM->RegisterNodes(*this);
     NodesDB->RegisterNodes(*this);
@@ -62,6 +64,7 @@ MNodeEngine::MNodeEngine(GameObject *obj)
     NodesShader->RegisterNodes(*this);
     NodeAudio->RegisterNodes(*this);
     NodeDescomposer->RegisterNodes(*this);
+    NodeRigidbody->RegisterNodes(*this);
 }
 
 // Lambda Factory para crear nodos de manera simple (Nueva versión con NodeCategory)
@@ -1185,8 +1188,8 @@ void MNodeEngine::PropagateNodeOutputs(CustomNode *node)
                     if (outputValue != node->outputValues.end())
                     {
                         targetNode->inputValues[connection.toPinId] = outputValue->second;
-                        std::cout << "[PROPAGATE] " << node->n.title << " -> " << targetNode->n.title
-                                  << " (pin " << connection.toPinId << ")" << std::endl;
+                        // std::cout << "[PROPAGATE] " << node->n.title << " -> " << targetNode->n.title
+                        //           << " (pin " << connection.toPinId << ")" << std::endl;
                     }
                 }
             }

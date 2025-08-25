@@ -573,12 +573,49 @@ void PhysicalObject::setGravityFactor(float factor) {
 }
 
 void PhysicalObject::setBodyType(BodyType type) {
-    if (bodyType != type) {
-        bodyType = type;
-        if (initialized) {
-            destroy();
-            start();
+    if (bodyType == type) {
+        return;
+    }
+
+    BodyType oldType = bodyType;
+    bodyType = type;
+
+    // If not initialized yet, just update the type
+    if (!initialized) {
+        return;
+    }
+
+    // Handle different conversion scenarios
+    if (oldType == BodyType::Dynamic && type == BodyType::Kinematic) {
+        // Dynamic to Kinematic: Just change the flag
+        if (dynamicActor) {
+            dynamicActor->setRigidBodyFlag(physx::PxRigidBodyFlag::eKINEMATIC, true);
+            std::cout << "[PhysicalObject] Changed Dynamic to Kinematic for " << owner->Name << std::endl;
         }
+    }
+    else if (oldType == BodyType::Kinematic && type == BodyType::Dynamic) {
+        // Kinematic to Dynamic: Just change the flag
+        if (dynamicActor) {
+            dynamicActor->setRigidBodyFlag(physx::PxRigidBodyFlag::eKINEMATIC, false);
+            // Reapply mass and damping settings
+            physx::PxRigidBodyExt::updateMassAndInertia(*dynamicActor, mass);
+            dynamicActor->setLinearDamping(damping);
+            dynamicActor->setAngularDamping(damping);
+            dynamicActor->setActorFlag(physx::PxActorFlag::eDISABLE_GRAVITY, gravityFactor == 0.0f);
+            std::cout << "[PhysicalObject] Changed Kinematic to Dynamic for " << owner->Name << std::endl;
+        }
+    }
+    else {
+        // Static to Dynamic/Kinematic or Dynamic/Kinematic to Static: Need to recreate
+        // This is because PhysX doesn't allow converting between static and dynamic at runtime
+        std::cout << "[PhysicalObject] Recreating body for type change from " 
+                  << (oldType == BodyType::Static ? "Static" : oldType == BodyType::Dynamic ? "Dynamic" : "Kinematic")
+                  << " to "
+                  << (type == BodyType::Static ? "Static" : type == BodyType::Dynamic ? "Dynamic" : "Kinematic")
+                  << " for " << owner->Name << std::endl;
+        
+        destroy();
+        start();
     }
 }
 
