@@ -144,5 +144,6 @@ public:
         engine.PrefabNodes.push_back(stringNode);
         engine.PrefabNodes.push_back(intNode);
         engine.PrefabNodes.push_back(floatNode);
+        engine.PrefabNodes.push_back(boolNode);
     }
 };
