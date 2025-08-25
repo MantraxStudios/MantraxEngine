@@ -98,6 +98,21 @@ public:
             position           // PIN POSITION
         );
 
+        PremakeNode boolNode(
+            "Const",
+            "Bool",
+            [](CustomNode *node)
+            {
+                node->SetOutputValue<bool>(0, node->GetInputValue<bool>(0, true));
+            },
+            SCRIPT,            // CATEGORY
+            false,             // EXECUTE PIN INPUT
+            false,             // EXECUTE PIN OUT
+            {{"Value", true}}, // INPUT PINS
+            {{"", true}},      // OUTPUT PINS
+            position           // PIN POSITION
+        );
+
         PremakeNode quatNode(
             "Const",
             "Quaternion",
